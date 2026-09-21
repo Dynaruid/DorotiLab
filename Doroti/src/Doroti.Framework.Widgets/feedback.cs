@@ -26,7 +26,9 @@ public abstract class Feedback
                 return;
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
     }
 
@@ -41,7 +43,7 @@ public abstract class Feedback
             DartRuntimePrimitives.Ignore(forTap(context));
             callback();
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static Future forLongPress(BuildContext context)
@@ -71,9 +73,11 @@ public abstract class Feedback
                 return Future.value();
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static Action? wrapForLongPress(Action? callback, BuildContext context)
@@ -87,6 +91,6 @@ public abstract class Feedback
             DartRuntimePrimitives.Ignore(forLongPress(context));
             callback();
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

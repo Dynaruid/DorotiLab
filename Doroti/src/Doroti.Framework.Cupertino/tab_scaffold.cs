@@ -239,7 +239,7 @@ internal class _CupertinoTabScaffoldState__tab_scaffold
                 }
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void dispose()
@@ -470,7 +470,7 @@ internal class _CupertinoTabScaffoldState__tab_scaffold
         _bucket!.rename(restorationId!);
         parent.adoptChild(_bucket!);
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool _setNewBucketIfNecessary(RestorationBucket? newBucket, bool restorePending)
@@ -492,7 +492,7 @@ internal class _CupertinoTabScaffoldState__tab_scaffold
             didToggleBucket(oldBucket);
         }
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _updateProperty(IRestorableProperty property)
@@ -664,7 +664,7 @@ public class _TabSwitchingViewState__tab_scaffold : State<_TabSwitchingView__tab
                                                     ? widget.tabBuilder(context, index)
                                                     : SizedBox.CreateShrink();
                                                 throw new InvalidOperationException(
-                                                    "Dart closure completed without a value."
+                                                    "Callback completed without returning a value."
                                                 );
                                             }
                                         )
@@ -673,13 +673,13 @@ public class _TabSwitchingViewState__tab_scaffold : State<_TabSwitchingView__tab
                             )
                         );
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -696,19 +696,19 @@ public class RestorableCupertinoTabController : RestorableChangeNotifier<Cuperti
     public override CupertinoTabController createDefaultValue()
     {
         return new CupertinoTabController(initialIndex: _initialIndex);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override CupertinoTabController fromPrimitives(object? data)
     {
         DartRuntimePrimitives.Assert(() => data is not null);
         return new CupertinoTabController(initialIndex: (long)data!);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override object? toPrimitives()
     {
         return value.index;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

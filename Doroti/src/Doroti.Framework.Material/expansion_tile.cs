@@ -260,9 +260,11 @@ internal class _ExpansionTileState__expansion_tile : State<ExpansionTile>
                 return ListTileControlAffinity.trailing;
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget? _buildIcon(BuildContext context, Animation<double> animation)
@@ -270,7 +272,7 @@ internal class _ExpansionTileState__expansion_tile : State<ExpansionTile>
         _iconTurns = animation.drive(_halfTween.chain(_easeInTween));
         return (Widget?)
             new RotationTransition(turns: _iconTurns, child: new Icon(Icons.expand_more));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget? _buildLeadingIcon(BuildContext context, Animation<double> animation)
@@ -280,7 +282,7 @@ internal class _ExpansionTileState__expansion_tile : State<ExpansionTile>
             return null;
         }
         return _buildIcon(context, animation);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget? _buildTrailingIcon(BuildContext context, Animation<double> animation)
@@ -290,7 +292,7 @@ internal class _ExpansionTileState__expansion_tile : State<ExpansionTile>
             return null;
         }
         return _buildIcon(context, animation);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _buildHeader(BuildContext context, Animation<double> animation)
@@ -355,7 +357,7 @@ internal class _ExpansionTileState__expansion_tile : State<ExpansionTile>
             onTapHint: onTapHintLocal,
             child: childLocal
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _buildBody(BuildContext context, Animation<double> animation)
@@ -373,7 +375,7 @@ internal class _ExpansionTileState__expansion_tile : State<ExpansionTile>
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _buildExpansible(
@@ -431,7 +433,7 @@ internal class _ExpansionTileState__expansion_tile : State<ExpansionTile>
             );
         }
         return new DecoratedBox(decoration: decorationLocal, child: tile);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void didUpdateWidget(ExpansionTile oldWidget)
@@ -621,7 +623,7 @@ internal class _ExpansionTileState__expansion_tile : State<ExpansionTile>
             bodyBuilder: _buildBody,
             expansibleBuilder: _buildExpansible
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 

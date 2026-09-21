@@ -197,7 +197,7 @@ internal class _CupertinoPageScaffoldState__page_scaffold
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -215,7 +215,7 @@ public class CupertinoPageScaffoldBackgroundColor : InheritedWidget
     {
         var __oldWidget = (CupertinoPageScaffoldBackgroundColor)oldWidget;
         return !Equals(color, __oldWidget.color);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static Color? maybeOf(BuildContext context)
@@ -223,7 +223,7 @@ public class CupertinoPageScaffoldBackgroundColor : InheritedWidget
         CupertinoPageScaffoldBackgroundColor? scaffoldBackgroundColor =
             context.dependOnInheritedWidgetOfExactType<CupertinoPageScaffoldBackgroundColor>();
         return scaffoldBackgroundColor?.color;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -263,7 +263,7 @@ internal class _HitTestableAtOrigin__page_scaffold : StatelessWidget
         var result = new Gestures.HitTestResult();
         WidgetsBinding.instance.hitTestInView(result, Offset.zero, viewIdLocal);
         return result.path.any((entry) => Equals(entry.target, renderObjectLocal));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -273,6 +273,6 @@ internal class _HitTestableAtOrigin__page_scaffold : StatelessWidget
             behavior: HitTestBehavior.translucent,
             child: SizedBox.CreateExpand()
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

@@ -110,7 +110,7 @@ public sealed class DartMap<TKey, TValue>
             if (hasKey != hasValue)
             {
                 throw new ArgumentException(
-                    "Dart Map.fromIterables requires equal key and value counts."
+                    "Map.fromIterables requires equal key and value counts."
                 );
             }
             if (!hasKey)
@@ -848,7 +848,7 @@ public static class Dart_convertLibrary
                     {
                         if (entry.Key is not string key)
                         {
-                            throw new JsonException("Dart JSON object keys must be strings.");
+                            throw new JsonException("JSON object keys must be strings.");
                         }
 
                         writer.WritePropertyName(key);
@@ -867,7 +867,7 @@ public static class Dart_convertLibrary
                     break;
                 default:
                     throw new JsonException(
-                        $"{value.GetType().FullName} is not a Dart JSON value. Convert it to scalars, lists or string-keyed maps before encoding."
+                        $"{value.GetType().FullName} is not a supported JSON value. Convert it to scalars, lists or string-keyed maps before encoding."
                     );
             }
         }

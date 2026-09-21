@@ -80,13 +80,13 @@ public class RawKeyEventDataLinux : RawKeyEventData
             keyCode: keyCode,
             isDown: isDown
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override KeyboardSide? getModifierSide(ModifierKey key)
     {
         return keyHelper.getModifierSide(key);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -220,7 +220,7 @@ public class GLFWKeyHelper : KeyHelper
             _ => 0L,
         };
         return isDown ? (modifiers | modifierChange) : (modifiers & ~modifierChange);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool isModifierPressed(
@@ -255,27 +255,29 @@ public class GLFWKeyHelper : KeyHelper
             var __case13261 when Equals(__case13261, ModifierKey.functionModifier) => false,
             var __case13306 when Equals(__case13306, ModifierKey.symbolModifier) => false,
             var __case13349 when Equals(__case13349, ModifierKey.scrollLockModifier) => false,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual KeyboardSide getModifierSide(ModifierKey key)
     {
         return KeyboardSide.all;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual LogicalKeyboardKey? numpadKey(long keyCode)
     {
         return Keyboard_maps_gLibrary.kGlfwNumpadMap.GetValueOrDefault(keyCode);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual LogicalKeyboardKey? logicalKey(long keyCode)
     {
         return Keyboard_maps_gLibrary.kGlfwToLogicalKey.GetValueOrDefault(keyCode);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual long platformPlane => LogicalKeyboardKey.glfwPlane;
@@ -326,7 +328,7 @@ public class GtkKeyHelper : KeyHelper
             _ => 0L,
         };
         return isDown ? (modifiers | modifierChange) : (modifiers & ~modifierChange);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool isModifierPressed(
@@ -361,27 +363,29 @@ public class GtkKeyHelper : KeyHelper
             var __case18335 when Equals(__case18335, ModifierKey.functionModifier) => false,
             var __case18380 when Equals(__case18380, ModifierKey.symbolModifier) => false,
             var __case18423 when Equals(__case18423, ModifierKey.scrollLockModifier) => false,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual KeyboardSide getModifierSide(ModifierKey key)
     {
         return KeyboardSide.all;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual LogicalKeyboardKey? numpadKey(long keyCode)
     {
         return Keyboard_maps_gLibrary.kGtkNumpadMap.GetValueOrDefault(keyCode);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual LogicalKeyboardKey? logicalKey(long keyCode)
     {
         return Keyboard_maps_gLibrary.kGtkToLogicalKey.GetValueOrDefault(keyCode);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual long platformPlane => LogicalKeyboardKey.gtkPlane;

@@ -82,7 +82,7 @@ public class Matrix4Tween : Tween<Matrix4>
         ).normalized();
         Vector3 lerpScale = (beginScale * (1.0 - t)) + (endScale * t);
         return Matrix4.compose(lerpTranslation, lerpRotation, lerpScale);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -230,7 +230,9 @@ public abstract class ImplicitlyAnimatedWidgetState<T> : State<T>, SingleTickerP
                             }
                         )
                     )();
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
             FrameworkWorkCounters.Add(FrameworkWork.ImplicitAnimationRestart);
@@ -247,7 +249,7 @@ public abstract class ImplicitlyAnimatedWidgetState<T> : State<T>, SingleTickerP
     internal virtual CurvedAnimation _createCurve()
     {
         return new CurvedAnimation(parent: controller, curve: widget.curve);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void dispose()
@@ -279,7 +281,7 @@ public abstract class ImplicitlyAnimatedWidgetState<T> : State<T>, SingleTickerP
                     }
                 )
             );
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         _tickerModeNotifier?.removeListener(_updateTicker);
         _tickerModeNotifier = null;
@@ -309,11 +311,13 @@ public abstract class ImplicitlyAnimatedWidgetState<T> : State<T>, SingleTickerP
                     tween = null;
                 }
                 return tween;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
         return shouldStartAnimation;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public abstract void forEachTween(
@@ -348,7 +352,7 @@ public abstract class ImplicitlyAnimatedWidgetState<T> : State<T>, SingleTickerP
                     }
                 )
             );
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         _ticker = new Scheduler.Ticker(
             onTick,
@@ -359,7 +363,7 @@ public abstract class ImplicitlyAnimatedWidgetState<T> : State<T>, SingleTickerP
         _updateTickerModeNotifier();
         _updateTicker();
         return _ticker!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void activate()
@@ -622,7 +626,7 @@ internal class _AnimatedContainerState__implicit_animations
             clipBehavior: widget.clipBehavior,
             child: widget.child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder description)
@@ -732,7 +736,7 @@ internal class _AnimatedPaddingState__implicit_animations : AnimatedWidgetBaseSt
                 .clamp(EdgeInsets.zero, EdgeInsetsGeometry.infinity),
             child: widget.child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder description)
@@ -834,7 +838,7 @@ internal class _AnimatedAlignState__implicit_animations : AnimatedWidgetBaseStat
             widthFactor: _widthFactorTween?.evaluate(animation),
             child: widget.child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder description)
@@ -1019,7 +1023,7 @@ internal class _AnimatedPositionedState__implicit_animations
             height: _height?.evaluate(animation),
             child: widget.child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder description)
@@ -1158,7 +1162,7 @@ internal class _AnimatedPositionedDirectionalState__implicit_animations
             height: _height?.evaluate(animation),
             child: widget.child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder description)
@@ -1250,7 +1254,7 @@ internal class _AnimatedScaleState__implicit_animations
             filterQuality: widget.filterQuality,
             child: widget.child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1331,7 +1335,7 @@ internal class _AnimatedRotationState__implicit_animations
             filterQuality: widget.filterQuality,
             child: widget.child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1391,7 +1395,7 @@ internal class _AnimatedSlideState__implicit_animations
     public override Widget build(BuildContext context)
     {
         return new SlideTransition(position: _offsetAnimation, child: widget.child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1458,7 +1462,7 @@ internal class _AnimatedOpacityState__implicit_animations
             alwaysIncludeSemantics: widget.alwaysIncludeSemantics,
             child: widget.child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1525,7 +1529,7 @@ internal class _SliverAnimatedOpacityState__implicit_animations
             sliver: widget.sliver,
             alwaysIncludeSemantics: widget.alwaysIncludeSemantics
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1570,7 +1574,7 @@ public class AnimatedDefaultTextStyle : ImplicitlyAnimatedWidget
                     (
                         maxLines
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) > 0L
                 )
@@ -1645,7 +1649,7 @@ internal class _AnimatedDefaultTextStyleState__implicit_animations
             textHeightBehavior: widget.textHeightBehavior,
             child: widget.child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1763,7 +1767,7 @@ internal class _AnimatedPhysicalModelState__implicit_animations
                 : widget.shadowColor,
             child: widget.child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1857,7 +1861,7 @@ internal class _AnimatedFractionallySizedBoxState__implicit_animations
             widthFactor: _widthFactorTween?.evaluate(animation),
             child: widget.child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder description)

@@ -20,13 +20,13 @@ public class SliderTheme : InheritedTheme
     {
         SliderTheme? inheritedTheme = context.dependOnInheritedWidgetOfExactType<SliderTheme>();
         return (inheritedTheme is not null) ? inheritedTheme.data : Theme.of(context).sliderTheme;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget wrap(BuildContext context, Widget child)
     {
         return new SliderTheme(data: data, child: child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget) =>
@@ -312,7 +312,7 @@ public class SliderThemeData : Diagnosticable
             trackGap: trackGap ?? this.trackGap,
             year2023: year2023 ?? this.year2023
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static SliderThemeData lerp(SliderThemeData a, SliderThemeData b, double t)
@@ -421,7 +421,7 @@ public class SliderThemeData : Diagnosticable
             trackGap: Dart_uiLibrary.lerpDouble(a.trackGap, b.trackGap, t),
             year2023: (t < 0.5) ? a.year2023 : b.year2023
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override int GetHashCode() =>
@@ -774,7 +774,7 @@ public class SliderThemeData : Diagnosticable
             return true;
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -783,7 +783,7 @@ public class SliderThemeData : Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 

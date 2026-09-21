@@ -75,7 +75,7 @@ public class Autocomplete<T> : StatelessWidget
             textEditingController: textEditingController,
             onFieldSubmitted: () => onFieldSubmitted()
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -100,13 +100,13 @@ public class Autocomplete<T> : StatelessWidget
                             optionsMaxHeight: optionsMaxHeight
                         );
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 ),
             onSelected: onSelected
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -137,7 +137,7 @@ internal class _AutocompleteField__autocomplete : StatelessWidget
                 onFieldSubmitted();
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -182,7 +182,7 @@ internal class _AutocompleteOptions__autocomplete<T> : StatelessWidget
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -290,15 +290,17 @@ internal class _AutocompleteOptionsListState__autocomplete<T>
                                     child: new Text(widget.displayStringForOption(option))
                                 );
                                 throw new InvalidOperationException(
-                                    "Dart closure completed without a value."
+                                    "Callback completed without returning a value."
                                 );
                             }
                         )
                     )
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

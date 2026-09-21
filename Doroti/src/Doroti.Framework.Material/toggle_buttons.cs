@@ -101,7 +101,9 @@ public class ToggleButtons : StatelessWidget
                     TextDirection.rtl => index == (length - 1L),
                     TextDirection.ltr => index == 0L,
                     _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                        throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                        throw new InvalidOperationException(
+                            "Switch expression did not handle the supplied value."
+                        ),
                 };
             }
             case Axis.vertical:
@@ -111,13 +113,17 @@ public class ToggleButtons : StatelessWidget
                     VerticalDirection.up => index == (length - 1L),
                     VerticalDirection.down => index == 0L,
                     _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                        throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                        throw new InvalidOperationException(
+                            "Switch expression did not handle the supplied value."
+                        ),
                 };
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _isLastButton(long index, long length, TextDirection textDirection)
@@ -131,7 +137,9 @@ public class ToggleButtons : StatelessWidget
                     TextDirection.rtl => index == 0L,
                     TextDirection.ltr => index == (length - 1L),
                     _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                        throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                        throw new InvalidOperationException(
+                            "Switch expression did not handle the supplied value."
+                        ),
                 };
             }
             case Axis.vertical:
@@ -141,13 +149,17 @@ public class ToggleButtons : StatelessWidget
                     VerticalDirection.up => index == 0L,
                     VerticalDirection.down => index == (length - 1L),
                     _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                        throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                        throw new InvalidOperationException(
+                            "Switch expression did not handle the supplied value."
+                        ),
                 };
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual BorderRadius _getEdgeBorderRadius(
@@ -207,7 +219,7 @@ public class ToggleButtons : StatelessWidget
             }
         }
         return BorderRadius.zero;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual BorderRadius _getClipBorderRadius(
@@ -286,7 +298,7 @@ public class ToggleButtons : StatelessWidget
             }
         }
         return BorderRadius.zero;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual BorderSide _getLeadingBorderSide(
@@ -331,7 +343,7 @@ public class ToggleButtons : StatelessWidget
                 );
             }
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual BorderSide _getBorderSide(
@@ -373,7 +385,7 @@ public class ToggleButtons : StatelessWidget
                 );
             }
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual BorderSide _getTrailingBorderSide(
@@ -419,7 +431,7 @@ public class ToggleButtons : StatelessWidget
                 );
             }
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -539,7 +551,7 @@ public class ToggleButtons : StatelessWidget
                                 ),
                                 _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
                                     throw new InvalidOperationException(
-                                        "Non-exhaustive Dart switch value."
+                                        "Switch expression did not handle the supplied value."
                                     ),
                             };
                             DartRuntimePrimitives.Assert(() => minPaddingSize.width >= 0.0);
@@ -643,7 +655,9 @@ public class ToggleButtons : StatelessWidget
                             )
                         )
                     );
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );
@@ -665,7 +679,7 @@ public class ToggleButtons : StatelessWidget
                 children: buttons
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -729,7 +743,7 @@ internal class _ResolveFillColor__toggle_buttons : WidgetStateProperty<Color?>, 
             return WidgetStateProperty.resolveAs<Color?>(primary, states);
         }
         return states.Contains(WidgetState.selected) ? primary : null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
@@ -747,7 +761,7 @@ internal class _ResolveFillColor__toggle_buttons : WidgetStateProperty<Color?>, 
             return true;
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -756,7 +770,7 @@ internal class _ResolveFillColor__toggle_buttons : WidgetStateProperty<Color?>, 
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties) { }
@@ -778,7 +792,7 @@ internal class _DefaultFillColor__toggle_buttons : WidgetStateProperty<Color>, D
             return colorScheme.primary.withOpacity(0.12);
         }
         return colorScheme.surface.withOpacity(0.0);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
@@ -796,7 +810,7 @@ internal class _DefaultFillColor__toggle_buttons : WidgetStateProperty<Color>, D
             return true;
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -805,7 +819,7 @@ internal class _DefaultFillColor__toggle_buttons : WidgetStateProperty<Color>, D
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties) { }
@@ -880,13 +894,13 @@ internal class _ToggleButtonDefaultOverlay__toggle_buttons : WidgetStateProperty
             }
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string ToString()
     {
         return $"    {{\n      selected:\n        hovered: {hoverColor}, otherwise: {colorScheme?.primary.withOpacity(0.04)},\n        focused: {focusColor}, otherwise: {colorScheme?.primary.withOpacity(0.12)},\n        pressed: {splashColor}, otherwise: {colorScheme?.primary.withOpacity(0.16)},\n      unselected:\n        hovered: {hoverColor}, otherwise: {colorScheme?.onSurface.withOpacity(0.04)},\n        focused: {focusColor}, otherwise: {colorScheme?.onSurface.withOpacity(0.12)},\n        pressed: {splashColor}, otherwise: {colorScheme?.onSurface.withOpacity(0.16)},\n      otherwise: null,\n    }}\n    ";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1132,25 +1146,25 @@ public class _SelectToggleButtonRenderObject__toggle_buttons : RenderShiftedBox
     internal static double _maxHeight(RenderBox? box, double width)
     {
         return box?.getMaxIntrinsicHeight(width) ?? 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static double _minHeight(RenderBox? box, double width)
     {
         return box?.getMinIntrinsicHeight(width) ?? 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static double _minWidth(RenderBox? box, double height)
     {
         return box?.getMinIntrinsicWidth(height) ?? 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static double _maxWidth(RenderBox? box, double height)
     {
         return box?.getMaxIntrinsicWidth(height) ?? 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? computeDistanceToActualBaseline(TextBaseline baseline)
@@ -1167,15 +1181,17 @@ public class _SelectToggleButtonRenderObject__toggle_buttons : RenderShiftedBox
                         VerticalDirection.up => trailingBorderSide.width,
                         _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
                             throw new InvalidOperationException(
-                                "Non-exhaustive Dart switch value."
+                                "Switch expression did not handle the supplied value."
                             ),
                     }
                 ),
                 _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                    throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
             }
         ).offset;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicHeight(double width)
@@ -1183,7 +1199,7 @@ public class _SelectToggleButtonRenderObject__toggle_buttons : RenderShiftedBox
         return Equals(direction, Axis.horizontal)
             ? ((borderSide.width * 2.0) + _maxHeight(child, width))
             : (leadingBorderSide.width + _maxHeight(child, width) + trailingBorderSide.width);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicHeight(double width)
@@ -1191,7 +1207,7 @@ public class _SelectToggleButtonRenderObject__toggle_buttons : RenderShiftedBox
         return Equals(direction, Axis.horizontal)
             ? ((borderSide.width * 2.0) + _minHeight(child, width))
             : (leadingBorderSide.width + _maxHeight(child, width) + trailingBorderSide.width);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicWidth(double height)
@@ -1199,7 +1215,7 @@ public class _SelectToggleButtonRenderObject__toggle_buttons : RenderShiftedBox
         return Equals(direction, Axis.horizontal)
             ? (leadingBorderSide.width + _maxWidth(child, height) + trailingBorderSide.width)
             : ((borderSide.width * 2.0) + _maxWidth(child, height));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicWidth(double height)
@@ -1207,7 +1223,7 @@ public class _SelectToggleButtonRenderObject__toggle_buttons : RenderShiftedBox
         return Equals(direction, Axis.horizontal)
             ? (leadingBorderSide.width + _minWidth(child, height) + trailingBorderSide.width)
             : ((borderSide.width * 2.0) + _minWidth(child, height));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Size computeDryLayout(BoxConstraints constraints)
@@ -1216,7 +1232,7 @@ public class _SelectToggleButtonRenderObject__toggle_buttons : RenderShiftedBox
             constraints: constraints,
             layoutChild: ChildLayoutHelper.dryLayoutChild
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual EdgeInsetsDirectional _childPadding
@@ -1239,7 +1255,9 @@ public class _SelectToggleButtonRenderObject__toggle_buttons : RenderShiftedBox
                     bottom: trailingBorderSide.width
                 ),
                 _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                    throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
             };
         }
     }
@@ -1253,7 +1271,7 @@ public class _SelectToggleButtonRenderObject__toggle_buttons : RenderShiftedBox
         }
         return (
                 childBaseline
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
             + (
                 direction switch
@@ -1265,14 +1283,16 @@ public class _SelectToggleButtonRenderObject__toggle_buttons : RenderShiftedBox
                         VerticalDirection.up => trailingBorderSide.width,
                         _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
                             throw new InvalidOperationException(
-                                "Non-exhaustive Dart switch value."
+                                "Switch expression did not handle the supplied value."
                             ),
                     },
                     _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                        throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                        throw new InvalidOperationException(
+                            "Switch expression did not handle the supplied value."
+                        ),
                 }
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void performLayout()
@@ -1290,7 +1310,9 @@ public class _SelectToggleButtonRenderObject__toggle_buttons : RenderShiftedBox
                 TextDirection.ltr => new Offset(leadingBorderSide.width, borderSide.width),
                 TextDirection.rtl => new Offset(trailingBorderSide.width, borderSide.width),
                 _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                    throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
             };
         }
         else
@@ -1300,7 +1322,9 @@ public class _SelectToggleButtonRenderObject__toggle_buttons : RenderShiftedBox
                 VerticalDirection.down => new Offset(borderSide.width, leadingBorderSide.width),
                 VerticalDirection.up => new Offset(borderSide.width, trailingBorderSide.width),
                 _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                    throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
             };
         }
     }
@@ -1322,7 +1346,9 @@ public class _SelectToggleButtonRenderObject__toggle_buttons : RenderShiftedBox
                 Axis.horizontal => constraints.constrain(horizontalSize),
                 Axis.vertical => constraints.constrain(horizontalSize.flipped),
                 _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                    throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
             };
         }
         EdgeInsetsDirectional childPadding = _childPadding;
@@ -1330,7 +1356,7 @@ public class _SelectToggleButtonRenderObject__toggle_buttons : RenderShiftedBox
         return constraints.constrain(
             childPadding.inflateSize(layoutChild(childLocal, innerConstraints))
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paint(PaintingContext context, Offset offset)
@@ -2056,7 +2082,7 @@ internal class _InputPadding__toggle_buttons : SingleChildRenderObjectWidget
     public override RenderObject createRenderObject(BuildContext context)
     {
         return new _RenderInputPadding__toggle_buttons(minSize, direction);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -2119,7 +2145,7 @@ public class _RenderInputPadding__toggle_buttons : RenderShiftedBox
             return Math.Max(child!.getMinIntrinsicWidth(height), minSize.width);
         }
         return 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicHeight(double width)
@@ -2129,7 +2155,7 @@ public class _RenderInputPadding__toggle_buttons : RenderShiftedBox
             return Math.Max(child!.getMinIntrinsicHeight(width), minSize.height);
         }
         return 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicWidth(double height)
@@ -2139,7 +2165,7 @@ public class _RenderInputPadding__toggle_buttons : RenderShiftedBox
             return Math.Max(child!.getMaxIntrinsicWidth(height), minSize.width);
         }
         return 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicHeight(double width)
@@ -2149,7 +2175,7 @@ public class _RenderInputPadding__toggle_buttons : RenderShiftedBox
             return Math.Max(child!.getMaxIntrinsicHeight(width), minSize.height);
         }
         return 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Size _computeSize(
@@ -2165,7 +2191,7 @@ public class _RenderInputPadding__toggle_buttons : RenderShiftedBox
             return constraints.constrain(new Size(widthLocal, heightLocal));
         }
         return Size.zero;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Size computeDryLayout(BoxConstraints constraints)
@@ -2174,7 +2200,7 @@ public class _RenderInputPadding__toggle_buttons : RenderShiftedBox
             constraints: constraints,
             layoutChild: ChildLayoutHelper.dryLayoutChild
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
@@ -2194,9 +2220,9 @@ public class _RenderInputPadding__toggle_buttons : RenderShiftedBox
         Offset childOffset = Alignment.center.alongOffset(drySize - childSize);
         return (
                 result
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ) + childOffset.dy;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void performLayout()
@@ -2220,7 +2246,9 @@ public class _RenderInputPadding__toggle_buttons : RenderShiftedBox
             Axis.horizontal => new Offset(position.dx, child!.size.height / 2L),
             Axis.vertical => new Offset(child!.size.width / 2L, position.dy),
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
         return result.addWithRawTransform(
             transform: MatrixUtils.forceToPoint(center),
@@ -2229,9 +2257,11 @@ public class _RenderInputPadding__toggle_buttons : RenderShiftedBox
             {
                 DartRuntimePrimitives.Assert(() => Equals(position, center));
                 return child!.hitTest(result, position: center);
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

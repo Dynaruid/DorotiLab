@@ -23,7 +23,9 @@ internal static class MaterialPageTransitionResolver
             or TargetPlatform.fuchsia
             or TargetPlatform.windows
             or TargetPlatform.linux => new ZoomPageTransitionsBuilder(),
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
     }
 }
@@ -78,14 +80,14 @@ public class MaterialPageRoute<T> : PageRoute<T>, MaterialRouteTransitionMixin<T
     {
         controller?.duration = transitionDuration;
         return base.didPush();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool didPop(T? result)
     {
         controller?.reverseDuration = reverseTransitionDuration;
         return base.didPop(result);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Color? barrierColor => DartRuntimePrimitives.ConvertValue<Color>(null);
@@ -108,13 +110,13 @@ public class MaterialPageRoute<T> : PageRoute<T>, MaterialRouteTransitionMixin<T
             && (((IModalRoute)(object)nextRoute).delegatedTransition is not null);
         return nextRouteIsNotFullscreen
             && (nextRoute is IMaterialRouteTransition || nextRouteHasDelegatedTransition);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool canTransitionFrom(dynamic previousRoute)
     {
         return (previousRoute is IPageRoute) && !fullscreenDialog;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget buildPage(
@@ -125,7 +127,7 @@ public class MaterialPageRoute<T> : PageRoute<T>, MaterialRouteTransitionMixin<T
     {
         Widget result = buildContent(context);
         return new Widgets.Semantics(scopesRoute: true, explicitChildNodes: true, child: result);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget buildTransitions(
@@ -137,7 +139,7 @@ public class MaterialPageRoute<T> : PageRoute<T>, MaterialRouteTransitionMixin<T
     {
         PageTransitionsTheme theme = Theme.of(context).pageTransitionsTheme;
         return theme.buildTransitions(this, context, animation, secondaryAnimation, child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -245,7 +247,7 @@ public class MaterialPage<T> : Page<T>
             page: this,
             allowSnapshotting: allowSnapshotting
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -262,7 +264,7 @@ internal class _PageBasedMaterialPageRoute__page<T> : PageRoute<T>, MaterialRout
     public virtual Widget buildContent(BuildContext context)
     {
         return _page.child;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool maintainState => _page.maintainState;
@@ -280,14 +282,14 @@ internal class _PageBasedMaterialPageRoute__page<T> : PageRoute<T>, MaterialRout
     {
         controller?.duration = transitionDuration;
         return base.didPush();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool didPop(T? result)
     {
         controller?.reverseDuration = reverseTransitionDuration;
         return base.didPop(result);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Color? barrierColor => DartRuntimePrimitives.ConvertValue<Color>(null);
@@ -310,13 +312,13 @@ internal class _PageBasedMaterialPageRoute__page<T> : PageRoute<T>, MaterialRout
             && (((IModalRoute)(object)nextRoute).delegatedTransition is not null);
         return nextRouteIsNotFullscreen
             && (nextRoute is IMaterialRouteTransition || nextRouteHasDelegatedTransition);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool canTransitionFrom(dynamic previousRoute)
     {
         return (previousRoute is IPageRoute) && !fullscreenDialog;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget buildPage(
@@ -327,7 +329,7 @@ internal class _PageBasedMaterialPageRoute__page<T> : PageRoute<T>, MaterialRout
     {
         Widget result = buildContent(context);
         return new Widgets.Semantics(scopesRoute: true, explicitChildNodes: true, child: result);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget buildTransitions(
@@ -339,6 +341,6 @@ internal class _PageBasedMaterialPageRoute__page<T> : PageRoute<T>, MaterialRout
     {
         PageTransitionsTheme theme = Theme.of(context).pageTransitionsTheme;
         return theme.buildTransitions(this, context, animation, secondaryAnimation, child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

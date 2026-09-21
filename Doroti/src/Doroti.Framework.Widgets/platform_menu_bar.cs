@@ -217,7 +217,7 @@ public class DefaultPlatformMenuDelegate : PlatformMenuDelegate
         _serial += 1L;
         _idMap[_serial] = item;
         return _serial;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool debugLockDelegate(BuildContext context)
@@ -230,10 +230,10 @@ public class DefaultPlatformMenuDelegate : PlatformMenuDelegate
             }
             _lockedContext = context;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool debugUnlockDelegate(BuildContext context)
@@ -246,10 +246,10 @@ public class DefaultPlatformMenuDelegate : PlatformMenuDelegate
             }
             _lockedContext = null;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual async Future _methodCallHandler(MethodCall call)
@@ -324,7 +324,7 @@ public class PlatformMenuBar : StatefulWidget
     public override List<DiagnosticsNode> debugDescribeChildren()
     {
         return menus.map((child) => ((Diagnosticable)child).toDiagnosticsNode()).ToList();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -377,7 +377,7 @@ internal class _PlatformMenuBarState__platform_menu_bar : State<PlatformMenuBar>
     public override Widget build(BuildContext context)
     {
         return widget.child ?? new SizedBox();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -414,7 +414,7 @@ public class PlatformMenu : PlatformMenuItem
     public static List<PlatformMenuItem> getDescendants(PlatformMenu item)
     {
         return new List<PlatformMenuItem>();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override IEnumerable<DartMap<string, object?>> toChannelRepresentation(
@@ -423,7 +423,7 @@ public class PlatformMenu : PlatformMenuItem
     )
     {
         return new List<DartMap<string, object?>> { serialize(this, @delegate, getId) };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static DartMap<string, object?> serialize(
@@ -461,7 +461,9 @@ public class PlatformMenu : PlatformMenuItem
                 }
                 previousItem = item.cast<string, object?>();
                 return false;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
         if (
@@ -484,13 +486,13 @@ public class PlatformMenu : PlatformMenuItem
             [Platform_menu_barLibrary._kEnabledKey] = Enumerable.Any(item.menus),
             [Platform_menu_barLibrary._kChildrenKey] = result,
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual List<DiagnosticsNode> debugDescribeChildren()
     {
         return menus.map((child) => ((Diagnosticable)child).toDiagnosticsNode()).ToList();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -526,7 +528,7 @@ public class PlatformMenuItemGroup : PlatformMenuItem
             () => (object?)"There must be at least one member in a PlatformMenuItemGroup"
         );
         return serialize(this, @delegate, getId: getId);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static new IEnumerable<DartMap<string, object?>> serialize(
@@ -548,7 +550,7 @@ public class PlatformMenuItemGroup : PlatformMenuItem
                 [Platform_menu_barLibrary._kIsDividerKey] = true,
             },
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -595,7 +597,7 @@ public class PlatformMenuItem : Diagnosticable
     )
     {
         return new List<DartMap<string, object?>> { serialize(this, @delegate, getId) };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static DartMap<string, object?> serialize(
@@ -612,7 +614,7 @@ public class PlatformMenuItem : Diagnosticable
             [Platform_menu_barLibrary._kEnabledKey] =
                 (item.onSelected is not null) || (item.onSelectedIntent is not null),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual string toStringShort() =>
@@ -645,10 +647,10 @@ public class PlatformMenuItem : Diagnosticable
                 .toDiagnosticsNode()
                 .toStringDeep(minLevel: minLevel);
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -657,7 +659,7 @@ public class PlatformMenuItem : Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -704,9 +706,11 @@ public class PlatformProvidedMenuItem : PlatformMenuItem
                 }.Contains(menu);
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override IEnumerable<DartMap<string, object?>> toChannelRepresentation(
@@ -727,7 +731,7 @@ public class PlatformProvidedMenuItem : PlatformMenuItem
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return new List<DartMap<string, object?>>
         {
@@ -739,7 +743,7 @@ public class PlatformProvidedMenuItem : PlatformMenuItem
                     FoundationRuntimePorts.EnumIndex(type),
             },
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)

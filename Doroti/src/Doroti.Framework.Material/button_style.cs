@@ -158,7 +158,7 @@ public class ButtonStyle : Diagnosticable
             backgroundBuilder: backgroundBuilder ?? this.backgroundBuilder,
             foregroundBuilder: foregroundBuilder ?? this.foregroundBuilder
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual ButtonStyle merge(ButtonStyle? style)
@@ -194,7 +194,7 @@ public class ButtonStyle : Diagnosticable
             backgroundBuilder: backgroundBuilder ?? style.backgroundBuilder,
             foregroundBuilder: foregroundBuilder ?? style.foregroundBuilder
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override int GetHashCode()
@@ -492,7 +492,7 @@ public class ButtonStyle : Diagnosticable
             backgroundBuilder: (t < 0.5) ? a?.backgroundBuilder : b?.backgroundBuilder,
             foregroundBuilder: (t < 0.5) ? a?.foregroundBuilder : b?.foregroundBuilder
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
@@ -510,7 +510,7 @@ public class ButtonStyle : Diagnosticable
             return true;
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -519,6 +519,6 @@ public class ButtonStyle : Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

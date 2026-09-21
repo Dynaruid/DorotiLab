@@ -89,7 +89,7 @@ public class BottomNavigationBarThemeData : Diagnosticable
             landscapeLayout: landscapeLayout ?? this.landscapeLayout,
             mouseCursor: mouseCursor ?? this.mouseCursor
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static BottomNavigationBarThemeData lerp(
@@ -134,7 +134,7 @@ public class BottomNavigationBarThemeData : Diagnosticable
             landscapeLayout: (t < 0.5) ? a?.landscapeLayout : b?.landscapeLayout,
             mouseCursor: (t < 0.5) ? a?.mouseCursor : b?.mouseCursor
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override int GetHashCode() =>
@@ -279,7 +279,7 @@ public class BottomNavigationBarThemeData : Diagnosticable
             return true;
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -288,7 +288,7 @@ public class BottomNavigationBarThemeData : Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -311,7 +311,7 @@ public class BottomNavigationBarTheme : InheritedWidget
         BottomNavigationBarTheme? bottomNavTheme =
             context.dependOnInheritedWidgetOfExactType<BottomNavigationBarTheme>();
         return bottomNavTheme?.data ?? Theme.of(context).bottomNavigationBarTheme;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget) =>

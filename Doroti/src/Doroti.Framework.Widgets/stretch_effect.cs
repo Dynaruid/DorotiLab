@@ -40,7 +40,7 @@ public class StretchEffect : StatelessWidget
         {
             return isForward ? AlignmentDirectional.centerStart : AlignmentDirectional.centerEnd;
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -75,7 +75,7 @@ public class StretchEffect : StatelessWidget
             filterQuality: (stretchStrength == 0L) ? null : FilterQuality.medium,
             child: child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -166,7 +166,7 @@ internal class _StretchOverscrollEffectState__stretch_effect
                 child: widget.child
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 

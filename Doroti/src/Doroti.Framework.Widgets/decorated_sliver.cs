@@ -28,7 +28,7 @@ public class DecoratedSliver : SingleChildRenderObjectWidget
             position: position,
             configuration: ImageLibrary.createLocalImageConfiguration(context)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -59,7 +59,9 @@ public class DecoratedSliver : SingleChildRenderObjectWidget
         {
             DecorationPosition.background => "bg",
             DecorationPosition.foreground => "fg",
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         properties.add(
             new EnumProperty<DecorationPosition>(

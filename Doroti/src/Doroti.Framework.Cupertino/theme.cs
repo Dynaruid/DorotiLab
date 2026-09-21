@@ -48,7 +48,7 @@ public class CupertinoTheme : StatelessWidget
         InheritedCupertinoTheme? inheritedTheme =
             context.dependOnInheritedWidgetOfExactType<InheritedCupertinoTheme>();
         return (inheritedTheme?.theme.data ?? new CupertinoThemeData()).resolveFrom(context);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static Brightness brightnessOf(BuildContext context)
@@ -56,7 +56,7 @@ public class CupertinoTheme : StatelessWidget
         InheritedCupertinoTheme? inheritedTheme =
             context.dependOnInheritedWidgetOfExactType<InheritedCupertinoTheme>();
         return inheritedTheme?.theme.data.brightness ?? MediaQuery.platformBrightnessOf(context);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static Brightness? maybeBrightnessOf(BuildContext context)
@@ -65,7 +65,7 @@ public class CupertinoTheme : StatelessWidget
             context.dependOnInheritedWidgetOfExactType<InheritedCupertinoTheme>();
         return inheritedTheme?.theme.data.brightness
             ?? MediaQuery.maybePlatformBrightnessOf(context);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -77,7 +77,7 @@ public class CupertinoTheme : StatelessWidget
                 child: child
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -104,7 +104,7 @@ public class InheritedCupertinoTheme : InheritedTheme
     public override Widget wrap(BuildContext context, Widget child)
     {
         return new CupertinoTheme(data: theme.data, child: child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget) =>
@@ -229,7 +229,7 @@ public class CupertinoThemeData : NoDefaultCupertinoThemeData, Diagnosticable
             selectionHandleColor: base.selectionHandleColor,
             applyThemeToAll: base.applyThemeToAll
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override CupertinoThemeData resolveFrom(BuildContext context)
@@ -237,7 +237,9 @@ public class CupertinoThemeData : NoDefaultCupertinoThemeData, Diagnosticable
         Color? convertColor(Color? color)
         {
             return CupertinoDynamicColor.maybeResolve(color, context);
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         return new CupertinoThemeData(
             brightness,
@@ -250,7 +252,7 @@ public class CupertinoThemeData : NoDefaultCupertinoThemeData, Diagnosticable
             applyThemeToAll,
             _defaults.resolveFrom(context, base.textTheme is null)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override CupertinoThemeData copyWith(
@@ -275,7 +277,7 @@ public class CupertinoThemeData : NoDefaultCupertinoThemeData, Diagnosticable
             applyThemeToAll ?? base.applyThemeToAll,
             _defaults
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -383,7 +385,7 @@ public class CupertinoThemeData : NoDefaultCupertinoThemeData, Diagnosticable
             return true;
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -392,7 +394,7 @@ public class CupertinoThemeData : NoDefaultCupertinoThemeData, Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -435,7 +437,9 @@ public class NoDefaultCupertinoThemeData
         Color? convertColor(Color? color)
         {
             return CupertinoDynamicColor.maybeResolve(color, context);
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         return new NoDefaultCupertinoThemeData(
             brightness: brightness,
@@ -447,7 +451,7 @@ public class NoDefaultCupertinoThemeData
             selectionHandleColor: convertColor(selectionHandleColor),
             applyThemeToAll: applyThemeToAll
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual NoDefaultCupertinoThemeData copyWith(
@@ -471,7 +475,7 @@ public class NoDefaultCupertinoThemeData
             selectionHandleColor: selectionHandleColor ?? this.selectionHandleColor,
             applyThemeToAll: applyThemeToAll ?? this.applyThemeToAll
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool Equals(object? other)
@@ -555,7 +559,9 @@ internal class _CupertinoThemeDefaults__theme
         Color convertColor(Color color)
         {
             return CupertinoDynamicColor.resolve(color, context);
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         return new _CupertinoThemeDefaults__theme(
             brightness,
@@ -567,7 +573,7 @@ internal class _CupertinoThemeDefaults__theme
             applyThemeToAll,
             resolveTextTheme ? textThemeDefaults.resolveFrom(context) : textThemeDefaults
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -588,7 +594,7 @@ public class _CupertinoTextThemeDefaults__theme
             CupertinoDynamicColor.resolve(labelColor, context),
             CupertinoDynamicColor.resolve(inactiveGray, context)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual CupertinoTextThemeData createDefaults(Color primaryColor)
@@ -598,7 +604,7 @@ public class _CupertinoTextThemeDefaults__theme
             labelColor: labelColor,
             inactiveGray: inactiveGray
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 

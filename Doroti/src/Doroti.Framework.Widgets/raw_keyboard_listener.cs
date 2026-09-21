@@ -113,6 +113,6 @@ internal class _RawKeyboardListenerState__raw_keyboard_listener : State<RawKeybo
             includeSemantics: widget.includeSemantics,
             child: widget.child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

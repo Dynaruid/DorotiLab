@@ -53,7 +53,9 @@ public class RelativeRect
         {
             TextDirection.rtl => (end, start),
             TextDirection.ltr => (start, end),
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         return new RelativeRect(left, top, right, bottom);
     }
@@ -68,19 +70,19 @@ public class RelativeRect
             right - offset.dx,
             bottom - offset.dy
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual RelativeRect inflate(double delta)
     {
         return new RelativeRect(left - delta, top - delta, right - delta, bottom - delta);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual RelativeRect deflate(double delta)
     {
         return inflate(-delta);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual RelativeRect intersect(RelativeRect other)
@@ -91,19 +93,19 @@ public class RelativeRect
             Math.Max(right, other.right),
             Math.Max(bottom, other.bottom)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Rect toRect(Rect container)
     {
         return Rect.fromLTRB(left, top, container.width - right, container.height - bottom);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Size toSize(Size container)
     {
         return new Size(container.width - left - right, container.height - top - bottom);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static RelativeRect? lerp(RelativeRect? a, RelativeRect? b, double t)
@@ -124,22 +126,22 @@ public class RelativeRect
         return new RelativeRect(
             (
                 Dart_uiLibrary.lerpDouble(a.left, b.left, t)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             (
                 Dart_uiLibrary.lerpDouble(a.top, b.top, t)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             (
                 Dart_uiLibrary.lerpDouble(a.right, b.right, t)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             (
                 Dart_uiLibrary.lerpDouble(a.bottom, b.bottom, t)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool Equals(object? other)
@@ -183,27 +185,19 @@ public class StackParentData : ContainerBoxParentData<RenderBox>
             new RelativeRect(
                 (
                     left
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 (
                     top
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 (
                     right
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 (
                     bottom
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             );
         set
@@ -241,9 +235,7 @@ public class StackParentData : ContainerBoxParentData<RenderBox>
             || !double.IsNaN(
                 (
                     heightLocal
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             )
         );
@@ -252,9 +244,7 @@ public class StackParentData : ContainerBoxParentData<RenderBox>
             || !double.IsNaN(
                 (
                     widthLocal
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             )
         );
@@ -266,7 +256,7 @@ public class StackParentData : ContainerBoxParentData<RenderBox>
                     (
                         widthLocal
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 ),
@@ -277,12 +267,12 @@ public class StackParentData : ContainerBoxParentData<RenderBox>
                     (
                         heightLocal
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string ToString()
@@ -294,7 +284,7 @@ public class StackParentData : ContainerBoxParentData<RenderBox>
         }
         values.Add(base.ToString());
         return string.Join("; ", values);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -429,37 +419,37 @@ public class RenderStack
             child = childParentData.nextSibling;
         }
         return extent;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicWidth(double height)
     {
         return getIntrinsicDimension(firstChild, (child) => child.getMinIntrinsicWidth(height));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicWidth(double height)
     {
         return getIntrinsicDimension(firstChild, (child) => child.getMaxIntrinsicWidth(height));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicHeight(double width)
     {
         return getIntrinsicDimension(firstChild, (child) => child.getMinIntrinsicHeight(width));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicHeight(double width)
     {
         return getIntrinsicDimension(firstChild, (child) => child.getMaxIntrinsicHeight(width));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? computeDistanceToActualBaseline(TextBaseline baseline)
     {
         return defaultComputeDistanceToHighestActualBaseline(baseline);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static bool layoutPositionedChild(
@@ -480,7 +470,9 @@ public class RenderStack
                 - rightLocal
                 - child.size.width,
             StackParentData __object20119 => alignment.alongOffset(size - child.size).dx,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         double y = childParentData switch
         {
@@ -489,14 +481,16 @@ public class RenderStack
                 - bottomLocal
                 - child.size.height,
             StackParentData __object20397 => alignment.alongOffset(size - child.size).dy,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         childParentData.offset = new Offset(x, y);
         return (x < 0.0)
             || ((x + child.size.width) > size.width)
             || (y < 0.0)
             || ((y + child.size.height) > size.height);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static double? _baselineForChild(
@@ -525,13 +519,15 @@ public class RenderStack
             StackParentData __object21466 => alignment
                 .alongOffset(stackSize - child.getDryLayout(childConstraints))
                 .dy,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         return (
                 baselineOffset
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ) + y;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
@@ -541,7 +537,9 @@ public class RenderStack
             StackFit.loose => constraints.loosen(),
             StackFit.expand => BoxConstraints.CreateTight(constraints.biggest),
             StackFit.passthrough => constraints,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         Alignment alignment = _resolvedAlignment;
         Size size = getDryLayout(constraints);
@@ -561,7 +559,7 @@ public class RenderStack
             );
         }
         return baselineOffset.offset;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Size computeDryLayout(BoxConstraints constraints)
@@ -570,7 +568,7 @@ public class RenderStack
             constraints: constraints,
             layoutChild: ChildLayoutHelper.dryLayoutChild
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Size _computeSize(
@@ -590,7 +588,9 @@ public class RenderStack
             StackFit.loose => constraints.loosen(),
             StackFit.expand => BoxConstraints.CreateTight(constraints.biggest),
             StackFit.passthrough => constraints,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         RenderBox? child = firstChild;
         while (child is not null)
@@ -622,7 +622,7 @@ public class RenderStack
         }
         DartRuntimePrimitives.Assert(() => size.isFinite);
         return size;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void performLayout()
@@ -656,7 +656,7 @@ public class RenderStack
     public override bool hitTestChildren(BoxHitTestResult result, Offset position)
     {
         return defaultHitTestChildren(result, position: position);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void paintStack(PaintingContext context, Offset offset)
@@ -705,7 +705,7 @@ public class RenderStack
                 return _hasVisualOverflow ? (Offset.zero & size) : null;
             }
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -729,7 +729,7 @@ public class RenderStack
             childParentData = ((StackParentData?)(object?)child.parentData!)!;
         }
         return Equals(child, equals);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool _debugUltimateNextSiblingOf(RenderBox child, RenderBox? equals = null)
@@ -742,7 +742,7 @@ public class RenderStack
             childParentData = ((StackParentData?)(object?)child.parentData!)!;
         }
         return Equals(child, equals);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual long childCount => _childCount;
@@ -785,7 +785,7 @@ public class RenderStack
             return true;
         });
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _insertIntoChildList(RenderBox child, RenderBox? after = null)
@@ -993,7 +993,7 @@ public class RenderStack
         DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         var childParentData = ((StackParentData?)(object?)child.parentData!)!;
         return childParentData.previousSibling;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual RenderBox? childAfter(RenderBox child)
@@ -1001,7 +1001,7 @@ public class RenderStack
         DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         var childParentData = ((StackParentData?)(object?)child.parentData!)!;
         return childParentData.nextSibling;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override List<DiagnosticsNode> debugDescribeChildren()
@@ -1026,7 +1026,7 @@ public class RenderStack
             }
         }
         return children;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double? defaultComputeDistanceToFirstActualBaseline(TextBaseline baseline)
@@ -1041,16 +1041,14 @@ public class RenderStack
             {
                 double result__138852__value138916 = (
                     result
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 return (result__138852__value138916) + childParentData.offset.dy;
             }
             child = childParentData.nextSibling;
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double? defaultComputeDistanceToHighestActualBaseline(TextBaseline baseline)
@@ -1068,7 +1066,7 @@ public class RenderStack
             child = childParentData.nextSibling;
         }
         return minBaseline.offset;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool defaultHitTestChildren(BoxHitTestResult result, Offset position)
@@ -1095,7 +1093,7 @@ public class RenderStack
             child = childParentData.previousSibling;
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void defaultPaint(PaintingContext context, Offset offset)
@@ -1120,7 +1118,7 @@ public class RenderStack
             child = childParentData.nextSibling;
         }
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1141,7 +1139,7 @@ public class RenderIndexedStack : RenderStack
             alignment: alignment ?? AlignmentDirectional.topStart,
             textDirection: (
                 textDirection
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             fit: fit,
             clipBehavior: clipBehavior
@@ -1187,9 +1185,7 @@ public class RenderIndexedStack : RenderStack
                 i
                 < (
                     index
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             ) && (child is not null);
             i += 1L
@@ -1199,7 +1195,7 @@ public class RenderIndexedStack : RenderStack
         }
         DartRuntimePrimitives.Assert(() => (firstChild is null) || (child is not null));
         return child;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? computeDistanceToActualBaseline(TextBaseline baseline)
@@ -1214,7 +1210,7 @@ public class RenderIndexedStack : RenderStack
             displayedChild.getDistanceToActualBaseline(baseline)
         ).op_Add(childParentData.offset.dy);
         return offsetLocal.offset;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
@@ -1229,7 +1225,9 @@ public class RenderIndexedStack : RenderStack
             StackFit.loose => constraints.loosen(),
             StackFit.expand => BoxConstraints.CreateTight(constraints.biggest),
             StackFit.passthrough => constraints,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         Alignment alignment = _resolvedAlignment;
         Size size = getDryLayout(constraints);
@@ -1240,7 +1238,7 @@ public class RenderIndexedStack : RenderStack
             alignment,
             baseline
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool hitTestChildren(BoxHitTestResult result, Offset position)
@@ -1262,7 +1260,7 @@ public class RenderIndexedStack : RenderStack
                 return displayedChild.hitTest(result, position: transformed);
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paintStack(PaintingContext context, Offset offset)
@@ -1299,6 +1297,6 @@ public class RenderIndexedStack : RenderStack
             i += 1L;
         }
         return children;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

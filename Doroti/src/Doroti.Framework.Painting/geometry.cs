@@ -37,6 +37,6 @@ public static partial class GeometryLibrary
                     flexibleSpace - margin
                 );
         return new Offset(x, y);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

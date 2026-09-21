@@ -63,7 +63,7 @@ public static partial class PagesLibrary
     )
     {
         return child;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -173,7 +173,7 @@ public class PageRouteBuilder<T> : PageRoute<T>
     )
     {
         return pageBuilder(context, animation, secondaryAnimation);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget buildTransitions(
@@ -184,6 +184,6 @@ public class PageRouteBuilder<T> : PageRoute<T>
     )
     {
         return transitionsBuilder(context, animation, secondaryAnimation, child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

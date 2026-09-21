@@ -49,16 +49,14 @@ public class ImageIcon : StatelessWidget
             && (
                 (
                     iconOpacity
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) != 1.0
             )
         )
         {
             double iconOpacity__3341__value3432 = (
                 iconOpacity
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             iconColor = iconColor.withOpacity(iconColor.opacity * (iconOpacity__3341__value3432));
         }
@@ -73,7 +71,7 @@ public class ImageIcon : StatelessWidget
                 excludeFromSemantics: true
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)

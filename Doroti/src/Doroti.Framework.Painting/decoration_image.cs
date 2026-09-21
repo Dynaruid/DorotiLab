@@ -66,7 +66,7 @@ public class DecorationImage
     public virtual DecorationImagePainter createPainter(Action onChanged)
     {
         return new _DecorationImagePainter__decoration_image(this, onChanged);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool Equals(object? other)
@@ -127,7 +127,7 @@ public class DecorationImage
             $"{filterQuality}",
         };
         return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "DecorationImage")}({string.Join(", ", properties)})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static DecorationImage? lerp(DecorationImage? a, DecorationImage? b, double t)
@@ -141,7 +141,7 @@ public class DecorationImage
             return b;
         }
         return new _BlendedDecorationImage__decoration_image(a, b, t);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -292,7 +292,7 @@ internal class _DecorationImagePainter__decoration_image : DecorationImagePainte
     public override string ToString()
     {
         return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "DecorationImagePainter")}(stream: {_imageStream}, image: {_image}) for {_details}";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -353,16 +353,14 @@ public static partial class Decoration_imageLibrary
         {
             Rect centerSlice__value20139 = (
                 centerSlice
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             sliceBorder = (inputSize / scale) - (centerSlice__value20139).size;
             outputSize =
                 outputSize
                 - (
                     sliceBorder
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
             inputSize =
                 inputSize
@@ -370,7 +368,7 @@ public static partial class Decoration_imageLibrary
                     (
                         sliceBorder
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) * scale
                 );
@@ -384,7 +382,7 @@ public static partial class Decoration_imageLibrary
                         (
                             fit
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ),
                         BoxFit.none
@@ -395,7 +393,7 @@ public static partial class Decoration_imageLibrary
                         (
                             fit
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ),
                         BoxFit.cover
@@ -407,9 +405,7 @@ public static partial class Decoration_imageLibrary
             (
                 (
                     fit
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             ),
             inputSize / scale,
@@ -421,15 +417,15 @@ public static partial class Decoration_imageLibrary
         {
             Rect centerSlice__value20675 = (
                 centerSlice
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             outputSize += (
                 sliceBorder
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             destinationSize += (
                 sliceBorder
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             DartRuntimePrimitives.Assert(() => Equals(sourceSize, inputSize));
         }
@@ -626,7 +622,7 @@ public static partial class Decoration_imageLibrary
                             (
                                 centerSlice
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             )
                         ),
@@ -649,7 +645,7 @@ public static partial class Decoration_imageLibrary
                                 (
                                     centerSlice
                                     ?? throw new global::System.NullReferenceException(
-                                        "Dart null assertion failed."
+                                        "A required value was null."
                                     )
                                 )
                             ),
@@ -697,7 +693,7 @@ public static partial class Decoration_imageLibrary
             stopY = ((outputRect.bottom - fundamentalRect.bottom) / strideY).ceil();
         }
         return new List<Rect>();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -747,7 +743,7 @@ internal class _BlendedDecorationImage__decoration_image : DecorationImage
             b?.createPainter(onChanged),
             t
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool Equals(object? other)
@@ -777,7 +773,7 @@ internal class _BlendedDecorationImage__decoration_image : DecorationImage
     public override string ToString()
     {
         return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "_BlendedDecorationImage")}({a}, {b}, {t})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -839,6 +835,6 @@ internal class _BlendedDecorationImagePainter__decoration_image : DecorationImag
     public override string ToString()
     {
         return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "_BlendedDecorationImagePainter")}({a}, {b}, {t})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

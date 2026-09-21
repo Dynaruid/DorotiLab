@@ -52,7 +52,7 @@ internal class _SliverFloatingHeaderState__sliver_floating_header
             snapMode: widget.snapMode,
             child: new _SnapTrigger__sliver_floating_header(widget.child)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
@@ -81,7 +81,7 @@ internal class _SliverFloatingHeaderState__sliver_floating_header
                     }
                 )
             );
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         _ticker = new Scheduler.Ticker(
             onTick,
@@ -92,7 +92,7 @@ internal class _SliverFloatingHeaderState__sliver_floating_header
         _updateTickerModeNotifier();
         _updateTicker();
         return _ticker!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void dispose()
@@ -122,7 +122,7 @@ internal class _SliverFloatingHeaderState__sliver_floating_header
                     }
                 )
             );
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         _tickerModeNotifier?.removeListener(_updateTicker);
         _tickerModeNotifier = null;
@@ -259,7 +259,7 @@ internal class _SliverFloatingHeader__sliver_floating_header : SingleChildRender
             animationStyle: animationStyle,
             snapMode: snapMode
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -403,7 +403,9 @@ public class _RenderSliverFloatingHeader__sliver_floating_header : RenderSliverS
             {
                 Axis.vertical => child!.size.height,
                 Axis.horizontal => child!.size.width,
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             };
         }
     }
@@ -426,7 +428,7 @@ public class _RenderSliverFloatingHeader__sliver_floating_header : RenderSliverS
                         < (
                             lastScrollOffset
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     ) || (effectiveScrollOffset < childExtent)
@@ -445,9 +447,7 @@ public class _RenderSliverFloatingHeader__sliver_floating_header : RenderSliverS
             double delta =
                 (
                     lastScrollOffset
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) - constraints.scrollOffset;
             if (Equals(constraints.userScrollDirection, ScrollDirection.forward))
             {
@@ -472,7 +472,9 @@ public class _RenderSliverFloatingHeader__sliver_floating_header : RenderSliverS
         {
             FloatingHeaderSnapMode.overlay => childExtent - constraints.scrollOffset,
             FloatingHeaderSnapMode.scroll => paintExtentLocal,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         geometry = new SliverGeometry(
             paintOrigin: Math.Min(constraints.overlap, 0.0),
@@ -496,7 +498,7 @@ public class _RenderSliverFloatingHeader__sliver_floating_header : RenderSliverS
     public override double childMainAxisPosition(RenderObject child)
     {
         return (geometry is null) ? 0 : Math.Min(0, geometry!.paintExtent - childExtent);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void applyPaintTransform(RenderObject child, Matrix4 transform)
@@ -524,7 +526,9 @@ public class _RenderSliverFloatingHeader__sliver_floating_header : RenderSliverS
                 ),
                 AxisDirection.right => new Offset(childMainAxisPosition(child!), 0.0),
                 AxisDirection.down => new Offset(0.0, childMainAxisPosition(child!)),
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             };
             context.paintChild(child!, offset);
         }

@@ -66,7 +66,7 @@ public class DataTableThemeData : Diagnosticable
                     >= (
                         dataRowMinHeight
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
@@ -104,7 +104,7 @@ public class DataTableThemeData : Diagnosticable
                 || ((dataRowMinHeight is null) && (dataRowMaxHeight is null)),
             () =>
                 (object?)
-                    $"dataRowHeight ({(dataRowHeight ?? throw new global::System.NullReferenceException("Dart null assertion failed."))}) must not be set if dataRowMinHeight ({dataRowMinHeight}) or dataRowMaxHeight ({dataRowMaxHeight}) are set."
+                    $"dataRowHeight ({(dataRowHeight ?? throw new global::System.NullReferenceException("A required value was null."))}) must not be set if dataRowMinHeight ({dataRowMinHeight}) or dataRowMaxHeight ({dataRowMaxHeight}) are set."
         );
         dataRowMinHeight = dataRowHeight ?? dataRowMinHeight;
         dataRowMaxHeight = dataRowHeight ?? dataRowMaxHeight;
@@ -125,7 +125,7 @@ public class DataTableThemeData : Diagnosticable
             dataRowCursor: dataRowCursor ?? this.dataRowCursor,
             headingRowAlignment: headingRowAlignment ?? this.headingRowAlignment
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static DataTableThemeData lerp(DataTableThemeData a, DataTableThemeData b, double t)
@@ -160,7 +160,7 @@ public class DataTableThemeData : Diagnosticable
             dataRowCursor: (t < 0.5) ? a.dataRowCursor : b.dataRowCursor,
             headingRowAlignment: (t < 0.5) ? a.headingRowAlignment : b.headingRowAlignment
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override int GetHashCode() =>
@@ -308,7 +308,7 @@ public class DataTableThemeData : Diagnosticable
             return true;
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -317,7 +317,7 @@ public class DataTableThemeData : Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -340,7 +340,7 @@ public class DataTableTheme : InheritedWidget
         DataTableTheme? dataTableThemeLocal =
             context.dependOnInheritedWidgetOfExactType<DataTableTheme>();
         return dataTableThemeLocal?.data ?? Theme.of(context).dataTableTheme;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget) =>

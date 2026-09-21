@@ -229,12 +229,10 @@ public static partial class DialogLibrary
             && (
                 (
                     scaledFontSize
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) > (defaultFontSize * _kMaxRegularTextScaleFactor)
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -331,7 +329,7 @@ internal class _CupertinoAlertDialogState__dialog : State<CupertinoAlertDialog>
                 color: CupertinoDynamicColor.resolve(DialogLibrary._kDialogColor, context),
                 child: childLocal
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _onPressedUpdate(long actionIndex, bool isPressed)
@@ -371,7 +369,7 @@ internal class _CupertinoAlertDialogState__dialog : State<CupertinoAlertDialog>
                     onPressedUpdate: _onPressedUpdate
                 );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _buildBody(BuildContext context)
@@ -433,11 +431,13 @@ internal class _CupertinoAlertDialogState__dialog : State<CupertinoAlertDialog>
                         ),
                         bottomMinHeight: actionsMinHeight
                     );
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -495,14 +495,14 @@ internal class _CupertinoAlertDialogState__dialog : State<CupertinoAlertDialog>
                                 )
                             );
                             throw new InvalidOperationException(
-                                "Dart closure completed without a value."
+                                "Callback completed without returning a value."
                             );
                         }
                     )
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void dispose()
@@ -605,7 +605,9 @@ public class CupertinoPopupSurface : StatelessWidget
                 Brightness.dark => ColorFilter.matrix(_darkSaturationMatrix),
                 Brightness.light => ColorFilter.matrix(_lightSaturationMatrix),
                 null => ColorFilter.matrix(_lightSaturationMatrix),
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             }
         );
         if (blurSigma == 0L)
@@ -616,7 +618,7 @@ public class CupertinoPopupSurface : StatelessWidget
             inner: colorFilter,
             outer: ImageFilterConfig.CreateBlur(sigmaX: (blurSigma), sigmaY: (blurSigma))
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -640,7 +642,7 @@ public class CupertinoPopupSurface : StatelessWidget
             );
         }
         return new ClipRSuperellipse(borderRadius: _clipper, child: contents);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -689,7 +691,7 @@ internal class _SlidingTapGestureRecognizer__dialog : Gestures.VerticalDragGestu
                     (
                         _primaryPointer
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 );
@@ -866,7 +868,7 @@ internal class _ActionSheetGestureDetector__dialog : StatelessWidget
         var result = new Gestures.HitTestResult();
         WidgetsBinding.instance.hitTestInView(result, globalPosition, viewIdLocal);
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -886,7 +888,7 @@ internal class _ActionSheetGestureDetector__dialog : StatelessWidget
             gestures: gesturesLocal,
             child: child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1005,7 +1007,7 @@ internal class _CupertinoActionSheetState__dialog : State<CupertinoActionSheet>
                     additionalPaddingBetweenTitleAndMessage: EdgeInsets.CreateOnly(top: 4.0)
                 )
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _onPressedUpdate(long actionIndex, bool state)
@@ -1057,7 +1059,7 @@ internal class _CupertinoActionSheetState__dialog : State<CupertinoActionSheet>
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static double _lerp(double x, double x1, double y1, double x2, double y2)
@@ -1076,13 +1078,11 @@ internal class _CupertinoActionSheetState__dialog : State<CupertinoActionSheet>
             {
                 return (
                     Dart_uiLibrary.lerpDouble(y1, y2, (x - x1) / (x2 - x1))
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
             }
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual double _topPadding(BuildContext context)
@@ -1105,7 +1105,7 @@ internal class _CupertinoActionSheetState__dialog : State<CupertinoActionSheet>
         );
         double padding = (currentPaddingRatio * currentViewPadding).roundToDouble();
         return Math.Max(padding, DialogLibrary._kDialogEdgePadding);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -1156,7 +1156,9 @@ internal class _CupertinoActionSheetState__dialog : State<CupertinoActionSheet>
         {
             Orientation.portrait => MediaQuery.widthOf(context),
             Orientation.landscape => MediaQuery.heightOf(context),
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         return new SafeArea(
             minimum: EdgeInsets.CreateOnly(bottom: DialogLibrary._kActionSheetEdgePadding),
@@ -1196,7 +1198,7 @@ internal class _CupertinoActionSheetState__dialog : State<CupertinoActionSheet>
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1263,7 +1265,7 @@ internal class _CupertinoActionSheetActionState__dialog
     public virtual bool didEnter(bool fromPointerDown, bool innerEnabled)
     {
         return innerEnabled;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void didLeave() { }
@@ -1344,7 +1346,7 @@ internal class _CupertinoActionSheetActionState__dialog
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1372,16 +1374,16 @@ internal class _ActionSheetActionContent__dialog : StatelessWidget
             <= 17L => 21.0,
             <= 19L => (
                 Dart_uiLibrary.lerpDouble(21.0, 23.0, (contextBodySize - 17.0) / (19.0 - 17.0))
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             <= 21L => (
                 Dart_uiLibrary.lerpDouble(23.0, 24.0, (contextBodySize - 19.0) / (21.0 - 19.0))
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             <= 24L => 24.0,
             _ => contextBodySize,
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -1416,7 +1418,7 @@ internal class _ActionSheetActionContent__dialog : StatelessWidget
                 child: new Center(child: child)
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1477,7 +1479,7 @@ internal class _ActionSheetButtonBackgroundState__dialog
             _emitVibration();
         }
         return innerEnabled;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void didLeave()
@@ -1530,7 +1532,7 @@ internal class _ActionSheetButtonBackgroundState__dialog
             );
         }
         return new MetaData(metaData: this, child: childLocal);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1566,7 +1568,7 @@ internal class _Divider__dialog : StatelessWidget
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1605,7 +1607,7 @@ internal class _OverscrollBackgroundState__dialog : State<_OverscrollBackground_
             );
         });
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -1644,7 +1646,7 @@ internal class _OverscrollBackgroundState__dialog : State<_OverscrollBackground_
                 ),
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1717,7 +1719,7 @@ internal class _ActionSheetActionSection__dialog : StatelessWidget
                 child: new Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: column)
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1773,7 +1775,7 @@ internal class _ActionSheetMainSheet__dialog : StatelessWidget
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _dividerAndActionsSection(BuildContext context)
@@ -1799,7 +1801,7 @@ internal class _ActionSheetMainSheet__dialog : StatelessWidget
                 ),
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -1818,7 +1820,7 @@ internal class _ActionSheetMainSheet__dialog : StatelessWidget
             bottomMinHeight: DialogLibrary._kActionSheetActionsSectionMinHeight
                 + DialogLibrary._kDividerThickness
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1928,7 +1930,7 @@ internal class _CupertinoAlertContentSection__dialog : StatelessWidget
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1998,7 +2000,7 @@ internal class _CupertinoAlertActionSection__dialog : StatelessWidget
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -2061,7 +2063,7 @@ internal class _AlertDialogButtonBackgroundState__dialog
             _emitVibration();
         }
         return innerEnabled;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void didLeave()
@@ -2088,7 +2090,7 @@ internal class _AlertDialogButtonBackgroundState__dialog
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -2134,7 +2136,7 @@ internal class _CupertinoDialogActionState__dialog
     public virtual bool didEnter(bool fromPointerDown, bool innerEnabled)
     {
         return enabled;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void didLeave() { }
@@ -2162,7 +2164,7 @@ internal class _CupertinoDialogActionState__dialog
                     (
                         textStyle.fontSize
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 ) / DialogLibrary._kDialogMinButtonFontSize;
@@ -2185,7 +2187,7 @@ internal class _CupertinoDialogActionState__dialog
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _buildContentWithAccessibilitySizingPolicy(
@@ -2194,7 +2196,7 @@ internal class _CupertinoDialogActionState__dialog
     )
     {
         return new DefaultTextStyle(style: textStyle, textAlign: TextAlign.center, child: content);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -2252,7 +2254,7 @@ internal class _CupertinoDialogActionState__dialog
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -2272,7 +2274,7 @@ internal class _AlertDialogActionsLayout__dialog : MultiChildRenderObjectWidget
             dividerThickness: _dividerThickness,
             textDirection: Directionality.of(context)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -2346,7 +2348,7 @@ public class _RenderAlertDialogActionsLayout__dialog : RenderFlex
             }
         );
         return height;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicHeight(double width)
@@ -2364,7 +2366,7 @@ public class _RenderAlertDialogActionsLayout__dialog : RenderFlex
             }
         );
         return height;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Size computeDryLayout(BoxConstraints constraints)
@@ -2380,7 +2382,7 @@ public class _RenderAlertDialogActionsLayout__dialog : RenderFlex
         }
         double height = getMinIntrinsicHeight(overallWidth);
         return new Size(overallWidth, height);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void performLayout()
@@ -2465,7 +2467,7 @@ public class _RenderAlertDialogActionsLayout__dialog : RenderFlex
             return true;
         });
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _useHorizontalLayout(double overallWidth)
@@ -2490,7 +2492,7 @@ public class _RenderAlertDialogActionsLayout__dialog : RenderFlex
             child = childAfter(divider)!;
         }
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _forEachSlot(Action<RenderBox> action)
@@ -2531,7 +2533,7 @@ internal class _PriorityColumn__dialog : MultiChildRenderObjectWidget
     public override RenderObject createRenderObject(BuildContext context)
     {
         return new _RenderPriorityColumn__dialog(bottomMinHeight: bottomMinHeight);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -2577,14 +2579,14 @@ public class _RenderPriorityColumn__dialog : RenderFlex
     {
         DartRuntimePrimitives.Assert(() => childCount == 2L);
         return firstChild!.getMinIntrinsicHeight(width) + lastChild!.getMinIntrinsicHeight(width);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicHeight(double width)
     {
         DartRuntimePrimitives.Assert(() => childCount == 2L);
         return firstChild!.getMaxIntrinsicHeight(width) + lastChild!.getMaxIntrinsicHeight(width);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Size computeDryLayout(BoxConstraints constraints)
@@ -2593,7 +2595,7 @@ public class _RenderPriorityColumn__dialog : RenderFlex
         double maxHeightLocal = constraints.maxHeight;
         var (topChildHeight, bottomChildHeight) = _childrenHeights(width, maxHeightLocal);
         return new Size(width, topChildHeight + bottomChildHeight);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void performLayout()
@@ -2639,6 +2641,6 @@ public class _RenderPriorityColumn__dialog : RenderFlex
             );
         }
         return (bottomChildHeight: maxHeight, topChildHeight: 0);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

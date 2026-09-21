@@ -220,13 +220,15 @@ public class PlatformSelectableRegionContextMenuIo : StatelessWidget
                         ).toJS
                     );
                     return htmlElement;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             ),
             isVisible: false
         );
         return _platform_selectable_region_context_menu_webLibrary._viewType;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -247,6 +249,6 @@ public class PlatformSelectableRegionContextMenuIo : StatelessWidget
                         }
                     )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

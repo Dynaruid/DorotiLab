@@ -110,7 +110,7 @@ public class CupertinoDesktopTextSelectionToolbar : StatelessWidget
             1,
             0,
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static Widget _defaultToolbarBuilder(BuildContext context, Widget child)
@@ -161,7 +161,7 @@ public class CupertinoDesktopTextSelectionToolbar : StatelessWidget
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -191,6 +191,6 @@ public class CupertinoDesktopTextSelectionToolbar : StatelessWidget
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

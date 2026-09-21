@@ -81,9 +81,11 @@ public class RawKeyEventDataFuchsia : RawKeyEventData
                 != 0L,
             var __case4194 when Equals(__case4194, KeyboardSide.right) => (modifiers & rightMask)
                 != 0L,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool isModifierPressed(ModifierKey key, KeyboardSide side = KeyboardSide.any)
@@ -138,7 +140,7 @@ public class RawKeyEventDataFuchsia : RawKeyEventData
                 return false;
             }
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override KeyboardSide? getModifierSide(ModifierKey key)
@@ -165,7 +167,9 @@ public class RawKeyEventDataFuchsia : RawKeyEventData
                 }
             }
             return null;
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         switch (key)
         {
@@ -197,7 +201,7 @@ public class RawKeyEventDataFuchsia : RawKeyEventData
                 return null;
             }
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)

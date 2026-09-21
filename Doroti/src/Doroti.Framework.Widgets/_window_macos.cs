@@ -44,7 +44,7 @@ public class WindowingOwnerMacOSIo : WindowingOwnerIo
         );
         this._activeControllers.Add(controller);
         return ((WindowControllerIo)(object?)controller);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DialogWindowControllerIo createDialogWindowController(
@@ -65,7 +65,7 @@ public class WindowingOwnerMacOSIo : WindowingOwnerIo
         );
         this._activeControllers.Add(controller);
         return ((DialogWindowControllerIo)(object?)controller);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual TooltipWindowControllerIo createTooltipWindowController(
@@ -86,7 +86,7 @@ public class WindowingOwnerMacOSIo : WindowingOwnerIo
         );
         this._activeControllers.Add(controller);
         return ((TooltipWindowControllerIo)(object?)controller);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual PopupWindowControllerIo createPopupWindowController(
@@ -107,7 +107,7 @@ public class WindowingOwnerMacOSIo : WindowingOwnerIo
         );
         this._activeControllers.Add(controller);
         return ((PopupWindowControllerIo)(object?)controller);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static Pointer<Void> getWindowHandle(DorotiView view)
@@ -119,13 +119,13 @@ public class WindowingOwnerMacOSIo : WindowingOwnerIo
                         (
                             PlatformDispatcher.instance.engineId
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ),
                         checked((long)view.viewId)
                     )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual SatelliteWindowControllerIo createSatelliteWindowController(
@@ -140,7 +140,7 @@ public class WindowingOwnerMacOSIo : WindowingOwnerIo
     )
     {
         throw new NotImplementedException("Satellite windows are not yet implemented on macOS.");
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -226,7 +226,7 @@ public class TooltipWindowControllerMacOSIo
         {
             Rect anchorRect__value9934 = (
                 anchorRect
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             _anchorRect = ((anchorRect__value9934));
         }
@@ -284,7 +284,7 @@ public class TooltipWindowControllerMacOSIo
         result.@ref.width = childSize.@ref.width;
         result.@ref.height = childSize.@ref.height;
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override BaseWindowControllerIo parent => this._parent;
@@ -403,7 +403,7 @@ public class PopupWindowControllerMacOSIo
         {
             Rect anchorRect__value12906 = (
                 anchorRect
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             _anchorRect = ((anchorRect__value12906));
         }
@@ -472,7 +472,7 @@ public class PopupWindowControllerMacOSIo
         result.@ref.width = childSize.@ref.width;
         result.@ref.height = childSize.@ref.height;
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override BaseWindowControllerIo parent => this._parent;
@@ -603,10 +603,8 @@ public class WindowControllerMacOSIo : WindowControllerIo, _WindowControllerMixi
             (
                 (
                     size
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
-                ) ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
+                ) ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );
     }
@@ -729,7 +727,7 @@ public class WindowControllerMacOSIo : WindowControllerIo, _WindowControllerMixi
     )
     {
         return new Pointer<_Rect___window_macos>(0L);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _ensureNotDestroyed()
@@ -829,10 +827,8 @@ public class DialogWindowControllerMacOSIo
             (
                 (
                     size
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
-                ) ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
+                ) ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );
     }
@@ -923,7 +919,7 @@ public class DialogWindowControllerMacOSIo
     )
     {
         return new Pointer<_Rect___window_macos>(0L);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _ensureNotDestroyed()
@@ -1017,13 +1013,13 @@ internal class _Rect___window_macos : Struct
     public virtual global::Doroti.Ui.Rect toRect()
     {
         return global::Doroti.Ui.Rect.fromLTWH(this.left, this.top, this.width, this.height);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string ToString()
     {
         return $"Rect(left: {this.left}, top: {this.top}, width: {this.width}, height: {this.height})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1056,13 +1052,13 @@ internal class _MacOSPlatformInterface___window_macos
                         __cascade.width = (
                             size
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ).width;
                         __cascade.height = (
                             size
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ).height;
                         return __cascade;
@@ -1141,7 +1137,7 @@ internal class _MacOSPlatformInterface___window_macos
         {
             Size size__value25007 = (
                 size
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             DartRuntimePrimitives.Ignore(
                 (
@@ -1153,13 +1149,13 @@ internal class _MacOSPlatformInterface___window_macos
                             __cascade.contentSize.width = (
                                 size__value25007
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             ).width;
                             __cascade.contentSize.height = (
                                 size__value25007
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             ).height;
                             return __cascade;
@@ -1198,13 +1194,13 @@ internal class _MacOSPlatformInterface___window_macos
         long viewId = _MacOSPlatformInterface___window_macos._createWindow(
             (
                 WidgetsBinding.instance.platformDispatcher.engineId
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             request
         );
         _window_macosLibrary._allocator.free(request);
         return viewId;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static abstract long _createDialogWindow(
@@ -1238,7 +1234,7 @@ internal class _MacOSPlatformInterface___window_macos
         {
             Size size__value26560 = (
                 size
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             DartRuntimePrimitives.Ignore(
                 (
@@ -1250,13 +1246,13 @@ internal class _MacOSPlatformInterface___window_macos
                             __cascade.contentSize.width = (
                                 size__value26560
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             ).width;
                             __cascade.contentSize.height = (
                                 size__value26560
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             ).height;
                             return __cascade;
@@ -1297,9 +1293,7 @@ internal class _MacOSPlatformInterface___window_macos
             long viewId = _MacOSPlatformInterface___window_macos._createDialogWindow(
                 (
                     WidgetsBinding.instance.platformDispatcher.engineId
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 request
             );
@@ -1309,7 +1303,7 @@ internal class _MacOSPlatformInterface___window_macos
         {
             _window_macosLibrary._allocator.free(request);
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static abstract long _createTooltipWindow(
@@ -1374,13 +1368,13 @@ internal class _MacOSPlatformInterface___window_macos
         long viewId = _MacOSPlatformInterface___window_macos._createTooltipWindow(
             (
                 PlatformDispatcher.instance.engineId
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             request
         );
         _window_macosLibrary._allocator.free(request);
         return viewId;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static abstract long _createPopupWindow(
@@ -1445,13 +1439,13 @@ internal class _MacOSPlatformInterface___window_macos
         long viewId = _MacOSPlatformInterface___window_macos._createPopupWindow(
             (
                 PlatformDispatcher.instance.engineId
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             request
         );
         _window_macosLibrary._allocator.free(request);
         return viewId;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static abstract void _destroyWindow(long engineId, Pointer<Void> handle);
@@ -1461,7 +1455,7 @@ internal class _MacOSPlatformInterface___window_macos
         _MacOSPlatformInterface___window_macos._destroyWindow(
             (
                 WidgetsBinding.instance.platformDispatcher.engineId
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             windowHandle
         );
@@ -1479,7 +1473,7 @@ internal class _MacOSPlatformInterface___window_macos
             ((_Size___window_macos)size).width,
             ((_Size___window_macos)size).height
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static abstract void _setWindowTitle(
@@ -1521,7 +1515,7 @@ internal class _MacOSPlatformInterface___window_macos
         string result = title.toDartString();
         _window_macosLibrary._allocator.free(title);
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static abstract bool isActivated(Pointer<Void> windowHandle);
@@ -1565,7 +1559,7 @@ internal class _CallocAllocator___window_macos : Allocator
             );
         }
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void free(Pointer<NativeType> pointer)

@@ -2534,7 +2534,7 @@ internal sealed partial class FrameworkCSharpLowerer
             if (returnType != "void" && !(asyncModifier.Length > 0 && returnType == "Future"))
             {
                 builder.AppendLine(
-                    "        throw new InvalidOperationException(\"Dart control flow completed without a value.\");"
+                    "        throw new InvalidOperationException(\"Control flow completed without returning a value.\");"
                 );
             }
             builder.AppendLine("    }");
@@ -2919,12 +2919,12 @@ internal sealed partial class FrameworkCSharpLowerer
             else
             {
                 builder.AppendLine(
-                    "        get => throw new NotSupportedException(\"Dart getter contract has no base implementation.\");"
+                    "        get => throw new NotSupportedException(\"The generated getter contract has no base implementation.\");"
                 );
             }
 
             builder.AppendLine(
-                "        set => throw new NotSupportedException(\"Dart setter contract has no base implementation.\");"
+                "        set => throw new NotSupportedException(\"The generated setter contract has no base implementation.\");"
             );
             builder.AppendLine("    }");
             return;
@@ -3647,7 +3647,7 @@ internal sealed partial class FrameworkCSharpLowerer
             )
             {
                 builder.AppendLine(
-                    "        throw new InvalidOperationException(\"Dart control flow completed without a value.\");"
+                    "        throw new InvalidOperationException(\"Control flow completed without returning a value.\");"
                 );
             }
             builder.AppendLine("    }");

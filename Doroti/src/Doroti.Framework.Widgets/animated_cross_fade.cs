@@ -95,7 +95,7 @@ public class AnimatedCrossFade : StatefulWidget
                 new Positioned(key: topChildKey, child: topChild),
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override IState createState() =>
@@ -173,7 +173,7 @@ internal class _AnimatedCrossFadeState__animated_cross_fade
             result = result.drive(new Tween<double>(begin: 1.0, end: 0.0));
         }
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void dispose()
@@ -210,7 +210,7 @@ internal class _AnimatedCrossFadeState__animated_cross_fade
                 }
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         _tickerModeNotifier?.removeListener(_updateTickers);
         _tickerModeNotifier = null;
@@ -323,7 +323,7 @@ internal class _AnimatedCrossFadeState__animated_cross_fade
                 child: widget.layoutBuilder(topChild, topKey, bottomChild, bottomKey)
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder description)
@@ -383,7 +383,7 @@ internal class _AnimatedCrossFadeState__animated_cross_fade
         )();
         _tickers!.Add(result);
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _removeTicker(_WidgetTicker__ticker_provider ticker)

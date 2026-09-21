@@ -277,7 +277,7 @@ public class UndoHistoryState<T> : State<UndoHistory<T>>, UndoManagerClient
             },
             child: widget.child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -404,7 +404,7 @@ internal class _UndoStack__undo_history<T>
             _index = _index - 1L;
         }
         return currentValue;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual T? redo()
@@ -419,7 +419,7 @@ internal class _UndoStack__undo_history<T>
             _index = _index + 1L;
         }
         return currentValue;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void clear()
@@ -431,7 +431,7 @@ internal class _UndoStack__undo_history<T>
     public override string ToString()
     {
         return $"_UndoStack {_list}";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -461,8 +461,8 @@ public static partial class Undo_historyLibrary
                 }
             );
             return timer!;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

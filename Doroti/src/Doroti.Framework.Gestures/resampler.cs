@@ -50,7 +50,7 @@ public class PointerEventResampler
             synthesized: @event.synthesized,
             embedderId: @event.embedderId
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual PointerEvent _toMoveEvent(
@@ -87,7 +87,7 @@ public class PointerEventResampler
             synthesized: @event.synthesized,
             embedderId: @event.embedderId
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual PointerEvent _toMoveOrHoverEvent(
@@ -103,7 +103,7 @@ public class PointerEventResampler
         return isDown
             ? _toMoveEvent(@event, position, delta, pointerIdentifier, timeStamp, buttons)
             : _toHoverEvent(@event, position, delta, timeStamp, buttons);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Offset _positionAt(Duration sampleTime)
@@ -122,7 +122,7 @@ public class PointerEventResampler
             y = lastY + ((y - lastY) * scalar);
         }
         return new Offset(x, y);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _processPointerEvents(Duration sampleTime)

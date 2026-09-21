@@ -56,7 +56,7 @@ public class CupertinoSlider : StatefulWidget
                     (
                         divisions
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) > 0L
                 )
@@ -87,7 +87,7 @@ internal class _CupertinoSliderState__slider
         DartRuntimePrimitives.Assert(() => widget.onChanged is not null);
         double lerpValue = (
             Dart_uiLibrary.lerpDouble(widget.min, widget.max, value)
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         );
         bool isAtEdge = (lerpValue == widget.max) || (lerpValue == widget.min);
         if (lerpValue != widget.value)
@@ -106,7 +106,7 @@ internal class _CupertinoSliderState__slider
         widget.onChangeStart!(
             (
                 Dart_uiLibrary.lerpDouble(widget.min, widget.max, value)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );
     }
@@ -117,7 +117,7 @@ internal class _CupertinoSliderState__slider
         widget.onChangeEnd!(
             (
                 Dart_uiLibrary.lerpDouble(widget.min, widget.max, value)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );
     }
@@ -164,7 +164,7 @@ internal class _CupertinoSliderState__slider
             onChangeEnd: (widget.onChangeEnd is not null) ? _handleDragEnd : null,
             vsync: this
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
@@ -195,7 +195,7 @@ internal class _CupertinoSliderState__slider
         )();
         _tickers!.Add(result);
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _removeTicker(_WidgetTicker__ticker_provider ticker)
@@ -345,7 +345,7 @@ internal class _CupertinoSliderRenderObjectWidget__slider : LeafRenderObjectWidg
                 ? SystemMouseCursors.click
                 : MouseCursor.defer
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -501,9 +501,7 @@ public class _RenderCupertinoSlider__slider : RenderConstrainedBox
             {
                 long divisions__value13358 = (
                     divisions
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 _position.animateTo(newValue, curve: Curves.fastOutSlowIn);
             }
@@ -611,9 +609,7 @@ public class _RenderCupertinoSlider__slider : RenderConstrainedBox
             {
                 long divisions__value15208 = (
                     divisions
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 dragValue =
                     (
@@ -621,14 +617,14 @@ public class _RenderCupertinoSlider__slider : RenderConstrainedBox
                         * (
                             divisions
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     ).round()
                     / (
                         divisions
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     );
             }
@@ -646,14 +642,16 @@ public class _RenderCupertinoSlider__slider : RenderConstrainedBox
             {
                 TextDirection.rtl => 1.0 - _value,
                 TextDirection.ltr => _value,
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             };
             return (
                 Dart_uiLibrary.lerpDouble(
                     _trackLeft + CupertinoThumbPainter.radius,
                     _trackRight - CupertinoThumbPainter.radius,
                     visualPosition
-                ) ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ) ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
     }
@@ -676,13 +674,15 @@ public class _RenderCupertinoSlider__slider : RenderConstrainedBox
         double valueDelta =
             (
                 details.primaryDelta
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ) / extent;
         _currentDragValue += textDirection switch
         {
             TextDirection.rtl => -valueDelta,
             TextDirection.ltr => valueDelta,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         var isFast = false;
         Duration? currentTimestamp = details.sourceTimeStamp;
@@ -690,15 +690,13 @@ public class _RenderCupertinoSlider__slider : RenderConstrainedBox
         {
             Duration currentTimestamp__16442__value16494 = (
                 currentTimestamp
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             long timeDelta = (
                 (currentTimestamp__16442__value16494)
                 - (
                     _lastUpdateTimestamp
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             ).inMilliseconds;
             double velocity = valueDelta.abs() * 1000.0 / timeDelta;
@@ -732,7 +730,7 @@ public class _RenderCupertinoSlider__slider : RenderConstrainedBox
     {
         return (position.dx - _thumbCenter).abs()
             < (CupertinoThumbPainter.radius + SliderLibrary._kPadding);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void handleEvent(
@@ -756,7 +754,9 @@ public class _RenderCupertinoSlider__slider : RenderConstrainedBox
                 (1.0 - _position.value, _activeColor, trackColor),
             TextDirection.ltr => ((double, Color, Color))
                 (_position.value, trackColor, _activeColor),
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         double trackCenter = offset.dy + (size.height / 2.0);
         double trackLeft = offset.dx + _trackLeft;
@@ -830,9 +830,7 @@ public class _RenderCupertinoSlider__slider : RenderConstrainedBox
                 1.0
                 / (
                     divisions
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             )
             : SliderLibrary._kAdjustmentUnit;

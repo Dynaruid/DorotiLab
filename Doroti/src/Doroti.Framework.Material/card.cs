@@ -155,7 +155,9 @@ public class Card : StatelessWidget
                     new _OutlinedCardDefaultsM3__card(context)
                 ),
                 _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                    throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
             };
         }
         return new Widgets.Semantics(
@@ -172,7 +174,7 @@ public class Card : StatelessWidget
                         ?? (
                             defaults.elevation
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ),
                     shape: (shape ?? cardTheme.shape) ?? defaults.shape,
@@ -181,7 +183,7 @@ public class Card : StatelessWidget
                         ?? (
                             defaults.clipBehavior
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ),
                     child: new Widgets.Semantics(

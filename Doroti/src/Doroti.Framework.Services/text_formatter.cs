@@ -48,7 +48,7 @@ internal class _SimpleTextInputFormatter : TextInputFormatter
     )
     {
         return formatFunction(oldValue, newValue);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -68,7 +68,7 @@ internal class _MutableTextRange
         return (range.isValid && !range.isCollapsed)
             ? new _MutableTextRange(range.start, range.end)
             : null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static _MutableTextRange? fromTextSelection(TextSelection selection)
@@ -76,7 +76,7 @@ internal class _MutableTextRange
         return selection.isValid
             ? new _MutableTextRange(selection.baseOffset, selection.extentOffset)
             : null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -116,7 +116,7 @@ internal class _TextEditingValueAccumulator
                     isDirectional: inputValue.selection.isDirectional
                 )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -176,7 +176,7 @@ public class FilteringTextInputFormatter : TextInputFormatter
         _processRegion(allow, previousMatch?.end ?? 0L, newValue.text.Length, formatState);
         DartRuntimePrimitives.Assert(() => !formatState.debugFinalized);
         return formatState.finalize();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _processRegion(
@@ -202,7 +202,9 @@ public class FilteringTextInputFormatter : TextInputFormatter
                     : replacementString.Length;
             long removedLength = originalIndex.clamp(regionStart, regionEnd) - regionStart;
             return replacedLength - removedLength;
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         state.selection?.@base += adjustIndex(state.inputValue.selection.baseOffset);
         state.selection?.extent += adjustIndex(state.inputValue.selection.extentOffset);
@@ -229,7 +231,7 @@ public class LengthLimitingTextInputFormatter : TextInputFormatter
                     (
                         maxLength
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) == -1L
                 )
@@ -237,7 +239,7 @@ public class LengthLimitingTextInputFormatter : TextInputFormatter
                     (
                         maxLength
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) > 0L
                 )
@@ -270,7 +272,7 @@ public class LengthLimitingTextInputFormatter : TextInputFormatter
                 }
             }
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static TextEditingValue truncate(TextEditingValue value, long maxLength)
@@ -294,7 +296,7 @@ public class LengthLimitingTextInputFormatter : TextInputFormatter
                 )
                 : TextRange.empty
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual TextEditingValue formatEditUpdate(
@@ -308,18 +310,14 @@ public class LengthLimitingTextInputFormatter : TextInputFormatter
             || (
                 (
                     maxLength
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) == -1L
             )
             || (
                 newValue.text.characters().Count
                 <= (
                     maxLength
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             )
         )
@@ -329,7 +327,7 @@ public class LengthLimitingTextInputFormatter : TextInputFormatter
         DartRuntimePrimitives.Assert(() =>
             (
                 maxLength
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ) > 0L
         );
         switch (maxLengthEnforcement ?? getDefaultMaxLengthEnforcement())
@@ -346,7 +344,7 @@ public class LengthLimitingTextInputFormatter : TextInputFormatter
                         == (
                             maxLength
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     ) && oldValue.selection.isCollapsed
@@ -359,7 +357,7 @@ public class LengthLimitingTextInputFormatter : TextInputFormatter
                     (
                         maxLength
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 );
@@ -373,7 +371,7 @@ public class LengthLimitingTextInputFormatter : TextInputFormatter
                         == (
                             maxLength
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     ) && !oldValue.composing.isValid
@@ -390,12 +388,12 @@ public class LengthLimitingTextInputFormatter : TextInputFormatter
                     (
                         maxLength
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 );
             }
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

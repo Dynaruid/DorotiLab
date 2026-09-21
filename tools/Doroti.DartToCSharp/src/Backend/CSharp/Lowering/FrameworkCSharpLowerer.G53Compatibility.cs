@@ -377,7 +377,7 @@ internal sealed partial class FrameworkCSharpLowerer
                 );
             source = Regex.Replace(
                 source,
-                @"(?<method>public virtual IEnumerable<RenderBox> (?:column|row)\(long [^)]+\)\s*\{.*?)(?:\s*throw new InvalidOperationException\(""Dart control flow completed without a value\.""\);)(?<close>\s*\})",
+                @"(?<method>public virtual IEnumerable<RenderBox> (?:column|row)\(long [^)]+\)\s*\{.*?)(?:\s*throw new InvalidOperationException\(""Control flow completed without returning a value\.""\);)(?<close>\s*\})",
                 "${method}${close}",
                 RegexOptions.Singleline
             );

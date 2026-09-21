@@ -83,7 +83,7 @@ public class CupertinoTabBar : StatelessWidget, PreferredSizeWidget
         Color backgroundColorLocal =
             backgroundColor ?? CupertinoTheme.of(context).barBackgroundColor;
         return CupertinoDynamicColor.resolve(backgroundColorLocal, context).alpha == 255L;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -99,7 +99,9 @@ public class CupertinoTabBar : StatelessWidget, PreferredSizeWidget
             return Equals(side, BorderSide.none)
                 ? side
                 : side.copyWith(color: CupertinoDynamicColor.resolve(side.color, context));
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         Border? resolvedBorder =
             (
@@ -150,7 +152,7 @@ public class CupertinoTabBar : StatelessWidget, PreferredSizeWidget
             );
         }
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual List<Widget> _buildTabItems(BuildContext context)
@@ -205,7 +207,7 @@ public class CupertinoTabBar : StatelessWidget, PreferredSizeWidget
             );
         }
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual List<Widget> _buildSingleTabItem(BottomNavigationBarItem item, bool active)
@@ -234,7 +236,7 @@ public class CupertinoTabBar : StatelessWidget, PreferredSizeWidget
                 }
             )
         )();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _wrapActiveItem(BuildContext context, Widget item, bool active)
@@ -254,7 +256,7 @@ public class CupertinoTabBar : StatelessWidget, PreferredSizeWidget
                 child: item
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual CupertinoTabBar copyWith(
@@ -282,6 +284,6 @@ public class CupertinoTabBar : StatelessWidget, PreferredSizeWidget
             currentIndex: currentIndex ?? this.currentIndex,
             onTap: onTap ?? this.onTap
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

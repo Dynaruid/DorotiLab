@@ -28,7 +28,7 @@ public class TickerMode : StatefulWidget
         _EffectiveTickerMode__ticker_provider? widget =
             context.dependOnInheritedWidgetOfExactType<_EffectiveTickerMode__ticker_provider>();
         return widget?.enabled ?? true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static ValueListenable<bool> getNotifier(BuildContext context)
@@ -39,7 +39,7 @@ public class TickerMode : StatefulWidget
             (object?)widget?.notifier
                 ?? (object?)new _ConstantValueListenable__ticker_provider<bool>(true)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static TickerModeData valuesOf(BuildContext context)
@@ -47,7 +47,7 @@ public class TickerMode : StatefulWidget
         _EffectiveTickerMode__ticker_provider? widget =
             context.dependOnInheritedWidgetOfExactType<_EffectiveTickerMode__ticker_provider>();
         return widget?.values ?? TickerModeData.fallback;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static ValueListenable<TickerModeData> getValuesNotifier(BuildContext context)
@@ -64,7 +64,7 @@ public class TickerMode : StatefulWidget
         return DartRuntimePrimitives.ConvertValue<ValueListenable<TickerModeData>>(
             (object?)widget?.valuesNotifier ?? (object?)fallbackLocal
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static Widget merge(
@@ -87,10 +87,12 @@ public class TickerMode : StatefulWidget
                     forceFrames: forceFrames ?? parentForce,
                     child: child
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override IState createState() =>
@@ -146,7 +148,7 @@ internal class _TickerModeState__ticker_provider : State<TickerMode>
             valuesNotifier: _effectiveValues,
             child: widget.child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)

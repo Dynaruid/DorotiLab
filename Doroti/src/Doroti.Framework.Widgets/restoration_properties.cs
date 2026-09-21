@@ -87,13 +87,13 @@ public class _RestorablePrimitiveValue__restoration_properties<T>
     {
         DartRuntimePrimitives.Assert(() => data is not null);
         return base.fromPrimitives(data);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override object? toPrimitives()
     {
         return base.toPrimitives()!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -280,19 +280,19 @@ public class RestorableTextEditingController : RestorableChangeNotifier<TextEdit
     public override TextEditingController createDefaultValue()
     {
         return TextEditingController.CreateFromValue(_initialValue);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override TextEditingController fromPrimitives(object? data)
     {
         return new TextEditingController(text: ((string?)data!)!);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override object? toPrimitives()
     {
         return value.text;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -361,7 +361,7 @@ public class RestorableEnumN<T> : RestorableValue<T?>
             );
         }
         return _defaultValue;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override object? toPrimitives() => value.ToString();
@@ -426,7 +426,7 @@ public class RestorableEnum<T> : RestorableValue<T>
             );
         }
         return _defaultValue;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override object? toPrimitives() => value.ToString();

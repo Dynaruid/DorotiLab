@@ -144,7 +144,7 @@ public class CalendarDatePicker : StatefulWidget
                         (
                             initialDate
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     )
@@ -164,9 +164,7 @@ public class CalendarDatePicker : StatefulWidget
                 (this.initialDate is null)
                 || !(
                     this.initialDate
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ).isBefore(this.firstDate),
             () =>
                 (object?)
@@ -177,9 +175,7 @@ public class CalendarDatePicker : StatefulWidget
                 (this.initialDate is null)
                 || !(
                     this.initialDate
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ).isAfter(this.lastDate),
             () =>
                 (object?)
@@ -193,7 +189,7 @@ public class CalendarDatePicker : StatefulWidget
                     (
                         this.initialDate
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 ),
@@ -257,7 +253,7 @@ internal class _CalendarDatePickerState__calendar_date_picker : State<CalendarDa
             bool isToday = widget.calendarDelegate.isSameDay(widget.currentDate, _selectedDate);
             var semanticLabelSuffix = isToday ? $", {_localizations.currentDateLabel}" : "";
             _announce(
-                $"{_localizations.formatFullDate((_selectedDate ?? throw new global::System.NullReferenceException("Dart null assertion failed.")))}{semanticLabelSuffix}"
+                $"{_localizations.formatFullDate((_selectedDate ?? throw new global::System.NullReferenceException("A required value was null.")))}{semanticLabelSuffix}"
             );
         }
     }
@@ -317,7 +313,9 @@ internal class _CalendarDatePickerState__calendar_date_picker : State<CalendarDa
                         _localizations
                     ),
                     _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                        throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                        throw new InvalidOperationException(
+                            "Switch expression did not handle the supplied value."
+                        ),
                 };
                 _announce(message);
             }
@@ -370,7 +368,7 @@ internal class _CalendarDatePickerState__calendar_date_picker : State<CalendarDa
                     (
                         _selectedDate
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 );
@@ -387,9 +385,7 @@ internal class _CalendarDatePickerState__calendar_date_picker : State<CalendarDa
             widget.onDateChanged(
                 (
                     _selectedDate
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             );
             switch (Theme.of(context).platform)
@@ -407,7 +403,7 @@ internal class _CalendarDatePickerState__calendar_date_picker : State<CalendarDa
                         SemanticsService
                             .sendAnnouncement(
                                 View.of(context),
-                                $"{_localizations.selectedDateLabel} {widget.calendarDelegate.formatFullDate((_selectedDate ?? throw new global::System.NullReferenceException("Dart null assertion failed.")), _localizations)}{semanticLabelSuffix}",
+                                $"{_localizations.selectedDateLabel} {widget.calendarDelegate.formatFullDate((_selectedDate ?? throw new global::System.NullReferenceException("A required value was null.")), _localizations)}{semanticLabelSuffix}",
                                 _textDirection
                             )
                             .catchError(Calendar_date_pickerLibrary._reportAnnouncementError)
@@ -429,7 +425,7 @@ internal class _CalendarDatePickerState__calendar_date_picker : State<CalendarDa
         return widget.selectableDayPredicate is null
             ? true
             : widget.selectableDayPredicate.Invoke(date);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _buildPicker()
@@ -469,9 +465,11 @@ internal class _CalendarDatePickerState__calendar_date_picker : State<CalendarDa
                 );
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -552,7 +550,7 @@ internal class _CalendarDatePickerState__calendar_date_picker : State<CalendarDa
                                                     DatePickerMode.year => DatePickerMode.day,
                                                     _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
                                                         throw new InvalidOperationException(
-                                                            "Non-exhaustive Dart switch value."
+                                                            "Switch expression did not handle the supplied value."
                                                         ),
                                                 }
                                             );
@@ -719,7 +717,7 @@ public class _DatePickerModeToggleButtonState__calendar_date_picker
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void dispose()
@@ -792,7 +790,7 @@ public class _DatePickerModeToggleButtonState__calendar_date_picker
         _updateTickerModeNotifier();
         _updateTicker();
         return _ticker!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void activate()
@@ -887,18 +885,14 @@ internal class _MonthPicker__calendar_date_picker : StatefulWidget
             (selectedDate is null)
                 || !(
                     selectedDate
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ).isBefore(firstDate)
         );
         System.Diagnostics.Debug.Assert(
             (selectedDate is null)
                 || !(
                     selectedDate
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ).isAfter(lastDate)
         );
     }
@@ -1024,7 +1018,7 @@ internal class _MonthPickerState__calendar_date_picker : State<_MonthPicker__cal
                         (
                             _focusedDay
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ).Day
                     );
@@ -1058,7 +1052,7 @@ internal class _MonthPickerState__calendar_date_picker : State<_MonthPicker__cal
             }
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _handleNextMonth()
@@ -1170,9 +1164,7 @@ internal class _MonthPickerState__calendar_date_picker : State<_MonthPicker__cal
             DateTime? nextDate = _nextDateInDirection(
                 (
                     _focusedDay
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 intent.direction
             );
@@ -1180,9 +1172,7 @@ internal class _MonthPickerState__calendar_date_picker : State<_MonthPicker__cal
             {
                 DateTime nextDate__29939__value30014 = (
                     nextDate
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 _focusedDay = (nextDate__29939__value30014);
                 if (!widget.calendarDelegate.isSameMonth(_focusedDay, _currentMonth))
@@ -1191,7 +1181,7 @@ internal class _MonthPickerState__calendar_date_picker : State<_MonthPicker__cal
                         (
                             _focusedDay
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     );
@@ -1221,9 +1211,9 @@ internal class _MonthPickerState__calendar_date_picker : State<_MonthPicker__cal
         }
         return (
             DartCollectionRuntime.NullableMapValue<long>(_directionOffset, traversalDirection)
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual DateTime? _nextDateInDirection(DateTime date, TraversalDirection direction)
@@ -1245,7 +1235,7 @@ internal class _MonthPickerState__calendar_date_picker : State<_MonthPicker__cal
             );
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _isSelectable(DateTime date)
@@ -1253,7 +1243,7 @@ internal class _MonthPickerState__calendar_date_picker : State<_MonthPicker__cal
         return widget.selectableDayPredicate is null
             ? true
             : widget.selectableDayPredicate.Invoke(date);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _buildItems(BuildContext context, long index)
@@ -1270,7 +1260,7 @@ internal class _MonthPickerState__calendar_date_picker : State<_MonthPicker__cal
             displayedMonth: month,
             selectableDayPredicate: widget.selectableDayPredicate
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -1368,7 +1358,7 @@ internal class _MonthPickerState__calendar_date_picker : State<_MonthPicker__cal
                 }
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1392,7 +1382,7 @@ internal class _FocusedDate__calendar_date_picker : InheritedWidget
     {
         var __oldWidget = (_FocusedDate__calendar_date_picker)oldWidget;
         return !calendarDelegate.isSameDay(date, __oldWidget.date);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static DateTime? maybeOf(BuildContext context)
@@ -1400,7 +1390,7 @@ internal class _FocusedDate__calendar_date_picker : InheritedWidget
         _FocusedDate__calendar_date_picker? focusedDate =
             context.dependOnInheritedWidgetOfExactType<_FocusedDate__calendar_date_picker>();
         return focusedDate?.date;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1441,18 +1431,14 @@ internal class _DayPicker__calendar_date_picker : StatefulWidget
             (selectedDate is null)
                 || !(
                     selectedDate
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ).isBefore(firstDate)
         );
         System.Diagnostics.Debug.Assert(
             (selectedDate is null)
                 || !(
                     selectedDate
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ).isAfter(lastDate)
         );
     }
@@ -1490,16 +1476,14 @@ internal class _DayPickerState__calendar_date_picker : State<_DayPicker__calenda
                 widget.displayedMonth,
                 (
                     focusedDate
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             )
         )
         {
             DateTime focusedDate__38602__value38655 = (
                 focusedDate
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             _dayFocusNodes[(int)((focusedDate__38602__value38655).Day - 1L)].requestFocus();
         }
@@ -1534,7 +1518,7 @@ internal class _DayPickerState__calendar_date_picker : State<_DayPicker__calenda
             );
         }
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -1661,7 +1645,9 @@ internal class _DayState__calendar_date_picker : State<_Day__calendar_date_picke
         P? effectiveValue<P>(Func<DatePickerThemeData?, P?> getProperty)
         {
             return getProperty(datePickerTheme) ?? getProperty(defaultsLocal);
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         P? resolve<P>(
             Func<DatePickerThemeData?, WidgetStateProperty<P>?> getProperty,
@@ -1672,10 +1658,14 @@ internal class _DayState__calendar_date_picker : State<_Day__calendar_date_picke
                 (theme) =>
                 {
                     return getProperty(theme) is { } property ? property.resolve(states) : default;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         MaterialLocalizations localizations = MaterialLocalizations.of(context);
         var semanticLabelSuffix = widget.isToday ? $", {localizations.currentDateLabel}" : "";
@@ -1897,7 +1887,7 @@ internal class _YearPickerState__calendar_date_picker : State<YearPicker>
                     (
                         widget.selectedDate
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
@@ -1915,7 +1905,7 @@ internal class _YearPickerState__calendar_date_picker : State<YearPicker>
         return (_itemCount < minYears)
             ? 0
             : (centeredYearRow * Calendar_date_pickerLibrary._yearPickerRowHeight);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _buildYearItem(BuildContext context, long index)
@@ -1925,7 +1915,9 @@ internal class _YearPickerState__calendar_date_picker : State<YearPicker>
         P? effectiveValue<P>(Func<DatePickerThemeData?, P?> getProperty)
         {
             return getProperty(datePickerTheme) ?? getProperty(defaultsLocal);
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         P? resolve<P>(
             Func<DatePickerThemeData?, WidgetStateProperty<P>?> getProperty,
@@ -1936,10 +1928,14 @@ internal class _YearPickerState__calendar_date_picker : State<YearPicker>
                 (theme) =>
                 {
                     return getProperty(theme) is { } property ? property.resolve(states) : default;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         double textScaleFactor =
             MediaQuery
@@ -2055,7 +2051,7 @@ internal class _YearPickerState__calendar_date_picker : State<YearPicker>
             );
         }
         return yearItem;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual long _itemCount
@@ -2091,7 +2087,7 @@ internal class _YearPickerState__calendar_date_picker : State<YearPicker>
                 DartRuntimePrimitives.ConvertValue<Widget>(new Divider()),
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -2140,7 +2136,7 @@ internal class _YearPickerGridDelegate__calendar_date_picker : SliverGridDelegat
                 constraints.crossAxisDirection
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool shouldRelayout(SliverGridDelegate oldDelegate) => false;

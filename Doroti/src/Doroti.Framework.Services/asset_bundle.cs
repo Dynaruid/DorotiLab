@@ -13,7 +13,7 @@ public abstract class AssetBundle
     {
         ByteData data = await load(key);
         return await Dart_uiLibrary.ImmutableBuffer.fromUint8List(new Uint8List(data));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual async Future<string> loadString(string key, bool cache = true)
@@ -28,19 +28,19 @@ public abstract class AssetBundle
             data,
             debugLabel: $"UTF8 decode for \"{key}\""
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static string _utf8decode(ByteData data)
     {
         return Dart_convertLibrary.utf8.decode(new Uint8List(data));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual async Future<T> loadStructuredData<T>(string key, Func<string, object> parser)
     {
         return await DartAsyncRuntime.AwaitFutureOrValue<T>(parser(await loadString(key)));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual async Future<T> loadStructuredBinaryData<T>(
@@ -49,7 +49,7 @@ public abstract class AssetBundle
     )
     {
         return await DartAsyncRuntime.AwaitFutureOrValue<T>(parser(await load(key)));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void evict(string key) { }
@@ -90,7 +90,7 @@ public class NetworkAssetBundle : AssetBundle
             response
         );
         return new ByteData(bytes);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string ToString() => $"{DiagnosticsLibrary.describeIdentity(this)}({_baseUrl})";
@@ -112,7 +112,7 @@ public abstract class CachingAssetBundle : AssetBundle
             return _stringCache.putIfAbsent(key, () => base.loadString(key));
         }
         return base.loadString(key);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Future<T> loadStructuredData<T>(string key, Func<string, object> parser)
@@ -146,7 +146,7 @@ public abstract class CachingAssetBundle : AssetBundle
         completer = new Completer<T>();
         _ = _structuredDataCache[key] = completer.future;
         return completer.future;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Future<T> loadStructuredBinaryData<T>(string key, Func<ByteData, object> parser)
@@ -180,7 +180,7 @@ public abstract class CachingAssetBundle : AssetBundle
         completer = new Completer<T>();
         _ = _structuredBinaryDataCache[key] = completer.future;
         return completer.future;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void evict(string key)
@@ -201,7 +201,7 @@ public abstract class CachingAssetBundle : AssetBundle
     {
         ByteData data = await load(key);
         return await Dart_uiLibrary.ImmutableBuffer.fromUint8List(new Uint8List(data));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -241,7 +241,7 @@ public class PlatformAssetBundle : CachingAssetBundle
             );
         }
         return future;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override async Future<ImmutableBuffer> loadBuffer(string key)
@@ -279,7 +279,7 @@ public class PlatformAssetBundle : CachingAssetBundle
                 }
             );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -288,7 +288,7 @@ public static partial class Asset_bundleLibrary
     internal static AssetBundle _initRootBundle()
     {
         return new PlatformAssetBundle();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -297,7 +297,7 @@ public static partial class Asset_bundleLibrary
     internal static ErrorSummary _errorSummaryWithKey(string key)
     {
         return new ErrorSummary($"Unable to load asset: \"{key}\".");
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 

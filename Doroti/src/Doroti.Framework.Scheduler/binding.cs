@@ -290,7 +290,7 @@ public abstract class SchedulerBinding : BindingBase
     internal static long _taskSorter(_TaskEntry<object> e1, _TaskEntry<object> e2)
     {
         return -e1.priority.CompareTo(e2.priority);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Future<T> scheduleTask<T>(
@@ -308,7 +308,7 @@ public abstract class SchedulerBinding : BindingBase
             _ensureEventLoopCallback();
         }
         return entry.completer.future;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Future<T> scheduleTask<T>(
@@ -399,7 +399,7 @@ public abstract class SchedulerBinding : BindingBase
             return _taskQueue.Count != 0;
         }
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual long transientCallbackCount => _transientCallbacks.Count;
@@ -420,7 +420,7 @@ public abstract class SchedulerBinding : BindingBase
             rescheduling: rescheduling
         );
         return _nextFrameCallbackId;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void cancelFrameCallbackWithId(long id)
@@ -449,7 +449,7 @@ public abstract class SchedulerBinding : BindingBase
             return true;
         });
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool debugAssertNoPendingPerformanceModeRequests(string reason)
@@ -463,7 +463,7 @@ public abstract class SchedulerBinding : BindingBase
             return true;
         });
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool debugAssertNoTimeDilation(string reason)
@@ -477,7 +477,7 @@ public abstract class SchedulerBinding : BindingBase
             return true;
         });
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static void debugPrintTransientCallbackRegistrationStack()
@@ -739,7 +739,7 @@ public abstract class SchedulerBinding : BindingBase
                     - (
                         _firstRawTimeStampInEpoch
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 );
@@ -748,7 +748,7 @@ public abstract class SchedulerBinding : BindingBase
                 rawDurationSinceEpoch.inMicroseconds / BindingLibrary.timeDilation
             ).round() + _epochStart.inMicroseconds
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Duration currentFrameTimeStamp
@@ -758,7 +758,7 @@ public abstract class SchedulerBinding : BindingBase
             DartRuntimePrimitives.Assert(() => _currentFrameTimeStamp is not null);
             return (
                 _currentFrameTimeStamp
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
     }
@@ -826,7 +826,7 @@ public abstract class SchedulerBinding : BindingBase
                         (
                             _currentFrameTimeStamp
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ),
                         frameTimeStampDescription
@@ -869,7 +869,7 @@ public abstract class SchedulerBinding : BindingBase
                             (
                                 _currentFrameTimeStamp
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             ),
                             callbackEntry.debugStack
@@ -917,7 +917,7 @@ public abstract class SchedulerBinding : BindingBase
             }
         }
         return new PerformanceModeRequestHandle(_disposePerformanceModeRequest);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _disposePerformanceModeRequest()
@@ -940,7 +940,7 @@ public abstract class SchedulerBinding : BindingBase
         {
             return _performanceMode;
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void handleDrawFrame()
@@ -964,7 +964,7 @@ public abstract class SchedulerBinding : BindingBase
                     (
                         _currentFrameTimeStamp
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 );
@@ -990,7 +990,7 @@ public abstract class SchedulerBinding : BindingBase
                         (
                             _currentFrameTimeStamp
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     );
@@ -1137,6 +1137,6 @@ public static partial class BindingLibrary
             return priority >= Priority.animation.value;
         }
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

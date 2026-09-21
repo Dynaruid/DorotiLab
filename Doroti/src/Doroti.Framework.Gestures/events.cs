@@ -227,7 +227,7 @@ public abstract class PointerEvent : IPointerEvent, Diagnosticable
         var position3 = new Vector3((position).dx, (position).dy, 0.0);
         Vector3 transformed3 = transform.perspectiveTransform(position3);
         return new Offset(transformed3.x, transformed3.y);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static Offset transformDeltaViaPositions(
@@ -248,9 +248,9 @@ public abstract class PointerEvent : IPointerEvent, Diagnosticable
         );
         return (
                 transformedEndPosition
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ) - transformedStartPosition;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static Matrix4 removePerspectiveTransform(Matrix4 transform)
@@ -267,7 +267,7 @@ public abstract class PointerEvent : IPointerEvent, Diagnosticable
                 }
             )
         )();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public DiagnosticsNode toDiagnosticsNode(
@@ -535,7 +535,7 @@ internal abstract class _TransformedPointerEvent__events
     public virtual string toStringFull()
     {
         return toDiagnosticsNode().toStringDeep(minLevel: DiagnosticLevel.fine);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -632,7 +632,7 @@ public class PointerAddedEvent
             ((PointerAddedEvent?)(object?)original)! ?? this,
             transform
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -816,7 +816,7 @@ public class PointerAddedEvent
     public virtual string toStringFull()
     {
         return toDiagnosticsNode().toStringDeep(minLevel: DiagnosticLevel.fine);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override PointerAddedEvent copyWith(
@@ -870,7 +870,7 @@ public class PointerAddedEvent
             tilt: tilt ?? this.tilt,
             embedderId: embedderId ?? this.embedderId
         ).transformed(transform);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -982,7 +982,7 @@ internal class _TransformedPointerAddedEvent__events
             tilt: tilt ?? this.tilt,
             embedderId: embedderId ?? this.embedderId
         ).transformed(transform);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override long embedderId => original.embedderId;
@@ -1102,7 +1102,7 @@ public class PointerRemovedEvent
             ((PointerRemovedEvent?)(object?)original)! ?? this,
             transform
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -1286,7 +1286,7 @@ public class PointerRemovedEvent
     public virtual string toStringFull()
     {
         return toDiagnosticsNode().toStringDeep(minLevel: DiagnosticLevel.fine);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override PointerRemovedEvent copyWith(
@@ -1337,7 +1337,7 @@ public class PointerRemovedEvent
             radiusMax: radiusMax ?? this.radiusMax,
             embedderId: embedderId ?? this.embedderId
         ).transformed(transform);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1449,7 +1449,7 @@ internal class _TransformedPointerRemovedEvent__events
             radiusMax: radiusMax ?? this.radiusMax,
             embedderId: embedderId ?? this.embedderId
         ).transformed(transform);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override long embedderId => original.embedderId;
@@ -1586,7 +1586,7 @@ public class PointerHoverEvent
             ((PointerHoverEvent?)(object?)original)! ?? this,
             transform
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -1770,7 +1770,7 @@ public class PointerHoverEvent
     public virtual string toStringFull()
     {
         return toDiagnosticsNode().toStringDeep(minLevel: DiagnosticLevel.fine);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override PointerHoverEvent copyWith(
@@ -1830,7 +1830,7 @@ public class PointerHoverEvent
             synthesized: synthesized ?? this.synthesized,
             embedderId: embedderId ?? this.embedderId
         ).transformed(transform);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1948,7 +1948,7 @@ internal class _TransformedPointerHoverEvent__events
             synthesized: synthesized ?? this.synthesized,
             embedderId: embedderId ?? this.embedderId
         ).transformed(transform);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override long embedderId => original.embedderId;
@@ -2117,7 +2117,7 @@ public class PointerEnterEvent
             ((PointerEnterEvent?)(object?)original)! ?? this,
             transform
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -2301,7 +2301,7 @@ public class PointerEnterEvent
     public virtual string toStringFull()
     {
         return toDiagnosticsNode().toStringDeep(minLevel: DiagnosticLevel.fine);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override PointerEnterEvent copyWith(
@@ -2361,7 +2361,7 @@ public class PointerEnterEvent
             synthesized: synthesized ?? this.synthesized,
             embedderId: embedderId ?? this.embedderId
         ).transformed(transform);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static implicit operator Ui.PointerEnterEvent(PointerEnterEvent value) =>
@@ -2495,7 +2495,7 @@ internal class _TransformedPointerEnterEvent__events
             synthesized: synthesized ?? this.synthesized,
             embedderId: embedderId ?? this.embedderId
         ).transformed(transform);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override long embedderId => original.embedderId;
@@ -2664,7 +2664,7 @@ public class PointerExitEvent
             ((PointerExitEvent?)(object?)original)! ?? this,
             transform
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -2848,7 +2848,7 @@ public class PointerExitEvent
     public virtual string toStringFull()
     {
         return toDiagnosticsNode().toStringDeep(minLevel: DiagnosticLevel.fine);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override PointerExitEvent copyWith(
@@ -2908,7 +2908,7 @@ public class PointerExitEvent
             synthesized: synthesized ?? this.synthesized,
             embedderId: embedderId ?? this.embedderId
         ).transformed(transform);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static implicit operator Ui.PointerExitEvent(PointerExitEvent value) =>
@@ -3042,7 +3042,7 @@ internal class _TransformedPointerExitEvent__events
             synthesized: synthesized ?? this.synthesized,
             embedderId: embedderId ?? this.embedderId
         ).transformed(transform);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override long embedderId => original.embedderId;
@@ -3180,7 +3180,7 @@ public class PointerDownEvent
             ((PointerDownEvent?)(object?)original)! ?? this,
             transform
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -3364,7 +3364,7 @@ public class PointerDownEvent
     public virtual string toStringFull()
     {
         return toDiagnosticsNode().toStringDeep(minLevel: DiagnosticLevel.fine);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override PointerDownEvent copyWith(
@@ -3423,7 +3423,7 @@ public class PointerDownEvent
             tilt: tilt ?? this.tilt,
             embedderId: embedderId ?? this.embedderId
         ).transformed(transform);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -3540,7 +3540,7 @@ internal class _TransformedPointerDownEvent__events
             tilt: tilt ?? this.tilt,
             embedderId: embedderId ?? this.embedderId
         ).transformed(transform);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override long embedderId => original.embedderId;
@@ -3684,7 +3684,7 @@ public class PointerMoveEvent
             ((PointerMoveEvent?)(object?)original)! ?? this,
             transform
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -3868,7 +3868,7 @@ public class PointerMoveEvent
     public virtual string toStringFull()
     {
         return toDiagnosticsNode().toStringDeep(minLevel: DiagnosticLevel.fine);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override PointerMoveEvent copyWith(
@@ -3929,7 +3929,7 @@ public class PointerMoveEvent
             synthesized: synthesized ?? this.synthesized,
             embedderId: embedderId ?? this.embedderId
         ).transformed(transform);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -4048,7 +4048,7 @@ internal class _TransformedPointerMoveEvent__events
             synthesized: synthesized ?? this.synthesized,
             embedderId: embedderId ?? this.embedderId
         ).transformed(transform);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override long embedderId => original.embedderId;
@@ -4187,7 +4187,7 @@ public class PointerUpEvent
             ((PointerUpEvent?)(object?)original)! ?? this,
             transform
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -4371,7 +4371,7 @@ public class PointerUpEvent
     public virtual string toStringFull()
     {
         return toDiagnosticsNode().toStringDeep(minLevel: DiagnosticLevel.fine);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override PointerUpEvent copyWith(
@@ -4431,7 +4431,7 @@ public class PointerUpEvent
             tilt: tilt ?? this.tilt,
             embedderId: embedderId ?? this.embedderId
         ).transformed(transform);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -4547,7 +4547,7 @@ internal class _TransformedPointerUpEvent__events : PointerUpEvent, _CopyPointer
             tilt: tilt ?? this.tilt,
             embedderId: embedderId ?? this.embedderId
         ).transformed(transform);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override long embedderId => original.embedderId;
@@ -4691,7 +4691,7 @@ public class PointerScrollEvent
             ((PointerScrollEvent?)(object?)original)! ?? this,
             transform
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -4881,7 +4881,7 @@ public class PointerScrollEvent
     public virtual string toStringFull()
     {
         return toDiagnosticsNode().toStringDeep(minLevel: DiagnosticLevel.fine);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override PointerScrollEvent copyWith(
@@ -4928,7 +4928,7 @@ public class PointerScrollEvent
             embedderId: embedderId ?? this.embedderId,
             onRespond: onRespond ?? ((PointerScrollEvent?)(object?)this)!.respond
         ).transformed(transform);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -5048,7 +5048,7 @@ internal class _TransformedPointerScrollEvent__events
             embedderId: embedderId ?? this.embedderId,
             onRespond: onRespond ?? ((PointerScrollEvent?)(object?)this)!.respond
         ).transformed(transform);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override long embedderId => original.embedderId;
@@ -5151,7 +5151,7 @@ public class PointerScrollInertiaCancelEvent
             ((PointerScrollInertiaCancelEvent?)(object?)original)! ?? this,
             transform
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -5335,7 +5335,7 @@ public class PointerScrollInertiaCancelEvent
     public virtual string toStringFull()
     {
         return toDiagnosticsNode().toStringDeep(minLevel: DiagnosticLevel.fine);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override PointerScrollInertiaCancelEvent copyWith(
@@ -5380,7 +5380,7 @@ public class PointerScrollInertiaCancelEvent
             position: position ?? this.position,
             embedderId: embedderId ?? this.embedderId
         ).transformed(transform);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -5487,7 +5487,7 @@ internal class _TransformedPointerScrollInertiaCancelEvent__events
             position: position ?? this.position,
             embedderId: embedderId ?? this.embedderId
         ).transformed(transform);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void respond(bool allowPlatformDefault) { }
@@ -5599,7 +5599,7 @@ public class PointerScaleEvent
             ((PointerScaleEvent?)(object?)original)! ?? this,
             transform
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -5783,7 +5783,7 @@ public class PointerScaleEvent
     public virtual string toStringFull()
     {
         return toDiagnosticsNode().toStringDeep(minLevel: DiagnosticLevel.fine);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override PointerScaleEvent copyWith(
@@ -5829,7 +5829,7 @@ public class PointerScaleEvent
             embedderId: embedderId ?? this.embedderId,
             scale: scale ?? this.scale
         ).transformed(transform);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -5936,7 +5936,7 @@ internal class _TransformedPointerScaleEvent__events
             embedderId: embedderId ?? this.embedderId,
             scale: scale ?? this.scale
         ).transformed(transform);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void respond(bool allowPlatformDefault) { }
@@ -6044,7 +6044,7 @@ public class PointerPanZoomStartEvent
             ((PointerPanZoomStartEvent?)(object?)original)! ?? this,
             transform
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -6228,7 +6228,7 @@ public class PointerPanZoomStartEvent
     public virtual string toStringFull()
     {
         return toDiagnosticsNode().toStringDeep(minLevel: DiagnosticLevel.fine);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override PointerPanZoomStartEvent copyWith(
@@ -6275,7 +6275,7 @@ public class PointerPanZoomStartEvent
             position: position ?? this.position,
             embedderId: embedderId ?? this.embedderId
         ).transformed(transform);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -6383,7 +6383,7 @@ internal class _TransformedPointerPanZoomStartEvent__events
             position: position ?? this.position,
             embedderId: embedderId ?? this.embedderId
         ).transformed(transform);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override long embedderId => original.embedderId;
@@ -6513,7 +6513,7 @@ public class PointerPanZoomUpdateEvent
             ((PointerPanZoomUpdateEvent?)(object?)original)! ?? this,
             transform
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -6697,7 +6697,7 @@ public class PointerPanZoomUpdateEvent
     public virtual string toStringFull()
     {
         return toDiagnosticsNode().toStringDeep(minLevel: DiagnosticLevel.fine);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override PointerPanZoomUpdateEvent copyWith(
@@ -6748,7 +6748,7 @@ public class PointerPanZoomUpdateEvent
             scale: scale ?? this.scale,
             rotation: rotation ?? this.rotation
         ).transformed(transform);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -6898,7 +6898,7 @@ internal class _TransformedPointerPanZoomUpdateEvent__events
             scale: scale ?? this.scale,
             rotation: rotation ?? this.rotation
         ).transformed(transform);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override long embedderId => original.embedderId;
@@ -7004,7 +7004,7 @@ public class PointerPanZoomEndEvent
             ((PointerPanZoomEndEvent?)(object?)original)! ?? this,
             transform
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -7188,7 +7188,7 @@ public class PointerPanZoomEndEvent
     public virtual string toStringFull()
     {
         return toDiagnosticsNode().toStringDeep(minLevel: DiagnosticLevel.fine);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override PointerPanZoomEndEvent copyWith(
@@ -7235,7 +7235,7 @@ public class PointerPanZoomEndEvent
             position: position ?? this.position,
             embedderId: embedderId ?? this.embedderId
         ).transformed(transform);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -7343,7 +7343,7 @@ internal class _TransformedPointerPanZoomEndEvent__events
             position: position ?? this.position,
             embedderId: embedderId ?? this.embedderId
         ).transformed(transform);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override long embedderId => original.embedderId;
@@ -7481,7 +7481,7 @@ public class PointerCancelEvent
             ((PointerCancelEvent?)(object?)original)! ?? this,
             transform
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -7665,7 +7665,7 @@ public class PointerCancelEvent
     public virtual string toStringFull()
     {
         return toDiagnosticsNode().toStringDeep(minLevel: DiagnosticLevel.fine);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override PointerCancelEvent copyWith(
@@ -7724,7 +7724,7 @@ public class PointerCancelEvent
             tilt: tilt ?? this.tilt,
             embedderId: embedderId ?? this.embedderId
         ).transformed(transform);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -7747,7 +7747,7 @@ public static partial class EventsLibrary
                 return settings?.touchSlop ?? ConstantsLibrary.kTouchSlop;
             }
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -7770,7 +7770,7 @@ public static partial class EventsLibrary
                 return settings?.panSlop ?? ConstantsLibrary.kPanSlop;
             }
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -7793,7 +7793,7 @@ public static partial class EventsLibrary
                 return ConstantsLibrary.kScaleSlop;
             }
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -7910,7 +7910,7 @@ internal class _TransformedPointerCancelEvent__events
             tilt: tilt ?? this.tilt,
             embedderId: embedderId ?? this.embedderId
         ).transformed(transform);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override long embedderId => original.embedderId;

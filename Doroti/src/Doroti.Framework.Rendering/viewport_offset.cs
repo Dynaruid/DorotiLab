@@ -20,9 +20,11 @@ public static partial class Viewport_offsetLibrary
             ScrollDirection.idle => ScrollDirection.idle,
             ScrollDirection.forward => ScrollDirection.reverse,
             ScrollDirection.reverse => ScrollDirection.forward,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -55,9 +57,7 @@ public abstract class ViewportOffset : ChangeNotifier
             || Equals(
                 (
                     duration
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 Duration.zero
             )
@@ -74,14 +74,14 @@ public abstract class ViewportOffset : ChangeNotifier
                     (
                         duration
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 ),
                 curve: curve ?? Curves.ease
             );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public abstract ScrollDirection userScrollDirection { get; }
@@ -92,7 +92,7 @@ public abstract class ViewportOffset : ChangeNotifier
         var description = new List<string>();
         debugFillDescription(description);
         return $"{DiagnosticsLibrary.describeIdentity(this)}({string.Join(", ", description)})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void debugFillDescription(List<string> description)

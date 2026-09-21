@@ -37,11 +37,13 @@ public class KeyboardListener : StatelessWidget
             {
                 onKeyEvent?.Invoke(@event);
                 return KeyEventResult.ignored;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             child: child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)

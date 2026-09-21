@@ -94,7 +94,7 @@ public class ToggleButtonsThemeData : Diagnosticable
             borderRadius: borderRadius ?? this.borderRadius,
             borderWidth: borderWidth ?? this.borderWidth
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static ToggleButtonsThemeData? lerp(
@@ -132,7 +132,7 @@ public class ToggleButtonsThemeData : Diagnosticable
             borderRadius: BorderRadius.lerp(a?.borderRadius, b?.borderRadius, t),
             borderWidth: Dart_uiLibrary.lerpDouble(a?.borderWidth, b?.borderWidth, t)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override int GetHashCode() =>
@@ -232,7 +232,7 @@ public class ToggleButtonsThemeData : Diagnosticable
             return true;
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -241,7 +241,7 @@ public class ToggleButtonsThemeData : Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -264,13 +264,13 @@ public class ToggleButtonsTheme : InheritedTheme
         ToggleButtonsTheme? toggleButtonsThemeLocal =
             context.dependOnInheritedWidgetOfExactType<ToggleButtonsTheme>();
         return toggleButtonsThemeLocal?.data ?? Theme.of(context).toggleButtonsTheme;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget wrap(BuildContext context, Widget child)
     {
         return new ToggleButtonsTheme(data: data, child: child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget) =>

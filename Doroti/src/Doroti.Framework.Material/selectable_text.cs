@@ -33,7 +33,7 @@ internal class _TextSpanEditingController__selectable_text : TextEditingControll
                 .Cast<InlineSpan>()
                 .ToList()
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string text
@@ -193,7 +193,7 @@ public class SelectableText : StatefulWidget
                     (
                         maxLines
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) > 0L
                 )
@@ -204,7 +204,7 @@ public class SelectableText : StatefulWidget
                     (
                         minLines
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) > 0L
                 )
@@ -216,7 +216,7 @@ public class SelectableText : StatefulWidget
                     >= (
                         minLines
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
         );
@@ -342,7 +342,7 @@ public class SelectableText : StatefulWidget
         return AdaptiveTextSelectionToolbar.CreateEditableText(
             editableTextState: editableTextState
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override IState createState() =>
@@ -547,7 +547,9 @@ internal class _SelectableTextState__selectable_text
             case TargetPlatform.windows:
                 break;
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
     }
 
@@ -582,7 +584,7 @@ internal class _SelectableTextState__selectable_text
             return true;
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -757,6 +759,6 @@ internal class _SelectableTextState__selectable_text
                 child: childLocal
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

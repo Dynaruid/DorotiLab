@@ -254,7 +254,7 @@ public class FilledButton : ButtonStyleButton
             backgroundBuilder: backgroundBuilder,
             foregroundBuilder: foregroundBuilder
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override ButtonStyle defaultStyleOf(BuildContext context)
@@ -270,7 +270,9 @@ public class FilledButton : ButtonStyleButton
                     new _FilledTonalButtonDefaultsM3__filled_button(context)
                 ),
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
         if (_addPadding)
         {
@@ -294,7 +296,7 @@ public class FilledButton : ButtonStyleButton
     public override ButtonStyle? themeStyleOf(BuildContext context)
     {
         return FilledButtonTheme.of(context).style;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -355,7 +357,7 @@ internal class _FilledButtonWithIconChild__filled_button : StatelessWidget
             mainAxisSize: MainAxisSize.min,
             spacing: (
                 Dart_uiLibrary.lerpDouble(8L, 4L, scaleLocal)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             children: Equals(effectiveIconAlignment, IconAlignment.start)
                 ? new List<Widget>
@@ -369,7 +371,7 @@ internal class _FilledButtonWithIconChild__filled_button : StatelessWidget
                     DartRuntimePrimitives.ConvertValue<Widget>(icon),
                 }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -415,7 +417,9 @@ internal class _FilledButtonDefaultsM3__filled_button : ButtonStyle
                         return _colors.onSurface.withOpacity(0.12);
                     }
                     return _colors.primary;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );
@@ -429,7 +433,9 @@ internal class _FilledButtonDefaultsM3__filled_button : ButtonStyle
                         return _colors.onSurface.withOpacity(0.38);
                     }
                     return _colors.onPrimary;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );
@@ -451,7 +457,9 @@ internal class _FilledButtonDefaultsM3__filled_button : ButtonStyle
                         return _colors.onPrimary.withOpacity(0.1);
                     }
                     return null;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );
@@ -484,7 +492,9 @@ internal class _FilledButtonDefaultsM3__filled_button : ButtonStyle
                     return 0.0;
                 }
                 return 0.0;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
     public override WidgetStateProperty<EdgeInsetsGeometry>? padding =>
@@ -527,7 +537,7 @@ internal class _FilledButtonDefaultsM3__filled_button : ButtonStyle
                         }
                         return _colors.onPrimary;
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 );
@@ -592,7 +602,9 @@ internal class _FilledTonalButtonDefaultsM3__filled_button : ButtonStyle
                         return _colors.onSurface.withOpacity(0.12);
                     }
                     return _colors.secondaryContainer;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );
@@ -606,7 +618,9 @@ internal class _FilledTonalButtonDefaultsM3__filled_button : ButtonStyle
                         return _colors.onSurface.withOpacity(0.38);
                     }
                     return _colors.onSecondaryContainer;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );
@@ -628,7 +642,9 @@ internal class _FilledTonalButtonDefaultsM3__filled_button : ButtonStyle
                         return _colors.onSecondaryContainer.withOpacity(0.1);
                     }
                     return null;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );
@@ -661,7 +677,9 @@ internal class _FilledTonalButtonDefaultsM3__filled_button : ButtonStyle
                     return 0.0;
                 }
                 return 0.0;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
     public override WidgetStateProperty<EdgeInsetsGeometry>? padding =>
@@ -704,7 +722,7 @@ internal class _FilledTonalButtonDefaultsM3__filled_button : ButtonStyle
                         }
                         return _colors.onSecondaryContainer;
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 );

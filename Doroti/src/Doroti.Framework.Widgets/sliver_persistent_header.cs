@@ -62,7 +62,7 @@ public class SliverPersistentHeader : StatelessWidget
             );
         }
         return new _SliverScrollingPersistentHeader__sliver_persistent_header(@delegate: @delegate);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -126,7 +126,7 @@ internal class _FloatingHeaderState__sliver_persistent_header
     internal virtual RenderSliverFloatingPersistentHeader? _headerRenderer()
     {
         return context.findAncestorRenderObjectOfType<RenderSliverFloatingPersistentHeader>();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _isScrollingListener()
@@ -338,7 +338,7 @@ internal class _SliverScrollingPersistentHeader__sliver_persistent_header
         return new _RenderSliverScrollingPersistentHeaderForWidgets__sliver_persistent_header(
             stretchConfiguration: @delegate.stretchConfiguration
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -396,7 +396,7 @@ internal class _SliverPinnedPersistentHeader__sliver_persistent_header
             stretchConfiguration: @delegate.stretchConfiguration,
             showOnScreenConfiguration: @delegate.showOnScreenConfiguration
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -473,7 +473,7 @@ internal class _SliverFloatingPersistentHeader__sliver_persistent_header
             stretchConfiguration: @delegate.stretchConfiguration,
             showOnScreenConfiguration: @delegate.showOnScreenConfiguration
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -544,7 +544,7 @@ internal class _SliverFloatingPinnedPersistentHeader__sliver_persistent_header
             stretchConfiguration: @delegate.stretchConfiguration,
             showOnScreenConfiguration: @delegate.showOnScreenConfiguration
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)

@@ -147,7 +147,9 @@ internal class _ExpandIconState__expand_icon
                 Brightness.light => Colors.black54,
                 Brightness.dark => Colors.white60,
                 _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                    throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
             };
         }
     }
@@ -175,7 +177,7 @@ internal class _ExpandIconState__expand_icon
                 icon: new RotationTransition(turns: _iconTurns, child: new Icon(Icons.expand_more))
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
@@ -214,7 +216,7 @@ internal class _ExpandIconState__expand_icon
         _updateTickerModeNotifier();
         _updateTicker();
         return _ticker!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void activate()

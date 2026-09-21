@@ -79,7 +79,7 @@ public class SearchBarThemeData : Diagnosticable
             constraints: constraints ?? this.constraints,
             textCapitalization: textCapitalization ?? this.textCapitalization
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static SearchBarThemeData? lerp(SearchBarThemeData? a, SearchBarThemeData? b, double t)
@@ -117,7 +117,7 @@ public class SearchBarThemeData : Diagnosticable
             constraints: BoxConstraints.lerp(a?.constraints, b?.constraints, t),
             textCapitalization: (t < 0.5) ? a?.textCapitalization : b?.textCapitalization
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override int GetHashCode() =>
@@ -268,7 +268,7 @@ public class SearchBarThemeData : Diagnosticable
             return true;
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -277,7 +277,7 @@ public class SearchBarThemeData : Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -300,7 +300,7 @@ public class SearchBarTheme : InheritedWidget
         SearchBarTheme? searchBarThemeLocal =
             context.dependOnInheritedWidgetOfExactType<SearchBarTheme>();
         return searchBarThemeLocal?.data ?? Theme.of(context).searchBarTheme;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget) =>

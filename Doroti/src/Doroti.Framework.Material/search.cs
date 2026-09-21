@@ -23,7 +23,7 @@ public static partial class SearchLibrary
             .push(
                 new _SearchPageRoute__search<T>(@delegate: @delegate, maintainState: maintainState)
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -105,7 +105,7 @@ public abstract class SearchDelegate<T>
                     border: InputBorder.none
                 )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual string query
@@ -238,7 +238,7 @@ internal class _SearchPageRoute__search<T> : PageRoute<T>
     )
     {
         return new FadeTransition(opacity: animation, child: child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Animation<double> createAnimation()
@@ -246,7 +246,7 @@ internal class _SearchPageRoute__search<T> : PageRoute<T>
         Animation<double> animation = base.createAnimation();
         @delegate._proxyAnimation.parent = animation;
         return animation;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget buildPage(
@@ -256,7 +256,7 @@ internal class _SearchPageRoute__search<T> : PageRoute<T>
     )
     {
         return new _SearchPage__search<T>(@delegate: @delegate, animation: animation);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void didComplete(T? result)
@@ -306,7 +306,7 @@ internal class _SearchPageState__search<T> : State<_SearchPage__search<T>>
                         }
                         return KeyEventResult.ignored;
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 );
@@ -480,6 +480,6 @@ internal class _SearchPageState__search<T> : State<_SearchPage__search<T>>
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

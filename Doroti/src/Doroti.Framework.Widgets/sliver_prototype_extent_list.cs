@@ -70,7 +70,7 @@ public class SliverPrototypeExtentList : SliverMultiBoxAdaptorWidget
         return new _RenderSliverPrototypeExtentList__sliver_prototype_extent_list(
             childManager: element
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override SliverMultiBoxAdaptorElement createElement() =>

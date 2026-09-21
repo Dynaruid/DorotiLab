@@ -45,7 +45,7 @@ public class IntrinsicColumnWidth : TableColumnWidth
             result = Math.Max(result, cell.getMinIntrinsicWidth(double.PositiveInfinity));
         }
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double maxIntrinsicWidth(IEnumerable<RenderBox> cells, double containerWidth)
@@ -56,7 +56,7 @@ public class IntrinsicColumnWidth : TableColumnWidth
             result = Math.Max(result, cell.getMaxIntrinsicWidth(double.PositiveInfinity));
         }
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? flex(IEnumerable<RenderBox> cells) => _flex;
@@ -77,13 +77,13 @@ public class FixedColumnWidth : TableColumnWidth
     public override double minIntrinsicWidth(IEnumerable<RenderBox> cells, double containerWidth)
     {
         return value;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double maxIntrinsicWidth(IEnumerable<RenderBox> cells, double containerWidth)
     {
         return value;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string ToString() =>
@@ -106,7 +106,7 @@ public class FractionColumnWidth : TableColumnWidth
             return 0.0;
         }
         return value * containerWidth;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double maxIntrinsicWidth(IEnumerable<RenderBox> cells, double containerWidth)
@@ -116,7 +116,7 @@ public class FractionColumnWidth : TableColumnWidth
             return 0.0;
         }
         return value * containerWidth;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string ToString() =>
@@ -135,19 +135,19 @@ public class FlexColumnWidth : TableColumnWidth
     public override double minIntrinsicWidth(IEnumerable<RenderBox> cells, double containerWidth)
     {
         return 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double maxIntrinsicWidth(IEnumerable<RenderBox> cells, double containerWidth)
     {
         return 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? flex(IEnumerable<RenderBox> cells)
     {
         return value;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string ToString() =>
@@ -171,7 +171,7 @@ public class MaxColumnWidth : TableColumnWidth
             a.minIntrinsicWidth(cells, containerWidth),
             b.minIntrinsicWidth(cells, containerWidth)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double maxIntrinsicWidth(IEnumerable<RenderBox> cells, double containerWidth)
@@ -180,7 +180,7 @@ public class MaxColumnWidth : TableColumnWidth
             a.maxIntrinsicWidth(cells, containerWidth),
             b.maxIntrinsicWidth(cells, containerWidth)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? flex(IEnumerable<RenderBox> cells)
@@ -197,23 +197,18 @@ public class MaxColumnWidth : TableColumnWidth
             {
                 return (
                     aFlex
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
             }
         }
         return Math.Max(
             (
                 aFlex
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
-            (
-                bFlex
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
-            )
+            (bFlex ?? throw new global::System.NullReferenceException("A required value was null."))
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string ToString() =>
@@ -237,7 +232,7 @@ public class MinColumnWidth : TableColumnWidth
             a.minIntrinsicWidth(cells, containerWidth),
             b.minIntrinsicWidth(cells, containerWidth)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double maxIntrinsicWidth(IEnumerable<RenderBox> cells, double containerWidth)
@@ -246,7 +241,7 @@ public class MinColumnWidth : TableColumnWidth
             a.maxIntrinsicWidth(cells, containerWidth),
             b.maxIntrinsicWidth(cells, containerWidth)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? flex(IEnumerable<RenderBox> cells)
@@ -263,23 +258,18 @@ public class MinColumnWidth : TableColumnWidth
             {
                 return (
                     aFlex
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
             }
         }
         return Math.Min(
             (
                 aFlex
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
-            (
-                bFlex
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
-            )
+            (bFlex ?? throw new global::System.NullReferenceException("A required value was null."))
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string ToString() =>
@@ -626,7 +616,9 @@ public class RenderTable : RenderBox
                         : null
                 ) ?? Offset.zero;
             return node.rect.shift(offset);
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         long findRowIndex(double top)
         {
@@ -638,7 +630,9 @@ public class RenderTable : RenderBox
                 }
             }
             return -1L;
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         long findColumnIndex(double left)
         {
@@ -654,7 +648,9 @@ public class RenderTable : RenderBox
                 }
             }
             return -1L;
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         void shiftTransform(SemanticsNode node, double dx, double dy)
         {
@@ -1046,7 +1042,7 @@ public class RenderTable : RenderBox
             totalMinWidth += columnWidth.minIntrinsicWidth(columnCells, double.PositiveInfinity);
         }
         return totalMinWidth;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicWidth(double height)
@@ -1064,7 +1060,7 @@ public class RenderTable : RenderBox
             totalMaxWidth += columnWidth.maxIntrinsicWidth(columnCells, double.PositiveInfinity);
         }
         return totalMaxWidth;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicHeight(double width)
@@ -1093,20 +1089,20 @@ public class RenderTable : RenderBox
             rowTop += rowHeight;
         }
         return rowTop;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicHeight(double width)
     {
         return getMinIntrinsicHeight(width);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? computeDistanceToActualBaseline(TextBaseline baseline)
     {
         DartRuntimePrimitives.Assert(() => !debugNeedsLayout);
         return _baselineDistance;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual IEnumerable<RenderBox> column(long x)
@@ -1170,9 +1166,7 @@ public class RenderTable : RenderBox
             {
                 double flex__38095__value38143 = (
                     flexLocal
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 DartRuntimePrimitives.Assert(() => double.IsFinite((flex__38095__value38143)));
                 DartRuntimePrimitives.Assert(() => (flex__38095__value38143) > 0.0);
@@ -1211,7 +1205,7 @@ public class RenderTable : RenderBox
                             * (
                                 flexes[(int)xLocal]
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             )
                             / totalFlex;
@@ -1264,7 +1258,7 @@ public class RenderTable : RenderBox
                                 * (
                                     flexes[(int)xNested]
                                     ?? throw new global::System.NullReferenceException(
-                                        "Dart null assertion failed."
+                                        "A required value was null."
                                     )
                                 )
                                 / totalFlex
@@ -1284,7 +1278,7 @@ public class RenderTable : RenderBox
                             newTotalFlex += (
                                 flexes[(int)xNested]
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             );
                         }
@@ -1323,7 +1317,7 @@ public class RenderTable : RenderBox
             }
         }
         return widths;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Rect getRowBox(long row)
@@ -1332,7 +1326,7 @@ public class RenderTable : RenderBox
         DartRuntimePrimitives.Assert(() => row < rows);
         DartRuntimePrimitives.Assert(() => !debugNeedsLayout);
         return Rect.fromLTRB(0.0, _rowTops[(int)row], size.width, _rowTops[(int)(row + 1L)]);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
@@ -1366,7 +1360,9 @@ public class RenderTable : RenderBox
                 or TableCellVerticalAlignment.bottom
                 or TableCellVerticalAlignment.fill => null,
                 TableCellVerticalAlignment.intrinsicHeight => null,
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             };
             if (
                 (childBaseline is not null)
@@ -1376,13 +1372,13 @@ public class RenderTable : RenderBox
                         (
                             baselineOffset
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                         < (
                             childBaseline
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     )
@@ -1391,15 +1387,13 @@ public class RenderTable : RenderBox
             {
                 double childBaseline__44477__value44974 = (
                     childBaseline
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 baselineOffset = (childBaseline__44477__value44974);
             }
         }
         return baselineOffset;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Size computeDryLayout(BoxConstraints constraints)
@@ -1453,7 +1447,7 @@ public class RenderTable : RenderBox
             rowTop += rowHeight;
         }
         return constraints.constrain(new Size(tableWidth, rowTop));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void performLayout()
@@ -1532,7 +1526,7 @@ public class RenderTable : RenderBox
                                 (
                                     textBaseline
                                     ?? throw new global::System.NullReferenceException(
-                                        "Dart null assertion failed."
+                                        "A required value was null."
                                     )
                                 ),
                                 onlyReal: true
@@ -1542,7 +1536,7 @@ public class RenderTable : RenderBox
                                 double childBaseline__49094__value49237 = (
                                     childBaseline
                                     ?? throw new global::System.NullReferenceException(
-                                        "Dart null assertion failed."
+                                        "A required value was null."
                                     )
                                 );
                                 beforeBaselineDistance = Math.Max(
@@ -1686,7 +1680,7 @@ public class RenderTable : RenderBox
             }
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paint(PaintingContext context, Offset offset)
@@ -1794,7 +1788,7 @@ public class RenderTable : RenderBox
             return new List<DiagnosticsNode> { new DiagnosticsNode("table is empty") };
         }
         return new List<DiagnosticsNode>();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 

@@ -37,7 +37,7 @@ internal class _RenderSliverLayoutBuilder__sliver_layout_builder
     {
         DartRuntimePrimitives.Assert(() => Equals(child, this.child));
         return 0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void performLayout()
@@ -73,7 +73,7 @@ internal class _RenderSliverLayoutBuilder__sliver_layout_builder
                 mainAxisPosition: mainAxisPosition,
                 crossAxisPosition: crossAxisPosition
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool debugValidateChild(RenderObject child)
@@ -114,10 +114,10 @@ internal class _RenderSliverLayoutBuilder__sliver_layout_builder
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual RenderSliver? child
@@ -174,7 +174,7 @@ internal class _RenderSliverLayoutBuilder__sliver_layout_builder
                 ((Diagnosticable)child!).toDiagnosticsNode(name: "child"),
             }
             : new List<DiagnosticsNode>();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _updateCallback(Action<Constraints> value)

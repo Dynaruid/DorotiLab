@@ -108,7 +108,9 @@ public class CircleAvatar : StatelessWidget
                 Brightness.dark => theme.primaryColorLight,
                 Brightness.light => theme.primaryColorDark,
                 _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                    throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
             };
         }
         else
@@ -120,7 +122,9 @@ public class CircleAvatar : StatelessWidget
                     Brightness.dark => textStyle.copyWith(color: theme.primaryColorLight),
                     Brightness.light => textStyle.copyWith(color: theme.primaryColorDark),
                     _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                        throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                        throw new InvalidOperationException(
+                            "Switch expression did not handle the supplied value."
+                        ),
                 };
             }
         }

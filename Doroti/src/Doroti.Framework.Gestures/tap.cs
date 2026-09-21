@@ -191,7 +191,7 @@ public abstract class BaseTapGestureRecognizer : PrimaryPointerGestureRecognizer
                         (
                             primaryPointer
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     );
@@ -397,7 +397,7 @@ public class TapGestureRecognizer : BaseTapGestureRecognizer
             }
         }
         return base.isPointerAllowed(@event);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void handleTapDown(PointerDownEvent down)

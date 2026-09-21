@@ -288,7 +288,7 @@ internal class _ReorderableListViewState__reorderable_list : State<ReorderableLi
                             );
                             return new MouseRegion(cursor: effectiveMouseCursor, child: child);
                             throw new InvalidOperationException(
-                                "Dart closure completed without a value."
+                                "Callback completed without returning a value."
                             );
                         },
                         child: new Icon(Icons.drag_handle)
@@ -347,7 +347,7 @@ internal class _ReorderableListViewState__reorderable_list : State<ReorderableLi
                         }
                         default:
                             throw new InvalidOperationException(
-                                "Non-exhaustive Dart switch value."
+                                "Switch expression did not handle the supplied value."
                             );
                     }
                 }
@@ -364,7 +364,7 @@ internal class _ReorderableListViewState__reorderable_list : State<ReorderableLi
             }
         }
         return new KeyedSubtree(key: itemGlobalKey, child: item);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _proxyDecorator(Widget child, long index, Animation<double> animation)
@@ -376,16 +376,16 @@ internal class _ReorderableListViewState__reorderable_list : State<ReorderableLi
                 double animValue = Curves.easeInOut.transform(animation.value);
                 double elevationLocal = (
                     Dart_uiLibrary.lerpDouble(0L, 6L, animValue)
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 return new Material(elevation: elevationLocal, child: child);
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             child: child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void dispose()
@@ -432,7 +432,9 @@ internal class _ReorderableListViewState__reorderable_list : State<ReorderableLi
                         paddingLocal.copyWith(top: start, bottom: end)
                     ),
                 _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                    throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
             }
         );
         var (headerPadding, footerPadding) = widget.reverse
@@ -447,7 +449,7 @@ internal class _ReorderableListViewState__reorderable_list : State<ReorderableLi
                         (
                             widget.cacheExtent
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     )
@@ -526,7 +528,7 @@ internal class _ReorderableListViewState__reorderable_list : State<ReorderableLi
                 )
             )()
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 

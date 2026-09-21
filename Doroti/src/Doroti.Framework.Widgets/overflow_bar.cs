@@ -51,7 +51,7 @@ public class OverflowBar : MultiChildRenderObjectWidget
             overflowDirection: overflowDirection,
             textDirection: textDirection ?? Directionality.of(context)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -267,7 +267,7 @@ internal class _RenderOverflowBar__overflow_bar
             }
             return height;
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicHeight(double width)
@@ -305,7 +305,7 @@ internal class _RenderOverflowBar__overflow_bar
             }
             return height;
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicWidth(double height)
@@ -322,7 +322,7 @@ internal class _RenderOverflowBar__overflow_bar
             child = childAfter(child);
         }
         return width + (spacing * (childCount - 1L));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicWidth(double height)
@@ -339,13 +339,13 @@ internal class _RenderOverflowBar__overflow_bar
             child = childAfter(child);
         }
         return width + (spacing * (childCount - 1L));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? computeDistanceToActualBaseline(TextBaseline baseline)
     {
         return defaultComputeDistanceToHighestActualBaseline(baseline);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
@@ -357,7 +357,9 @@ internal class _RenderOverflowBar__overflow_bar
                 (childAfter, firstChild),
             VerticalDirection.up => ((Func<RenderBox, RenderBox?>, RenderBox?))
                 (childBefore, lastChild),
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         var maxChildHeight = 0.0;
         var y = 0.0;
@@ -392,7 +394,7 @@ internal class _RenderOverflowBar__overflow_bar
         return ((childrenWidth + (spacing * (childCount - 1L))) > constraints.maxWidth)
             ? verticalBaseline.offset
             : minHorizontalBaseline.offset;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Size computeDryLayout(BoxConstraints constraints)
@@ -424,7 +426,7 @@ internal class _RenderOverflowBar__overflow_bar
             double overallWidth = (alignment is null) ? actualWidth : constraints.maxWidth;
             return constraints.constrain(new Size(overallWidth, maxChildHeight));
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void performLayout()
@@ -457,7 +459,9 @@ internal class _RenderOverflowBar__overflow_bar
                 return Equals(overflowDirection, VerticalDirection.down)
                     ? childAfter(child!)
                     : childBefore(child!);
-                throw new InvalidOperationException("Dart control flow completed without a value.");
+                throw new InvalidOperationException(
+                    "Control flow completed without returning a value."
+                );
             }
             double y = 0;
             while (child is not null)
@@ -472,7 +476,9 @@ internal class _RenderOverflowBar__overflow_bar
                     OverflowBarAlignment.end => rtlLocal
                         ? 0
                         : (constraints.maxWidth - child.size.width),
-                    _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    _ => throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
                 };
                 childParentData.offset = new Offset(x, y);
                 y += child.size.height + overflowSpacing;
@@ -564,7 +570,7 @@ internal class _RenderOverflowBar__overflow_bar
     public override bool hitTestChildren(BoxHitTestResult result, Offset position)
     {
         return defaultHitTestChildren(result, position: position);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paint(PaintingContext context, Offset offset)
@@ -606,7 +612,7 @@ internal class _RenderOverflowBar__overflow_bar
             childParentData = ((_OverflowBarParentData__overflow_bar?)child.parentData!)!;
         }
         return Equals(child, equals);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool _debugUltimateNextSiblingOf(RenderBox child, RenderBox? equals = null)
@@ -619,7 +625,7 @@ internal class _RenderOverflowBar__overflow_bar
             childParentData = ((_OverflowBarParentData__overflow_bar?)child.parentData!)!;
         }
         return Equals(child, equals);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual long childCount => _childCount;
@@ -662,10 +668,10 @@ internal class _RenderOverflowBar__overflow_bar
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _insertIntoChildList(RenderBox child, RenderBox? after = null)
@@ -894,7 +900,7 @@ internal class _RenderOverflowBar__overflow_bar
         DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         var childParentData = ((_OverflowBarParentData__overflow_bar?)child.parentData!)!;
         return childParentData.previousSibling;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual RenderBox? childAfter(RenderBox child)
@@ -902,7 +908,7 @@ internal class _RenderOverflowBar__overflow_bar
         DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         var childParentData = ((_OverflowBarParentData__overflow_bar?)child.parentData!)!;
         return childParentData.nextSibling;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override List<DiagnosticsNode> debugDescribeChildren()
@@ -927,7 +933,7 @@ internal class _RenderOverflowBar__overflow_bar
             }
         }
         return children;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double? defaultComputeDistanceToFirstActualBaseline(TextBaseline baseline)
@@ -942,16 +948,14 @@ internal class _RenderOverflowBar__overflow_bar
             {
                 double result__138852__value138916 = (
                     result
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 return (result__138852__value138916) + childParentData.offset.dy;
             }
             child = childParentData.nextSibling;
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double? defaultComputeDistanceToHighestActualBaseline(TextBaseline baseline)
@@ -969,7 +973,7 @@ internal class _RenderOverflowBar__overflow_bar
             child = childParentData.nextSibling;
         }
         return minBaseline.offset;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool defaultHitTestChildren(BoxHitTestResult result, Offset position)
@@ -987,7 +991,9 @@ internal class _RenderOverflowBar__overflow_bar
                         Equals(transformed, position - childParentData.offset)
                     );
                     return child!.hitTest(result, position: transformed);
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
             if (isHit)
@@ -997,7 +1003,7 @@ internal class _RenderOverflowBar__overflow_bar
             child = childParentData.previousSibling;
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void defaultPaint(PaintingContext context, Offset offset)
@@ -1022,6 +1028,6 @@ internal class _RenderOverflowBar__overflow_bar
             child = childParentData.nextSibling;
         }
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

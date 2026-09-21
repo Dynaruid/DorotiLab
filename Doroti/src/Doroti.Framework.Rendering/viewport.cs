@@ -35,7 +35,7 @@ internal class _PixelScrollCacheExtent__viewport : ScrollCacheExtent
     public override string ToString()
     {
         return $"ScrollCacheExtent.pixels({pixels})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool Equals(object? other)
@@ -72,7 +72,7 @@ internal class _ViewportScrollCacheExtent__viewport : ScrollCacheExtent
     public override string ToString()
     {
         return $"ScrollCacheExtent.viewport({value})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool Equals(object? other)
@@ -121,7 +121,7 @@ public abstract class RenderAbstractViewport : RenderObject
             @object = @object.parent;
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static RenderAbstractViewport of(RenderObject? @object)
@@ -143,7 +143,7 @@ public abstract class RenderAbstractViewport : RenderObject
             return true;
         });
         return viewport!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public abstract RevealedOffset getOffsetToReveal(
@@ -192,13 +192,13 @@ public class RevealedOffset
                 return null;
             }
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string ToString()
     {
         return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "RevealedOffset")}(offset: {offset}, rect: {rect})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -246,11 +246,13 @@ public abstract class RenderViewportBase<ParentDataClass>
                         (
                             cacheExtent
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     ),
-                    _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    _ => throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
                 }
             );
         _paintOrder = paintOrder;
@@ -360,7 +362,7 @@ public abstract class RenderViewportBase<ParentDataClass>
                             (
                                 __value
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             )
                         ),
@@ -369,11 +371,13 @@ public abstract class RenderViewportBase<ParentDataClass>
                             (
                                 __value
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             )
                         ),
-                    _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    _ => throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
                 };
             }
             markNeedsLayout();
@@ -414,7 +418,7 @@ public abstract class RenderViewportBase<ParentDataClass>
                     (
                         cacheExtent
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 ),
@@ -422,11 +426,13 @@ public abstract class RenderViewportBase<ParentDataClass>
                     (
                         cacheExtent
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 ),
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             };
             markNeedsLayout();
         }
@@ -514,35 +520,35 @@ public abstract class RenderViewportBase<ParentDataClass>
             return true;
         });
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicWidth(double height)
     {
         DartRuntimePrimitives.Assert(() => debugThrowIfNotCheckingIntrinsics());
         return 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicWidth(double height)
     {
         DartRuntimePrimitives.Assert(() => debugThrowIfNotCheckingIntrinsics());
         return 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicHeight(double width)
     {
         DartRuntimePrimitives.Assert(() => debugThrowIfNotCheckingIntrinsics());
         return 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicHeight(double width)
     {
         DartRuntimePrimitives.Assert(() => debugThrowIfNotCheckingIntrinsics());
         return 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool isRepaintBoundary => true;
@@ -609,9 +615,7 @@ public abstract class RenderViewportBase<ParentDataClass>
             {
                 return (
                     childLayoutGeometry.scrollOffsetCorrection
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
             }
             double effectiveLayoutOffset = layoutOffset + childLayoutGeometry.paintOrigin;
@@ -643,7 +647,7 @@ public abstract class RenderViewportBase<ParentDataClass>
             child = advance(child);
         }
         return 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Rect? describeApproximatePaintClip(RenderObject child)
@@ -713,7 +717,7 @@ public abstract class RenderViewportBase<ParentDataClass>
             }
         }
         return Rect.fromLTRB(leftLocal, topLocal, rightLocal, bottomLocal);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Rect? describeSemanticsClip(RenderObject? child)
@@ -741,7 +745,7 @@ public abstract class RenderViewportBase<ParentDataClass>
                         - (
                             _calculatedCacheExtent
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ),
                     semanticBounds.right,
@@ -749,7 +753,7 @@ public abstract class RenderViewportBase<ParentDataClass>
                         + (
                             _calculatedCacheExtent
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                 );
@@ -761,7 +765,7 @@ public abstract class RenderViewportBase<ParentDataClass>
                         - (
                             _calculatedCacheExtent
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ),
                     semanticBounds.top,
@@ -769,14 +773,14 @@ public abstract class RenderViewportBase<ParentDataClass>
                         + (
                             _calculatedCacheExtent
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ),
                     semanticBounds.bottom
                 );
             }
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paint(PaintingContext context, Offset offset)
@@ -851,7 +855,9 @@ public abstract class RenderViewportBase<ParentDataClass>
                         child.geometry!.layoutExtent,
                         child.constraints.crossAxisExtent
                     ),
-                    _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    _ => throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
                 };
                 canvasLocal.drawRect(((offset + paintOffsetOf(child)) & size).deflate(0.5), paint);
                 child = childAfter(child);
@@ -866,7 +872,9 @@ public abstract class RenderViewportBase<ParentDataClass>
         {
             Axis.vertical => (position.dy, position.dx),
             Axis.horizontal => (position.dx, position.dy),
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         var sliverResult = SliverHitTestResult.CreateWrap(result);
         foreach (RenderSliver child in childrenInHitTestOrder)
@@ -897,7 +905,7 @@ public abstract class RenderViewportBase<ParentDataClass>
             }
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual RevealedOffset getOffsetToReveal(
@@ -925,9 +933,7 @@ public abstract class RenderViewportBase<ParentDataClass>
                 RenderSliver parent__41405__as41502 = (RenderSliver)parentLocal;
                 leadingScrollOffset += (
                     parent__41405__as41502.childScrollOffset(child)
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
             }
             else
@@ -950,12 +956,14 @@ public abstract class RenderViewportBase<ParentDataClass>
             growthDirectionLocal = pivotParent.constraints.growthDirection;
             pivotExtent = (
                 axis
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ) switch
             {
                 Axis.horizontal => pivot.size.width,
                 Axis.vertical => pivot.size.height,
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             };
             rect ??= target.paintBounds;
             rectLocal = MatrixUtils.transformRect(
@@ -964,7 +972,7 @@ public abstract class RenderViewportBase<ParentDataClass>
                     (
                         rect
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
@@ -983,7 +991,7 @@ public abstract class RenderViewportBase<ParentDataClass>
                         (
                             axis
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     )
@@ -1012,9 +1020,7 @@ public abstract class RenderViewportBase<ParentDataClass>
                 }
                 rectLocal = (
                     rect
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
             }
             else
@@ -1025,7 +1031,7 @@ public abstract class RenderViewportBase<ParentDataClass>
                     rect: (
                         rect
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 );
@@ -1043,7 +1049,9 @@ public abstract class RenderViewportBase<ParentDataClass>
             AxisDirection.left => pivotExtent - rectLocal.right,
             AxisDirection.right => rectLocal.left,
             AxisDirection.down => rectLocal.top,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         bool isPinned =
             (sliver.geometry!.maxScrollObstructionExtent > 0L) && (leadingScrollOffset >= 0L);
@@ -1054,9 +1062,7 @@ public abstract class RenderViewportBase<ParentDataClass>
             (
                 (
                     rect
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             )
         );
@@ -1080,25 +1086,27 @@ public abstract class RenderViewportBase<ParentDataClass>
                 }
                 leadingScrollOffset -= (
                     axis
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) switch
                 {
                     Axis.vertical => targetRect.height,
                     Axis.horizontal => targetRect.width,
-                    _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    _ => throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
                 };
                 break;
             }
         }
         double mainAxisExtentDifference = (
-            axis ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            axis ?? throw new global::System.NullReferenceException("A required value was null.")
         ) switch
         {
             Axis.horizontal => size.width - extentOfPinnedSlivers - rectLocal.width,
             Axis.vertical => size.height - extentOfPinnedSlivers - rectLocal.height,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         double targetOffset = leadingScrollOffset - (mainAxisExtentDifference * alignment);
         double offsetDifference = offset.pixels - targetOffset;
@@ -1108,10 +1116,12 @@ public abstract class RenderViewportBase<ParentDataClass>
             AxisDirection.down => targetRect.translate(0.0, offsetDifference),
             AxisDirection.left => targetRect.translate(-offsetDifference, 0.0),
             AxisDirection.right => targetRect.translate(offsetDifference, 0.0),
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         return new RevealedOffset(offset: targetOffset, rect: targetRect);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Offset computeAbsolutePaintOffset(
@@ -1137,9 +1147,11 @@ public abstract class RenderViewportBase<ParentDataClass>
             ),
             AxisDirection.right => new Offset(layoutOffset, 0.0),
             AxisDirection.down => new Offset(0.0, layoutOffset),
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -1170,7 +1182,7 @@ public abstract class RenderViewportBase<ParentDataClass>
             child = childAfter(child);
         }
         return children;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public abstract bool hasVisualOverflow { get; }
@@ -1200,7 +1212,9 @@ public abstract class RenderViewportBase<ParentDataClass>
             {
                 SliverPaintOrder.firstIsTop => _childrenLastToFirst,
                 SliverPaintOrder.lastIsTop => _childrenFirstToLast,
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             };
         }
     }
@@ -1212,7 +1226,9 @@ public abstract class RenderViewportBase<ParentDataClass>
             {
                 SliverPaintOrder.firstIsTop => _childrenFirstToLast,
                 SliverPaintOrder.lastIsTop => _childrenLastToFirst,
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             };
         }
     }
@@ -1305,7 +1321,7 @@ public abstract class RenderViewportBase<ParentDataClass>
         }
         _ = offset.moveTo(targetOffset.offset, duration: duration, curve: curve);
         return targetOffset.rect;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool _debugUltimatePreviousSiblingOf(
@@ -1321,7 +1337,7 @@ public abstract class RenderViewportBase<ParentDataClass>
             childParentData = ((ParentDataClass?)(object?)child.parentData!)!;
         }
         return Equals(child, equals);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool _debugUltimateNextSiblingOf(RenderSliver child, RenderSliver? equals = null)
@@ -1334,7 +1350,7 @@ public abstract class RenderViewportBase<ParentDataClass>
             childParentData = ((ParentDataClass?)(object?)child.parentData!)!;
         }
         return Equals(child, equals);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual long childCount => _childCount;
@@ -1377,7 +1393,7 @@ public abstract class RenderViewportBase<ParentDataClass>
             return true;
         });
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _insertIntoChildList(RenderSliver child, RenderSliver? after = null)
@@ -1561,7 +1577,7 @@ public abstract class RenderViewportBase<ParentDataClass>
         DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         var childParentData = ((ParentDataClass?)(object?)child.parentData!)!;
         return childParentData.previousSibling;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual RenderSliver? childAfter(RenderSliver child)
@@ -1569,7 +1585,7 @@ public abstract class RenderViewportBase<ParentDataClass>
         DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         var childParentData = ((ParentDataClass?)(object?)child.parentData!)!;
         return childParentData.nextSibling;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1663,7 +1679,7 @@ public class RenderViewport : RenderViewportBase<SliverPhysicalContainerParentDa
             DebugLibrary.debugCheckHasBoundedAxis(axis, constraints)
         );
         return constraints.biggest;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void performLayout()
@@ -1695,7 +1711,9 @@ public class RenderViewport : RenderViewportBase<SliverPhysicalContainerParentDa
         {
             Axis.vertical => (size.height, size.width),
             Axis.horizontal => (size.width, size.height),
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         double centerOffsetAdjustmentLocal = center!.centerOffsetAdjustment;
         long maxLayoutCycles = _maxLayoutCyclesPerChild * childCount;
@@ -1787,16 +1805,14 @@ public class RenderViewport : RenderViewportBase<SliverPhysicalContainerParentDa
                 2L
                 * (
                     _calculatedCacheExtent
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             );
         double centerCacheOffset =
             centerOffset
             + (
                 _calculatedCacheExtent
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         double reverseDirectionRemainingCacheExtent = Dart_uiLibrary.clampDouble(
             centerCacheOffset,
@@ -1827,7 +1843,7 @@ public class RenderViewport : RenderViewportBase<SliverPhysicalContainerParentDa
                     -(
                         _calculatedCacheExtent
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ),
                     0.0
@@ -1855,14 +1871,12 @@ public class RenderViewport : RenderViewportBase<SliverPhysicalContainerParentDa
                 centerOffset,
                 -(
                     _calculatedCacheExtent
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 0.0
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool hasVisualOverflow => _hasVisualOverflow;
@@ -1909,7 +1923,7 @@ public class RenderViewport : RenderViewportBase<SliverPhysicalContainerParentDa
     {
         var childParentData = ((SliverPhysicalParentData?)(object?)child.parentData!)!;
         return childParentData.paintOffset;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double scrollOffsetOf(RenderSliver child, double scrollOffsetWithinChild)
@@ -1941,7 +1955,7 @@ public class RenderViewport : RenderViewportBase<SliverPhysicalContainerParentDa
                 return scrollOffsetToChildLocal - scrollOffsetWithinChild;
             }
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double maxScrollObstructionExtentBefore(RenderSliver child)
@@ -1973,7 +1987,7 @@ public class RenderViewport : RenderViewportBase<SliverPhysicalContainerParentDa
                 return pinnedExtentLocal;
             }
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void applyPaintTransform(RenderObject child, Matrix4 transform)
@@ -2001,9 +2015,11 @@ public class RenderViewport : RenderViewportBase<SliverPhysicalContainerParentDa
                 - (parentMainAxisPosition - paintOffsetLocal.dy),
             AxisDirection.left => child.geometry!.paintExtent
                 - (parentMainAxisPosition - paintOffsetLocal.dx),
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override long indexOfFirstChild
@@ -2031,7 +2047,7 @@ public class RenderViewport : RenderViewportBase<SliverPhysicalContainerParentDa
             return "center child";
         }
         return $"child {index}";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -2100,7 +2116,7 @@ public class RenderShrinkWrappingViewport : RenderViewportBase<SliverLogicalCont
             return true;
         });
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _debugCheckHasBoundedCrossAxis()
@@ -2141,7 +2157,7 @@ public class RenderShrinkWrappingViewport : RenderViewportBase<SliverLogicalCont
             return true;
         });
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void performLayout()
@@ -2154,7 +2170,9 @@ public class RenderShrinkWrappingViewport : RenderViewportBase<SliverLogicalCont
             {
                 Axis.vertical => new Size(constraintsLocal.maxWidth, constraintsLocal.minHeight),
                 Axis.horizontal => new Size(constraintsLocal.minWidth, constraintsLocal.maxHeight),
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             };
             offset.applyViewportDimension(0.0);
             _maxScrollExtent = 0.0;
@@ -2168,7 +2186,9 @@ public class RenderShrinkWrappingViewport : RenderViewportBase<SliverLogicalCont
         {
             Axis.vertical => (constraintsLocal.maxHeight, constraintsLocal.maxWidth),
             Axis.horizontal => (constraintsLocal.maxWidth, constraintsLocal.maxHeight),
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         double correction = default!;
         double effectiveExtent = default!;
@@ -2185,7 +2205,9 @@ public class RenderShrinkWrappingViewport : RenderViewportBase<SliverLogicalCont
                 {
                     Axis.vertical => constraintsLocal.constrainHeight(_shrinkWrapExtent),
                     Axis.horizontal => constraintsLocal.constrainWidth(_shrinkWrapExtent),
-                    _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    _ => throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
                 };
                 bool didAcceptViewportDimension = offset.applyViewportDimension(effectiveExtent);
                 bool didAcceptContentDimension = offset.applyContentDimensions(
@@ -2205,7 +2227,9 @@ public class RenderShrinkWrappingViewport : RenderViewportBase<SliverLogicalCont
                 effectiveExtent,
                 crossAxisExtent
             ),
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
     }
 
@@ -2247,16 +2271,16 @@ public class RenderShrinkWrappingViewport : RenderViewportBase<SliverLogicalCont
                     * (
                         _calculatedCacheExtent
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 ),
             cacheOrigin: -(
                 _calculatedCacheExtent
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool hasVisualOverflow => _hasVisualOverflow;
@@ -2293,11 +2317,11 @@ public class RenderShrinkWrappingViewport : RenderViewportBase<SliverLogicalCont
             child,
             (
                 childParentData.layoutOffset
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             GrowthDirection.forward
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double scrollOffsetOf(RenderSliver child, double scrollOffsetWithinChild)
@@ -2314,7 +2338,7 @@ public class RenderShrinkWrappingViewport : RenderViewportBase<SliverLogicalCont
             current = childAfter(current);
         }
         return scrollOffsetToChild + scrollOffsetWithinChild;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double maxScrollObstructionExtentBefore(RenderSliver child)
@@ -2331,7 +2355,7 @@ public class RenderShrinkWrappingViewport : RenderViewportBase<SliverLogicalCont
             current = childAfter(current);
         }
         return pinnedExtent;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void applyPaintTransform(RenderObject child, Matrix4 transform)
@@ -2348,7 +2372,7 @@ public class RenderShrinkWrappingViewport : RenderViewportBase<SliverLogicalCont
         DartRuntimePrimitives.Assert(() => hasSize);
         double layoutOffsetLocal = (
             ((SliverLogicalParentData?)(object?)child.parentData!)!.layoutOffset
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         );
         return SliverLibrary.applyGrowthDirectionToAxisDirection(
             child.constraints.axisDirection,
@@ -2359,9 +2383,11 @@ public class RenderShrinkWrappingViewport : RenderViewportBase<SliverLogicalCont
             AxisDirection.right => parentMainAxisPosition - layoutOffsetLocal,
             AxisDirection.up => size.height - parentMainAxisPosition - layoutOffsetLocal,
             AxisDirection.left => size.width - parentMainAxisPosition - layoutOffsetLocal,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override long indexOfFirstChild => 0L;

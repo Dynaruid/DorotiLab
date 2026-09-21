@@ -373,7 +373,7 @@ public class RenderImage : RenderBox
         return constraints.constrainSizeAndAttemptToPreserveAspectRatio(
             new Size(_image!.width.toDouble() / _scale, _image!.height.toDouble() / _scale)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicWidth(double height)
@@ -384,14 +384,14 @@ public class RenderImage : RenderBox
             return 0.0;
         }
         return _sizeForConstraints(BoxConstraints.CreateTightForFinite(height: (height))).width;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicWidth(double height)
     {
         DartRuntimePrimitives.Assert(() => height >= 0.0);
         return _sizeForConstraints(BoxConstraints.CreateTightForFinite(height: (height))).width;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicHeight(double width)
@@ -402,14 +402,14 @@ public class RenderImage : RenderBox
             return 0.0;
         }
         return _sizeForConstraints(BoxConstraints.CreateTightForFinite(width: (width))).height;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicHeight(double width)
     {
         DartRuntimePrimitives.Assert(() => width >= 0.0);
         return _sizeForConstraints(BoxConstraints.CreateTightForFinite(width: (width))).height;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool hitTestSelf(Offset position) => true;
@@ -417,7 +417,7 @@ public class RenderImage : RenderBox
     public override Size computeDryLayout(BoxConstraints constraints)
     {
         return _sizeForConstraints(constraints);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void performLayout()
@@ -460,7 +460,7 @@ public class RenderImage : RenderBox
             repeat: _repeat,
             flipHorizontally: (
                 _flipHorizontally
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             invertColors: invertColors,
             filterQuality: _filterQuality,

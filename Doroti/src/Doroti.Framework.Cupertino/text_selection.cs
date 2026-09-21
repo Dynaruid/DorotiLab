@@ -128,7 +128,7 @@ public class CupertinoTextSelectionControls : TextSelectionControls
                 + (Text_selectionLibrary._kSelectionHandleRadius * 2L)
                 - Text_selectionLibrary._kSelectionHandleOverlap
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget buildToolbar(
@@ -181,7 +181,7 @@ public class CupertinoTextSelectionControls : TextSelectionControls
             selectionMidpoint: selectionMidpoint,
             textLineHeight: textLineHeight
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget buildHandle(
@@ -245,9 +245,11 @@ public class CupertinoTextSelectionControls : TextSelectionControls
                 return SizedBox.CreateFromSize(size: getHandleSize(textLineHeight));
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Offset getHandleAnchor(TextSelectionHandleType type, double textLineHeight)
@@ -276,9 +278,11 @@ public class CupertinoTextSelectionControls : TextSelectionControls
                 );
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -440,6 +444,6 @@ public class _CupertinoTextSelectionControlsToolbarState__text_selection
             anchorBelow: anchorBelowLocal,
             children: items
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

@@ -134,7 +134,7 @@ public class PriorityQueue<T>
         if (value is not T typed)
         {
             throw new InvalidOperationException(
-                $"Dart covariant queue value {typeof(TValue).FullName} is not assignable to {typeof(T).FullName}."
+                $"Queued covariant value {typeof(TValue).FullName} is not assignable to {typeof(T).FullName}."
             );
         }
         Add(typed);

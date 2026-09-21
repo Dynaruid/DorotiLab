@@ -227,7 +227,7 @@ public static partial class ScaleLibrary
         double speedSquared = velocity.pixelsPerSecond.distanceSquared;
         return speedSquared
             > (ConstantsLibrary.kMinFlingVelocity * ConstantsLibrary.kMinFlingVelocity);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -381,7 +381,7 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
         }
         factor -= _initialPanZoomRotationFactor;
         return factor;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void addAllowedPointer(PointerDownEvent @event)
@@ -551,9 +551,7 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
                 _lastTransform,
                 (
                     _currentFocalPoint
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             );
             _delta = Offset.zero;
@@ -565,9 +563,7 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
                 _lastTransform,
                 (
                     _currentFocalPoint
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             );
             _delta = _localFocalPoint - localPreviousFocalPoint;
@@ -650,7 +646,7 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
     {
         _initialFocalPoint = (
             _currentFocalPoint
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         );
         _initialSpan = _currentSpan;
         _initialLine = _currentLine;
@@ -740,7 +736,7 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
         }
         _scaleVelocityTracker = new VelocityTracker(PointerDeviceKind.touch);
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _advanceStateMachine(bool shouldStartIfAccepted, PointerEvent @event)
@@ -755,9 +751,7 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
             double focalPointDeltaLocal = (
                 (
                     _currentFocalPoint
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) - _initialFocalPoint
             ).distance;
             if (
@@ -812,7 +806,7 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
                                             focalPoint: (
                                                 _currentFocalPoint
                                                 ?? throw new global::System.NullReferenceException(
-                                                    "Dart null assertion failed."
+                                                    "A required value was null."
                                                 )
                                             ),
                                             localFocalPoint: _localFocalPoint,
@@ -850,7 +844,7 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
                                         focalPoint: (
                                             _currentFocalPoint
                                             ?? throw new global::System.NullReferenceException(
-                                                "Dart null assertion failed."
+                                                "A required value was null."
                                             )
                                         ),
                                         localFocalPoint: _localFocalPoint,
@@ -887,9 +881,7 @@ public class ScaleGestureRecognizer : OneSequenceGestureRecognizer
             {
                 _initialFocalPoint = (
                     _currentFocalPoint
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 _initialSpan = _currentSpan;
                 _initialLine = _currentLine;

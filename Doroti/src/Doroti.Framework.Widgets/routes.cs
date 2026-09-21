@@ -34,7 +34,7 @@ public abstract class OverlayRoute<T> : Route<T>
             navigator!.finalizeRoute(this);
         }
         return returnValue;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void dispose()
@@ -102,10 +102,10 @@ public abstract class TransitionRoute<T> : OverlayRoute<T>, PredictiveBackRoute,
         {
             disposed = _transitionCompleter.isCompleted;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return (disposed);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual AnimationController createAnimationController()
@@ -122,7 +122,7 @@ public abstract class TransitionRoute<T> : OverlayRoute<T>, PredictiveBackRoute,
             debugLabel: debugLabel,
             vsync: navigator!
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Animation<double> createAnimation()
@@ -133,7 +133,7 @@ public abstract class TransitionRoute<T> : OverlayRoute<T>, PredictiveBackRoute,
         );
         DartRuntimePrimitives.Assert(() => _controller is not null);
         return _controller!.view;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Physics.Simulation? createSimulation(bool forward)
@@ -145,7 +145,7 @@ public abstract class TransitionRoute<T> : OverlayRoute<T>, PredictiveBackRoute,
                     $"The `duration` must be positive for a non-simulation animation. Received {transitionDuration}."
         );
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Physics.Simulation? _createSimulationAndVerify(bool forward)
@@ -160,7 +160,7 @@ public abstract class TransitionRoute<T> : OverlayRoute<T>, PredictiveBackRoute,
                 + $"Received {transitionDuration}."
         );
         return simulation;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _handleStatusChanged(AnimationStatus status)
@@ -258,7 +258,7 @@ public abstract class TransitionRoute<T> : OverlayRoute<T>, PredictiveBackRoute,
         {
             return _controller!.animateWith(_simulation!);
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void didAdd()
@@ -319,7 +319,7 @@ public abstract class TransitionRoute<T> : OverlayRoute<T>, PredictiveBackRoute,
             _controller!.animateBackWith(_simulation!);
         }
         return base.didPop(result);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void didPopNext(dynamic nextRoute)
@@ -627,13 +627,13 @@ internal class _DismissModalAction__routes : DismissAction
     {
         IModalRoute route = ModalRoute<object>.untypedOf(this.context)!;
         return route.barrierDismissible;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override object? invoke(DismissIntent intent, BuildContext? context = null)
     {
         return Navigator.of(this.context).maybePop<object>();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -681,7 +681,7 @@ internal class _ModalScopeStatus__routes : InheritedModel<_ModalRouteAspect__rou
             || (impliesAppBarDismissal != __old.impliesAppBarDismissal)
             || (!Equals(route, __old.route))
             || (opaque != __old.opaque);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder description)
@@ -724,10 +724,12 @@ internal class _ModalScopeStatus__routes : InheritedModel<_ModalRouteAspect__rou
                         route.popDisposition,
                         __oldWidget.route.popDisposition
                     ),
-                    _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    _ => throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
                 }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -784,7 +786,7 @@ public class _ModalScopeState__routes<T> : State<_ModalScope__routes<T>>
         {
             traversalEdgeBehaviorLocal = (
                 routeLocal.traversalEdgeBehavior
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
         else
@@ -795,7 +797,7 @@ public class _ModalScopeState__routes<T> : State<_ModalScope__routes<T>>
         {
             directionalTraversalEdgeBehaviorLocal = (
                 routeLocal.directionalTraversalEdgeBehavior
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
         else
@@ -862,7 +864,9 @@ public class _ModalScopeState__routes<T> : State<_ModalScope__routes<T>>
                     restorationId: widget.route.restorationScopeId.value,
                     child: child!
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             child: new _ModalScopeStatus__routes(
                 route: widget.route,
@@ -916,14 +920,14 @@ public class _ModalScopeState__routes<T> : State<_ModalScope__routes<T>>
                                                                         child: child
                                                                     );
                                                                     throw new InvalidOperationException(
-                                                                        "Dart closure completed without a value."
+                                                                        "Callback completed without returning a value."
                                                                     );
                                                                 },
                                                                 child: child
                                                             )
                                                         );
                                                         throw new InvalidOperationException(
-                                                            "Dart closure completed without a value."
+                                                            "Callback completed without returning a value."
                                                         );
                                                     },
                                                     child: _page ??= new RepaintBoundary(
@@ -937,7 +941,7 @@ public class _ModalScopeState__routes<T> : State<_ModalScope__routes<T>>
                                                                     widget.route.secondaryAnimation!
                                                                 );
                                                                 throw new InvalidOperationException(
-                                                                    "Dart closure completed without a value."
+                                                                    "Callback completed without returning a value."
                                                                 );
                                                             }
                                                         )
@@ -948,7 +952,7 @@ public class _ModalScopeState__routes<T> : State<_ModalScope__routes<T>>
                                     )
                                 );
                                 throw new InvalidOperationException(
-                                    "Dart closure completed without a value."
+                                    "Callback completed without returning a value."
                                 );
                             }
                         )
@@ -956,7 +960,7 @@ public class _ModalScopeState__routes<T> : State<_ModalScope__routes<T>>
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1042,7 +1046,7 @@ public abstract class ModalRoute<T> : TransitionRoute<T>, LocalHistoryRoute<T>, 
     public static ModalRoute<TRouteResult>? of<TRouteResult>(BuildContext context)
     {
         return ModalRoute<TRouteResult>._of<TRouteResult>(context);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static ModalRoute<TRouteResult>? _of<TRouteResult>(
@@ -1056,7 +1060,7 @@ public abstract class ModalRoute<T> : TransitionRoute<T>, LocalHistoryRoute<T>, 
                     .inheritFrom<_ModalScopeStatus__routes>(context, aspect: aspect)
                     ?.route
         )!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static IModalRoute? untypedOf(BuildContext context) =>
@@ -1110,9 +1114,9 @@ public abstract class ModalRoute<T> : TransitionRoute<T>, LocalHistoryRoute<T>, 
             return ((object?)route is ModalRoute<T> typedRoute)
                 && !typedRoute.willHandlePopInternally
                 && (typedRoute.settings.ToString() == name);
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public abstract Widget buildPage(
@@ -1129,7 +1133,7 @@ public abstract class ModalRoute<T> : TransitionRoute<T>, LocalHistoryRoute<T>, 
     )
     {
         return child;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Func<
@@ -1169,7 +1173,7 @@ public abstract class ModalRoute<T> : TransitionRoute<T>, LocalHistoryRoute<T>, 
                 allowSnapshotting,
                 proxiedOriginalTransitions
             ) ?? proxiedOriginalTransitions;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void install()
@@ -1188,7 +1192,7 @@ public abstract class ModalRoute<T> : TransitionRoute<T>, LocalHistoryRoute<T>, 
             );
         }
         return base.didPush();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void didAdd()
@@ -1277,7 +1281,7 @@ public abstract class ModalRoute<T> : TransitionRoute<T>, LocalHistoryRoute<T>, 
             }
         }
         return await base.willPop();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override RoutePopDisposition popDisposition
@@ -1489,7 +1493,7 @@ public abstract class ModalRoute<T> : TransitionRoute<T>, LocalHistoryRoute<T>, 
             );
         }
         return barrier;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Widget buildModalBarrier()
@@ -1525,7 +1529,7 @@ public abstract class ModalRoute<T> : TransitionRoute<T>, LocalHistoryRoute<T>, 
             );
         }
         return barrier;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _buildModalScope(BuildContext context)
@@ -1534,7 +1538,7 @@ public abstract class ModalRoute<T> : TransitionRoute<T>, LocalHistoryRoute<T>, 
             sortKey: new OrdinalSortKey(0.0),
             child: new _ModalScope__routes<T>(key: _scopeKey, route: this)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override IEnumerable<OverlayEntry> createOverlayEntries()
@@ -1550,7 +1554,7 @@ public abstract class ModalRoute<T> : TransitionRoute<T>, LocalHistoryRoute<T>, 
                 )
             ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string ToString() =>
@@ -1636,7 +1640,7 @@ public abstract class ModalRoute<T> : TransitionRoute<T>, LocalHistoryRoute<T>, 
             return false;
         }
         return base.didPop(result);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool willHandlePopInternally
@@ -1680,10 +1684,10 @@ public class RouteObserver<R> : NavigatorObserver
         {
             contained = _listeners.ContainsKey(route);
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return contained;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void subscribe(RouteAware routeAware, R route)
@@ -1867,7 +1871,7 @@ public class RawDialogRoute<T> : PopupRoute<T>
                 child: _pageBuilder(context, animation, secondaryAnimation)
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget buildTransitions(
@@ -1882,7 +1886,7 @@ public class RawDialogRoute<T> : PopupRoute<T>
             return new FadeTransition(opacity: animation, child: child);
         }
         return _transitionBuilder(context, animation, secondaryAnimation, child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget buildModalBarrier()
@@ -1905,7 +1909,7 @@ public class RawDialogRoute<T> : PopupRoute<T>
             );
         }
         return barrier;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1952,7 +1956,7 @@ public static partial class RoutesLibrary
                     fullscreenDialog: fullscreenDialog
                 )
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -2020,6 +2024,6 @@ public abstract class PopEntry<T> : IPopEntry
     public override string ToString()
     {
         return $"PopEntry canPop: {canPopNotifier.value}, onPopInvoked: {onPopInvokedWithResult}";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

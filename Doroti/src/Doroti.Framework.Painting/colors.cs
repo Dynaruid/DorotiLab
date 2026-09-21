@@ -38,7 +38,7 @@ public static partial class ColorsLibrary
         }
         hue = double.IsNaN(hue) ? 0.0 : hue;
         return hue;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -67,7 +67,7 @@ public static partial class ColorsLibrary
             ((green + match) * 255L).round(),
             ((blue + match) * 255L).round()
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -111,25 +111,25 @@ public class HSVColor
     public virtual HSVColor withAlpha(double alpha)
     {
         return new HSVColor(alpha, hue, saturation, value);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual HSVColor withHue(double hue)
     {
         return new HSVColor(alpha, hue, saturation, value);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual HSVColor withSaturation(double saturation)
     {
         return new HSVColor(alpha, hue, saturation, value);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual HSVColor withValue(double value)
     {
         return new HSVColor(alpha, hue, saturation, value);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Color toColor()
@@ -138,13 +138,13 @@ public class HSVColor
         double secondary = chroma * (1.0 - ((hue / 60.0 % 2.0) - 1.0).abs());
         double match = value - chroma;
         return ColorsLibrary._colorFromHue(alpha, hue, chroma, secondary, match);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual HSVColor _scaleAlpha(double factor)
     {
         return withAlpha(alpha * factor);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static HSVColor? lerp(HSVColor? a, HSVColor? b, double t)
@@ -165,23 +165,19 @@ public class HSVColor
             Dart_uiLibrary.clampDouble(
                 (
                     Dart_uiLibrary.lerpDouble(a.alpha, b.alpha, t)
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 0.0,
                 1.0
             ),
             (
                 Dart_uiLibrary.lerpDouble(a.hue, b.hue, t)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ) % 360.0,
             Dart_uiLibrary.clampDouble(
                 (
                     Dart_uiLibrary.lerpDouble(a.saturation, b.saturation, t)
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 0.0,
                 1.0
@@ -189,15 +185,13 @@ public class HSVColor
             Dart_uiLibrary.clampDouble(
                 (
                     Dart_uiLibrary.lerpDouble(a.value, b.value, t)
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 0.0,
                 1.0
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool Equals(object? other)
@@ -274,25 +268,25 @@ public class HSLColor
     public virtual HSLColor withAlpha(double alpha)
     {
         return new HSLColor(alpha, hue, saturation, lightness);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual HSLColor withHue(double hue)
     {
         return new HSLColor(alpha, hue, saturation, lightness);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual HSLColor withSaturation(double saturation)
     {
         return new HSLColor(alpha, hue, saturation, lightness);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual HSLColor withLightness(double lightness)
     {
         return new HSLColor(alpha, hue, saturation, lightness);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Color toColor()
@@ -301,13 +295,13 @@ public class HSLColor
         double secondary = chroma * (1.0 - ((hue / 60.0 % 2.0) - 1.0).abs());
         double match = lightness - (chroma / 2.0);
         return ColorsLibrary._colorFromHue(alpha, hue, chroma, secondary, match);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual HSLColor _scaleAlpha(double factor)
     {
         return withAlpha(alpha * factor);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static HSLColor? lerp(HSLColor? a, HSLColor? b, double t)
@@ -328,23 +322,19 @@ public class HSLColor
             Dart_uiLibrary.clampDouble(
                 (
                     Dart_uiLibrary.lerpDouble(a.alpha, b.alpha, t)
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 0.0,
                 1.0
             ),
             (
                 Dart_uiLibrary.lerpDouble(a.hue, b.hue, t)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ) % 360.0,
             Dart_uiLibrary.clampDouble(
                 (
                     Dart_uiLibrary.lerpDouble(a.saturation, b.saturation, t)
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 0.0,
                 1.0
@@ -352,15 +342,13 @@ public class HSLColor
             Dart_uiLibrary.clampDouble(
                 (
                     Dart_uiLibrary.lerpDouble(a.lightness, b.lightness, t)
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 0.0,
                 1.0
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool Equals(object? other)
@@ -471,7 +459,7 @@ public class ColorSwatch<T> : Color
             }
         }
         return new ColorSwatch<TKey>(Dart_uiLibrary.Color.lerp(a, b, t)!.value, swatch);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -510,6 +498,6 @@ public class ColorProperty : DiagnosticsProperty<Color>
             };
         }
         return json;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

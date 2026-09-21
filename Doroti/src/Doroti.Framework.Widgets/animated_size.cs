@@ -61,7 +61,7 @@ internal class _AnimatedSizeState__animated_size
             onEnd: widget.onEnd,
             child: widget.child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
@@ -90,7 +90,7 @@ internal class _AnimatedSizeState__animated_size
                     }
                 )
             );
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         _ticker = new Scheduler.Ticker(
             onTick,
@@ -101,7 +101,7 @@ internal class _AnimatedSizeState__animated_size
         _updateTickerModeNotifier();
         _updateTicker();
         return _ticker!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void dispose()
@@ -131,7 +131,7 @@ internal class _AnimatedSizeState__animated_size
                     }
                 )
             );
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         _tickerModeNotifier?.removeListener(_updateTicker);
         _tickerModeNotifier = null;
@@ -235,7 +235,7 @@ internal class _AnimatedSize__animated_size : SingleChildRenderObjectWidget
             clipBehavior: clipBehavior,
             onEnd: onEnd
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)

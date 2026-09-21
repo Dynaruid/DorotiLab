@@ -51,7 +51,7 @@ public abstract class _ActionButton__action_buttons : IconButton
                 }
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -118,7 +118,7 @@ internal class _ActionIcon__action_buttons : StatelessWidget
             }
         }
         return new Icon(data, semanticLabel: semanticsLabel);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -133,7 +133,9 @@ public class BackButtonIcon : StatelessWidget
             iconBuilderCallback: (actionIconTheme) =>
             {
                 return actionIconTheme?.backButtonIconBuilder;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             getIcon: (context) =>
             {
@@ -156,17 +158,23 @@ public class BackButtonIcon : StatelessWidget
                         return Icons.arrow_back_ios_new_rounded;
                     }
                     default:
-                        throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                        throw new InvalidOperationException(
+                            "Switch expression did not handle the supplied value."
+                        );
                 }
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             getAndroidSemanticsLabel: (materialLocalization) =>
             {
                 return materialLocalization.backButtonTooltip;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -193,7 +201,7 @@ public class BackButton : _ActionButton__action_buttons
     internal override string _getTooltip(BuildContext context)
     {
         return MaterialLocalizations.of(context).backButtonTooltip;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -208,16 +216,20 @@ public class CloseButtonIcon : StatelessWidget
             iconBuilderCallback: (actionIconTheme) =>
             {
                 return actionIconTheme?.closeButtonIconBuilder;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             getIcon: (context) => Icons.close,
             getAndroidSemanticsLabel: (materialLocalization) =>
             {
                 return materialLocalization.closeButtonTooltip;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -244,7 +256,7 @@ public class CloseButton : _ActionButton__action_buttons
     internal override string _getTooltip(BuildContext context)
     {
         return MaterialLocalizations.of(context).closeButtonTooltip;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -259,16 +271,20 @@ public class DrawerButtonIcon : StatelessWidget
             iconBuilderCallback: (actionIconTheme) =>
             {
                 return actionIconTheme?.drawerButtonIconBuilder;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             getIcon: (context) => Icons.menu,
             getAndroidSemanticsLabel: (materialLocalization) =>
             {
                 return materialLocalization.openAppDrawerTooltip;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -295,7 +311,7 @@ public class DrawerButton : _ActionButton__action_buttons
     internal override string _getTooltip(BuildContext context)
     {
         return MaterialLocalizations.of(context).openAppDrawerTooltip;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -310,16 +326,20 @@ public class EndDrawerButtonIcon : StatelessWidget
             iconBuilderCallback: (actionIconTheme) =>
             {
                 return actionIconTheme?.endDrawerButtonIconBuilder;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             getIcon: (context) => Icons.menu,
             getAndroidSemanticsLabel: (materialLocalization) =>
             {
                 return materialLocalization.openAppDrawerTooltip;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -345,6 +365,6 @@ public class EndDrawerButton : _ActionButton__action_buttons
     internal override string _getTooltip(BuildContext context)
     {
         return MaterialLocalizations.of(context).openAppDrawerTooltip;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

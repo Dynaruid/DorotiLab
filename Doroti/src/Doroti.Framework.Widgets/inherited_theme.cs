@@ -14,7 +14,7 @@ public abstract class InheritedTheme : InheritedWidget
     public static Widget captureAll(BuildContext context, Widget child, BuildContext? to = null)
     {
         return capture(from: context, to: to).wrap(child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static CapturedThemes capture(BuildContext from, BuildContext? to)
@@ -30,7 +30,7 @@ public abstract class InheritedTheme : InheritedWidget
         {
             debugDidFindAncestor = to is null;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         from.visitAncestorElements(
             (ancestor) =>
@@ -42,7 +42,7 @@ public abstract class InheritedTheme : InheritedWidget
                         debugDidFindAncestor = true;
                         return true;
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     });
                     return false;
@@ -57,7 +57,9 @@ public abstract class InheritedTheme : InheritedWidget
                     }
                 }
                 return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
         DartRuntimePrimitives.Assert(
@@ -65,7 +67,7 @@ public abstract class InheritedTheme : InheritedWidget
             () => (object?)"The provided `to` context must be an ancestor of the `from` context."
         );
         return new CapturedThemes(themes);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -81,7 +83,7 @@ public class CapturedThemes
     public virtual Widget wrap(Widget child)
     {
         return new _CaptureAll__inherited_theme(themes: _themes, child: child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -104,6 +106,6 @@ internal class _CaptureAll__inherited_theme : StatelessWidget
             wrappedChild = theme.wrap(context, wrappedChild);
         }
         return wrappedChild;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

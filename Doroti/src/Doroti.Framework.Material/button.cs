@@ -270,7 +270,7 @@ internal class _RawMaterialButtonState__button
             setMaterialState(key, value);
             onChanged?.Invoke(value);
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void setMaterialState(WidgetState state, bool isSet)
@@ -337,7 +337,7 @@ internal class _InputPadding__button : SingleChildRenderObjectWidget
     public override RenderObject createRenderObject(BuildContext context)
     {
         return new _RenderInputPadding__button(minSize);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -379,7 +379,7 @@ public class _RenderInputPadding__button : RenderShiftedBox
             return Math.Max(child!.getMinIntrinsicWidth(height), minSize.width);
         }
         return 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicHeight(double width)
@@ -389,7 +389,7 @@ public class _RenderInputPadding__button : RenderShiftedBox
             return Math.Max(child!.getMinIntrinsicHeight(width), minSize.height);
         }
         return 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicWidth(double height)
@@ -399,7 +399,7 @@ public class _RenderInputPadding__button : RenderShiftedBox
             return Math.Max(child!.getMaxIntrinsicWidth(height), minSize.width);
         }
         return 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicHeight(double width)
@@ -409,7 +409,7 @@ public class _RenderInputPadding__button : RenderShiftedBox
             return Math.Max(child!.getMaxIntrinsicHeight(width), minSize.height);
         }
         return 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Size _computeSize(
@@ -425,7 +425,7 @@ public class _RenderInputPadding__button : RenderShiftedBox
             return constraints.constrain(new Size(widthLocal, heightLocal));
         }
         return Size.zero;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Size computeDryLayout(BoxConstraints constraints)
@@ -434,7 +434,7 @@ public class _RenderInputPadding__button : RenderShiftedBox
             constraints: constraints,
             layoutChild: ChildLayoutHelper.dryLayoutChild
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
@@ -452,9 +452,9 @@ public class _RenderInputPadding__button : RenderShiftedBox
         Size childSize = childLocal.getDryLayout(constraints);
         return (
                 result
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ) + Alignment.center.alongOffset(getDryLayout(constraints) - childSize).dy;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void performLayout()
@@ -481,9 +481,11 @@ public class _RenderInputPadding__button : RenderShiftedBox
             {
                 DartRuntimePrimitives.Assert(() => Equals(position, centerLocal));
                 return child!.hitTest(result, position: centerLocal);
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

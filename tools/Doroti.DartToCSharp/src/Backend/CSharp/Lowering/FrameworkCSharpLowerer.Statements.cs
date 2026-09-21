@@ -1962,7 +1962,7 @@ internal sealed partial class FrameworkCSharpLowerer
         {
             builder.AppendLine($"{new string(' ', (indent + 1) * 4)}default:");
             builder.AppendLine(
-                $"{new string(' ', (indent + 2) * 4)}throw new InvalidOperationException(\"Non-exhaustive Dart switch value.\");"
+                $"{new string(' ', (indent + 2) * 4)}throw new InvalidOperationException(\"Switch expression did not handle the supplied value.\");"
             );
         }
         builder.AppendLine($"{prefix}}}");
@@ -2136,7 +2136,7 @@ internal sealed partial class FrameworkCSharpLowerer
             builder
                 .Append(new string(' ', (indent + 1) * 4))
                 .AppendLine(
-                    "throw new InvalidOperationException(\"Dart control flow completed without a value.\");"
+                    "throw new InvalidOperationException(\"Control flow completed without returning a value.\");"
                 );
         }
         builder.AppendLine($"{prefix}}}");
@@ -2787,7 +2787,7 @@ internal sealed partial class FrameworkCSharpLowerer
                     builder
                         .Append(new string(' ', (indent + 2) * 4))
                         .AppendLine(
-                            "throw new InvalidOperationException(\"Dart closure completed without a value.\");"
+                            "throw new InvalidOperationException(\"Callback completed without returning a value.\");"
                         );
                 }
             }

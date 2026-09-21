@@ -77,7 +77,7 @@ public class RoundSliderOverlayShape : SliderComponentShape
     )
     {
         return Size.fromRadius(overlayRadius);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void paint(
@@ -136,10 +136,10 @@ public class RectangularSliderValueIndicatorShape : SliderComponentShape
             labelPainter!,
             (
                 textScaleFactor
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void paint(
@@ -189,7 +189,7 @@ public class RectangularRangeSliderValueIndicatorShape : RangeSliderValueIndicat
     {
         DartRuntimePrimitives.Assert(() => textScaleFactor >= 0L);
         return _pathPainter.getPreferredSize(labelPainter, ((textScaleFactor)));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double getHorizontalShift(
@@ -205,20 +205,20 @@ public class RectangularRangeSliderValueIndicatorShape : RangeSliderValueIndicat
             parentBox: parentBox!,
             center: (
                 center
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             labelPainter: labelPainter!,
             textScaleFactor: (
                 textScaleFactor
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             sizeWithOverflow: (
                 sizeWithOverflow
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             scale: (activationAnimation!.value)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paint(
@@ -249,7 +249,7 @@ public class RectangularRangeSliderValueIndicatorShape : RangeSliderValueIndicat
             textScaleFactor: (textScaleFactor),
             sizeWithOverflow: (
                 sizeWithOverflow
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             backgroundPaintColor: sliderTheme!.valueIndicatorColor!,
             strokePaintColor: (isOnTop)
@@ -277,7 +277,7 @@ internal class _RectangularSliderValueIndicatorPathPainter__slider_value_indicat
             _upperRectangleWidth(labelPainter, 1, textScaleFactor),
             labelPainter.height + _labelPadding
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double getHorizontalShift(
@@ -313,7 +313,7 @@ internal class _RectangularSliderValueIndicatorPathPainter__slider_value_indicat
                 return -overflowRight + (edgePadding * textScaleFactor);
             }
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual double _upperRectangleWidth(
@@ -325,7 +325,7 @@ internal class _RectangularSliderValueIndicatorPathPainter__slider_value_indicat
         double unscaledWidth =
             Math.Max(_minLabelWidth * textScaleFactor, labelPainter.width) + (_labelPadding * 2L);
         return unscaledWidth * scale;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void paint(
@@ -437,10 +437,10 @@ public class PaddleSliderValueIndicatorShape : SliderComponentShape
             labelPainter!,
             (
                 textScaleFactor
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void paint(
@@ -501,7 +501,7 @@ public class PaddleRangeSliderValueIndicatorShape : RangeSliderValueIndicatorSha
     {
         DartRuntimePrimitives.Assert(() => textScaleFactor >= 0L);
         return _pathPainter.getPreferredSize(labelPainter, ((textScaleFactor)));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double getHorizontalShift(
@@ -516,20 +516,20 @@ public class PaddleRangeSliderValueIndicatorShape : RangeSliderValueIndicatorSha
         return _pathPainter.getHorizontalShift(
             center: (
                 center
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             labelPainter: labelPainter!,
             scale: (activationAnimation!.value),
             textScaleFactor: (
                 textScaleFactor
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             sizeWithOverflow: (
                 sizeWithOverflow
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paint(
@@ -552,7 +552,7 @@ public class PaddleRangeSliderValueIndicatorShape : RangeSliderValueIndicatorSha
         DartRuntimePrimitives.Assert(() =>
             !(
                 sizeWithOverflow
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ).isEmpty
         );
         var enableColor = new ColorTween(
@@ -577,7 +577,7 @@ public class PaddleRangeSliderValueIndicatorShape : RangeSliderValueIndicatorSha
             (textScaleFactor),
             (
                 sizeWithOverflow
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             isOnTop
                 ? sliderTheme.overlappingShapeStrokeColor
@@ -617,7 +617,7 @@ internal class _PaddleSliderValueIndicatorPathPainter__slider_value_indicator_sh
             Math.Max(_minLabelWidth * textScaleFactor, labelPainter.width)
             + (_labelPadding * 2L * textScaleFactor);
         return new Size(widthLocal, _preferredHeight * textScaleFactor);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static void _addArc(
@@ -655,7 +655,7 @@ internal class _PaddleSliderValueIndicatorPathPainter__slider_value_indicator_sh
             sizeWithOverflow.width
         );
         return shift * textScaleFactor;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual double _getIdealOffset(
@@ -694,7 +694,7 @@ internal class _PaddleSliderValueIndicatorPathPainter__slider_value_indicator_sh
             shift = Math.Min(shift, halfWidthNeeded);
         }
         return shift;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void paint(
@@ -827,7 +827,7 @@ internal class _PaddleSliderValueIndicatorPathPainter__slider_value_indicator_sh
                         canvas.drawRect(valueRect, outlinePaint);
                         return true;
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 )

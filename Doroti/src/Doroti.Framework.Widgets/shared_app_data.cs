@@ -29,7 +29,7 @@ public class SharedAppData : StatefulWidget
             );
         DartRuntimePrimitives.Assert(() => _debugHasSharedAppData(model, context, "getValue"));
         return model!.sharedAppDataState.getValue(key, init);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static void setValue<K, V>(BuildContext context, K key, V value)
@@ -76,10 +76,10 @@ public class SharedAppData : StatefulWidget
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -108,7 +108,7 @@ internal class _SharedAppDataState__shared_app_data : State<SharedAppData>
     public override Widget build(BuildContext context)
     {
         return new _SharedAppModel__shared_app_data(sharedAppDataState: this, child: widget.child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual V getValue<K, V>(K key, Func<V> init)
@@ -116,7 +116,7 @@ internal class _SharedAppDataState__shared_app_data : State<SharedAppData>
     {
         data.putIfAbsent(key, () => init());
         return ((V?)data.GetValueOrDefault(key))!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void setValue<K, V>(K key, V value)
@@ -153,7 +153,7 @@ internal class _SharedAppModel__shared_app_data : InheritedModel<object>
     {
         var __old = (_SharedAppModel__shared_app_data)oldWidget;
         return !Equals(data, __old.data);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool updateShouldNotifyDependent(
@@ -170,6 +170,6 @@ internal class _SharedAppModel__shared_app_data : InheritedModel<object>
             }
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

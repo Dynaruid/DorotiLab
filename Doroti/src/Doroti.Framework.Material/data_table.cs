@@ -243,7 +243,7 @@ public class DataTable : StatelessWidget
                         (
                             sortColumnIndex
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ) < checked(columns.Count)
                     )
@@ -261,7 +261,7 @@ public class DataTable : StatelessWidget
                     >= (
                         dataRowMinHeight
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
@@ -287,7 +287,7 @@ public class DataTable : StatelessWidget
                     long result__30086__value30245 = (
                         result
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     );
                     return null;
@@ -296,7 +296,7 @@ public class DataTable : StatelessWidget
             }
         }
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _debugInteractive
@@ -374,7 +374,7 @@ public class DataTable : StatelessWidget
             );
         }
         return new TableCell(verticalAlignment: TableCellVerticalAlignment.fill, child: contents);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _buildHeadingCell(
@@ -478,7 +478,7 @@ public class DataTable : StatelessWidget
             child: label
         );
         return label;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _buildDataCell(
@@ -586,7 +586,7 @@ public class DataTable : StatelessWidget
             }
         }
         return new TableCell(child: label);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -609,7 +609,9 @@ public class DataTable : StatelessWidget
                     return theme.colorScheme.primary.withOpacity(0.08);
                 }
                 return null;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
         bool anyRowSelectable = rows.any((row) => row.onSelectChanged is not null);
@@ -708,7 +710,9 @@ public class DataTable : StatelessWidget
                             )
                         )
                     );
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );
@@ -920,7 +924,7 @@ public class DataTable : StatelessWidget
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -978,7 +982,7 @@ public class TableRowInkWell : InkResponse
                     (
                         cellParentData.y
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 );
@@ -989,23 +993,23 @@ public class TableRowInkWell : InkResponse
                     Offset offset__49929__value49991 = (
                         offset
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     );
                     return rect.shift(-(offset__49929__value49991));
                 }
             }
             return Rect.zero;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool debugCheckContext(BuildContext context)
     {
         DartRuntimePrimitives.Assert(() => Widgets.DebugLibrary.debugCheckHasTable(context));
         return base.debugCheckContext(context);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1083,9 +1087,7 @@ public class _SortArrowState__data_table
             _orientationOffset =
                 (
                     widget.up
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
                     ? 0.0
                     : Dart_mathLibrary.pi;
@@ -1122,7 +1124,7 @@ public class _SortArrowState__data_table
                     (
                         newUp
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                         ? 0.0
@@ -1215,7 +1217,7 @@ public class _SortArrowState__data_table
                 child: new Icon(Icons.arrow_upward, size: _arrowIconSize)
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
@@ -1246,7 +1248,7 @@ public class _SortArrowState__data_table
         )();
         _tickers!.Add(result);
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _removeTicker(_WidgetTicker__ticker_provider ticker)

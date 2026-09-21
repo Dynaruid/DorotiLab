@@ -13,13 +13,13 @@ public abstract class ParametricCurve<T>
     {
         DartRuntimePrimitives.Assert(() => (t >= 0.0) && (t <= 1.0));
         return transformInternal(t);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual T transformInternal(double t)
     {
         throw new NotImplementedException();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string ToString() =>
@@ -37,7 +37,7 @@ public abstract class Curve : ParametricCurve<double>
             return t;
         }
         return base.transform(t);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Curve flipped => new FlippedCurve(this);
@@ -63,13 +63,13 @@ public class SawTooth : Curve
     {
         t *= count;
         return t - t.truncateToDouble();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string ToString()
     {
         return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "SawTooth")}({count})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -100,7 +100,7 @@ public class Interval : Curve
             return t;
         }
         return curve.transform(t);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string ToString()
@@ -110,7 +110,7 @@ public class Interval : Curve
             return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "Interval")}({begin}⋯{end})➩{curve}";
         }
         return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "Interval")}({begin}⋯{end})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -147,7 +147,7 @@ public class Split : Curve
             double transformed = beginCurve.transform(curveProgress);
             return (
                 Dart_uiLibrary.lerpDouble(0L, split, transformed)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
         else
@@ -156,16 +156,16 @@ public class Split : Curve
             double transformedLocal = endCurve.transform(curveProgressLocal);
             return (
                 Dart_uiLibrary.lerpDouble(split, 1L, transformedLocal)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string ToString()
     {
         return $"{DiagnosticsLibrary.describeIdentity(this)}({split}, {beginCurve}, {endCurve})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -183,7 +183,7 @@ public class Threshold : Curve
         DartRuntimePrimitives.Assert(() => threshold >= 0.0);
         DartRuntimePrimitives.Assert(() => threshold <= 1.0);
         return (t < threshold) ? 0.0 : 1.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -206,7 +206,7 @@ public class Cubic : Curve
     internal virtual double _evaluateCubic(double a, double b, double m)
     {
         return (3L * a * (1L - m) * (1L - m) * m) + (3L * b * (1L - m) * m * m) + (m * m * m);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double transformInternal(double t)
@@ -242,13 +242,13 @@ public class Cubic : Curve
                 end = midpoint;
             }
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string ToString()
     {
         return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "Cubic")}({a.toStringAsFixed(2L)}, {b.toStringAsFixed(2L)}, {c.toStringAsFixed(2L)}, {d.toStringAsFixed(2L)})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -295,13 +295,13 @@ public class ThreePointCubic : Curve
                     ).transform(scaledT) * scaleY
                 ) + midpoint.dy;
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string ToString()
     {
         return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, $"ThreePointCubic({a1}, {b1}, {midpoint}, {a2}, {b2})")} ";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -323,7 +323,9 @@ public abstract class Curve2D : ParametricCurve<Offset>
             Offset qr = q - r;
             double z = (pr.dx * qr.dy) - (qr.dx * pr.dy);
             return z * z < tolerance;
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         var first = new Curve2DSample(start, transform(start));
         var last = new Curve2DSample(end, transform(end));
@@ -349,7 +351,7 @@ public abstract class Curve2D : ParametricCurve<Offset>
                 && ((first.value.dy - last.value.dy).abs() < tolerance)
         );
         return samples;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual long samplingSeed => 0L;
@@ -362,7 +364,9 @@ public abstract class Curve2D : ParametricCurve<Offset>
         double offsetToOrigin(double pos)
         {
             return x - transform(pos).dx;
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         var errorLimit = 0.000001;
         var count = 100L;
@@ -382,7 +386,7 @@ public abstract class Curve2D : ParametricCurve<Offset>
             count--;
         }
         return mid;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -400,7 +404,7 @@ public class Curve2DSample
     public override string ToString()
     {
         return $"[({value.dx.toStringAsFixed(2L)}, {value.dy.toStringAsFixed(2L)}), {t.toStringAsFixed(2L)}]";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -461,14 +465,14 @@ public class CatmullRomSpline : Curve2D
             (startHandle is null)
             || (
                 startHandle
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ).isFinite
         );
         DartRuntimePrimitives.Assert(() =>
             (endHandle is null)
             || (
                 endHandle
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ).isFinite
         );
         DartRuntimePrimitives.Assert(() =>
@@ -493,11 +497,11 @@ public class CatmullRomSpline : Curve2D
         {
             (
                 startHandle
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             (
                 endHandle
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
         };
         var alpha = 0.5;
@@ -545,7 +549,7 @@ public class CatmullRomSpline : Curve2D
             result.Add(segment);
         }
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _initializeIfNeeded()
@@ -559,9 +563,7 @@ public class CatmullRomSpline : Curve2D
                 _controlPoints!,
                 (
                     _tension
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 startHandle: _startHandle,
                 endHandle: _endHandle
@@ -604,7 +606,7 @@ public class CatmullRomSpline : Curve2D
             + (cubicControlPoints[(int)1L] * localT2)
             + (cubicControlPoints[(int)2L] * localT)
             + cubicControlPoints[(int)3L];
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -663,7 +665,7 @@ public class CatmullRomCurve : Curve
             )
             .generateSamples(tolerance: 1e-12)
             .ToList();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static bool validateControlPoints(
@@ -809,7 +811,7 @@ public class CatmullRomCurve : Curve
             lastX = x;
         }
         return success;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double transformInternal(double t)
@@ -842,9 +844,9 @@ public class CatmullRomCurve : Curve
         double t2 = (t - startValue.dx) / (endValue.dx - startValue.dx);
         return (
             Dart_uiLibrary.lerpDouble(startValue.dy, endValue.dy, t2)
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -862,7 +864,7 @@ public class FlippedCurve : Curve
     public override string ToString()
     {
         return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "FlippedCurve")}({curve})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -874,7 +876,7 @@ internal class _DecelerateCurve__curves : Curve
     {
         t = 1.0 - t;
         return 1.0 - (t * t);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -904,7 +906,7 @@ public static partial class CurvesLibrary
         }
         t -= 2.625 / 2.75;
         return (7.5625 * t * t) + 0.984375;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -915,7 +917,7 @@ internal class _BounceInCurve__curves : Curve
     public override double transformInternal(double t)
     {
         return 1.0 - CurvesLibrary._bounce(1.0 - t);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -926,7 +928,7 @@ internal class _BounceOutCurve__curves : Curve
     public override double transformInternal(double t)
     {
         return CurvesLibrary._bounce(t);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -944,7 +946,7 @@ internal class _BounceInOutCurve__curves : Curve
         {
             return (CurvesLibrary._bounce((t * 2.0) - 1.0) * 0.5) + 0.5;
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -963,13 +965,13 @@ public class ElasticInCurve : Curve
         t = t - 1.0;
         return -Dart_mathLibrary.pow(2.0, 10.0 * t)
             * Dart_mathLibrary.sin((t - s) * (Dart_mathLibrary.pi * 2.0) / period);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string ToString()
     {
         return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "ElasticInCurve")}({period})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -989,13 +991,13 @@ public class ElasticOutCurve : Curve
                 Dart_mathLibrary.pow(2.0, -10L * t)
                 * Dart_mathLibrary.sin((t - s) * (Dart_mathLibrary.pi * 2.0) / period)
             ) + 1.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string ToString()
     {
         return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "ElasticOutCurve")}({period})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1026,13 +1028,13 @@ public class ElasticInOutCurve : Curve
                     * 0.5
                 ) + 1.0;
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string ToString()
     {
         return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "ElasticInOutCurve")}({period})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 

@@ -118,7 +118,7 @@ internal class _CupertinoExpansionTileState__expansion_tile : State<CupertinoExp
                     )
                 )
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _onHeaderTap()
@@ -174,7 +174,7 @@ internal class _CupertinoExpansionTileState__expansion_tile : State<CupertinoExp
                 backgroundColorActivated: CupertinoColors.transparent
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _buildExpansible(
@@ -250,15 +250,17 @@ internal class _CupertinoExpansionTileState__expansion_tile : State<CupertinoExp
                             )
                         );
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     },
                     child: childLocal
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -271,6 +273,6 @@ internal class _CupertinoExpansionTileState__expansion_tile : State<CupertinoExp
             bodyBuilder: (context, animation) => widget.child,
             expansibleBuilder: _buildExpansible
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

@@ -24,7 +24,7 @@ public class AnnotatedRegion<T> : SingleChildRenderObjectWidget
     public override RenderObject createRenderObject(BuildContext context)
     {
         return new RenderAnnotatedRegion<T>(value: value, sized: sized);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)

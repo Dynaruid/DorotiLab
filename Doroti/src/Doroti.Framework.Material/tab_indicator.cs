@@ -37,7 +37,7 @@ public class UnderlineTabIndicator : Decoration
                 );
         }
         return base.lerpFrom(a, t);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Decoration? lerpTo(Decoration? b, double t)
@@ -52,13 +52,13 @@ public class UnderlineTabIndicator : Decoration
                 );
         }
         return base.lerpTo(b, t);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override BoxPainter createBoxPainter(Action onChanged = default!)
     {
         return new _UnderlinePainter__tab_indicator(this, borderRadius, () => onChanged());
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Rect _indicatorRectFor(Rect rect, TextDirection textDirection)
@@ -70,7 +70,7 @@ public class UnderlineTabIndicator : Decoration
             indicator.width,
             borderSide.width
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Path getClipPath(Rect rect, TextDirection textDirection)
@@ -100,7 +100,7 @@ public class UnderlineTabIndicator : Decoration
                 }
             )
         )();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -127,11 +127,11 @@ internal class _UnderlinePainter__tab_indicator : BoxPainter
             offset
             & (
                 configuration.size
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         TextDirection textDirectionLocal = (
             configuration.textDirection
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         );
         Paint paintLocal = default!;
         if (borderRadius is not null)

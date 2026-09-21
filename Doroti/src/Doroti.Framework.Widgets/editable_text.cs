@@ -66,7 +66,7 @@ internal class _CompositionCallback__editable_text : SingleChildRenderObjectWidg
     public override RenderObject createRenderObject(BuildContext context)
     {
         return new _RenderCompositionCallback__editable_text(compositeCallback, enabled);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -198,7 +198,7 @@ public class TextEditingController : ValueNotifier<TextEditingValue>
                 .Cast<InlineSpan>()
                 .ToList()
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual TextSelection selection
@@ -233,7 +233,7 @@ public class TextEditingController : ValueNotifier<TextEditingValue>
     internal virtual bool _isSelectionWithinComposingRange(TextSelection selection)
     {
         return (selection.start >= value.composing.start) && (selection.end <= value.composing.end);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -342,7 +342,7 @@ internal class _DiscreteKeyFrameSimulation__editable_text : Physics.Simulation
                         }
                         return true;
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 )
@@ -382,7 +382,7 @@ internal class _DiscreteKeyFrameSimulation__editable_text : Physics.Simulation
         }
         _lastKeyFrameIndex = searchIndex;
         return _keyFrames[(int)_lastKeyFrameIndex].value;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -684,7 +684,7 @@ public class EditableText : StatefulWidget
                     (
                         minLines
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) > 0L
                 )
@@ -696,7 +696,7 @@ public class EditableText : StatefulWidget
                     >= (
                         minLines
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
         );
@@ -770,7 +770,9 @@ public class EditableText : StatefulWidget
                 TargetPlatform.linux => true,
                 TargetPlatform.macOS => true,
                 TargetPlatform.windows => true,
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             };
         }
     }
@@ -862,7 +864,7 @@ public class EditableText : StatefulWidget
             );
         }
         return resultButtonItem;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static bool _inferAutocorrect(IEnumerable<string>? autofillHints)
@@ -901,7 +903,7 @@ public class EditableText : StatefulWidget
             }
         }
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static TextInputType _inferKeyboardType(
@@ -1046,7 +1048,7 @@ public class EditableText : StatefulWidget
             [AutofillHints.username] = TextInputType.text,
         };
         return inferKeyboardType.GetValueOrDefault(effectiveHint) ?? TextInputType.text;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override IState createState() =>
@@ -1272,7 +1274,9 @@ public class EditableTextState
             TargetPlatform.iOS => true,
             TargetPlatform.fuchsia or TargetPlatform.linux or TargetPlatform.macOS => false,
             TargetPlatform.windows => false,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
     internal virtual bool _showToolbarOnScreenScheduled { get; set; } = false;
     internal static Duration _caretAnimationDuration = Duration.Create(milliseconds: 100L);
@@ -1690,7 +1694,9 @@ public class EditableTextState
                         );
                 }
                 default:
-                    throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                    throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    );
             }
         }
     }
@@ -1744,7 +1750,9 @@ public class EditableTextState
                     return false;
                 }
                 default:
-                    throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                    throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    );
             }
         }
     }
@@ -1878,7 +1886,7 @@ public class EditableTextState
                 )
             );
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _allowPaste
@@ -2110,7 +2118,7 @@ public class EditableTextState
             }
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static SpellCheckConfiguration _inferSpellCheckConfiguration(
@@ -2157,7 +2165,9 @@ public class EditableTextState
                     );
                 }
                 return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             });
             return SpellCheckConfiguration.CreateDisabled();
         }
@@ -2166,7 +2176,7 @@ public class EditableTextState
                 spellCheckServiceLocal ?? new DefaultSpellCheckService()
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static bool _isPasswordInput(
@@ -2183,7 +2193,7 @@ public class EditableTextState
                         (hint == AutofillHints.password) || (hint == AutofillHints.newPassword)
                 ) ?? false
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual List<ContextMenuButtonItem>? buttonItemsForToolbarOptions(
@@ -2236,7 +2246,7 @@ public class EditableTextState
             );
         }
         return buttonItems;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual (double startGlyphHeight, double endGlyphHeight) getGlyphHeights()
@@ -2272,7 +2282,7 @@ public class EditableTextState
                 ?? (double)renderEditable.preferredLineHeight,
             endGlyphHeight: endCharacterRect?.height ?? (double)renderEditable.preferredLineHeight
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual TextSelectionToolbarAnchors contextMenuAnchors
@@ -2285,7 +2295,7 @@ public class EditableTextState
                     primaryAnchor: (
                         renderEditable.lastSecondaryTapDownPosition
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 );
@@ -2797,7 +2807,7 @@ public class EditableTextState
             wordSpacing: wordSpacingOverride ?? _style.wordSpacing,
             lineHeight: renderEditable.preferredLineHeight
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void dispose()
@@ -2857,7 +2867,7 @@ public class EditableTextState
                 }
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         _tickerModeNotifier?.removeListener(_updateTickers);
         _tickerModeNotifier = null;
@@ -2943,7 +2953,7 @@ public class EditableTextState
             && (value.selection.isCollapsed == _value.selection.isCollapsed)
             && (value.selection.start == _value.selection.start)
             && (!Equals(value.selection.affinity, _value.selection.affinity));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void performAction(TextInputAction action)
@@ -3034,7 +3044,7 @@ public class EditableTextState
                         (startCaretCenter, currentTextPosition) = (
                             point.startLocation
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     );
@@ -3055,7 +3065,7 @@ public class EditableTextState
                     (
                         _startCaretCenter
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) - _floatingCursorOffset,
                     shouldResetOrigin: shouldResetOriginLocal
@@ -3066,7 +3076,7 @@ public class EditableTextState
                     (
                         _lastBoundedOffset
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ),
                     _lastTextPosition!
@@ -3079,20 +3089,20 @@ public class EditableTextState
                     (
                         point.offset
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                     - (
                         _pointOffsetOrigin
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     );
                 Offset rawCursorOffset =
                     (
                         _startCaretCenter
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                     + centeredPoint
@@ -3105,7 +3115,7 @@ public class EditableTextState
                         (
                             _lastBoundedOffset
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ) + _floatingCursorOffset
                     )
@@ -3115,7 +3125,7 @@ public class EditableTextState
                     (
                         _lastBoundedOffset
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ),
                     _lastTextPosition!
@@ -3174,24 +3184,24 @@ public class EditableTextState
                     (
                         _lastBoundedOffset
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ).dx,
                     finalPosition.dx,
                     lerpValue
-                ) ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ) ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             double lerpY = (
                 Dart_uiLibrary.lerpDouble(
                     (
                         _lastBoundedOffset
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ).dy,
                     finalPosition.dy,
                     lerpValue
-                ) ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ) ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             renderEditable.setFloatingCursor(
                 FloatingCursorDragState.Update,
@@ -3371,7 +3381,7 @@ public class EditableTextState
         );
         double offsetDelta = _scrollController.offset - targetOffset;
         return new RevealedOffset(rect: rect.shift(unitOffset * offsetDelta), offset: targetOffset);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _needsAutofill =>
@@ -3511,7 +3521,7 @@ public class EditableTextState
             return true;
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void connectionClosed()
@@ -3571,7 +3581,7 @@ public class EditableTextState
         ScrollableState? scrollableState =
             notificationContext?.findAncestorStateOfType<ScrollableState>();
         return Equals(_scrollableKey.currentContext, scrollableState?.context);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _scrollableNotificationIsFromSameSubtree(
@@ -3600,7 +3610,7 @@ public class EditableTextState
             currentContext = scrollableState?.context;
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _handleContextMenuOnParentScroll(ScrollNotification notification)
@@ -3625,7 +3635,7 @@ public class EditableTextState
                     (
                         _dataWhenToolbarShowScheduled
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ).value,
                     _value
@@ -3664,7 +3674,7 @@ public class EditableTextState
             visibleScreenSize.width,
             visibleScreenSize.height
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _handleContextMenuOnScroll(ScrollNotification notification)
@@ -3717,7 +3727,7 @@ public class EditableTextState
                         (
                             _dataWhenToolbarShowScheduled
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ).value,
                         _value
@@ -3745,7 +3755,7 @@ public class EditableTextState
                             (
                                 _dataWhenToolbarShowScheduled
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             ).value,
                             _value
@@ -3765,7 +3775,7 @@ public class EditableTextState
                         (
                             _dataWhenToolbarShowScheduled
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ).selectionBounds
                     );
@@ -3779,7 +3789,7 @@ public class EditableTextState
                             (
                                 _dataWhenToolbarShowScheduled
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             ).selectionBounds
                         )
@@ -3832,13 +3842,13 @@ public class EditableTextState
             closestViewport = RenderAbstractViewport.maybeOf(closestViewport.parent);
         }
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _contextMenuBuilder(BuildContext context)
     {
         return widget.contextMenuBuilder!(context, this);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual TextSelectionOverlay _createSelectionOverlay()
@@ -3862,7 +3872,7 @@ public class EditableTextState
             magnifierConfiguration: widget.magnifierConfiguration
         );
         return selectionOverlay;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _handleSelectionChanged(
@@ -4070,7 +4080,7 @@ public class EditableTextState
                     (
                         localeForSpellChecking
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ),
                     text
@@ -4446,7 +4456,7 @@ public class EditableTextState
             }
         }
         return selectionLocal;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _compositeCallback(Layer layer)
@@ -4586,9 +4596,7 @@ public class EditableTextState
             (
                 (
                     composingRect
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             )
         );
@@ -4730,11 +4738,13 @@ public class EditableTextState
             (context) =>
             {
                 return _spellCheckConfiguration.spellCheckSuggestionsToolbarBuilder!(context, this);
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void showMagnifier(Offset positionToShow)
@@ -4877,7 +4887,7 @@ public class EditableTextState
                 }
             )
             : null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Action? _semanticsOnCut(TextSelectionControls? controls)
@@ -4899,7 +4909,7 @@ public class EditableTextState
                 }
             )
             : null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Action? _semanticsOnPaste(TextSelectionControls? controls)
@@ -4925,13 +4935,13 @@ public class EditableTextState
 
                         await _pasteTextWithReporting(SelectionChangedCause.toolbar);
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 )
                 : null
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual TextPosition _moveBeyondTextBoundary(
@@ -4945,7 +4955,7 @@ public class EditableTextState
             ? (textBoundary.getTrailingTextBoundaryAt(extent.offset) ?? _value.text.Length)
             : (textBoundary.getLeadingTextBoundaryAt(extent.offset - 1L) ?? 0L);
         return new TextPosition(offset: newOffset);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual TextPosition _moveToTextBoundary(
@@ -4980,7 +4990,7 @@ public class EditableTextState
                 affinity: TextAffinity.upstream
             )
             : new TextPosition(offset: textBoundary.getLeadingTextBoundaryAt(caretOffset) ?? 0L);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual TextBoundary _characterBoundary() =>
@@ -5004,7 +5014,7 @@ public class EditableTextState
         where T : Intent
     {
         return IntentAction<T>.CreateOverridable(context: context, defaultAction: defaultAction);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _transposeCharacters(TransposeCharactersIntent intent)
@@ -5102,7 +5112,7 @@ public class EditableTextState
         double increment = ScrollAction.getDirectionalIncrement(
             (
                 state
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             intent
         );
@@ -5147,7 +5157,7 @@ public class EditableTextState
             return null;
         }
         return Actions.invoke(context, intent);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _onTapOutside(BuildContext context, Gestures.PointerDownEvent @event)
@@ -5313,7 +5323,7 @@ public class EditableTextState
                                         return (oldValue.text != newValue.text)
                                             || (!Equals(oldValue.composing, newValue.composing));
                                         throw new InvalidOperationException(
-                                            "Dart closure completed without a value."
+                                            "Callback completed without returning a value."
                                         );
                                     },
                                     undoStackModifier: (value) =>
@@ -5325,7 +5335,7 @@ public class EditableTextState
                                             ? value.copyWith(composing: TextRange.empty)
                                             : value;
                                         throw new InvalidOperationException(
-                                            "Dart closure completed without a value."
+                                            "Callback completed without returning a value."
                                         );
                                     },
                                     focusNode: widget.focusNode,
@@ -5343,7 +5353,7 @@ public class EditableTextState
                                                 _scribbleCacheKey = null;
                                                 return false;
                                                 throw new InvalidOperationException(
-                                                    "Dart closure completed without a value."
+                                                    "Callback completed without returning a value."
                                                 );
                                             },
                                             child: new Scrollable(
@@ -5462,7 +5472,7 @@ public class EditableTextState
                                                         )
                                                     );
                                                     throw new InvalidOperationException(
-                                                        "Dart closure completed without a value."
+                                                        "Callback completed without returning a value."
                                                     );
                                                 }
                                             )
@@ -5472,13 +5482,13 @@ public class EditableTextState
                             )
                         );
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual TextSpan buildTextSpan()
@@ -5506,7 +5516,7 @@ public class EditableTextState
                         (
                             o
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ) < textLocal.Length
                     )
@@ -5515,7 +5525,7 @@ public class EditableTextState
                     long o__246733__value246816 = (
                         o
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     );
                     textLocal = textLocal.replaceRange(
@@ -5587,7 +5597,7 @@ public class EditableTextState
             style: _style,
             withComposing: withComposingLocal
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _ensureKeepAlive()
@@ -5658,7 +5668,7 @@ public class EditableTextState
         )();
         _tickers!.Add(result);
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _removeTicker(_WidgetTicker__ticker_provider ticker)
@@ -5884,7 +5894,7 @@ internal class _Editable__editable_text : MultiChildRenderObjectWidget
             promptRectColor: promptRectColor,
             clipBehavior: clipBehavior
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -5952,7 +5962,7 @@ internal class _NeverUserScrollableScrollPhysics__editable_text : ScrollPhysics
     )
     {
         return new _NeverUserScrollableScrollPhysics__editable_text(parent: buildParent(ancestor));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool allowUserScrolling => false;
@@ -6014,7 +6024,7 @@ internal class _ScribbleCacheKey__editable_text
             || (placeholder != other.placeholder)
             || (!Equals(size, other.size));
         return needsLayout ? RenderComparison.layout : inlineSpan.compareTo(other.inlineSpan);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -6122,7 +6132,7 @@ public class _ScribbleFocusableState__editable_text
             checked((long)View.of(context).viewId)
         );
         return result.path.any((entry) => Equals(entry.target, renderEditable));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Rect bounds
@@ -6145,7 +6155,7 @@ public class _ScribbleFocusableState__editable_text
     public override Widget build(BuildContext context)
     {
         return widget.child;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -6195,7 +6205,7 @@ internal class _CodePointBoundary__editable_text : TextBoundary
         );
         return TextPainter.isHighSurrogate(_text.codeUnitAt(position - 1L))
             && TextPainter.isLowSurrogate(_text.codeUnitAt(position));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override long? getLeadingTextBoundaryAt(long position)
@@ -6217,7 +6227,7 @@ internal class _CodePointBoundary__editable_text : TextBoundary
             return position;
         }
         return _breaksSurrogatePair(position) ? (position - 1L) : position;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override long? getTrailingTextBoundaryAt(long position)
@@ -6239,7 +6249,7 @@ internal class _CodePointBoundary__editable_text : TextBoundary
             return position;
         }
         return _breaksSurrogatePair(position + 1L) ? (position + 2L) : (position + 1L);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -6329,7 +6339,7 @@ internal class _DeleteTextAction__editable_text<T> : ContextAction<T>
         );
         _hideToolbarIfTextChanged(replaceTextIntentLocal);
         return Actions.invoke(context!, replaceTextIntentLocal);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool isActionEnabled =>
@@ -6379,7 +6389,7 @@ internal class _UpdateTextSelectionAction__editable_text<T> : ContextAction<T>
         return Equals(endLocal, position)
             && (endLocal.offset != state.textEditingValue.text.Length)
             && (state.textEditingValue.text.codeUnitAt(position.offset) != NEWLINE_CODE_UNIT);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _isAtWordwrapDownstream(TextPosition position)
@@ -6390,7 +6400,7 @@ internal class _UpdateTextSelectionAction__editable_text<T> : ContextAction<T>
         return Equals(startLocal, position)
             && (startLocal.offset != 0L)
             && (state.textEditingValue.text.codeUnitAt(position.offset - 1L) != NEWLINE_CODE_UNIT);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override object? invoke(T intent, BuildContext? context = null)
@@ -6470,7 +6480,7 @@ internal class _UpdateTextSelectionAction__editable_text<T> : ContextAction<T>
             context!,
             new UpdateSelectionIntent(state._value, newRange, SelectionChangedCause.keyboard)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool isActionEnabled
@@ -6568,7 +6578,7 @@ internal class _UpdateTextSelectionVerticallyAction__editable_text<T> : ContextA
             _verticalMovementRun = currentRun;
             _runSelection = newSelection;
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool isActionEnabled
@@ -6642,7 +6652,7 @@ internal class _SelectAllAction__editable_text : ContextAction<SelectAllTextInte
                 intent.cause
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -6705,7 +6715,7 @@ internal class _WebClipboardStatusNotifier__editable_text : ClipboardStatusNotif
     public override Future update()
     {
         return Future.value();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -6799,7 +6809,7 @@ internal class _OverridingTextStyleTextSpanUtils__editable_text
             ),
             textSpan
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static TextSpan _applyTextStyleOverrides(
@@ -6825,7 +6835,7 @@ internal class _OverridingTextStyleTextSpanUtils__editable_text
                         }
                         return child;
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 )
@@ -6840,6 +6850,6 @@ internal class _OverridingTextStyleTextSpanUtils__editable_text
             locale: textSpan.locale,
             spellOut: textSpan.spellOut
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

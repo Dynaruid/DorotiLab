@@ -27,7 +27,9 @@ public static class AnimationStatusMembers
             AnimationStatus.reverse => true,
             AnimationStatus.completed => false,
             AnimationStatus.dismissed => false,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
 
     public static bool isForwardOrCompleted(this AnimationStatus value) =>
@@ -37,7 +39,9 @@ public static class AnimationStatusMembers
             AnimationStatus.completed => true,
             AnimationStatus.reverse => false,
             AnimationStatus.dismissed => false,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
 }
 
@@ -61,8 +65,14 @@ public abstract class Animation<T> : Listenable, ValueListenable<T>
     public abstract AnimationStatus status { get; }
     public virtual T value
     {
-        get => throw new NotSupportedException("Dart getter contract has no base implementation.");
-        set => throw new NotSupportedException("Dart setter contract has no base implementation.");
+        get =>
+            throw new NotSupportedException(
+                "The generated getter contract has no base implementation."
+            );
+        set =>
+            throw new NotSupportedException(
+                "The generated setter contract has no base implementation."
+            );
     }
     public virtual bool isDismissed => AnimationStatusMembers.isDismissed(status);
     public virtual bool isCompleted => AnimationStatusMembers.isCompleted(status);
@@ -73,13 +83,13 @@ public abstract class Animation<T> : Listenable, ValueListenable<T>
     {
         DartRuntimePrimitives.Assert(() => this is Animation<double>);
         return child.animate(((Animation<double>?)(object?)this)!);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string ToString()
     {
         return $"{DiagnosticsLibrary.describeIdentity(this)}({toStringDetails()})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual string toStringDetails()
@@ -90,9 +100,11 @@ public abstract class Animation<T> : Listenable, ValueListenable<T>
             AnimationStatus.reverse => "◀",
             AnimationStatus.completed => "⏭",
             AnimationStatus.dismissed => "⏮",
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 

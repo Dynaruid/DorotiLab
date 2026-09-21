@@ -17,7 +17,7 @@ internal class _TooltipVisibilityScope__tooltip_visibility : InheritedWidget
     {
         var __old = (_TooltipVisibilityScope__tooltip_visibility)oldWidget;
         return __old.visible != visible;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -38,12 +38,12 @@ public class TooltipVisibility : StatelessWidget
         _TooltipVisibilityScope__tooltip_visibility? visibility =
             context.dependOnInheritedWidgetOfExactType<_TooltipVisibilityScope__tooltip_visibility>();
         return visibility?.visible ?? true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
     {
         return new _TooltipVisibilityScope__tooltip_visibility(visible: visible, child: child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

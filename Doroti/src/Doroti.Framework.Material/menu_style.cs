@@ -137,7 +137,7 @@ public class MenuStyle : Diagnosticable
             visualDensity: visualDensity ?? this.visualDensity,
             alignment: alignment ?? this.alignment
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual MenuStyle merge(MenuStyle? style)
@@ -161,7 +161,7 @@ public class MenuStyle : Diagnosticable
             visualDensity: visualDensity ?? style.visualDensity,
             alignment: alignment ?? style.alignment
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static MenuStyle? lerp(MenuStyle? a, MenuStyle? b, double t)
@@ -200,7 +200,7 @@ public class MenuStyle : Diagnosticable
             visualDensity: (t < 0.5) ? a?.visualDensity : b?.visualDensity,
             alignment: AlignmentGeometry.lerp(a?.alignment, b?.alignment, t)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -309,7 +309,7 @@ public class MenuStyle : Diagnosticable
             return true;
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -318,6 +318,6 @@ public class MenuStyle : Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

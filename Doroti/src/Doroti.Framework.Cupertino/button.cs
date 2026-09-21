@@ -240,9 +240,11 @@ public class CupertinoButton : StatefulWidget
             TargetPlatform.fuchsia => ConstantsLibrary.kCupertinoButtonTapMoveSlop,
             TargetPlatform.macOS or TargetPlatform.linux => 0.0,
             TargetPlatform.windows => 0.0,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override IState createState() =>
@@ -275,7 +277,9 @@ internal class _CupertinoButtonState__button
                 )
                     ? SystemMouseCursors.click
                     : MouseCursor.defer;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
     internal virtual bool _buttonHeldDown { get; set; } = false;
@@ -486,22 +490,20 @@ internal class _CupertinoButtonState__button
                             (
                                 widget.minSize
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             ),
                             (
                                 widget.minSize
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             )
                         )
                 )
                 : (
                     widget.minimumSize
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
         CupertinoThemeData themeData = CupertinoTheme.of(context);
         Color primaryColorLocal = themeData.primaryColor;
@@ -560,7 +562,7 @@ internal class _CupertinoButtonState__button
                         (
                             textStyle.fontSize
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ) * 1.2
                     )
@@ -688,7 +690,7 @@ internal class _CupertinoButtonState__button
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
@@ -727,7 +729,7 @@ internal class _CupertinoButtonState__button
         _updateTickerModeNotifier();
         _updateTicker();
         return _ticker!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void activate()

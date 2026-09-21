@@ -402,19 +402,19 @@ public class FloatingActionButton : StatelessWidget
             (elevation ?? floatingActionButtonTheme.elevation)
             ?? (
                 defaults.elevation
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         double focusElevationLocal =
             (focusElevation ?? floatingActionButtonTheme.focusElevation)
             ?? (
                 defaults.focusElevation
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         double hoverElevationLocal =
             (hoverElevation ?? floatingActionButtonTheme.hoverElevation)
             ?? (
                 defaults.hoverElevation
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         double disabledElevationLocal =
             (
@@ -425,7 +425,7 @@ public class FloatingActionButton : StatelessWidget
             (highlightElevation ?? floatingActionButtonTheme.highlightElevation)
             ?? (
                 defaults.highlightElevation
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         MaterialTapTargetSize materialTapTargetSizeLocal =
             materialTapTargetSize ?? theme.materialTapTargetSize;
@@ -433,13 +433,13 @@ public class FloatingActionButton : StatelessWidget
             (enableFeedback ?? floatingActionButtonTheme.enableFeedback)
             ?? (
                 defaults.enableFeedback
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         double iconSizeLocal =
             floatingActionButtonTheme.iconSize
             ?? (
                 defaults.iconSize
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         TextStyle extendedTextStyleLocal = (
             (extendedTextStyle ?? floatingActionButtonTheme.extendedTextStyle)
@@ -629,7 +629,7 @@ internal class _EffectiveMouseCursor__floating_action_button : WidgetStateMouseC
                 WidgetStateProperty.resolveAs(widgetCursor, states)
                 ?? (themeCursor?.resolve(states))
             ) ?? adaptiveClickable.resolve(states);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string debugDescription => "WidgetStateMouseCursor(FloatActionButton)";
@@ -645,7 +645,7 @@ internal class _ChildOverflowBox__floating_action_button : SingleChildRenderObje
         return new _RenderChildOverflowBox__floating_action_button(
             textDirection: Directionality.of(context)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -678,7 +678,7 @@ public class _RenderChildOverflowBox__floating_action_button : RenderAligningShi
         {
             return constraints.biggest;
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void performLayout()
@@ -799,7 +799,9 @@ internal class _FABDefaultsM3__floating_action_button : FloatingActionButtonThem
                         borderRadius: BorderRadius.CreateAll(Radius.circular(16.0))
                     ),
                 _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                    throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
             }
         );
     public override double? iconSize =>
@@ -810,7 +812,9 @@ internal class _FABDefaultsM3__floating_action_button : FloatingActionButtonThem
             _FloatingActionButtonType__floating_action_button.large => 36.0,
             _FloatingActionButtonType__floating_action_button.extended => 24.0,
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
     public override EdgeInsetsGeometry? extendedPadding =>
         DartRuntimePrimitives.ConvertValue<EdgeInsetsGeometry>(

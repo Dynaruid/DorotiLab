@@ -165,7 +165,7 @@ public class InkHighlight : InteractiveInkFeature
                         (
                             originOffset
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     )

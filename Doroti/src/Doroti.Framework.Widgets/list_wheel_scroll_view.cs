@@ -39,14 +39,14 @@ public class ListWheelChildListDelegate : ListWheelChildDelegate
             return null;
         }
         return (Widget?)new IndexedSemantics(index: index, child: children[(int)index]);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool shouldRebuild(ListWheelChildDelegate oldDelegate)
     {
         var __oldDelegate = (ListWheelChildListDelegate)oldDelegate;
         return !Equals(children, __oldDelegate.children);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -75,14 +75,14 @@ public class ListWheelChildLoopingListDelegate : ListWheelChildDelegate
                 index: index,
                 child: children[(int)(index % checked(children.Count))]
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool shouldRebuild(ListWheelChildDelegate oldDelegate)
     {
         var __oldDelegate = (ListWheelChildLoopingListDelegate)oldDelegate;
         return !Equals(children, __oldDelegate.children);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -117,9 +117,7 @@ public class ListWheelChildBuilderDelegate : ListWheelChildDelegate
                 index
                 >= (
                     childCount
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             )
         )
@@ -127,7 +125,7 @@ public class ListWheelChildBuilderDelegate : ListWheelChildDelegate
             return null;
         }
         return (Widget?)new IndexedSemantics(index: index, child: builder(context, index));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool shouldRebuild(ListWheelChildDelegate oldDelegate)
@@ -135,7 +133,7 @@ public class ListWheelChildBuilderDelegate : ListWheelChildDelegate
         var __oldDelegate = (ListWheelChildBuilderDelegate)oldDelegate;
         return (!Equals(builder, __oldDelegate.builder))
             || (childCount != __oldDelegate.childCount);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -215,7 +213,7 @@ public class FixedExtentScrollController : ScrollController
             keepScrollOffset: keepScrollOffset,
             debugLabel: debugLabel
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -238,19 +236,19 @@ public class FixedExtentMetrics : FixedScrollMetrics
         : base(
             minScrollExtent: (
                 minScrollExtent
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             maxScrollExtent: (
                 maxScrollExtent
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             pixels: (
                 pixels
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             viewportDimension: (
                 viewportDimension
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             axisDirection: axisDirection,
             devicePixelRatio: devicePixelRatio
@@ -285,7 +283,7 @@ public class FixedExtentMetrics : FixedScrollMetrics
             itemIndex: itemIndex ?? this.itemIndex,
             devicePixelRatio: devicePixelRatio ?? this.devicePixelRatio
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -301,7 +299,7 @@ public static partial class List_wheel_scroll_viewLibrary
         return (
             _clipOffsetToScrollableRange(offset, minScrollExtent, maxScrollExtent) / itemExtent
         ).round();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -314,7 +312,7 @@ public static partial class List_wheel_scroll_viewLibrary
     )
     {
         return Math.Min(Math.Max(offset, minScrollExtent), maxScrollExtent);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -346,7 +344,7 @@ internal class _FixedExtentScrollPosition__list_wheel_scroll_view : ScrollPositi
     {
         var scrollable = ((_FixedExtentScrollableState__list_wheel_scroll_view?)context)!;
         return scrollable.itemExtent;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double itemExtent => _getItemExtentFromScrollContext(context);
@@ -389,7 +387,7 @@ internal class _FixedExtentScrollPosition__list_wheel_scroll_view : ScrollPositi
             itemIndex: itemIndex ?? this.itemIndex,
             devicePixelRatio: devicePixelRatio ?? this.devicePixelRatio
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -444,7 +442,7 @@ public class FixedExtentScrollPhysics : ScrollPhysics
     public override FixedExtentScrollPhysics applyTo(ScrollPhysics? ancestor)
     {
         return new FixedExtentScrollPhysics(parent: buildParent(ancestor));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Physics.Simulation? createBallisticSimulation(
@@ -525,7 +523,7 @@ public class FixedExtentScrollPhysics : ScrollPhysics
                 toleranceFor((_FixedExtentScrollPosition__list_wheel_scroll_view)position).velocity
                     * Math.Sign(velocity)
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -757,7 +755,7 @@ internal class _ListWheelScrollViewState__list_wheel_scroll_view : State<ListWhe
             }
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -789,11 +787,13 @@ internal class _ListWheelScrollViewState__list_wheel_scroll_view : State<ListWhe
                         childDelegate: widget.childDelegate,
                         clipBehavior: widget.clipBehavior
                     );
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -847,11 +847,11 @@ public class ListWheelElement : RenderObjectElement, ListWheelChildManager
         }
         long firstIndex = (
             DartCollectionRuntime.FirstKeyOrNull(_childElements)
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         );
         long lastIndex = (
             DartCollectionRuntime.LastKeyOrNull(_childElements)
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         );
         for (var index = firstIndex; index <= lastIndex; ++index)
         {
@@ -877,7 +877,7 @@ public class ListWheelElement : RenderObjectElement, ListWheelChildManager
             index,
             () => ((ListWheelViewport?)widget)!.childDelegate.build(this, index)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool childExistsAt(long index) =>
@@ -940,7 +940,7 @@ public class ListWheelElement : RenderObjectElement, ListWheelChildManager
             }
         }
         return newChild;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void insertRenderObjectChild(RenderObject child, object? slot)
@@ -1068,7 +1068,7 @@ public class ListWheelViewport : RenderObjectWidget
             renderChildrenOutsideViewport: renderChildrenOutsideViewport,
             clipBehavior: clipBehavior
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)

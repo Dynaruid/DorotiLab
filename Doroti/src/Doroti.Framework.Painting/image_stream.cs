@@ -23,7 +23,7 @@ public class ImageInfo
     public virtual ImageInfo clone()
     {
         return new ImageInfo(image: image.clone(), scale: scale, debugLabel: debugLabel);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool isCloneOf(ImageInfo other)
@@ -31,7 +31,7 @@ public class ImageInfo
         return other.image.isCloneOf(image)
             && (other.scale == scale)
             && (other.debugLabel == debugLabel);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual long sizeBytes => image.height * image.width * 4L;
@@ -358,7 +358,7 @@ public abstract class ImageStreamCompleter : Diagnosticable
     {
         _checkDisposed();
         return new ImageStreamCompleterHandle(this);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void removeListener(ImageStreamListener listener)
@@ -704,7 +704,7 @@ public class MultiFrameImageStreamCompleter : ImageStreamCompleter
         Duration delay =
             (
                 _frameDuration
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ) - (timestamp - _shownTimestamp);
         _timer = new Timer(
             delay * Scheduler.BindingLibrary.timeDilation,
@@ -718,7 +718,7 @@ public class MultiFrameImageStreamCompleter : ImageStreamCompleter
     internal virtual bool _isFirstFrame()
     {
         return _frameDuration is null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _hasFrameDurationPassed(Duration timestamp)
@@ -726,9 +726,9 @@ public class MultiFrameImageStreamCompleter : ImageStreamCompleter
         return (timestamp - _shownTimestamp)
             >= (
                 _frameDuration
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual async Future _decodeNextFrameAndSchedule()

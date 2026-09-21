@@ -84,7 +84,7 @@ public class SearchViewThemeData : Diagnosticable
             shrinkWrap: shrinkWrap ?? this.shrinkWrap,
             dividerColor: dividerColor ?? this.dividerColor
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static SearchViewThemeData? lerp(
@@ -116,7 +116,7 @@ public class SearchViewThemeData : Diagnosticable
             shrinkWrap: (t < 0.5) ? a?.shrinkWrap : b?.shrinkWrap,
             dividerColor: Dart_uiLibrary.Color.lerp(a?.dividerColor, b?.dividerColor, t)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override int GetHashCode() =>
@@ -244,7 +244,7 @@ public class SearchViewThemeData : Diagnosticable
         a ??= new BorderSide(width: 0, color: b!.color.withAlpha(0L));
         b ??= new BorderSide(width: 0, color: a.color.withAlpha(0L));
         return (BorderSide?)BorderSide.lerp(a, b, t);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
@@ -262,7 +262,7 @@ public class SearchViewThemeData : Diagnosticable
             return true;
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -271,7 +271,7 @@ public class SearchViewThemeData : Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -294,13 +294,13 @@ public class SearchViewTheme : InheritedTheme
         SearchViewTheme? searchViewThemeLocal =
             context.dependOnInheritedWidgetOfExactType<SearchViewTheme>();
         return searchViewThemeLocal?.data ?? Theme.of(context).searchViewTheme;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget wrap(BuildContext context, Widget child)
     {
         return new SearchViewTheme(data: data, child: child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget) =>

@@ -266,7 +266,9 @@ internal class _InputChipDefaultsM3__input_chip : ChipThemeData
                         return _colors.secondaryContainer;
                     }
                     return null;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );

@@ -337,15 +337,11 @@ public class InkSparkle : InteractiveInkFeature
             canvas.translate(
                 (
                     originOffset
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ).dx,
                 (
                     originOffset
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ).dy
             );
         }
@@ -452,7 +448,7 @@ internal class _InkSparkleFactory__ink_sparkle : InteractiveInkFeatureFactory
             onRemoved: onRemoved,
             turbulenceSeed: turbulenceSeed
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -474,7 +470,7 @@ public static partial class Ink_sparkleLibrary
             return () => Offset.zero & referenceBox.size;
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -491,6 +487,6 @@ public static partial class Ink_sparkleLibrary
         double d1 = sizeLocal.bottomRight(Offset.zero).distance;
         double d2 = (sizeLocal.topRight(Offset.zero) - sizeLocal.bottomLeft(Offset.zero)).distance;
         return Math.Max(d1, d2) / 2.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

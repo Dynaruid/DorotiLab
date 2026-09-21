@@ -69,9 +69,7 @@ public abstract class MultiDragPointerState
             _pendingDelta =
                 (
                     _pendingDelta
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) + @event.delta;
             _lastPendingEventTimestamp = @event.timeStamp;
             checkForResolutionAfterMove();
@@ -102,7 +100,7 @@ public abstract class MultiDragPointerState
             sourceTimeStamp: _lastPendingEventTimestamp,
             delta: (
                 pendingDelta
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             globalPosition: initialPosition
         );
@@ -264,7 +262,7 @@ public abstract class MultiDragGestureRecognizer : GestureRecognizer
             _removeState(pointer);
         }
         return drag;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void rejectGesture(long pointer)
@@ -313,7 +311,7 @@ internal class _ImmediatePointerState__multidrag : MultiDragPointerState
         if (
             (
                 pendingDelta
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ).distance > EventsLibrary.computeHitSlop(kind, gestureSettings)
         )
         {
@@ -343,7 +341,7 @@ public class ImmediateMultiDragGestureRecognizer : MultiDragGestureRecognizer
     public override MultiDragPointerState createNewPointerState(PointerDownEvent @event)
     {
         return new _ImmediatePointerState__multidrag(@event.position, @event.kind, gestureSettings);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string debugDescription => "multidrag";
@@ -364,7 +362,7 @@ internal class _HorizontalPointerState__multidrag : MultiDragPointerState
         if (
             (
                 pendingDelta
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ).dx.abs() > EventsLibrary.computeHitSlop(kind, gestureSettings)
         )
         {
@@ -398,7 +396,7 @@ public class HorizontalMultiDragGestureRecognizer : MultiDragGestureRecognizer
             @event.kind,
             gestureSettings
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string debugDescription => "horizontal multidrag";
@@ -419,7 +417,7 @@ internal class _VerticalPointerState__multidrag : MultiDragPointerState
         if (
             (
                 pendingDelta
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ).dy.abs() > EventsLibrary.computeHitSlop(kind, gestureSettings)
         )
         {
@@ -449,7 +447,7 @@ public class VerticalMultiDragGestureRecognizer : MultiDragGestureRecognizer
     public override MultiDragPointerState createNewPointerState(PointerDownEvent @event)
     {
         return new _VerticalPointerState__multidrag(@event.position, @event.kind, gestureSettings);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string debugDescription => "vertical multidrag";
@@ -475,7 +473,7 @@ internal class _DelayedPointerState__multidrag : MultiDragPointerState
         DartRuntimePrimitives.Assert(() =>
             (
                 pendingDelta
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ).distance <= EventsLibrary.computeHitSlop(kind, gestureSettings)
         );
         _timer = null;
@@ -521,7 +519,7 @@ internal class _DelayedPointerState__multidrag : MultiDragPointerState
         if (
             (
                 pendingDelta
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ).distance > EventsLibrary.computeHitSlop(kind, gestureSettings)
         )
         {
@@ -565,7 +563,7 @@ public class DelayedMultiDragGestureRecognizer : MultiDragGestureRecognizer
             @event.kind,
             gestureSettings
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string debugDescription => "long multidrag";

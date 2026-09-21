@@ -43,7 +43,7 @@ internal class _StorageEntryIdentifier__page_storage
     public override string ToString()
     {
         return $"StorageEntryIdentifier({string.Join(":", keys)})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -61,7 +61,7 @@ public class PageStorageBucket
             keys.Add(key__2231__as2257);
         }
         return widgetLocal is not PageStorage;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual List<PageStorageKey<object>> _allKeys(BuildContext context)
@@ -73,18 +73,20 @@ public class PageStorageBucket
                 (element) =>
                 {
                     return _maybeAddKey(element, keys);
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
         }
         return keys;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual _StorageEntryIdentifier__page_storage _computeIdentifier(BuildContext context)
     {
         return new _StorageEntryIdentifier__page_storage(_allKeys(context));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void writeState(BuildContext context, object? data, object? identifier = null)
@@ -116,7 +118,7 @@ public class PageStorageBucket
         }
         _StorageEntryIdentifier__page_storage contextIdentifier = _computeIdentifier(context);
         return contextIdentifier.isNotEmpty ? _storage!.GetValueOrDefault(contextIdentifier) : null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -140,7 +142,7 @@ public class PageStorage : StatelessWidget
     {
         PageStorage? widget = context.findAncestorWidgetOfExactType<PageStorage>();
         return widget?.bucket;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static PageStorageBucket of(BuildContext context)
@@ -164,10 +166,10 @@ public class PageStorage : StatelessWidget
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return bucket!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context) => child;

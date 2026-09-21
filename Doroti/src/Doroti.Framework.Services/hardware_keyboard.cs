@@ -34,7 +34,7 @@ public static partial class Hardware_keyboardLibrary
             }
         }
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -346,13 +346,13 @@ public class HardwareKeyboard
             _modifiedHandlers = null;
         }
         return handled;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual List<string> _debugPressedKeysDetails()
     {
         return new List<string>();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool handleKeyEvent(KeyEvent @event)
@@ -387,7 +387,7 @@ public class HardwareKeyboard
                         (
                             lockMode
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     )
@@ -397,7 +397,7 @@ public class HardwareKeyboard
                         (
                             lockMode
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     );
@@ -408,7 +408,7 @@ public class HardwareKeyboard
                         (
                             lockMode
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     );
@@ -436,7 +436,7 @@ public class HardwareKeyboard
             )
         );
         return _dispatchKeyEvent(@event);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void clearState()
@@ -468,7 +468,7 @@ public class KeyMessage
     public override string ToString()
     {
         return $"KeyMessage({events})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -518,7 +518,7 @@ public class KeyEventManager
                 return _dispatchKeyMessage(new List<KeyEvent> { @event }, null) || handled;
             }
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _dispatchKeyMessage(List<KeyEvent> keyEvents, RawKeyEvent? rawEvent)
@@ -557,7 +557,7 @@ public class KeyEventManager
             }
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual async Future<DartMap<string, object>> handleRawKeyMessage(object? message)
@@ -620,7 +620,7 @@ public class KeyEventManager
             _keyEventsSinceLastMessage.Clear();
         }
         return new DartMap<string, object> { ["handled"] = handled };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual KeyEventDeviceType _convertDeviceType(RawKeyEvent rawEvent)
@@ -654,7 +654,7 @@ public class KeyEventManager
             }
         }
         return Dart_uiLibrary.KeyEventDeviceType.keyboard;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _convertRawEventAndStore(RawKeyEvent rawEvent)
@@ -820,6 +820,6 @@ public class KeyEventManager
                 );
             }
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

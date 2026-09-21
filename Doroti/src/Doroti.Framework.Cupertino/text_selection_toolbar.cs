@@ -120,7 +120,7 @@ public class CupertinoTextSelectionToolbar : StatelessWidget
                 child: child
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -162,7 +162,7 @@ public class CupertinoTextSelectionToolbar : StatelessWidget
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -295,7 +295,7 @@ public class _RenderCupertinoTextSelectionToolbarShape__text_selection_toolbar :
             minWidth: Text_selection_toolbarLibrary._kToolbarArrowSize.width
                 + (Text_selection_toolbarLibrary._kToolbarBorderRadius.x * 2L)
         ).enforce(constraints.loosen());
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Offset _computeChildOffset(Size childSize)
@@ -306,7 +306,7 @@ public class _RenderCupertinoTextSelectionToolbarShape__text_selection_toolbar :
                 ? -Text_selection_toolbarLibrary._kToolbarArrowSize.height
                 : 0.0
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
@@ -323,12 +323,10 @@ public class _RenderCupertinoTextSelectionToolbarShape__text_selection_toolbar :
             : (
                 (
                     result
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) + _computeChildOffset(childLocal.getDryLayout(enforcedConstraint)).dy
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void performLayout()
@@ -358,7 +356,7 @@ public class _RenderCupertinoTextSelectionToolbarShape__text_selection_toolbar :
         return RRect
             .fromRectAndRadius(rect, Text_selection_toolbarLibrary._kToolbarBorderRadius)
             .scaleRadii();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static Path _addRRectToPath(Path path, RRect rrect, double startAngle)
@@ -394,7 +392,7 @@ public class _RenderCupertinoTextSelectionToolbarShape__text_selection_toolbar :
             path.arcTo(rectLocal, halfPI * i, halfPI, false);
         }
         return path;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Path _clipPath(RenderBox child, RRect rrect)
@@ -494,7 +492,7 @@ public class _RenderCupertinoTextSelectionToolbarShape__text_selection_toolbar :
                 }
             )
         )();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paint(PaintingContext context, Offset offset)
@@ -599,7 +597,7 @@ public class _RenderCupertinoTextSelectionToolbarShape__text_selection_toolbar :
             return false;
         }
         return base.hitTestChildren(result, position: position);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -654,16 +652,14 @@ public class _CupertinoTextSelectionToolbarContentState__text_selection_toolbar
             && (
                 (
                     velocity
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) != 0L
             )
         )
         {
             double velocity__19307__value19352 = (
                 velocity
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             if ((velocity__19307__value19352) > 0L)
             {
@@ -722,7 +718,7 @@ public class _CupertinoTextSelectionToolbarContentState__text_selection_toolbar
         {
             _page = (
                 _nextPage
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             _nextPage = null;
         });
@@ -832,7 +828,9 @@ public class _CupertinoTextSelectionToolbarContentState__text_selection_toolbar
                 (child) =>
                 {
                     return new Center(widthFactor: 1.0, heightFactor: 1.0, child: child);
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
             .ToList()
@@ -864,7 +862,7 @@ public class _CupertinoTextSelectionToolbarContentState__text_selection_toolbar
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
@@ -895,7 +893,7 @@ public class _CupertinoTextSelectionToolbarContentState__text_selection_toolbar
         )();
         _tickers!.Add(result);
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _removeTicker(_WidgetTicker__ticker_provider ticker)
@@ -1053,7 +1051,7 @@ public class _CupertinoTextSelectionToolbarItems__text_selection_toolbar : Rende
             dividerWidth: dividerWidth,
             page: page
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -1165,7 +1163,7 @@ public class _CupertinoTextSelectionToolbarItemsElement__text_selection_toolbar
     internal static bool _shouldPaint(Element child)
     {
         return ((ToolbarItemsParentData?)child.renderObject!.parentData!)!.shouldPaint;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void removeRenderObjectChild(RenderObject child, object? slot)
@@ -1262,7 +1260,9 @@ public class _CupertinoTextSelectionToolbarItemsElement__text_selection_toolbar
                     );
                     previousChild = result;
                     return result;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );
@@ -1354,7 +1354,7 @@ public class _RenderCupertinoTextSelectionToolbarItems__text_selection_toolbar
             adoptChild(newChild);
         }
         return newChild;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual long page
@@ -1597,10 +1597,12 @@ public class _RenderCupertinoTextSelectionToolbarItems__text_selection_toolbar
                     Equals(transformed, position - childParentData.offset)
                 );
                 return child.hitTest(result, position: transformed);
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool hitTestChildren(BoxHitTestResult result, Offset position)
@@ -1629,7 +1631,7 @@ public class _RenderCupertinoTextSelectionToolbarItems__text_selection_toolbar
             return true;
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void attach(PipelineOwner owner)
@@ -1734,7 +1736,7 @@ public class _RenderCupertinoTextSelectionToolbarItems__text_selection_toolbar
             }
         );
         return value;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool _debugUltimatePreviousSiblingOf(RenderBox child, RenderBox? equals = null)
@@ -1747,7 +1749,7 @@ public class _RenderCupertinoTextSelectionToolbarItems__text_selection_toolbar
             childParentData = ((ToolbarItemsParentData?)child.parentData!)!;
         }
         return Equals(child, equals);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool _debugUltimateNextSiblingOf(RenderBox child, RenderBox? equals = null)
@@ -1760,7 +1762,7 @@ public class _RenderCupertinoTextSelectionToolbarItems__text_selection_toolbar
             childParentData = ((ToolbarItemsParentData?)child.parentData!)!;
         }
         return Equals(child, equals);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual long childCount => _childCount;
@@ -1805,7 +1807,7 @@ public class _RenderCupertinoTextSelectionToolbarItems__text_selection_toolbar
             return true;
         });
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _insertIntoChildList(RenderBox child, RenderBox? after = null)
@@ -1985,7 +1987,7 @@ public class _RenderCupertinoTextSelectionToolbarItems__text_selection_toolbar
         DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         var childParentData = ((ToolbarItemsParentData?)child.parentData!)!;
         return childParentData.previousSibling;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual RenderBox? childAfter(RenderBox child)
@@ -1993,7 +1995,7 @@ public class _RenderCupertinoTextSelectionToolbarItems__text_selection_toolbar
         DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         var childParentData = ((ToolbarItemsParentData?)child.parentData!)!;
         return childParentData.nextSibling;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double? defaultComputeDistanceToFirstActualBaseline(TextBaseline baseline)
@@ -2008,16 +2010,14 @@ public class _RenderCupertinoTextSelectionToolbarItems__text_selection_toolbar
             {
                 double result__138852__value138916 = (
                     result
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 return (result__138852__value138916) + childParentData.offset.dy;
             }
             child = childParentData.nextSibling;
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double? defaultComputeDistanceToHighestActualBaseline(TextBaseline baseline)
@@ -2035,7 +2035,7 @@ public class _RenderCupertinoTextSelectionToolbarItems__text_selection_toolbar
             child = childParentData.nextSibling;
         }
         return minBaseline.offset;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool defaultHitTestChildren(BoxHitTestResult result, Offset position)
@@ -2053,7 +2053,9 @@ public class _RenderCupertinoTextSelectionToolbarItems__text_selection_toolbar
                         Equals(transformed, position - childParentData.offset)
                     );
                     return child!.hitTest(result, position: transformed);
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
             if (isHit)
@@ -2063,7 +2065,7 @@ public class _RenderCupertinoTextSelectionToolbarItems__text_selection_toolbar
             child = childParentData.previousSibling;
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void defaultPaint(PaintingContext context, Offset offset)
@@ -2088,7 +2090,7 @@ public class _RenderCupertinoTextSelectionToolbarItems__text_selection_toolbar
             child = childParentData.nextSibling;
         }
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 

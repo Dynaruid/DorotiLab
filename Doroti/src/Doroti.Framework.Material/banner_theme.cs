@@ -59,7 +59,7 @@ public class MaterialBannerThemeData : Diagnosticable
             padding: padding ?? this.padding,
             leadingPadding: leadingPadding ?? this.leadingPadding
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static MaterialBannerThemeData lerp(
@@ -82,7 +82,7 @@ public class MaterialBannerThemeData : Diagnosticable
             padding: EdgeInsetsGeometry.lerp(a?.padding, b?.padding, t),
             leadingPadding: EdgeInsetsGeometry.lerp(a?.leadingPadding, b?.leadingPadding, t)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override int GetHashCode() =>
@@ -167,7 +167,7 @@ public class MaterialBannerThemeData : Diagnosticable
             return true;
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -176,7 +176,7 @@ public class MaterialBannerThemeData : Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -199,13 +199,13 @@ public class MaterialBannerTheme : InheritedTheme
         MaterialBannerTheme? bannerThemeLocal =
             context.dependOnInheritedWidgetOfExactType<MaterialBannerTheme>();
         return bannerThemeLocal?.data ?? Theme.of(context).bannerTheme;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget wrap(BuildContext context, Widget child)
     {
         return new MaterialBannerTheme(data: data, child: child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget) =>

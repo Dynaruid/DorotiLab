@@ -39,7 +39,7 @@ internal class _CupertinoSliverRefresh__refresh : SingleChildRenderObjectWidget
             refreshIndicatorExtent: refreshIndicatorLayoutExtent,
             hasLayoutExtent: hasLayoutExtent
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -209,7 +209,7 @@ public class _RenderCupertinoSliverRefresh__refresh
             return true;
         });
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual RenderBox? child
@@ -266,7 +266,7 @@ public class _RenderCupertinoSliverRefresh__refresh
                 ((Diagnosticable)child!).toDiagnosticsNode(name: "child"),
             }
             : new List<DiagnosticsNode>();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -331,7 +331,7 @@ public class CupertinoSliverRefreshControl : StatefulWidget
         _CupertinoSliverRefreshControlState__refresh stateLocal =
             context.findAncestorStateOfType<_CupertinoSliverRefreshControlState__refresh>()!;
         return stateLocal.refreshState;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static Widget buildRefreshIndicator(
@@ -367,7 +367,7 @@ public class CupertinoSliverRefreshControl : StatefulWidget
                 }
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static Widget _buildIndicatorForRefreshState(
@@ -403,9 +403,11 @@ public class CupertinoSliverRefreshControl : StatefulWidget
                 return SizedBox.CreateShrink();
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override IState createState() =>
@@ -574,7 +576,7 @@ internal class _CupertinoSliverRefreshControlState__refresh : State<CupertinoSli
             }
         }
         return nextState;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -602,10 +604,12 @@ internal class _CupertinoSliverRefreshControlState__refresh : State<CupertinoSli
                         maxHeight: 0.0,
                         child: SizedBox.CreateExpand()
                     );
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

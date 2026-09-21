@@ -154,13 +154,13 @@ public class DialogTheme : InheritedTheme, Diagnosticable
     {
         DialogTheme? dialogThemeLocal = context.dependOnInheritedWidgetOfExactType<DialogTheme>();
         return dialogThemeLocal?.data ?? Theme.of(context).dialogTheme;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget wrap(BuildContext context, Widget child)
     {
         return new DialogTheme(data: data, child: child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget) =>
@@ -197,7 +197,7 @@ public class DialogTheme : InheritedTheme, Diagnosticable
             insetPadding: insetPadding ?? this.insetPadding,
             clipBehavior: clipBehavior ?? this.clipBehavior
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static DialogTheme lerp(DialogTheme? a, DialogTheme? b, double t)
@@ -225,7 +225,7 @@ public class DialogTheme : InheritedTheme, Diagnosticable
             insetPadding: EdgeInsets.lerp(a?.insetPadding, b?.insetPadding, t),
             clipBehavior: (t < 0.5) ? a?.clipBehavior : b?.clipBehavior
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -278,7 +278,7 @@ public class DialogTheme : InheritedTheme, Diagnosticable
             return true;
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override DiagnosticsNode toDiagnosticsNode(
@@ -287,7 +287,7 @@ public class DialogTheme : InheritedTheme, Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -374,7 +374,7 @@ public class DialogThemeData : Diagnosticable
             clipBehavior: clipBehavior ?? this.clipBehavior,
             constraints: constraints ?? this.constraints
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static DialogThemeData lerp(DialogThemeData? a, DialogThemeData? b, double t)
@@ -403,7 +403,7 @@ public class DialogThemeData : Diagnosticable
             clipBehavior: (t < 0.5) ? a?.clipBehavior : b?.clipBehavior,
             constraints: BoxConstraints.lerp(a?.constraints, b?.constraints, t)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override int GetHashCode() =>
@@ -517,7 +517,7 @@ public class DialogThemeData : Diagnosticable
             return true;
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -526,6 +526,6 @@ public class DialogThemeData : Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

@@ -16,9 +16,9 @@ public abstract class Scribe
             throw new FlutterError("MethodChannel.invokeMethod unexpectedly returned null.");
         }
         return (
-            result ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            result ?? throw new global::System.NullReferenceException("A required value was null.")
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static async Future<bool> isStylusHandwritingAvailable()
@@ -29,14 +29,14 @@ public abstract class Scribe
             throw new FlutterError("MethodChannel.invokeMethod unexpectedly returned null.");
         }
         return (
-            result ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            result ?? throw new global::System.NullReferenceException("A required value was null.")
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static Future startStylusHandwriting()
     {
         return _channel.invokeMethod<object?>("Scribe.startStylusHandwriting");
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

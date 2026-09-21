@@ -45,7 +45,7 @@ public class BoxShadow : Shadow
             return true;
         });
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual BoxShadow scale(double factor)
@@ -57,7 +57,7 @@ public class BoxShadow : Shadow
             spreadRadius: spreadRadius * factor,
             blurStyle: blurStyle
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual BoxShadow copyWith(
@@ -75,7 +75,7 @@ public class BoxShadow : Shadow
             spreadRadius: spreadRadius ?? this.spreadRadius,
             blurStyle: blurStyle ?? this.blurStyle
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static BoxShadow? lerp(BoxShadow? a, BoxShadow? b, double t)
@@ -96,19 +96,19 @@ public class BoxShadow : Shadow
             color: Dart_uiLibrary.Color.lerp(a.color, b.color, t)!,
             offset: (
                 Dart_uiLibrary.Offset.lerp(a.offset, b.offset, t)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             blurRadius: (
                 Dart_uiLibrary.lerpDouble(a.blurRadius, b.blurRadius, t)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             spreadRadius: (
                 Dart_uiLibrary.lerpDouble(a.spreadRadius, b.spreadRadius, t)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             blurStyle: Equals(a.blurStyle, BlurStyle.normal) ? b.blurStyle : a.blurStyle
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static List<BoxShadow>? lerpList(List<BoxShadow>? a, List<BoxShadow>? b, double t)
@@ -121,7 +121,7 @@ public class BoxShadow : Shadow
         b ??= new List<BoxShadow>();
         long commonLength = Math.Min(checked(a.Count), checked((long)b.Count));
         return new List<BoxShadow>();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool Equals(object? other)

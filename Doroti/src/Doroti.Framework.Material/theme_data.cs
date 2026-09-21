@@ -245,7 +245,7 @@ public class ThemeData : Diagnosticable
         switch (
             (
                 platform
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         )
         {
@@ -270,9 +270,7 @@ public class ThemeData : Diagnosticable
             (
                 (
                     platform
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             )
         );
@@ -281,9 +279,7 @@ public class ThemeData : Diagnosticable
             Equals(
                 (
                     platform
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 TargetPlatform.android
             ) && !Foundation.ConstantsLibrary.kIsWeb;
@@ -297,7 +293,7 @@ public class ThemeData : Diagnosticable
                     (
                         brightness
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 ),
@@ -371,7 +367,7 @@ public class ThemeData : Diagnosticable
             splashColor: splashColor,
             materialTapTargetSize: (
                 materialTapTargetSize
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );
         disabledColor ??= (isDark ? Colors.white38 : Colors.black38);
@@ -381,9 +377,7 @@ public class ThemeData : Diagnosticable
             Typography.CreateMaterial2021(
                 platform: (
                     platform
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 colorScheme: colorScheme
             )
@@ -490,9 +484,7 @@ public class ThemeData : Diagnosticable
             applyElevationOverlayColor: (
                 (
                     applyElevationOverlayColor
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             ),
             cupertinoOverrideTheme: cupertinoOverrideTheme,
@@ -501,18 +493,14 @@ public class ThemeData : Diagnosticable
             materialTapTargetSize: (
                 (
                     materialTapTargetSize
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             ),
             pageTransitionsTheme: pageTransitionsTheme,
             platform: (
                 (
                     platform
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             ),
             scrollbarTheme: scrollbarTheme,
@@ -593,7 +581,7 @@ public class ThemeData : Diagnosticable
         if (
             (
                 useSystemColors
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         )
         {
@@ -807,7 +795,7 @@ public class ThemeData : Diagnosticable
     {
         var adaptationMap = new DartMap<Type, Adaptation<object>>();
         return adaptationMap;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Brightness brightness =>
@@ -989,7 +977,7 @@ public class ThemeData : Diagnosticable
                         }
                         return ((AppBarThemeData?)appBarTheme)! ?? this.appBarTheme;
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 )
@@ -1054,10 +1042,12 @@ public class ThemeData : Diagnosticable
                     primaryTextTheme: localTextGeometry.merge(baseTheme.primaryTextTheme),
                     textTheme: localTextGeometry.merge(baseTheme.textTheme)
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static Brightness estimateBrightnessForColor(Color color)
@@ -1069,7 +1059,7 @@ public class ThemeData : Diagnosticable
             return Brightness.light;
         }
         return Brightness.dark;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static DartMap<object, ThemeExtension<object>> _lerpThemeExtensions(
@@ -1086,7 +1076,9 @@ public class ThemeData : Diagnosticable
                     id,
                     extensionA.lerp(extensionB, t)
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
         newExtensions.addEntries(
@@ -1094,7 +1086,7 @@ public class ThemeData : Diagnosticable
                 .Cast<MapEntry<object, ThemeExtension<object>>>()
         );
         return newExtensions;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static DartMap<object, ThemeExtension<object>> _themeExtensionIterableToMap(
@@ -1104,7 +1096,7 @@ public class ThemeData : Diagnosticable
         return new DartMap<object, ThemeExtension<object>>(
             new DartMap<object, ThemeExtension<object>>()
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual ThemeData _overrideWithSystemColors()
@@ -1207,7 +1199,7 @@ public class ThemeData : Diagnosticable
             );
         }
         return theme;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static ThemeData lerp(ThemeData a, ThemeData b, double t)
@@ -2238,7 +2230,7 @@ public class ThemeData : Diagnosticable
             return true;
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -2247,7 +2239,7 @@ public class ThemeData : Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -2325,7 +2317,7 @@ public class MaterialBasedCupertinoThemeData : CupertinoThemeData
                 applyThemeToAll: applyThemeToAll
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override CupertinoThemeData resolveFrom(BuildContext context)
@@ -2336,7 +2328,7 @@ public class MaterialBasedCupertinoThemeData : CupertinoThemeData
             _materialTheme,
             cupertinoOverrideThemeWithTextTheme.resolveFrom(context)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -2416,7 +2408,7 @@ internal class _FifoCache__theme_data<K, V>
             _cache.remove(_cache.Keys.First());
         }
         return _cache[key] = loader();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -2452,9 +2444,11 @@ public class VisualDensity : Diagnosticable
             TargetPlatform.linux or TargetPlatform.macOS => compact,
             TargetPlatform.windows => compact,
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual VisualDensity copyWith(double? horizontal = null, double? vertical = null)
@@ -2463,7 +2457,7 @@ public class VisualDensity : Diagnosticable
             horizontal: horizontal ?? this.horizontal,
             vertical: vertical ?? this.vertical
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Offset baseSizeAdjustment
@@ -2484,14 +2478,14 @@ public class VisualDensity : Diagnosticable
         return new VisualDensity(
             horizontal: (
                 Dart_uiLibrary.lerpDouble(a.horizontal, b.horizontal, t)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             vertical: (
                 Dart_uiLibrary.lerpDouble(a.vertical, b.vertical, t)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual BoxConstraints effectiveConstraints(BoxConstraints constraints)
@@ -2509,7 +2503,7 @@ public class VisualDensity : Diagnosticable
                 constraints.maxHeight
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool Equals(object? other)
@@ -2543,7 +2537,7 @@ public class VisualDensity : Diagnosticable
     public virtual string toStringShort()
     {
         return $"{DiagnosticsLibrary.describeIdentity(this)}(h: {Foundation.DebugLibrary.debugFormatDouble(horizontal)}, v: {Foundation.DebugLibrary.debugFormatDouble(vertical)})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string ToString() => ToString(DiagnosticLevel.info);
@@ -2559,7 +2553,7 @@ public class VisualDensity : Diagnosticable
             return true;
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -2568,7 +2562,7 @@ public class VisualDensity : Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 

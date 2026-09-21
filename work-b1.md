@@ -45,7 +45,7 @@
 
 현재 구현과 검토 지점:
 
-- [런타임 구현](Doroti/src/Doroti.Runtime/DartRuntimePrimitives.cs): nullable 값 형식, non-nullable 값 형식, 참조 형식용 오버로드가 있다. nullable 값·참조 형식은 null에서 `NullReferenceException("Dart null assertion failed.")`을 발생시키고, non-nullable 값 형식은 입력을 그대로 반환한다. `[NotNull]`에 의한 컴파일러 흐름 정보도 고려해야 한다.
+- [런타임 구현](Doroti/src/Doroti.Runtime/DartRuntimePrimitives.cs): 구현 전에는 nullable 값 형식, non-nullable 값 형식, 참조 형식용 오버로드가 있었다. 해당 오버로드 3개는 현재 삭제됐고, null 실패는 호출 지점의 `NullReferenceException("A required value was null.")`으로 표현한다.
 - [TextFormField](Doroti/src/Doroti.Framework.Material/text_form_field.cs): 피커 오류는 옵션 기본값이 실제 builder 콜백에 적용되지 않은 사례다. 현재는 `stylusHandwritingEnabled ?? EditableText.defaultStylusHandwritingEnabled`로 수정돼 있다. 이 문제를 모든 null 검사가 불필요하다는 근거로 일반화하지 않는다.
 - [변환기 lowering](tools/Doroti.DartToCSharp/src/Backend/CSharp/Lowering): `Expressions`, `Invocations`, `Declarations`, `Statements`, `Members`, `Compatibility`, `G53Compatibility` 등 여러 경로에서 호출을 만들거나 생성 문자열을 매칭한다.
 - [RuntimeIntrinsic](tools/Doroti.DartToCSharp/src/Core/Ir/RuntimeIntrinsic.cs): `RequireValue` 항목이 있다. 실제 생산·소비 경로와 직렬화 계약 여부를 조사한 뒤 처리한다.
@@ -233,7 +233,7 @@ python Doroti/validation/run-with-timeout.py dotnet build DorotiTestbedApp/windo
 | 제거 0건 검사 | `require-value-removal verify` PASS, final manifest 0행 |
 | 프레임워크 통합 빌드 | `Doroti.Editor.slnx` Debug/Release, 경고 0·오류 0 |
 | 격리 빌드 | Material 의존성 전체 Release를 `Doroti/artifacts/require-value-removal/isolated`에 재빌드, 경고 0·오류 0 |
-| 런타임 계약 | warning-remediation Debug/Release 각 99 assertions PASS; 0, false, null 메시지, 단일 평가, 콜백 지연 실행 포함 |
+| 런타임 계약 | warning-remediation Debug/Release 각 103 assertions PASS; 0, false, 중립화한 null/type 오류 메시지, 단일 평가, 콜백 지연 실행 포함 |
 | 변환기 | null-semantics fixture PASS; 실제 analyzer → 변환기 → C# compile → 실행으로 값/참조/generic/dynamic/default/builder/delayed callback 검증 |
 | 변환기 회귀 | virtual-dispatch fixture PASS; 외부 bridge, factory, generic, serial/parallel 결정성 포함 |
 | 피커/화면 | 가로·세로 모두 PASS; 날짜·시간 초기값, 오류, 수정값, 모드 왕복, inputOnly, Skia paint 확인. PNG 4장을 육안 확인해 framework exception/ErrorWidget/클리핑 없음 |
@@ -243,3 +243,9 @@ python Doroti/validation/run-with-timeout.py dotnet build DorotiTestbedApp/windo
 | 저장소 통합 wrapper | guard와 guard-tests PASS 후 기존 Testbed IDE0002 10건(6개 파일)에서 조기 중단. B1 변경 파일 밖의 기존 진단이며 이후 B1 관련 빌드·계약·Windows 제품 입력은 위와 같이 별도 PASS |
 
 재현 가능한 명령과 API 호환성 안내는 `Doroti/validation/require-value-removal/README.md` 및 `tools/Doroti.DartToCSharp/validation/null-semantics/README.md`에 기록했다. 생성 후보와 실행 로그는 제품 소스를 덮어쓰지 않고 `.doroti`와 `Doroti/artifacts/require-value-removal` 아래에 분리했다.
+
+## 8. 오류 문구 후속 정리 (2026-09-21)
+
+- 제품 예외에 노출되던 Dart 중심 표현을 Doroti/C# 관점의 중립적인 문구로 바꿨다. 대표 문구는 `A required value was null.`, `Control flow completed without returning a value.`, `Callback completed without returning a value.`, `Switch expression did not handle the supplied value.`이다.
+- 런타임의 type/assert/index/JSON/length/map/covariance 오류와 Future 진단 이름도 같은 원칙으로 정리했다. 단, Dart analyzer 입력 오류, `dart:ui` invocation ID, 실제 CLR 타입 이름처럼 문제 원인을 식별하는 기술 명칭은 유지했다.
+- 제품 소스뿐 아니라 변환기 emission·compatibility 문자열과 계약 검증을 함께 수정했다. `Doroti/validation/error-messages/verify.py`가 폐기 문구의 재유입을 검사하며, 현재 1,006개 실행 C# 소스에서 통과했다.

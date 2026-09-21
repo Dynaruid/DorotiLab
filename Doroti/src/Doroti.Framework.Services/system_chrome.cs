@@ -97,7 +97,7 @@ public class SystemUiOverlayStyle : Diagnosticable
             ["systemNavigationBarIconBrightness"] = systemNavigationBarIconBrightness?.ToString(),
             ["systemNavigationBarContrastEnforced"] = systemNavigationBarContrastEnforced,
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual SystemUiOverlayStyle copyWith(
@@ -125,7 +125,7 @@ public class SystemUiOverlayStyle : Diagnosticable
             systemNavigationBarIconBrightness: systemNavigationBarIconBrightness
                 ?? this.systemNavigationBarIconBrightness
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override int GetHashCode() =>

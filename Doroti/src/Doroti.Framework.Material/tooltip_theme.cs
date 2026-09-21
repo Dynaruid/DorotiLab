@@ -94,7 +94,7 @@ public class TooltipThemeData : Diagnosticable
             triggerMode: triggerMode ?? this.triggerMode,
             enableFeedback: enableFeedback ?? this.enableFeedback
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static TooltipThemeData? lerp(TooltipThemeData? a, TooltipThemeData? b, double t)
@@ -115,7 +115,7 @@ public class TooltipThemeData : Diagnosticable
             textStyle: TextStyle.lerp(a?.textStyle, b?.textStyle, t),
             textAlign: (t < 0.5) ? a?.textAlign : b?.textAlign
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override int GetHashCode() =>
@@ -253,7 +253,7 @@ public class TooltipThemeData : Diagnosticable
             return true;
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -262,7 +262,7 @@ public class TooltipThemeData : Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -281,13 +281,13 @@ public class TooltipTheme : InheritedTheme
         TooltipTheme? tooltipThemeLocal =
             context.dependOnInheritedWidgetOfExactType<TooltipTheme>();
         return tooltipThemeLocal?.data ?? Theme.of(context).tooltipTheme;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget wrap(BuildContext context, Widget child)
     {
         return new TooltipTheme(data: data, child: child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget) =>

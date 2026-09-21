@@ -62,7 +62,7 @@ public class SpellCheckConfiguration
             spellCheckSuggestionsToolbarBuilder: spellCheckSuggestionsToolbarBuilder
                 ?? this.spellCheckSuggestionsToolbarBuilder
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string ToString()
@@ -73,7 +73,7 @@ public class SpellCheckConfiguration
             + $"text style: {misspelledTextStyle}, "
             + $"toolbar builder: {spellCheckSuggestionsToolbarBuilder}"
             + ")";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool Equals(object? other)
@@ -171,7 +171,7 @@ public static partial class Spell_checkLibrary
             spanPointer++;
         }
         return correctedSpellCheckResults;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -226,7 +226,7 @@ public static partial class Spell_checkLibrary
                 .Cast<InlineSpan>()
                 .ToList()
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -293,7 +293,7 @@ public static partial class Spell_checkLibrary
             );
         }
         return textSpanTreeChildren;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -422,7 +422,7 @@ public static partial class Spell_checkLibrary
             }
         }
         return textSpanTreeChildren;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 

@@ -78,7 +78,7 @@ public class AlwaysStoppedAnimation<T> : Animation<T>
     public override string toStringDetails()
     {
         return $"{base.toStringDetails()} {value}; paused";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -180,14 +180,14 @@ public class ProxyAnimation
             ? _parent!.status
             : (
                 _status
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
     public override double value =>
         (_parent is not null)
             ? _parent!.value
             : (
                 _value
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
 
     public override string ToString()
@@ -197,7 +197,7 @@ public class ProxyAnimation
             return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "ProxyAnimation")}(null; {base.toStringDetails()} {value.toStringAsFixed(3L)})";
         }
         return $"{parent}➩{objectRuntimeTypeFunctions.objectRuntimeType(this, "ProxyAnimation")}";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void didRegisterListener()
@@ -402,15 +402,17 @@ public class ReverseAnimation
             AnimationStatus.reverse => AnimationStatus.forward,
             AnimationStatus.completed => AnimationStatus.dismissed,
             AnimationStatus.dismissed => AnimationStatus.completed,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string ToString()
     {
         return $"{parent}➪{objectRuntimeTypeFunctions.objectRuntimeType(this, "ReverseAnimation")}";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void didRegisterListener()
@@ -584,7 +586,7 @@ public class CurvedAnimation : Animation<double>, AnimationWithParentMixin<doubl
             return $"{parent}➩{curve}ₒₙ/{reverseCurve}";
         }
         return $"{parent}➩{curve}/{reverseCurve}ₒₙ";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void addListener(Action listener) => parent.addListener(listener);
@@ -658,12 +660,14 @@ public class TrainHoppingAnimation
             DartRuntimePrimitives.Assert(() => _mode is not null);
             hop = (
                 _mode
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ) switch
             {
                 _TrainHoppingMode__animations.minimize => _nextTrain!.value <= _currentTrain!.value,
                 _TrainHoppingMode__animations.maximize => _nextTrain!.value >= _currentTrain!.value,
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             };
             if (hop)
             {
@@ -721,7 +725,7 @@ public class TrainHoppingAnimation
             return $"{currentTrain}➩{objectRuntimeTypeFunctions.objectRuntimeType(this, "TrainHoppingAnimation")}(next: {_nextTrain})";
         }
         return $"{currentTrain}➩{objectRuntimeTypeFunctions.objectRuntimeType(this, "TrainHoppingAnimation")}(no next)";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void didRegisterListener() { }
@@ -899,7 +903,7 @@ public abstract class CompoundAnimation<T>
     public override string ToString()
     {
         return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "CompoundAnimation")}({first}, {next})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _maybeNotifyStatusListeners(AnimationStatus __unused0)

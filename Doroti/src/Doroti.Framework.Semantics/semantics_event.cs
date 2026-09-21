@@ -27,12 +27,12 @@ public abstract class SemanticsEvent
         {
             long nodeId__value2030 = (
                 nodeId
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             @event["nodeId"] = (nodeId__value2030);
         }
         return @event;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public abstract DartMap<string, object> getDataMap();
@@ -56,7 +56,7 @@ public abstract class SemanticsEvent
             pairs.Add($"{key}: {dataMap.GetValueOrDefault(key)}");
         }
         return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "SemanticsEvent")}({string.Join(", ", pairs)})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -89,7 +89,7 @@ public class AnnounceSemanticsEvent : SemanticsEvent
             ["message"] = message,
             ["textDirection"] = FoundationRuntimePorts.EnumIndex(textDirection),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -106,7 +106,7 @@ public class TooltipSemanticsEvent : SemanticsEvent
     public override DartMap<string, object> getDataMap()
     {
         return new DartMap<string, object> { ["message"] = message };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 

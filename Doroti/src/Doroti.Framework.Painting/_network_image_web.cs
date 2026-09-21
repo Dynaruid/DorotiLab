@@ -23,7 +23,7 @@ public static partial class _network_image_webLibrary
     internal static XMLHttpRequest _httpClient()
     {
         return new XMLHttpRequest();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -45,7 +45,7 @@ public static partial class _network_image_webLibrary
     internal static HTMLImageElement _imgElementFactory()
     {
         return ((HTMLImageElement?)(object?)WebLibrary.document.createElement("img"))!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -90,7 +90,7 @@ public class NetworkImageIo : ImageProvider<NetworkImageIo>, NetworkImage
     public override Future<NetworkImageIo> obtainKey(ImageConfiguration configuration)
     {
         return new SynchronousFuture<NetworkImageIo>(this);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override ImageStreamCompleter loadBuffer(
@@ -106,7 +106,7 @@ public class NetworkImageIo : ImageProvider<NetworkImageIo>, NetworkImage
             informationCollector: _imageStreamInformationCollector(key),
             debugLabel: key.url
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override ImageStreamCompleter loadImage(
@@ -122,7 +122,7 @@ public class NetworkImageIo : ImageProvider<NetworkImageIo>, NetworkImage
             informationCollector: _imageStreamInformationCollector(key),
             debugLabel: key.url
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual InformationCollector? _imageStreamInformationCollector(NetworkImageIo key)
@@ -144,7 +144,7 @@ public class NetworkImageIo : ImageProvider<NetworkImageIo>, NetworkImage
             return true;
         });
         return collector;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual async Future<ImageStreamCompleter> _loadAsync(
@@ -164,7 +164,9 @@ public class NetworkImageIo : ImageProvider<NetworkImageIo>, NetworkImage
                 debugLabel: key.url,
                 informationCollector: _imageStreamInformationCollector(key)
             );
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         async Future<ImageStreamCompleter> loadViaImgElement()
         {
@@ -186,7 +188,9 @@ public class NetworkImageIo : ImageProvider<NetworkImageIo>, NetworkImage
                     }
                 )
             )();
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         bool containsNetworkImageHeaders = (
             (((long?)(key.headers?.Count)) is { } __count5178 ? __count5178 != 0 : (bool?)null)
@@ -234,7 +238,7 @@ public class NetworkImageIo : ImageProvider<NetworkImageIo>, NetworkImage
                 break;
             }
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual async Future<global::Doroti.Ui.Codec> _fetchImageBytes(
@@ -304,7 +308,7 @@ public class NetworkImageIo : ImageProvider<NetworkImageIo>, NetworkImage
             throw new NetworkImageLoadException(statusCode: request.status, uri: resolved);
         }
         return await decode(await Dart_uiLibrary.ImmutableBuffer.fromUint8List(bytes));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool Equals(object? other)

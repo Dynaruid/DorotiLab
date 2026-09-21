@@ -11,7 +11,7 @@ public static partial class Pointer_signal_resolverLibrary
     internal static bool _isSameEvent(PointerSignalEvent event1, PointerSignalEvent event2)
     {
         return Equals(event1.original ?? event1, event2.original ?? event2);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 

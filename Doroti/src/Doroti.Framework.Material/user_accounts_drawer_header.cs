@@ -58,7 +58,7 @@ internal class _AccountPictures__user_accounts_drawer_header : StatelessWidget
                                             )
                                         );
                                         throw new InvalidOperationException(
-                                            "Dart closure completed without a value."
+                                            "Callback completed without returning a value."
                                         );
                                     }
                                 )
@@ -80,7 +80,7 @@ internal class _AccountPictures__user_accounts_drawer_header : StatelessWidget
                 ),
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -305,7 +305,7 @@ public class _AccountDetailsState__user_accounts_drawer_header
             height: User_accounts_drawer_headerLibrary._kAccountDetailsHeight,
             child: accountDetails
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
@@ -344,7 +344,7 @@ public class _AccountDetailsState__user_accounts_drawer_header
         _updateTickerModeNotifier();
         _updateTicker();
         return _ticker!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void activate()
@@ -430,11 +430,11 @@ internal class _AccountDetailsLayout__user_accounts_drawer_header : MultiChildLa
                         (
                             iconSize
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
@@ -453,7 +453,7 @@ internal class _AccountDetailsLayout__user_accounts_drawer_header : MultiChildLa
                             - (
                                 iconSize
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             ).width,
                         size.height
@@ -472,12 +472,10 @@ internal class _AccountDetailsLayout__user_accounts_drawer_header : MultiChildLa
                     (
                         iconSize
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 bottomLineSize
             );
@@ -505,9 +503,11 @@ internal class _AccountDetailsLayout__user_accounts_drawer_header : MultiChildLa
             ),
             TextDirection.rtl => new Offset(0.0, size.height - iconSize.height),
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Offset _offsetForBottomLine(Size size, Size iconSize, Size bottomLineSize)
@@ -518,9 +518,11 @@ internal class _AccountDetailsLayout__user_accounts_drawer_header : MultiChildLa
             TextDirection.ltr => new Offset(0.0, y),
             TextDirection.rtl => new Offset(size.width - bottomLineSize.width, y),
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Offset _offsetForName(Size size, Size nameSize, Offset bottomLineOffset)
@@ -531,9 +533,11 @@ internal class _AccountDetailsLayout__user_accounts_drawer_header : MultiChildLa
             TextDirection.ltr => new Offset(0.0, y),
             TextDirection.rtl => new Offset(size.width - nameSize.width, y),
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -650,6 +654,6 @@ internal class _UserAccountsDrawerHeaderState__user_accounts_drawer_header
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

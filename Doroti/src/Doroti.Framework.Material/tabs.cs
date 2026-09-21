@@ -73,7 +73,7 @@ public class Tab : StatelessWidget, PreferredSizeWidget
     internal virtual Widget _buildLabelText()
     {
         return child ?? new Text(text!, softWrap: false, overflow: TextOverflow.fade);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -132,15 +132,13 @@ public class Tab : StatelessWidget, PreferredSizeWidget
             {
                 double height__value7504 = (
                     height
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 return new Size(
                     (
                         height
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 );
@@ -240,7 +238,9 @@ internal class _TabStyle__tabs : AnimatedWidget
                     )!;
                 }
                 return Dart_uiLibrary.Color.lerp(unselectedColor, selectedColor, animation.value)!;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
     }
@@ -269,7 +269,9 @@ internal class _TabStyle__tabs : AnimatedWidget
             Brightness.light => ConstantsLibrary.kDefaultIconDarkColor,
             Brightness.dark => ConstantsLibrary.kDefaultIconLightColor,
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
         IconThemeData? customIconTheme = IconTheme.of(context) switch
         {
@@ -287,7 +289,7 @@ internal class _TabStyle__tabs : AnimatedWidget
                 child: child
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -339,7 +341,7 @@ public class _TabLabelBarRenderer__tabs : RenderFlex
         switch (
             (
                 textDirection
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         )
         {
@@ -358,7 +360,7 @@ public class _TabLabelBarRenderer__tabs : RenderFlex
             xOffsets,
             (
                 textDirection
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             size.width
         );
@@ -399,12 +401,12 @@ internal class _TabLabelBar__tabs : Flex
             crossAxisAlignment: crossAxisAlignment,
             textDirection: (
                 getEffectiveTextDirection(context)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             verticalDirection: verticalDirection,
             onPerformLayout: onPerformLayout
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -427,7 +429,7 @@ public static partial class TabsLibrary
             return Dart_uiLibrary.clampDouble((currentIndex - controllerValue).abs(), 0.0, 1.0);
         }
         return (controllerValue - currentIndex).abs() / (currentIndex - previousIndexLocal).abs();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -471,7 +473,7 @@ internal class _DividerPainter__tabs : CustomPainter
         var __oldDelegate = (_DividerPainter__tabs)oldDelegate;
         return (!Equals(__oldDelegate.dividerColor, dividerColor))
             || (__oldDelegate.dividerHeight != dividerHeight);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -618,7 +620,7 @@ internal class _IndicatorPainter__tabs : CustomPainter
         DartRuntimePrimitives.Assert(() => tabIndex <= maxTabIndex);
         return (_currentTabOffsets![(int)tabIndex] + _currentTabOffsets![(int)(tabIndex + 1L)])
             / 2.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Rect indicatorRect(Size tabBarSize, long tabIndex)
@@ -633,7 +635,7 @@ internal class _IndicatorPainter__tabs : CustomPainter
         DartRuntimePrimitives.Ignore(
             (tabLeft, tabRight) = (
                 _currentTextDirection
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ) switch
             {
                 TextDirection.rtl => (
@@ -645,14 +647,16 @@ internal class _IndicatorPainter__tabs : CustomPainter
                     _currentTabOffsets![(int)(tabIndex + 1L)]
                 ),
                 _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                    throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
             }
         );
         if (Equals(indicatorSize, TabBarIndicatorSize.label))
         {
             double tabWidth = (
                 tabKeys[(int)tabIndex].currentContext!.size
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ).width;
             EdgeInsetsGeometry labelPadding = labelPaddings[(int)tabIndex];
             EdgeInsets insets = labelPadding.resolve(_currentTextDirection);
@@ -672,7 +676,7 @@ internal class _IndicatorPainter__tabs : CustomPainter
             );
         }
         return insetsLocal.deflateRect(rect);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paint(Canvas canvas, Size size)
@@ -685,13 +689,15 @@ internal class _IndicatorPainter__tabs : CustomPainter
             TabIndicatorAnimation.linear => _applyLinearEffect(size: size, value: valueLocal),
             TabIndicatorAnimation.elastic => _applyElasticEffect(size: size, value: valueLocal),
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
         DartRuntimePrimitives.Assert(() => _currentRect is not null);
         var configuration = new ImageConfiguration(
             size: (
                 _currentRect
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ).size,
             textDirection: _currentTextDirection,
             devicePixelRatio: devicePixelRatio
@@ -701,9 +707,7 @@ internal class _IndicatorPainter__tabs : CustomPainter
             && (
                 (
                     dividerHeight
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) > 0L
             )
         )
@@ -717,7 +721,7 @@ internal class _IndicatorPainter__tabs : CustomPainter
                         __cascade.strokeWidth = (
                             dividerHeight
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         );
                         return __cascade;
@@ -732,7 +736,7 @@ internal class _IndicatorPainter__tabs : CustomPainter
             canvas,
             (
                 _currentRect
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ).topLeft,
             configuration
         );
@@ -747,19 +751,19 @@ internal class _IndicatorPainter__tabs : CustomPainter
         Rect fromRect = indicatorRect(size, @from);
         Rect toRect = indicatorRect(size, to);
         return Dart_uiLibrary.Rect.lerp(fromRect, toRect, (value - @from).abs());
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double decelerateInterpolation(double fraction)
     {
         return Dart_mathLibrary.sin(fraction * Dart_mathLibrary.pi / 2.0);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double accelerateInterpolation(double fraction)
     {
         return 1.0 - Dart_mathLibrary.cos(fraction * Dart_mathLibrary.pi / 2.0);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Rect? _applyElasticEffect(Size size, double value)
@@ -775,7 +779,7 @@ internal class _IndicatorPainter__tabs : CustomPainter
                         TextDirection.rtl => value.floor(),
                         _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
                             throw new InvalidOperationException(
-                                "Non-exhaustive Dart switch value."
+                                "Switch expression did not handle the supplied value."
                             ),
                     }
                 ).clamp(0L, maxTabIndex)
@@ -789,7 +793,7 @@ internal class _IndicatorPainter__tabs : CustomPainter
                         TextDirection.rtl => to + 1L,
                         _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
                             throw new InvalidOperationException(
-                                "Non-exhaustive Dart switch value."
+                                "Switch expression did not handle the supplied value."
                             ),
                     }
                 ).clamp(0L, maxTabIndex)
@@ -798,7 +802,7 @@ internal class _IndicatorPainter__tabs : CustomPainter
         Rect fromRect = indicatorRect(size, @from);
         Rect rect = (
             Dart_uiLibrary.Rect.lerp(fromRect, toRect, (value - @from).abs())
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         );
         if (controller.animation!.isCompleted)
         {
@@ -833,7 +837,9 @@ internal class _IndicatorPainter__tabs : CustomPainter
                 ? (value > indexLocal)
                 : (indexLocal > value),
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
         if (isMovingRight)
         {
@@ -851,11 +857,11 @@ internal class _IndicatorPainter__tabs : CustomPainter
         {
             lerpRectLeft = (
                 Dart_uiLibrary.lerpDouble(fromRect.left, toRect.left, leftFraction)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             lerpRectRight = (
                 Dart_uiLibrary.lerpDouble(fromRect.right, toRect.right, rightFraction)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
         else
@@ -864,39 +870,35 @@ internal class _IndicatorPainter__tabs : CustomPainter
             {
                 true => (
                     Dart_uiLibrary.lerpDouble(fromRect.left, toRect.left, leftFraction)
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 false => (
                     Dart_uiLibrary.lerpDouble(toRect.left, fromRect.left, leftFraction)
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                    throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
             };
             lerpRectRight = (object)isMovingRight switch
             {
                 true => (
                     Dart_uiLibrary.lerpDouble(fromRect.right, toRect.right, rightFraction)
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 false => (
                     Dart_uiLibrary.lerpDouble(toRect.right, fromRect.right, rightFraction)
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                    throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
             };
         }
         return Rect.fromLTRB(lerpRectLeft, rect.top, lerpRectRight, rect.bottom);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool shouldRepaint(CustomPainter oldDelegate)
@@ -908,7 +910,7 @@ internal class _IndicatorPainter__tabs : CustomPainter
             || (checked(tabKeys.Count) != checked((long)__old.tabKeys.Count))
             || (!CollectionsLibrary.listEquals(_currentTabOffsets, __old._currentTabOffsets))
             || (!Equals(_currentTextDirection, __old._currentTextDirection));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1036,7 +1038,7 @@ internal class _TabBarScrollPosition__tabs : ScrollPositionWithSingleContext
             result = false;
         }
         return base.applyContentDimensions(minScrollExtent, maxScrollExtent) && result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void markNeedsPixelsCorrection()
@@ -1056,7 +1058,7 @@ public class TabBarScrollController : ScrollController
             () => (object?)"This TabBarScrollController is not attached to any TabBar."
         );
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override ScrollPosition createScrollPosition(
@@ -1072,7 +1074,7 @@ public class TabBarScrollController : ScrollController
             oldPosition: oldPosition,
             tabBar: _tabBarState!
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void dispose()
@@ -1415,7 +1417,9 @@ internal class _TabBarState__tabs : State<TabBar>
                 true => _TabsPrimaryDefaultsM3__tabs.indicatorWeight(indicatorSize),
                 false => _TabsSecondaryDefaultsM3__tabs.indicatorWeight,
                 _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                    throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
             }
         );
         bool primaryWithLabelIndicator = indicatorSize switch
@@ -1423,7 +1427,9 @@ internal class _TabBarState__tabs : State<TabBar>
             TabBarIndicatorSize.label => widget._isPrimary,
             TabBarIndicatorSize.tab => false,
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
         BorderRadius? effectiveBorderRadius = primaryWithLabelIndicator
             ? new BorderRadius(
@@ -1505,7 +1511,7 @@ internal class _TabBarState__tabs : State<TabBar>
             (widget.indicatorSize ?? tabBarTheme.indicatorSize)
             ?? (
                 _defaults.indicatorSize
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         _IndicatorPainter__tabs? oldPainter = _indicatorPainter;
         TabIndicatorAnimation defaultTabIndicatorAnimation = indicatorSizeLocal switch
@@ -1513,7 +1519,9 @@ internal class _TabBarState__tabs : State<TabBar>
             TabBarIndicatorSize.label => TabIndicatorAnimation.elastic,
             TabBarIndicatorSize.tab => TabIndicatorAnimation.linear,
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
         _indicatorPainter = !_controllerIsValid
             ? null
@@ -1662,7 +1670,7 @@ internal class _TabBarState__tabs : State<TabBar>
             minExtent,
             maxExtent
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual double _tabCenteredScrollOffset(long index)
@@ -1674,7 +1682,7 @@ internal class _TabBarState__tabs : State<TabBar>
             positionLocal.minScrollExtent,
             positionLocal.maxScrollExtent
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual double _initialScrollOffset(
@@ -1686,13 +1694,13 @@ internal class _TabBarState__tabs : State<TabBar>
         return _tabScrollOffset(
             (
                 _currentIndex
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             viewportWidth,
             minExtent,
             maxExtent
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _scrollToCurrentIndex()
@@ -1700,7 +1708,7 @@ internal class _TabBarState__tabs : State<TabBar>
         double offset = _tabCenteredScrollOffset(
             (
                 _currentIndex
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );
         DartRuntimePrimitives.Ignore(
@@ -1718,16 +1726,14 @@ internal class _TabBarState__tabs : State<TabBar>
             (
                 (
                     _currentIndex
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) > 0L
             )
                 ? _tabCenteredScrollOffset(
                     (
                         _currentIndex
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) - 1L
                 )
@@ -1735,23 +1741,21 @@ internal class _TabBarState__tabs : State<TabBar>
         double middlePosition = _tabCenteredScrollOffset(
             (
                 _currentIndex
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );
         double? trailingPosition =
             (
                 (
                     _currentIndex
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) < maxTabIndex
             )
                 ? _tabCenteredScrollOffset(
                     (
                         _currentIndex
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) + 1L
                 )
@@ -1771,14 +1775,12 @@ internal class _TabBarState__tabs : State<TabBar>
                         (
                             leadingPosition
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ),
                         indexLocal - valueLocal
                     )
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
             _ => (trailingPosition is null)
                 ? middlePosition
@@ -1788,14 +1790,12 @@ internal class _TabBarState__tabs : State<TabBar>
                         (
                             trailingPosition
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ),
                         valueLocal - indexLocal
                     )
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
         };
         _effectiveScrollController.jumpTo(offset);
@@ -1859,7 +1859,7 @@ internal class _TabBarState__tabs : State<TabBar>
             defaults: defaults,
             child: child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _debugScheduleCheckHasValidTabsCount()
@@ -1894,7 +1894,7 @@ internal class _TabBarState__tabs : State<TabBar>
         );
         _debugHasScheduledValidTabsCountCheck = true;
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _debugTabAlignmentIsValid(TabAlignment tabAlignment)
@@ -1924,7 +1924,7 @@ internal class _TabBarState__tabs : State<TabBar>
             return true;
         });
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -1939,7 +1939,7 @@ internal class _TabBarState__tabs : State<TabBar>
             (widget.tabAlignment ?? tabBarTheme.tabAlignment)
             ?? (
                 _defaults.tabAlignment
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         DartRuntimePrimitives.Assert(() => _debugTabAlignmentIsValid(effectiveTabAlignment));
         MaterialLocalizations localizations = MaterialLocalizations.of(context);
@@ -1986,7 +1986,9 @@ internal class _TabBarState__tabs : State<TabBar>
                             child: new KeyedSubtree(key: _tabKeys[index], child: widget.tabs[index])
                         )
                     );
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );
@@ -2001,7 +2003,7 @@ internal class _TabBarState__tabs : State<TabBar>
                     (int)(
                         _currentIndex
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 ] = _buildStyledTab(
@@ -2009,7 +2011,7 @@ internal class _TabBarState__tabs : State<TabBar>
                         (int)(
                             _currentIndex
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     ],
@@ -2028,9 +2030,7 @@ internal class _TabBarState__tabs : State<TabBar>
             {
                 long tabIndexLocal = (
                     _currentIndex
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 Animation<double> centerAnimation = new _DragAnimation__tabs(
                     _controller!,
@@ -2046,7 +2046,7 @@ internal class _TabBarState__tabs : State<TabBar>
                     (
                         _currentIndex
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) > 0L
                 )
@@ -2055,7 +2055,7 @@ internal class _TabBarState__tabs : State<TabBar>
                         (
                             _currentIndex
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ) - 1L;
                     Animation<double> previousAnimation = new ReverseAnimation(
@@ -2072,7 +2072,7 @@ internal class _TabBarState__tabs : State<TabBar>
                     (
                         _currentIndex
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) < (checked(widget.tabs.Count) - 1L)
                 )
@@ -2081,7 +2081,7 @@ internal class _TabBarState__tabs : State<TabBar>
                         (
                             _currentIndex
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ) + 1L;
                     Animation<double> nextAnimation = new ReverseAnimation(
@@ -2133,7 +2133,9 @@ internal class _TabBarState__tabs : State<TabBar>
                         )
                     )();
                     return _defaults.overlayColor?.resolve(effectiveStates);
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
             wrappedTabs[(int)indexLocal] = DartRuntimePrimitives.ConvertValue<Widget>(
@@ -2257,7 +2259,9 @@ internal class _TabBarState__tabs : State<TabBar>
                         AlignmentDirectional.centerStart
                     ),
                     _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                        throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                        throw new InvalidOperationException(
+                            "Switch expression did not handle the supplied value."
+                        ),
                 };
                 Color dividerColorLocal =
                     (widget.dividerColor ?? tabBarTheme.dividerColor) ?? _defaults.dividerColor!;
@@ -2266,7 +2270,7 @@ internal class _TabBarState__tabs : State<TabBar>
                     ?? (
                         _defaults.dividerHeight
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     );
                 tabBarLocal = DartRuntimePrimitives.ConvertValue<Widget>(
@@ -2421,9 +2425,7 @@ internal class _TabBarViewState__tabs : State<TabBarView>
             _pageController = new PageController(
                 initialPage: (
                     _currentIndex
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 viewportFraction: widget.viewportFraction
             );
@@ -2433,9 +2435,7 @@ internal class _TabBarViewState__tabs : State<TabBarView>
             _pageController!.jumpToPage(
                 (
                     _currentIndex
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             );
         }
@@ -2451,9 +2451,7 @@ internal class _TabBarViewState__tabs : State<TabBarView>
             _jumpToPage(
                 (
                     _currentIndex
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             );
         }
@@ -2463,9 +2461,7 @@ internal class _TabBarViewState__tabs : State<TabBarView>
             _pageController = new PageController(
                 initialPage: (
                     _currentIndex
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 viewportFraction: widget.viewportFraction
             );
@@ -2496,7 +2492,7 @@ internal class _TabBarViewState__tabs : State<TabBarView>
                     {
                         return new Widgets.Semantics(role: SemanticsRole.tabPanel, child: child);
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 )
@@ -2525,9 +2521,7 @@ internal class _TabBarViewState__tabs : State<TabBarView>
                 _pageController!.page
                 == (
                     _currentIndex
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ).toDouble()
             )
         )
@@ -2538,9 +2532,7 @@ internal class _TabBarViewState__tabs : State<TabBarView>
             (
                 (
                     _currentIndex
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) - _controller!.previousIndex
             ).abs() == 1L;
         if (adjacentDestination)
@@ -2560,9 +2552,7 @@ internal class _TabBarViewState__tabs : State<TabBarView>
             _jumpToPage(
                 (
                     _currentIndex
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             );
         }
@@ -2571,9 +2561,7 @@ internal class _TabBarViewState__tabs : State<TabBarView>
             await _animateToPage(
                 (
                     _currentIndex
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 duration: duration,
                 curve: Curves.ease
@@ -2597,9 +2585,7 @@ internal class _TabBarViewState__tabs : State<TabBarView>
             (
                 (
                     _currentIndex
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) - previousIndexLocal
             ).abs() > 1L
         );
@@ -2607,16 +2593,14 @@ internal class _TabBarViewState__tabs : State<TabBarView>
             (
                 (
                     _currentIndex
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) > previousIndexLocal
             )
                 ? (
                     (
                         _currentIndex
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) - 1L
                 )
@@ -2624,7 +2608,7 @@ internal class _TabBarViewState__tabs : State<TabBarView>
                     (
                         _currentIndex
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) + 1L
                 );
@@ -2641,9 +2625,7 @@ internal class _TabBarViewState__tabs : State<TabBarView>
             _jumpToPage(
                 (
                     _currentIndex
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             );
         }
@@ -2652,9 +2634,7 @@ internal class _TabBarViewState__tabs : State<TabBarView>
             await _animateToPage(
                 (
                     _currentIndex
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 duration: duration,
                 curve: Curves.ease
@@ -2674,7 +2654,7 @@ internal class _TabBarViewState__tabs : State<TabBarView>
         _controller!.offset = Dart_uiLibrary.clampDouble(
             (
                 _pageController!.page
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ) - _controller!.index,
             -1.0,
             1.0
@@ -2698,7 +2678,7 @@ internal class _TabBarViewState__tabs : State<TabBarView>
         _scrollUnderwayCount += 1L;
         double pageLocal = (
             _pageController!.page
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         );
         if ((notification is ScrollUpdateNotification) && !_controller!.indexIsChanging)
         {
@@ -2726,7 +2706,7 @@ internal class _TabBarViewState__tabs : State<TabBarView>
         }
         _scrollUnderwayCount -= 1L;
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _debugScheduleCheckHasValidChildrenCount()
@@ -2761,7 +2741,7 @@ internal class _TabBarViewState__tabs : State<TabBarView>
         );
         _debugHasScheduledValidChildrenCountCheck = true;
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -2779,7 +2759,7 @@ internal class _TabBarViewState__tabs : State<TabBarView>
                 children: _childrenWithKey
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -2817,7 +2797,7 @@ public class TabPageSelectorIndicator : StatelessWidget
                 shape: BoxShape.circle
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -2985,7 +2965,7 @@ internal class _TabPageSelectorState__tabs : State<TabPageSelector>
             size: widget.indicatorSize,
             borderStyle: widget.borderStyle ?? BorderStyle.solid
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -3018,17 +2998,19 @@ internal class _TabPageSelectorState__tabs : State<TabPageSelector>
                                         previousColorTween
                                     );
                                     throw new InvalidOperationException(
-                                        "Dart closure completed without a value."
+                                        "Callback completed without returning a value."
                                     );
                                 }
                             )
                         ).ToList()
                     )
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -3119,7 +3101,9 @@ internal class _TabsPrimaryDefaultsM3__tabs : TabBarThemeData
                         return _colors.onSurface.withOpacity(0.1);
                     }
                     return null;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
         }
@@ -3135,9 +3119,11 @@ internal class _TabsPrimaryDefaultsM3__tabs : TabBarThemeData
             TabBarIndicatorSize.label => 3.0,
             TabBarIndicatorSize.tab => 2.0,
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -3229,7 +3215,9 @@ internal class _TabsSecondaryDefaultsM3__tabs : TabBarThemeData
                         return _colors.onSurface.withOpacity(0.1);
                     }
                     return null;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
         }

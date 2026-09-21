@@ -118,7 +118,7 @@ public class TableBorder
             && Equals(selector(left), topValue)
             && Equals(selector(horizontalInside), topValue)
             && Equals(selector(verticalInside), topValue);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _outerSidesMatch<T>(Func<BorderSide, T> selector)
@@ -127,13 +127,13 @@ public class TableBorder
         return Equals(selector(right), topValue)
             && Equals(selector(bottom), topValue)
             && Equals(selector(left), topValue);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual HashSet<Color> _distinctVisibleOuterColors()
     {
         return new HashSet<Color>();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _paintTableBorder(Canvas canvas, Rect rect)
@@ -227,7 +227,7 @@ public class TableBorder
             horizontalInside: horizontalInside.scale(t),
             verticalInside: verticalInside.scale(t)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static TableBorder? lerp(TableBorder? a, TableBorder? b, double t)
@@ -252,7 +252,7 @@ public class TableBorder
             horizontalInside: BorderSide.lerp(a.horizontalInside, b.horizontalInside, t),
             verticalInside: BorderSide.lerp(a.verticalInside, b.verticalInside, t)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void paint(

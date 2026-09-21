@@ -64,7 +64,7 @@ public class CheckboxThemeData : Diagnosticable
             shape: shape ?? this.shape,
             side: side ?? this.side
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static CheckboxThemeData lerp(CheckboxThemeData? a, CheckboxThemeData? b, double t)
@@ -84,7 +84,7 @@ public class CheckboxThemeData : Diagnosticable
             shape: ((OutlinedBorder?)ShapeBorder.lerp(a?.shape, b?.shape, t))!,
             side: _lerpSides(a?.side, b?.side, t)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override int GetHashCode() =>
@@ -196,7 +196,7 @@ public class CheckboxThemeData : Diagnosticable
         a ??= new BorderSide(width: 0, color: b!.color.withAlpha(0L));
         b ??= new BorderSide(width: 0, color: a.color.withAlpha(0L));
         return (BorderSide?)BorderSide.lerp(a, b, t);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
@@ -214,7 +214,7 @@ public class CheckboxThemeData : Diagnosticable
             return true;
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -223,7 +223,7 @@ public class CheckboxThemeData : Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -246,7 +246,7 @@ public class CheckboxTheme : InheritedWidget
         CheckboxTheme? checkboxThemeLocal =
             context.dependOnInheritedWidgetOfExactType<CheckboxTheme>();
         return checkboxThemeLocal?.data ?? Theme.of(context).checkboxTheme;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget) =>

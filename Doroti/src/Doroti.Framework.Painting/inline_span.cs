@@ -144,7 +144,7 @@ public static partial class Inline_spanLibrary
             )
         );
         return combined;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -178,7 +178,7 @@ public abstract class InlineSpan : DiagnosticableTree
             }
         );
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public abstract InlineSpan? getSpanForPositionVisitor(
@@ -198,7 +198,7 @@ public abstract class InlineSpan : DiagnosticableTree
             includePlaceholders: includePlaceholders
         );
         return buffer.ToString();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual List<InlineSpanSemanticsInformation> getSemanticsInformation()
@@ -206,7 +206,7 @@ public abstract class InlineSpan : DiagnosticableTree
         var collector = new List<InlineSpanSemanticsInformation>();
         computeSemanticsInformation(collector);
         return collector;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public abstract void computeSemanticsInformation(
@@ -236,7 +236,7 @@ public abstract class InlineSpan : DiagnosticableTree
             }
         );
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public abstract long? codeUnitAtVisitor(long index, Accumulator offset);

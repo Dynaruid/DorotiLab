@@ -63,7 +63,7 @@ public class FlutterLogoDecoration : Decoration
             double.IsFinite(_position) && (_opacity >= 0.0) && (_opacity <= 1.0)
         );
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool isComplex => !_inTransition;
@@ -115,7 +115,7 @@ public class FlutterLogoDecoration : Decoration
             a._position + ((b._position - a._position) * t),
             Dart_uiLibrary.clampDouble(a._opacity + ((b._opacity - a._opacity) * t), 0.0, 1.0)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override FlutterLogoDecoration? lerpFrom(Decoration? a, double t)
@@ -130,7 +130,7 @@ public class FlutterLogoDecoration : Decoration
             return lerp((FlutterLogoDecoration?)a__as4619, this, t);
         }
         return ((FlutterLogoDecoration?)(object?)base.lerpFrom(a, t))!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override FlutterLogoDecoration? lerpTo(Decoration? b, double t)
@@ -145,7 +145,7 @@ public class FlutterLogoDecoration : Decoration
             return lerp(this, (FlutterLogoDecoration?)b__as4933, t);
         }
         return ((FlutterLogoDecoration?)(object?)base.lerpTo(b, t))!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool hitTest(Size size, Offset position, TextDirection? textDirection = null) =>
@@ -155,7 +155,7 @@ public class FlutterLogoDecoration : Decoration
     {
         DartRuntimePrimitives.Assert(() => debugAssertIsValid());
         return new _FlutterLogoPainter__flutter_logo(this);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Path getClipPath(Rect rect, TextDirection textDirection)
@@ -170,7 +170,7 @@ public class FlutterLogoDecoration : Decoration
                 }
             )
         )();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool Equals(object? other)
@@ -402,7 +402,7 @@ internal class _FlutterLogoPainter__flutter_logo : BoxPainter
         Size canvasSize = _config.margin.deflateSize(
             (
                 configuration.size
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );
         if (canvasSize.isEmpty)
@@ -449,7 +449,7 @@ internal class _FlutterLogoPainter__flutter_logo : BoxPainter
         }
         Rect logoSquare = (
             Dart_uiLibrary.Rect.lerp(centerSquare, logoTargetSquare, _config._position.abs())
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         );
         if (_config._opacity < 1.0)
         {
@@ -489,7 +489,7 @@ internal class _FlutterLogoPainter__flutter_logo : BoxPainter
                                 _config._position
                             )
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ),
                     rect.top + ((rect.height - (_textBoundingRect.height * scaleLocal)) / 2.0)

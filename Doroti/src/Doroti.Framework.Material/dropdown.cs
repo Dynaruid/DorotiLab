@@ -118,7 +118,7 @@ internal class _DropdownMenuPainter__dropdown : CustomPainter
             || (__oldPainter.selectedIndex != selectedIndex)
             || (!Equals(__oldPainter.borderRadius, borderRadius))
             || (!Equals(__oldPainter.resize, resize));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -229,7 +229,9 @@ public class _DropdownMenuItemButtonState__dropdown<T> : State<_DropdownMenuItem
             FocusHighlightMode.touch => false,
             FocusHighlightMode.traditional => true,
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
         if (focused && inTraditionalMode)
         {
@@ -307,7 +309,7 @@ public class _DropdownMenuItemButtonState__dropdown<T> : State<_DropdownMenuItem
             );
         }
         return new Widgets.Semantics(role: SemanticsRole.menuItem, child: childLocal);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -471,7 +473,7 @@ internal class _DropdownMenuState__dropdown<T> : State<_DropdownMenu__dropdown<T
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -506,16 +508,14 @@ internal class _DropdownMenuRouteLayout__dropdown<T> : SingleChildLayoutDelegate
             && (
                 (
                     route.menuMaxHeight
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) <= maxHeightLocal
             )
         )
         {
             maxHeightLocal = (
                 route.menuMaxHeight
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
         double widthLocal = Math.Min(constraints.maxWidth, menuWidth ?? buttonRect.width);
@@ -524,7 +524,7 @@ internal class _DropdownMenuRouteLayout__dropdown<T> : SingleChildLayoutDelegate
             maxWidth: widthLocal,
             maxHeight: maxHeightLocal
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Offset getPositionForChild(Size size, Size childSize)
@@ -549,7 +549,7 @@ internal class _DropdownMenuRouteLayout__dropdown<T> : SingleChildLayoutDelegate
         DartRuntimePrimitives.Assert(() => textDirection is not null);
         double leftLocal = (
             textDirection
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         ) switch
         {
             TextDirection.rtl => Dart_uiLibrary.clampDouble(buttonRect.right, 0.0, size.width)
@@ -560,10 +560,12 @@ internal class _DropdownMenuRouteLayout__dropdown<T> : SingleChildLayoutDelegate
                 size.width - childSize.width
             ),
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
         return new Offset(leftLocal, menuLimits.top);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool shouldRelayout(SingleChildLayoutDelegate oldDelegate)
@@ -571,7 +573,7 @@ internal class _DropdownMenuRouteLayout__dropdown<T> : SingleChildLayoutDelegate
         var __oldDelegate = (_DropdownMenuRouteLayout__dropdown<T>)oldDelegate;
         return (!Equals(buttonRect, __oldDelegate.buttonRect))
             || (!Equals(textDirection, __oldDelegate.textDirection));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -715,10 +717,12 @@ public class _DropdownRoute__dropdown<T> : PopupRoute<_DropdownRouteResult__drop
                     menuWidth: menuWidth,
                     mouseCursor: dropdownMenuItemMouseCursor
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _dismiss()
@@ -740,7 +744,7 @@ public class _DropdownRoute__dropdown<T> : PopupRoute<_DropdownRouteResult__drop
             offset += itemHeights.GetRange(0L, index).reduce((total, height) => total + height);
         }
         return offset;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual _MenuLimits__dropdown getMenuLimits(
@@ -754,15 +758,13 @@ public class _DropdownRoute__dropdown<T> : PopupRoute<_DropdownRouteResult__drop
         {
             double menuMaxHeight__value19574 = (
                 menuMaxHeight
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             computedMaxHeight = Math.Min(
                 computedMaxHeight,
                 (
                     menuMaxHeight
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             );
         }
@@ -815,7 +817,7 @@ public class _DropdownRoute__dropdown<T> : PopupRoute<_DropdownRouteResult__drop
             < Foundation.ConstantsLibrary.precisionErrorTolerance
         );
         return new _MenuLimits__dropdown(menuTop, menuBottom, menuHeight, scrollOffset);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -925,11 +927,13 @@ internal class _DropdownRoutePageState__dropdown<T> : State<_DropdownRoutePage__
                         ),
                         child: widget.capturedThemes.wrap(menu)
                     );
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void dispose()
@@ -958,7 +962,7 @@ public class _MenuItem__dropdown<T> : SingleChildRenderObjectWidget
     public override RenderObject createRenderObject(BuildContext context)
     {
         return new _RenderMenuItem__dropdown(onLayout);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -1011,7 +1015,7 @@ public class _DropdownMenuItemContainer__dropdown : StatelessWidget
                 child: new Align(alignment: alignment, child: child)
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1046,7 +1050,7 @@ public class DropdownButtonHideUnderline : InheritedWidget
     {
         return context.dependOnInheritedWidgetOfExactType<DropdownButtonHideUnderline>()
             is not null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget) => false;
@@ -1167,7 +1171,7 @@ public class DropdownButton<T> : StatefulWidget
                             {
                                 return Equals(item.value, value);
                                 throw new InvalidOperationException(
-                                    "Dart closure completed without a value."
+                                    "Callback completed without returning a value."
                                 );
                             }
                         )
@@ -1306,7 +1310,7 @@ internal class _DropdownButtonState__dropdown<T> : State<DropdownButton<T>>, Wid
     internal virtual FocusNode _createFocusNode()
     {
         return new FocusNode(debugLabel: $"{DartRuntimePrimitives.RuntimeType(widget)}");
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void initState()
@@ -1527,9 +1531,7 @@ internal class _DropdownButtonState__dropdown<T> : State<DropdownButton<T>>, Wid
                 _textStyle!.fontSize
                 ?? (
                     Theme.of(context).textTheme.titleMedium!.fontSize
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
             double lineHeight =
                 (_textStyle!.height ?? Theme.of(context).textTheme.titleMedium!.height) ?? 1.0;
@@ -1557,7 +1559,7 @@ internal class _DropdownButtonState__dropdown<T> : State<DropdownButton<T>>, Wid
                             Brightness.dark => Colors.white70,
                             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
                                 throw new InvalidOperationException(
-                                    "Non-exhaustive Dart switch value."
+                                    "Switch expression did not handle the supplied value."
                                 ),
                         }
                     );
@@ -1572,7 +1574,7 @@ internal class _DropdownButtonState__dropdown<T> : State<DropdownButton<T>>, Wid
                             Brightness.dark => Colors.white10,
                             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
                                 throw new InvalidOperationException(
-                                    "Non-exhaustive Dart switch value."
+                                    "Switch expression did not handle the supplied value."
                                 ),
                         }
                     );
@@ -1597,10 +1599,10 @@ internal class _DropdownButtonState__dropdown<T> : State<DropdownButton<T>>, Wid
         return (
             (
                 result
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -1700,7 +1702,7 @@ internal class _DropdownButtonState__dropdown<T> : State<DropdownButton<T>>, Wid
                                             }
                                         );
                                     throw new InvalidOperationException(
-                                        "Dart closure completed without a value."
+                                        "Callback completed without returning a value."
                                     );
                                 }
                             )
@@ -1907,7 +1909,7 @@ internal class _DropdownButtonState__dropdown<T> : State<DropdownButton<T>>, Wid
             expanded: _isMenuExpanded,
             child: new Actions(actions: _actionMap, child: result)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -2060,7 +2062,9 @@ public class DropdownButtonFormField<T> : FormField<T>
                         )
                     )
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         )
     {

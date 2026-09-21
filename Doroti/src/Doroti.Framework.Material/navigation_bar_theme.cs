@@ -79,7 +79,7 @@ public class NavigationBarThemeData : Diagnosticable
             overlayColor: overlayColor ?? this.overlayColor,
             labelPadding: labelPadding ?? this.labelPadding
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static NavigationBarThemeData? lerp(
@@ -115,7 +115,7 @@ public class NavigationBarThemeData : Diagnosticable
             overlayColor: WidgetStateProperty.lerp(a?.overlayColor, b?.overlayColor, t, Color.lerp),
             labelPadding: EdgeInsetsGeometry.lerp(a?.labelPadding, b?.labelPadding, t)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override int GetHashCode() =>
@@ -234,7 +234,7 @@ public class NavigationBarThemeData : Diagnosticable
             return true;
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -243,7 +243,7 @@ public class NavigationBarThemeData : Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -266,13 +266,13 @@ public class NavigationBarTheme : InheritedTheme
         NavigationBarTheme? navigationBarThemeLocal =
             context.dependOnInheritedWidgetOfExactType<NavigationBarTheme>();
         return navigationBarThemeLocal?.data ?? Theme.of(context).navigationBarTheme;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget wrap(BuildContext context, Widget child)
     {
         return new NavigationBarTheme(data: data, child: child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget) =>

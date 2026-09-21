@@ -73,7 +73,7 @@ public class FlexibleSpaceBar : StatefulWidget
             currentExtent: currentExtent,
             child: child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override IState createState() =>
@@ -96,10 +96,12 @@ internal class _FlexibleSpaceBarState__flexible_space_bar : State<FlexibleSpaceB
                     TargetPlatform.iOS => true,
                     TargetPlatform.macOS => true,
                     _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                        throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                        throw new InvalidOperationException(
+                            "Switch expression did not handle the supplied value."
+                        ),
                 }
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Alignment _getTitleAlignment(bool effectiveCenterTitle)
@@ -113,9 +115,11 @@ internal class _FlexibleSpaceBarState__flexible_space_bar : State<FlexibleSpaceB
             TextDirection.rtl => Alignment.bottomRight,
             TextDirection.ltr => Alignment.bottomLeft,
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual double _getCollapsePadding(double t, FlexibleSpaceBarSettings settings)
@@ -136,9 +140,11 @@ internal class _FlexibleSpaceBarState__flexible_space_bar : State<FlexibleSpaceB
                 return -new Tween<double>(begin: 0.0, end: deltaExtent / 4.0).transform(t);
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -295,7 +301,7 @@ internal class _FlexibleSpaceBarState__flexible_space_bar : State<FlexibleSpaceB
                                                         )
                                                     );
                                                     throw new InvalidOperationException(
-                                                        "Dart closure completed without a value."
+                                                        "Callback completed without returning a value."
                                                     );
                                                 }
                                             )
@@ -357,7 +363,7 @@ public class FlexibleSpaceBarSettings : InheritedWidget
             || (currentExtent != __oldWidget.currentExtent)
             || (isScrolledUnder != __oldWidget.isScrolledUnder)
             || (hasLeading != __oldWidget.hasLeading);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -383,7 +389,7 @@ internal class _FlexibleSpaceHeaderOpacity__flexible_space_bar : SingleChildRend
             opacity: opacity,
             alwaysIncludeSemantics: alwaysIncludeSemantics
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)

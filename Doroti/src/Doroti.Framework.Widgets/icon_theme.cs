@@ -28,10 +28,12 @@ public class IconTheme : InheritedTheme
                     data: _getInheritedIconThemeData(context).merge(data),
                     child: child
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static IconThemeData of(BuildContext context)
@@ -52,14 +54,14 @@ public class IconTheme : InheritedTheme
                 applyTextScaling: iconThemeData.applyTextScaling
                     ?? IconThemeData.CreateFallback().applyTextScaling
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static IconThemeData _getInheritedIconThemeData(BuildContext context)
     {
         IconTheme? iconTheme = context.dependOnInheritedWidgetOfExactType<IconTheme>();
         return iconTheme?.data ?? IconThemeData.CreateFallback();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget) =>
@@ -68,7 +70,7 @@ public class IconTheme : InheritedTheme
     public override Widget wrap(BuildContext context, Widget child)
     {
         return new IconTheme(data: data, child: child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)

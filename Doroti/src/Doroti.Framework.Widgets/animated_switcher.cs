@@ -83,13 +83,13 @@ public class AnimatedSwitcher : StatefulWidget
             opacity: animation,
             child: child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static Widget defaultLayoutBuilder(Widget? currentChild, List<Widget> previousChildren)
     {
         return new Stack(alignment: Alignment.center, children: new List<Widget>());
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -242,7 +242,7 @@ internal class _AnimatedSwitcherState__animated_switcher
             }
         );
         return entry;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _markChildWidgetCacheAsDirty()
@@ -316,7 +316,7 @@ internal class _AnimatedSwitcherState__animated_switcher
                 }
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         _tickerModeNotifier?.removeListener(_updateTickers);
         _tickerModeNotifier = null;
@@ -333,7 +333,7 @@ internal class _AnimatedSwitcherState__animated_switcher
                 .toSet()
                 .ToList()
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
@@ -364,7 +364,7 @@ internal class _AnimatedSwitcherState__animated_switcher
         )();
         _tickers!.Add(result);
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _removeTicker(_WidgetTicker__ticker_provider ticker)

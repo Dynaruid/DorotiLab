@@ -28,14 +28,14 @@ public class LinearBorderEdge
         return new LinearBorderEdge(
             size: (
                 Dart_uiLibrary.lerpDouble(a.size, b.size, t)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             alignment: (
                 Dart_uiLibrary.lerpDouble(a.alignment, b.alignment, t)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool Equals(object? other)
@@ -77,7 +77,7 @@ public class LinearBorderEdge
         }
         s.write(")");
         return s.ToString();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -163,7 +163,7 @@ public class LinearBorder : OutlinedBorder
     public override LinearBorder scale(double t)
     {
         return new LinearBorder(side: side.scale(t));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override EdgeInsetsGeometry dimensions
@@ -194,7 +194,7 @@ public class LinearBorder : OutlinedBorder
             );
         }
         return base.lerpFrom(a, t);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override ShapeBorder? lerpTo(ShapeBorder? b, double t)
@@ -211,7 +211,7 @@ public class LinearBorder : OutlinedBorder
             );
         }
         return base.lerpTo(b, t);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override LinearBorder copyWith(
@@ -239,7 +239,7 @@ public class LinearBorder : OutlinedBorder
             top: top ?? this.top,
             bottom: bottom ?? this.bottom
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Path getInnerPath(Rect rect, TextDirection? textDirection = null)
@@ -255,7 +255,7 @@ public class LinearBorder : OutlinedBorder
                 }
             )
         )();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Path getOuterPath(Rect rect, TextDirection? textDirection = null)
@@ -270,7 +270,7 @@ public class LinearBorder : OutlinedBorder
                 }
             )
         )();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paint(
@@ -433,6 +433,6 @@ public class LinearBorder : OutlinedBorder
         }
         s.write(")");
         return s.ToString();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

@@ -108,7 +108,7 @@ internal sealed partial class FrameworkCSharpLowerer
                     if (returnType != "void")
                     {
                         builder.AppendLine(
-                            "        throw new InvalidOperationException(\"Dart control flow completed without a value.\");"
+                            "        throw new InvalidOperationException(\"Control flow completed without returning a value.\");"
                         );
                     }
                     builder.AppendLine("    }");
@@ -345,7 +345,7 @@ internal sealed partial class FrameworkCSharpLowerer
                     if (returnType != "void")
                     {
                         builder.AppendLine(
-                            "        throw new InvalidOperationException(\"Dart control flow completed without a value.\");"
+                            "        throw new InvalidOperationException(\"Control flow completed without returning a value.\");"
                         );
                     }
                     builder.AppendLine("    }");
@@ -1578,7 +1578,7 @@ internal sealed partial class FrameworkCSharpLowerer
             if (declaration.Element.IsAbstract)
             {
                 builder.AppendLine(
-                    "        throw new InvalidOperationException(\"Dart abstract constructors cannot be invoked directly.\");"
+                    "        throw new InvalidOperationException(\"Abstract constructors cannot be invoked directly.\");"
                 );
                 builder.AppendLine("    }");
                 builder.AppendLine();

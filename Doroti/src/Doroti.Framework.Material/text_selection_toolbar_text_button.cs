@@ -50,7 +50,7 @@ public class TextSelectionToolbarTextButton : StatelessWidget
             start: _getStartPadding(position),
             end: _getEndPadding(position)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static double _getStartPadding(
@@ -71,7 +71,7 @@ public class TextSelectionToolbarTextButton : StatelessWidget
             return _kEndPadding;
         }
         return _kMiddlePadding;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static double _getEndPadding(
@@ -92,7 +92,7 @@ public class TextSelectionToolbarTextButton : StatelessWidget
             return _kEndPadding;
         }
         return _kMiddlePadding;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static _TextSelectionToolbarItemPosition__text_selection_toolbar_text_button _getPosition(
@@ -111,7 +111,7 @@ public class TextSelectionToolbarTextButton : StatelessWidget
             return _TextSelectionToolbarItemPosition__text_selection_toolbar_text_button.last;
         }
         return _TextSelectionToolbarItemPosition__text_selection_toolbar_text_button.middle;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual TextSelectionToolbarTextButton copyWith(
@@ -127,7 +127,7 @@ public class TextSelectionToolbarTextButton : StatelessWidget
             alignment: alignment ?? this.alignment,
             child: child ?? this.child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static Color _getForegroundColor(ColorScheme colorScheme)
@@ -143,7 +143,9 @@ public class TextSelectionToolbarTextButton : StatelessWidget
                 colorScheme.onSurface
             ),
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
         if (!isDefaultOnSurface)
         {
@@ -154,9 +156,11 @@ public class TextSelectionToolbarTextButton : StatelessWidget
             Brightness.light => _defaultForegroundColorLight,
             Brightness.dark => _defaultForegroundColorDark,
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -178,6 +182,6 @@ public class TextSelectionToolbarTextButton : StatelessWidget
             onPressed: onPressed,
             child: child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

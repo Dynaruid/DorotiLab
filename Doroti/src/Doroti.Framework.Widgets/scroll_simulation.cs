@@ -78,13 +78,13 @@ public class BouncingScrollSimulation : Physics.Simulation
     internal virtual Physics.Simulation _underscrollSimulation(double x, double dx)
     {
         return new Physics.ScrollSpringSimulation(spring, x, leadingExtent, dx);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Physics.Simulation _overscrollSimulation(double x, double dx)
     {
         return new Physics.ScrollSpringSimulation(spring, x, trailingExtent, dx);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Physics.Simulation _simulation(double time)
@@ -112,7 +112,7 @@ public class BouncingScrollSimulation : Physics.Simulation
                 }
             )
         )();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double x(double time) => _simulation(time).x(time - _timeOffset);
@@ -124,7 +124,7 @@ public class BouncingScrollSimulation : Physics.Simulation
     public override string ToString()
     {
         return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "BouncingScrollSimulation")}(leadingExtent: {leadingExtent}, trailingExtent: {trailingExtent})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -164,7 +164,7 @@ public class ClampingScrollSimulation : Physics.Simulation
                 1L / (_kDecelerationRate - 1.0)
             );
         return _kDecelerationRate * _kInflexion * androidDuration;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual double _flingDistance()
@@ -181,29 +181,29 @@ public class ClampingScrollSimulation : Physics.Simulation
                     logVelocity * _kDecelerationRate / (_kDecelerationRate - 1.0)
                 );
             return (distanceLocal.abs() - distanceAgain).abs() < tolerance.distance;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return distanceLocal;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double x(double time)
     {
         double t = Dart_uiLibrary.clampDouble(time / _duration, 0.0, 1.0);
         return position + (_distance * (1.0 - Dart_mathLibrary.pow(1.0 - t, _kDecelerationRate)));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double dx(double time)
     {
         double t = Dart_uiLibrary.clampDouble(time / _duration, 0.0, 1.0);
         return velocity * Dart_mathLibrary.pow(1.0 - t, _kDecelerationRate - 1.0);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool isDone(double time)
     {
         return time >= _duration;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

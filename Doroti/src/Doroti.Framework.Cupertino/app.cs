@@ -258,9 +258,11 @@ public class CupertinoScrollBehavior : ScrollBehavior
                 return child;
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget buildOverscrollIndicator(
@@ -270,7 +272,7 @@ public class CupertinoScrollBehavior : ScrollBehavior
     )
     {
         return child;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override ScrollPhysics getScrollPhysics(BuildContext context)
@@ -280,7 +282,7 @@ public class CupertinoScrollBehavior : ScrollBehavior
             return new BouncingScrollPhysics(decelerationRate: ScrollDecelerationRate.fast);
         }
         return new BouncingScrollPhysics();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Gestures.MultitouchDragStrategy getMultitouchDragStrategy(
@@ -344,7 +346,7 @@ internal class _CupertinoAppState__app : State<CupertinoApp>
             icon: CupertinoIcons.xmark,
             buttonKey: key
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _moveExitWidgetSelectionButtonBuilder(
@@ -359,7 +361,7 @@ internal class _CupertinoAppState__app : State<CupertinoApp>
             semanticsLabel: semanticsLabel,
             icon: usesDefaultAlignment ? CupertinoIcons.arrow_right : CupertinoIcons.arrow_left
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _tapBehaviorButtonBuilder(
@@ -375,7 +377,7 @@ internal class _CupertinoAppState__app : State<CupertinoApp>
             icon: new IconData(128842L),
             toggledOn: selectionOnTapEnabled
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual WidgetsApp _buildWidgetApp(BuildContext context)
@@ -423,7 +425,9 @@ internal class _CupertinoAppState__app : State<CupertinoApp>
             pageRouteBuilder: (settings, builder) =>
             {
                 return new CupertinoPageRoute<object>(settings: settings, builder: builder);
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             home: widget.home,
             routes: widget.routes!,
@@ -452,7 +456,7 @@ internal class _CupertinoAppState__app : State<CupertinoApp>
             actions: widget.actions,
             restorationScopeId: widget.restorationScopeId
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -486,7 +490,7 @@ internal class _CupertinoAppState__app : State<CupertinoApp>
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -546,9 +550,7 @@ internal class _CupertinoInspectorButton__app : InspectorButton
                 Equals(variant, InspectorButtonVariant.toggle)
                 && !(
                     toggledOn
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             )
                 ? new CupertinoButton(
@@ -565,7 +567,7 @@ internal class _CupertinoInspectorButton__app : InspectorButton
                     child: buttonIcon
                 )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Color foregroundColor(BuildContext context)
@@ -586,17 +588,17 @@ internal class _CupertinoInspectorButton__app : InspectorButton
             {
                 return !(
                     toggledOn
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
                     ? primaryColorLocal
                     : secondaryColor;
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Color backgroundColor(BuildContext context)
@@ -614,8 +616,10 @@ internal class _CupertinoInspectorButton__app : InspectorButton
                 return new Color(0L);
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

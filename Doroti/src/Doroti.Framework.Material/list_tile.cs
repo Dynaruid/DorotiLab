@@ -65,9 +65,11 @@ public static class ListTileTitleAlignmentMembers
             ListTileTitleAlignment.center => (tileHeight - childHeight) / 2.0,
             ListTileTitleAlignment.bottom => tileHeight - childHeight - listTile.minVerticalPadding,
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -214,7 +216,9 @@ public class ListTile : StatelessWidget
                 ),
                 child: tile
             );
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         return (
             (Func<List<Widget>>)(
@@ -227,13 +231,13 @@ public class ListTile : StatelessWidget
                 }
             )
         )();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _isDenseLayout(ThemeData theme, ListTileThemeData tileTheme)
     {
         return ((dense ?? tileTheme.dense) ?? theme.listTileTheme.dense) ?? false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -293,7 +297,9 @@ public class ListTile : StatelessWidget
                 enabledColor: enabledColor,
                 disabledColor: disabledColor
             ).resolve(states);
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         Color? effectiveIconColor =
             (
@@ -485,14 +491,14 @@ public class ListTile : StatelessWidget
                                         ?? (
                                             defaults.titleTextStyle!.textBaseline
                                             ?? throw new global::System.NullReferenceException(
-                                                "Dart null assertion failed."
+                                                "A required value was null."
                                             )
                                         ),
                                     subtitleBaselineType: subtitleStyle?.textBaseline
                                         ?? (
                                             defaults.subtitleTextStyle!.textBaseline
                                             ?? throw new global::System.NullReferenceException(
-                                                "Dart null assertion failed."
+                                                "A required value was null."
                                             )
                                         ),
                                     horizontalTitleGap: (
@@ -504,14 +510,14 @@ public class ListTile : StatelessWidget
                                         ?? (
                                             defaults.minVerticalPadding
                                             ?? throw new global::System.NullReferenceException(
-                                                "Dart null assertion failed."
+                                                "A required value was null."
                                             )
                                         ),
                                     minLeadingWidth: (minLeadingWidth ?? tileTheme.minLeadingWidth)
                                         ?? (
                                             defaults.minLeadingWidth
                                             ?? throw new global::System.NullReferenceException(
-                                                "Dart null assertion failed."
+                                                "A required value was null."
                                             )
                                         ),
                                     minTileHeight: minTileHeight ?? tileTheme.minTileHeight,
@@ -699,7 +705,7 @@ public class ListTile : StatelessWidget
             return true;
         });
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget? _findIntermediateWidget(BuildContext context)
@@ -734,11 +740,13 @@ public class ListTile : StatelessWidget
                     return false;
                 }
                 return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
         return intermediateWidget;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -778,7 +786,7 @@ internal class _IndividualOverrides__list_tile : WidgetStateProperty<Color?>
             return selectedColor;
         }
         return enabledColor;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -858,9 +866,11 @@ internal class _ListTile__list_tile
             _ListTileSlot__list_tile.subtitle => subtitle,
             _ListTileSlot__list_tile.trailing => trailing,
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override RenderObject createRenderObject(BuildContext context)
@@ -878,7 +888,7 @@ internal class _ListTile__list_tile
             minTileHeight: minTileHeight,
             titleAlignment: titleAlignment
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -1160,13 +1170,13 @@ public class _RenderListTile__list_tile
     internal static double _minWidth(RenderBox? box, double height)
     {
         return (box is null) ? 0.0 : box.getMinIntrinsicWidth(height);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static double _maxWidth(RenderBox? box, double height)
     {
         return (box is null) ? 0.0 : box.getMaxIntrinsicWidth(height);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicWidth(double height)
@@ -1181,7 +1191,7 @@ public class _RenderListTile__list_tile
         return leadingWidth
             + Math.Max(_minWidth(title, height), _minWidth(subtitle, height))
             + _maxWidth(trailing, height);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicWidth(double height)
@@ -1196,7 +1206,7 @@ public class _RenderListTile__list_tile
         return leadingWidth
             + Math.Max(_maxWidth(title, height), _maxWidth(subtitle, height))
             + _maxWidth(trailing, height);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual double _defaultTileHeight
@@ -1228,13 +1238,13 @@ public class _RenderListTile__list_tile
             + (subtitleMinHeight ?? 0.0)
             + (topAndBottomPaddingMultiplier * _minVerticalPadding);
         return Math.Max(_targetTileHeight, contentHeight);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicHeight(double width)
     {
         return getMinIntrinsicHeight(width);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? computeDistanceToActualBaseline(TextBaseline baseline)
@@ -1244,7 +1254,7 @@ public class _RenderListTile__list_tile
             title.getDistanceToActualBaseline(baseline)
         ).op_Add(parentDataLocal.offset.dy);
         return offsetLocal.offset;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual BoxConstraints maxIconHeightConstraint =>
@@ -1323,7 +1333,7 @@ public class _RenderListTile__list_tile
                         (
                             leadingSize
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ).width
                     ) + _effectiveHorizontalTitleGap
@@ -1335,7 +1345,7 @@ public class _RenderListTile__list_tile
                     (
                         trailingSize
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ).width + _effectiveHorizontalTitleGap,
                     32.0
@@ -1350,7 +1360,9 @@ public class _RenderListTile__list_tile
             TextDirection.ltr => true,
             TextDirection.rtl => false,
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
         double titleYLocal = default!;
         double tileHeight = default!;
@@ -1371,7 +1383,7 @@ public class _RenderListTile__list_tile
                     (
                         subtitleBaselineType
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 ) ?? subtitleHeight;
@@ -1409,9 +1421,7 @@ public class _RenderListTile__list_tile
             {
                 Size leadingSize__57061__value61002 = (
                     leadingSize
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 positionChild(
                     leadingLocal,
@@ -1423,7 +1433,7 @@ public class _RenderListTile__list_tile
                                 - (
                                     leadingSize__57061__value61002
                                     ?? throw new global::System.NullReferenceException(
-                                        "Dart null assertion failed."
+                                        "A required value was null."
                                     )
                                 ).width
                             ),
@@ -1431,7 +1441,7 @@ public class _RenderListTile__list_tile
                             (
                                 leadingSize__57061__value61002
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             ).height,
                             tileHeight,
@@ -1445,9 +1455,7 @@ public class _RenderListTile__list_tile
             {
                 Size trailingSize__57151__value61289 = (
                     trailingSize
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 positionChild(
                     trailingLocal,
@@ -1458,7 +1466,7 @@ public class _RenderListTile__list_tile
                                 - (
                                     trailingSize__57151__value61289
                                     ?? throw new global::System.NullReferenceException(
-                                        "Dart null assertion failed."
+                                        "A required value was null."
                                     )
                                 ).width
                             )
@@ -1467,7 +1475,7 @@ public class _RenderListTile__list_tile
                             (
                                 trailingSize__57151__value61289
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             ).height,
                             tileHeight,
@@ -1483,7 +1491,7 @@ public class _RenderListTile__list_tile
             tileSize: new Size(tileWidth, tileHeight),
             titleY: titleYLocal
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
@@ -1497,7 +1505,7 @@ public class _RenderListTile__list_tile
             title.getDryBaseline(sizes.textConstraints, baseline)
         ).op_Add(sizes.titleY);
         return titleBaseline.offset;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Size computeDryLayout(BoxConstraints constraints)
@@ -1509,7 +1517,7 @@ public class _RenderListTile__list_tile
                 constraints
             ).tileSize
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void performLayout()
@@ -1561,7 +1569,9 @@ public class _RenderListTile__list_tile
                         Equals(transformed, position - parentDataLocal.offset)
                     );
                     return child.hitTest(result, position: transformed);
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
             if (isHit)
@@ -1570,7 +1580,7 @@ public class _RenderListTile__list_tile
             }
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual RenderBox? childForSlot(_ListTileSlot__list_tile slot) =>
@@ -1637,14 +1647,14 @@ public class _RenderListTile__list_tile
                             child
                         )
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
             );
         }
         return value;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _addDiagnostics(RenderBox child, List<DiagnosticsNode> value, string name)

@@ -111,7 +111,7 @@ public static partial class Text_themeLibrary
             backgroundColor: CupertinoDynamicColor.maybeResolve(style.backgroundColor, context),
             decorationColor: CupertinoDynamicColor.maybeResolve(style.decorationColor, context)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -247,7 +247,7 @@ public class CupertinoTextThemeData : Diagnosticable
             Text_themeLibrary._resolveTextStyle(_pickerTextStyle, context),
             Text_themeLibrary._resolveTextStyle(_dateTimePickerTextStyle, context)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual CupertinoTextThemeData copyWith(
@@ -276,7 +276,7 @@ public class CupertinoTextThemeData : Diagnosticable
             pickerTextStyle ?? _pickerTextStyle,
             dateTimePickerTextStyle ?? _dateTimePickerTextStyle
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -409,7 +409,7 @@ public class CupertinoTextThemeData : Diagnosticable
             return true;
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -418,7 +418,7 @@ public class CupertinoTextThemeData : Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -436,7 +436,7 @@ internal class _TextThemeDefaultsBuilder__text_theme
     internal static TextStyle _applyLabelColor(TextStyle original, Color color)
     {
         return Equals(original.color, color) ? original : original.copyWith(color: color);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual TextStyle textStyle =>
@@ -471,7 +471,7 @@ internal class _TextThemeDefaultsBuilder__text_theme
         )
             ? this
             : new _TextThemeDefaultsBuilder__text_theme(resolvedLabelColor, resolvedInactiveGray);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool Equals(object? other)

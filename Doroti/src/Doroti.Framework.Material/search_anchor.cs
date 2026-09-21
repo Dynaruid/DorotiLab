@@ -384,7 +384,7 @@ internal class _SearchAnchorState__search_anchor : State<SearchAnchor>
             _anchorIsVisible = !_anchorIsVisible;
         });
         return _anchorIsVisible;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool getShowFullScreenView()
@@ -398,10 +398,12 @@ internal class _SearchAnchorState__search_anchor : State<SearchAnchor>
                     TargetPlatform.macOS or TargetPlatform.linux => false,
                     TargetPlatform.windows => false,
                     _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                        throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                        throw new InvalidOperationException(
+                            "Switch expression did not handle the supplied value."
+                        ),
                 }
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual double _getOpacity()
@@ -411,7 +413,7 @@ internal class _SearchAnchorState__search_anchor : State<SearchAnchor>
             return _anchorIsVisible ? 1.0 : 0.0;
         }
         return Search_anchorLibrary._kDisableSearchBarOpacity;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -428,7 +430,7 @@ internal class _SearchAnchorState__search_anchor : State<SearchAnchor>
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -568,7 +570,7 @@ internal class _SearchViewRoute__search_anchor : PopupRoute<_SearchViewRoute__se
             return boxLocation & boxSize;
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Scheduler.TickerFuture didPush()
@@ -579,7 +581,7 @@ internal class _SearchViewRoute__search_anchor : PopupRoute<_SearchViewRoute__se
         toggleVisibility?.Invoke();
         viewOnOpen?.Invoke();
         return base.didPush();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool didPop(_SearchViewRoute__search_anchor? result)
@@ -598,7 +600,7 @@ internal class _SearchViewRoute__search_anchor : PopupRoute<_SearchViewRoute__se
             }
         );
         return base.didPop(result);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _dismiss(bool disposeController)
@@ -722,7 +724,7 @@ internal class _SearchViewRoute__search_anchor : PopupRoute<_SearchViewRoute__se
                     Rect viewRectLocal = (
                         _rectTween.evaluate(curvedAnimation!)
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     );
                     double topPaddingLocal = showFullScreenView
@@ -733,7 +735,7 @@ internal class _SearchViewRoute__search_anchor : PopupRoute<_SearchViewRoute__se
                                 curvedAnimation!.value
                             )
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                         : 0.0;
@@ -770,7 +772,7 @@ internal class _SearchViewRoute__search_anchor : PopupRoute<_SearchViewRoute__se
                                 viewMaxWidth: (
                                     _rectTween.end
                                     ?? throw new global::System.NullReferenceException(
-                                        "Dart null assertion failed."
+                                        "A required value was null."
                                     )
                                 ).width,
                                 viewRect: viewRectLocal,
@@ -785,11 +787,13 @@ internal class _SearchViewRoute__search_anchor : PopupRoute<_SearchViewRoute__se
                             )
                         )
                     );
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Duration transitionDuration => Search_anchorLibrary._kOpenViewDuration;
@@ -951,7 +955,7 @@ internal class _ViewContentState__search_anchor : State<_ViewContent__search_anc
                     & (
                         _screenSize
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     );
             }
@@ -1086,7 +1090,7 @@ internal class _ViewContentState__search_anchor : State<_ViewContent__search_anc
             (widget.viewElevation ?? viewTheme.elevation)
             ?? (
                 viewDefaults.elevation
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         BorderSide? effectiveSide = (widget.viewSide ?? viewTheme.side) ?? viewDefaults.side;
         OutlinedBorder effectiveShape =
@@ -1106,7 +1110,7 @@ internal class _ViewContentState__search_anchor : State<_ViewContent__search_anc
                     height: (
                         effectiveHeaderHeight
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 );
@@ -1132,7 +1136,7 @@ internal class _ViewContentState__search_anchor : State<_ViewContent__search_anc
             (widget.shrinkWrap ?? viewTheme.shrinkWrap)
             ?? (
                 viewDefaults.shrinkWrap
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         Widget viewDivider = new DividerTheme(
             data: dividerTheme.copyWith(color: effectiveDividerColor),
@@ -1166,7 +1170,7 @@ internal class _ViewContentState__search_anchor : State<_ViewContent__search_anc
                                     (
                                         _screenSize
                                         ?? throw new global::System.NullReferenceException(
-                                            "Dart null assertion failed."
+                                            "A required value was null."
                                         )
                                     ).width
                                 ),
@@ -1313,7 +1317,7 @@ internal class _ViewContentState__search_anchor : State<_ViewContent__search_anc
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1436,7 +1440,9 @@ internal class _SearchAnchorWithSearchBar__search_anchor : SearchAnchor
                     smartDashesType: smartDashesType,
                     smartQuotesType: smartQuotesType
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         ) { }
 }
@@ -1600,7 +1606,7 @@ public class SearchBar : StatefulWidget
         return AdaptiveTextSelectionToolbar.CreateEditableText(
             editableTextState: editableTextState
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override IState createState() =>
@@ -1652,7 +1658,9 @@ internal class _SearchBarState__search_anchor : State<SearchBar>
                 : themeValue is not null ? themeValue.resolve(states)
                 : defaultValue is not null ? defaultValue.resolve(states)
                 : default;
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         TextStyle? effectiveTextStyle = resolve(
             widget.textStyle,
@@ -1696,7 +1704,7 @@ internal class _SearchBarState__search_anchor : State<SearchBar>
             (widget.textCapitalization ?? searchBarTheme.textCapitalization)
             ?? (
                 defaults.textCapitalization
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         HashSet<WidgetState> statesLocal = _internalStatesController.value;
         TextStyle? effectiveHintStyle =
@@ -1713,7 +1721,9 @@ internal class _SearchBarState__search_anchor : State<SearchBar>
             Brightness.light => ConstantsLibrary.kDefaultIconDarkColor,
             Brightness.dark => ConstantsLibrary.kDefaultIconLightColor,
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
         IconThemeData? customTheme = IconTheme.of(context) switch
         {
@@ -1748,7 +1758,7 @@ internal class _SearchBarState__search_anchor : State<SearchBar>
                     elevation: (
                         effectiveElevation
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ),
                     shadowColor: effectiveShadowColor,
@@ -1854,7 +1864,7 @@ internal class _SearchBarState__search_anchor : State<SearchBar>
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1929,7 +1939,9 @@ internal class _SearchBarDefaultsM3__search_anchor : SearchBarThemeData
                         return Colors.transparent;
                     }
                     return Colors.transparent;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );

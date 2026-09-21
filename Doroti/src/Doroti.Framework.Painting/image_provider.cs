@@ -60,7 +60,7 @@ public class ImageConfiguration
             size: size ?? this.size,
             platform: platform ?? this.platform
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool Equals(object? other)
@@ -101,14 +101,14 @@ public class ImageConfiguration
         {
             double devicePixelRatio__value4301 = (
                 devicePixelRatio
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             if (hasArguments)
             {
                 result.write(", ");
             }
             result.write(
-                $"devicePixelRatio: {(devicePixelRatio ?? throw new global::System.NullReferenceException("Dart null assertion failed.")).toStringAsFixed(1L)}"
+                $"devicePixelRatio: {(devicePixelRatio ?? throw new global::System.NullReferenceException("A required value was null.")).toStringAsFixed(1L)}"
             );
             hasArguments = true;
         }
@@ -116,7 +116,7 @@ public class ImageConfiguration
         {
             Locale locale__value4513 = (
                 locale
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             if (hasArguments)
             {
@@ -129,7 +129,7 @@ public class ImageConfiguration
         {
             TextDirection textDirection__value4673 = (
                 textDirection
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             if (hasArguments)
             {
@@ -142,7 +142,7 @@ public class ImageConfiguration
         {
             Size size__value4854 = (
                 size
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             if (hasArguments)
             {
@@ -162,7 +162,7 @@ public class ImageConfiguration
         }
         result.write(")");
         return result.ToString();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -273,13 +273,13 @@ public abstract class ImageProvider<T> : IImageProvider
             }
         );
         return stream;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual ImageStream createStream(ImageConfiguration configuration)
     {
         return new ImageStream();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Future<ImageCacheStatus?> obtainCacheStatus(
@@ -332,7 +332,7 @@ public abstract class ImageProvider<T> : IImageProvider
             }
         );
         return completer.future;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _createErrorHandlerAndKey(
@@ -454,7 +454,7 @@ public abstract class ImageProvider<T> : IImageProvider
         cache ??= BindingLibrary.imageCache;
         T key = await obtainKey(configuration);
         return cache.evict(key);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public abstract Future<T> obtainKey(ImageConfiguration configuration);
@@ -465,7 +465,7 @@ public abstract class ImageProvider<T> : IImageProvider
     )
     {
         return new _AbstractImageStreamCompleter__image_provider();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual ImageStreamCompleter loadBuffer(T key, DecoderBufferCallback decode)
@@ -486,7 +486,7 @@ public abstract class ImageProvider<T> : IImageProvider
     )
     {
         return new _AbstractImageStreamCompleter__image_provider();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual ImageStreamCompleter loadImage(T key, ImageDecoderCallback decode)
@@ -569,7 +569,7 @@ public abstract class AssetBundleImageProvider : ImageProvider<AssetBundleImageK
             debugLabel: key.name,
             informationCollector: collector
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override ImageStreamCompleter loadBuffer(
@@ -597,7 +597,7 @@ public abstract class AssetBundleImageProvider : ImageProvider<AssetBundleImageK
             debugLabel: key.name,
             informationCollector: collector
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual async Future<Codec> _loadAsync(
@@ -616,7 +616,7 @@ public abstract class AssetBundleImageProvider : ImageProvider<AssetBundleImageK
             throw;
         }
         return await decode(buffer);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -714,7 +714,7 @@ public class ResizeImage : ImageProvider<ResizeImageKey>
             return new ResizeImage(provider, width: cacheWidth, height: cacheHeight);
         }
         return provider;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override ImageStreamCompleter loadBuffer(
@@ -733,7 +733,9 @@ public class ResizeImage : ImageProvider<ResizeImageKey>
                 (cacheWidth is null) && (cacheHeight is null) && (allowUpscaling is not true)
             );
             return decode(buffer, this.allowUpscaling, height, width);
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         ImageStreamCompleter completer = imageProvider.loadBufferObject(
             key._providerCacheKey,
@@ -746,7 +748,7 @@ public class ResizeImage : ImageProvider<ResizeImageKey>
         }
         _configureErrorListener(completer, key);
         return completer;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override ImageStreamCompleter loadImage(
@@ -778,7 +780,7 @@ public class ResizeImage : ImageProvider<ResizeImageKey>
                                         (
                                             targetWidth
                                             ?? throw new global::System.NullReferenceException(
-                                                "Dart null assertion failed."
+                                                "A required value was null."
                                             )
                                         ) > intrinsicWidth
                                     )
@@ -787,7 +789,7 @@ public class ResizeImage : ImageProvider<ResizeImageKey>
                                     long targetWidth__43553__value43674 = (
                                         targetWidth
                                         ?? throw new global::System.NullReferenceException(
-                                            "Dart null assertion failed."
+                                            "A required value was null."
                                         )
                                     );
                                     targetWidth = intrinsicWidth;
@@ -798,7 +800,7 @@ public class ResizeImage : ImageProvider<ResizeImageKey>
                                         (
                                             targetHeight
                                             ?? throw new global::System.NullReferenceException(
-                                                "Dart null assertion failed."
+                                                "A required value was null."
                                             )
                                         ) > intrinsicHeight
                                     )
@@ -807,7 +809,7 @@ public class ResizeImage : ImageProvider<ResizeImageKey>
                                     long targetHeight__43593__value43815 = (
                                         targetHeight
                                         ?? throw new global::System.NullReferenceException(
-                                            "Dart null assertion failed."
+                                            "A required value was null."
                                         )
                                     );
                                     targetHeight = intrinsicHeight;
@@ -840,7 +842,7 @@ public class ResizeImage : ImageProvider<ResizeImageKey>
                                     targetHeightLocal = (
                                         height
                                         ?? throw new global::System.NullReferenceException(
-                                            "Dart null assertion failed."
+                                            "A required value was null."
                                         )
                                     );
                                     targetWidthLocal = (targetHeightLocal * aspectRatio).floor();
@@ -852,7 +854,7 @@ public class ResizeImage : ImageProvider<ResizeImageKey>
                                         targetWidthLocal = (
                                             width
                                             ?? throw new global::System.NullReferenceException(
-                                                "Dart null assertion failed."
+                                                "A required value was null."
                                             )
                                         );
                                         targetHeightLocal = checked(
@@ -883,7 +885,9 @@ public class ResizeImage : ImageProvider<ResizeImageKey>
                     );
                 }
             );
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         ImageStreamCompleter completer = imageProvider.loadImageObject(
             key._providerCacheKey,
@@ -895,7 +899,7 @@ public class ResizeImage : ImageProvider<ResizeImageKey>
         }
         _configureErrorListener(completer, key);
         return completer;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _configureErrorListener(
@@ -1006,7 +1010,7 @@ public class FileImage : ImageProvider<FileImage>
     public override Future<FileImage> obtainKey(ImageConfiguration configuration)
     {
         return new SynchronousFuture<FileImage>(this);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override ImageStreamCompleter loadBuffer(
@@ -1024,7 +1028,7 @@ public class FileImage : ImageProvider<FileImage>
             informationCollector: () =>
                 new List<DiagnosticsNode> { new ErrorDescription($"Path: {file.path}") }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override ImageStreamCompleter loadImage(
@@ -1039,7 +1043,7 @@ public class FileImage : ImageProvider<FileImage>
             informationCollector: () =>
                 new List<DiagnosticsNode> { new ErrorDescription($"Path: {file.path}") }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual async Future<Codec> _loadAsync(
@@ -1063,7 +1067,7 @@ public class FileImage : ImageProvider<FileImage>
                     await Dart_uiLibrary.ImmutableBuffer.fromUint8List(await file.readAsBytes())
                 )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool Equals(object? other)
@@ -1103,7 +1107,7 @@ public class MemoryImage : ImageProvider<MemoryImage>
     public override Future<MemoryImage> obtainKey(ImageConfiguration configuration)
     {
         return new SynchronousFuture<MemoryImage>(this);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override ImageStreamCompleter loadBuffer(
@@ -1120,7 +1124,7 @@ public class MemoryImage : ImageProvider<MemoryImage>
             scale: key.scale,
             debugLabel: $"MemoryImage({DiagnosticsLibrary.describeIdentity(key.bytes)})"
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override ImageStreamCompleter loadImage(
@@ -1133,7 +1137,7 @@ public class MemoryImage : ImageProvider<MemoryImage>
             scale: key.scale,
             debugLabel: $"MemoryImage({DiagnosticsLibrary.describeIdentity(key.bytes)})"
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual async Future<Codec> _loadAsync(
@@ -1143,7 +1147,7 @@ public class MemoryImage : ImageProvider<MemoryImage>
     {
         DartRuntimePrimitives.Assert(() => Equals(key, this));
         return await decode(await Dart_uiLibrary.ImmutableBuffer.fromUint8List(bytes));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool Equals(object? other)
@@ -1200,7 +1204,7 @@ public class ExactAssetImage : AssetBundleImageProvider
                 scale: scale
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool Equals(object? other)

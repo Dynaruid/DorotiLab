@@ -301,7 +301,9 @@ internal class _ActionChipDefaultsM3__action_chip : ChipThemeData
                     return Equals(_chipVariant, _ChipVariant__action_chip.flat)
                         ? null
                         : _colors.surfaceContainerLow;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );

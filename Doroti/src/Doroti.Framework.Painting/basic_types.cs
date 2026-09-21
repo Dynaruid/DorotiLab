@@ -26,9 +26,11 @@ public static partial class Basic_typesLibrary
         {
             Axis.horizontal => Axis.vertical,
             Axis.vertical => Axis.horizontal,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -56,9 +58,11 @@ public static partial class Basic_typesLibrary
             AxisDirection.down => Axis.vertical,
             AxisDirection.left => Axis.horizontal,
             AxisDirection.right => Axis.horizontal,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -70,9 +74,11 @@ public static partial class Basic_typesLibrary
         {
             TextDirection.rtl => AxisDirection.left,
             TextDirection.ltr => AxisDirection.right,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -86,9 +92,11 @@ public static partial class Basic_typesLibrary
             AxisDirection.right => AxisDirection.left,
             AxisDirection.down => AxisDirection.up,
             AxisDirection.left => AxisDirection.right,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -102,8 +110,10 @@ public static partial class Basic_typesLibrary
             AxisDirection.left => true,
             AxisDirection.down => false,
             AxisDirection.right => false,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

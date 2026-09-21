@@ -39,7 +39,7 @@ public class ActionIconThemeData : Diagnosticable
             endDrawerButtonIconBuilder: endDrawerButtonIconBuilder
                 ?? this.endDrawerButtonIconBuilder
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static ActionIconThemeData? lerp(
@@ -64,7 +64,7 @@ public class ActionIconThemeData : Diagnosticable
                 ? a?.endDrawerButtonIconBuilder
                 : b?.endDrawerButtonIconBuilder
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override int GetHashCode()
@@ -149,7 +149,7 @@ public class ActionIconThemeData : Diagnosticable
             return true;
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -158,7 +158,7 @@ public class ActionIconThemeData : Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -181,13 +181,13 @@ public class ActionIconTheme : InheritedTheme
         ActionIconTheme? actionIconThemeLocal =
             context.dependOnInheritedWidgetOfExactType<ActionIconTheme>();
         return actionIconThemeLocal?.data ?? Theme.of(context).actionIconTheme;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget wrap(BuildContext context, Widget child)
     {
         return new ActionIconTheme(data: data, child: child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget) =>

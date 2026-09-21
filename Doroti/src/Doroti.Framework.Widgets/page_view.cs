@@ -59,7 +59,7 @@ public class PageController : ScrollController
             () => (object?)"Multiple PageViews are attached to " + "the same PageController."
         );
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Future animateToPage(long page, Duration duration, Curve curve)
@@ -81,7 +81,7 @@ public class PageController : ScrollController
             duration: duration,
             curve: curve
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void jumpToPage(long page)
@@ -106,12 +106,12 @@ public class PageController : ScrollController
         return animateToPage(
             (
                 page
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ).round() + 1L,
             duration: duration,
             curve: curve
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Future previousPage(Duration duration, Curve curve)
@@ -119,12 +119,12 @@ public class PageController : ScrollController
         return animateToPage(
             (
                 page
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ).round() - 1L,
             duration: duration,
             curve: curve
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override ScrollPosition createScrollPosition(
@@ -141,7 +141,7 @@ public class PageController : ScrollController
             viewportFraction: viewportFraction,
             oldPosition: oldPosition
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void attach(ScrollPosition position)
@@ -171,19 +171,19 @@ public class PageMetrics : FixedScrollMetrics
         : base(
             minScrollExtent: (
                 minScrollExtent
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             maxScrollExtent: (
                 maxScrollExtent
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             pixels: (
                 pixels
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             viewportDimension: (
                 viewportDimension
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             axisDirection: axisDirection,
             devicePixelRatio: devicePixelRatio
@@ -218,7 +218,7 @@ public class PageMetrics : FixedScrollMetrics
             viewportFraction: viewportFraction ?? this.viewportFraction,
             devicePixelRatio: devicePixelRatio ?? this.devicePixelRatio
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double? page
@@ -278,7 +278,7 @@ internal class _PagePosition__page_view : ScrollPositionWithSingleContext
             curve: curve,
             alignmentPolicy: alignmentPolicy
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double viewportFraction
@@ -297,9 +297,7 @@ internal class _PagePosition__page_view : ScrollPositionWithSingleContext
             {
                 double oldPage__12904__value12959 = (
                     oldPage
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 forcePixels(getPixelsFromPage(((oldPage__12904__value12959))));
             }
@@ -319,13 +317,13 @@ internal class _PagePosition__page_view : ScrollPositionWithSingleContext
             return round;
         }
         return actual;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double getPixelsFromPage(double page)
     {
         return (page * viewportDimension * viewportFraction) + _initialPageOffset;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double? page
@@ -374,9 +372,7 @@ internal class _PagePosition__page_view : ScrollPositionWithSingleContext
             {
                 double value__14735__value14854 = (
                     value
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 _pageToUseOnStartup = ((value__14735__value14854));
             }
@@ -420,9 +416,7 @@ internal class _PagePosition__page_view : ScrollPositionWithSingleContext
             {
                 page = (
                     _cachedPage
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
             }
             else
@@ -432,14 +426,14 @@ internal class _PagePosition__page_view : ScrollPositionWithSingleContext
                         (
                             oldPixels
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     ),
                     (
                         oldViewportDimensions
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 );
@@ -453,7 +447,7 @@ internal class _PagePosition__page_view : ScrollPositionWithSingleContext
             return false;
         }
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void absorb(ScrollPosition other)
@@ -477,7 +471,7 @@ internal class _PagePosition__page_view : ScrollPositionWithSingleContext
             newMinScrollExtent,
             Math.Max(newMinScrollExtent, (maxScrollExtent) - _initialPageOffset)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override PageMetrics copyWith(
@@ -506,7 +500,7 @@ internal class _PagePosition__page_view : ScrollPositionWithSingleContext
             viewportFraction: viewportFraction ?? this.viewportFraction,
             devicePixelRatio: devicePixelRatio ?? this.devicePixelRatio
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -533,7 +527,7 @@ internal class _ForceImplicitScrollPhysics__page_view : ScrollPhysics
             allowImplicitScrolling: allowImplicitScrolling,
             parent: buildParent(ancestor)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -545,7 +539,7 @@ public class PageScrollPhysics : ScrollPhysics
     public override PageScrollPhysics applyTo(ScrollPhysics? ancestor)
     {
         return new PageScrollPhysics(parent: buildParent(ancestor));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual double _getPage(ScrollMetrics position)
@@ -555,11 +549,11 @@ public class PageScrollPhysics : ScrollPhysics
             _PagePosition__page_view position__as18753 = (_PagePosition__page_view)position;
             return (
                 position__as18753.page
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
         return position.pixels / position.viewportDimension;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual double _getPixels(ScrollMetrics position, double page)
@@ -570,7 +564,7 @@ public class PageScrollPhysics : ScrollPhysics
             return position__as18946.getPixelsFromPage(page);
         }
         return page * position.viewportDimension;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual double _getTargetPixels(
@@ -592,7 +586,7 @@ public class PageScrollPhysics : ScrollPhysics
             }
         }
         return _getPixels(position, page.roundToDouble());
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Physics.Simulation? createBallisticSimulation(
@@ -621,7 +615,7 @@ public class PageScrollPhysics : ScrollPhysics
                 );
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool allowImplicitScrolling => false;
@@ -879,9 +873,11 @@ internal class _PageViewState__page_view : State<PageView>
                 return widget.reverse ? AxisDirection.up : AxisDirection.down;
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -911,7 +907,7 @@ internal class _PageViewState__page_view : State<PageView>
                     long currentPage = (
                         metricsLocal.page
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ).round();
                     if (currentPage != _lastReportedPage)
@@ -921,7 +917,9 @@ internal class _PageViewState__page_view : State<PageView>
                     }
                 }
                 return false;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             child: new Scrollable(
                 dragStartBehavior: widget.dragStartBehavior,
@@ -949,11 +947,13 @@ internal class _PageViewState__page_view : State<PageView>
                             ),
                         }
                     );
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder description)

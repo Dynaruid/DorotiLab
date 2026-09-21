@@ -172,9 +172,7 @@ public class ScrollDragController : Drag
             && (
                 (
                     carriedVelocity
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) != 0.0
             );
         _lastNonStationaryTimestamp = details.sourceTimeStamp;
@@ -186,7 +184,7 @@ public class ScrollDragController : Drag
                     (
                         motionStartDistanceThreshold
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) > 0.0
                 )
@@ -215,13 +213,13 @@ public class ScrollDragController : Drag
                         (
                             timestamp
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                         - (
                             _lastNonStationaryTimestamp
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     ) > momentumRetainStationaryDurationThreshold
@@ -249,13 +247,13 @@ public class ScrollDragController : Drag
                         (
                             timestamp
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                         - (
                             _lastNonStationaryTimestamp
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     ) > motionStoppedDurationThreshold
@@ -264,9 +262,7 @@ public class ScrollDragController : Drag
             {
                 double motionStartDistanceThreshold__value12588 = (
                     motionStartDistanceThreshold
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 _offsetSinceLastStop = 0.0;
             }
@@ -284,20 +280,20 @@ public class ScrollDragController : Drag
                     (
                         _offsetSinceLastStop
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) + offset;
                 if (
                     (
                         _offsetSinceLastStop
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ).abs()
                     > (
                         motionStartDistanceThreshold
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
@@ -313,7 +309,7 @@ public class ScrollDragController : Drag
                                 (
                                     motionStartDistanceThreshold
                                     ?? throw new global::System.NullReferenceException(
-                                        "Dart null assertion failed."
+                                        "A required value was null."
                                     )
                                 ) / 3.0,
                                 offset.abs()
@@ -326,7 +322,7 @@ public class ScrollDragController : Drag
                 }
             }
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void update(DragUpdateDetails details)
@@ -335,7 +331,7 @@ public class ScrollDragController : Drag
         _lastDetails = details;
         double offset = (
             details.primaryDelta
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         );
         if (offset != 0.0)
         {
@@ -359,7 +355,7 @@ public class ScrollDragController : Drag
         DartRuntimePrimitives.Assert(() => details.primaryVelocity is not null);
         double velocity = -(
             details.primaryVelocity
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         );
         if (_reversed)
         {
@@ -374,7 +370,7 @@ public class ScrollDragController : Drag
                     (
                         carriedVelocity
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 );
@@ -384,7 +380,7 @@ public class ScrollDragController : Drag
                     (
                         carriedVelocity
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ).abs() * momentumRetainVelocityThresholdFactor
                 );
@@ -392,9 +388,7 @@ public class ScrollDragController : Drag
             {
                 velocity += (
                     carriedVelocity
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
             }
         }
@@ -504,7 +498,7 @@ public class DragScrollActivity : ScrollActivity
     public override string ToString()
     {
         return $"{DiagnosticsLibrary.describeIdentity(this)}({_controller})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -573,7 +567,7 @@ public class BallisticScrollActivity : ScrollActivity
     {
         return @delegate.setPixels(value).abs()
             < Foundation.ConstantsLibrary.precisionErrorTolerance;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _end()
@@ -610,7 +604,7 @@ public class BallisticScrollActivity : ScrollActivity
     public override string ToString()
     {
         return $"{DiagnosticsLibrary.describeIdentity(this)}({_controller})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -704,7 +698,7 @@ public class DrivenScrollActivity : ScrollActivity
     {
         return @delegate.setPixels(value).abs()
             < Foundation.ConstantsLibrary.precisionErrorTolerance;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _end()
@@ -743,6 +737,6 @@ public class DrivenScrollActivity : ScrollActivity
     public override string ToString()
     {
         return $"{DiagnosticsLibrary.describeIdentity(this)}({_controller})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

@@ -54,17 +54,19 @@ public class DefaultSelectionStyle : InheritedTheme
                     mouseCursor: mouseCursor ?? parent.mouseCursor,
                     child: child
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static DefaultSelectionStyle of(BuildContext context)
     {
         return context.dependOnInheritedWidgetOfExactType<DefaultSelectionStyle>()
             ?? CreateFallback();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget wrap(BuildContext context, Widget child)
@@ -75,7 +77,7 @@ public class DefaultSelectionStyle : InheritedTheme
             mouseCursor: mouseCursor,
             child: child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget)
@@ -84,7 +86,7 @@ public class DefaultSelectionStyle : InheritedTheme
         return (!Equals(cursorColor, __oldWidget.cursorColor))
             || (!Equals(selectionColor, __oldWidget.selectionColor))
             || (!Equals(mouseCursor, __oldWidget.mouseCursor));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -101,6 +103,6 @@ internal class _NullWidget__default_selection_style : StatelessWidget
                     + "when no enclosing default selection style is present in a BuildContext."
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

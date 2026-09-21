@@ -32,7 +32,7 @@ public static partial class Platform_viewLibrary
             return false;
         }
         return CollectionsLibrary.setEquals(_factoriesTypeSet(a), _factoriesTypeSet(b));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -41,7 +41,7 @@ public static partial class Platform_viewLibrary
     internal static HashSet<Type> _factoriesTypeSet<T>(HashSet<Factory<T>> factories)
     {
         return factories.map((factory) => factory.type).toSet();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -123,7 +123,7 @@ public class RenderAndroidView : PlatformViewRenderBox
     public override Size computeDryLayout(BoxConstraints constraints)
     {
         return constraints.biggest;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void performResize()
@@ -185,17 +185,13 @@ public class RenderAndroidView : PlatformViewRenderBox
             (
                 (
                     _currentTextureSize
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ).width > size.width
             )
             || (
                 (
                     _currentTextureSize
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ).height > size.height
             );
         if (isTextureLargerThanWidget && (!Equals(clipBehavior, Clip.none)))
@@ -236,7 +232,7 @@ public class RenderAndroidView : PlatformViewRenderBox
                         & (
                             _currentTextureSize
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ),
                     viewId: _viewController.viewId
@@ -250,14 +246,12 @@ public class RenderAndroidView : PlatformViewRenderBox
                     & (
                         _currentTextureSize
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ),
                 textureId: (
                     _viewController.textureId
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             )
         );
@@ -319,7 +313,7 @@ public abstract class RenderDarwinPlatformView<T> : RenderBox
     public override Size computeDryLayout(BoxConstraints constraints)
     {
         return constraints.biggest;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paint(PaintingContext context, Offset offset)
@@ -338,7 +332,7 @@ public abstract class RenderDarwinPlatformView<T> : RenderBox
         }
         result.add(new BoxHitTestEntry(this, (position)));
         return Equals(hitTestBehavior, PlatformViewHitTestBehavior.opaque);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool hitTestSelf(Offset position) =>
@@ -698,7 +692,7 @@ public class PlatformViewRenderBox : RenderBox, _PlatformViewGestureMixin__platf
     public override Size computeDryLayout(BoxConstraints constraints)
     {
         return constraints.biggest;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paint(PaintingContext context, Offset offset)
@@ -767,7 +761,7 @@ public class PlatformViewRenderBox : RenderBox, _PlatformViewGestureMixin__platf
         }
         result.add(new BoxHitTestEntry(this, position));
         return Equals(_hitTestBehavior, PlatformViewHitTestBehavior.opaque);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool hitTestSelf(Offset position) =>

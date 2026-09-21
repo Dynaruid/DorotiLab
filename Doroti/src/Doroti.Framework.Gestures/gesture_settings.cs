@@ -24,7 +24,7 @@ public class DeviceGestureSettings
                     (
                         physicalTouchSlopLocal
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) / view.devicePixelRatio
                 )
@@ -36,9 +36,7 @@ public class DeviceGestureSettings
             ? (
                 (
                     touchSlop
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) * 2L
             )
             : null;

@@ -407,10 +407,12 @@ internal class _DropdownMenuState__dropdown_menu<T> : State<DropdownMenu<T>>
                     TargetPlatform.macOS or TargetPlatform.linux => true,
                     TargetPlatform.windows => true,
                     _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                        throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                        throw new InvalidOperationException(
+                            "Switch expression did not handle the supplied value."
+                        ),
                 }
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool selectOnly => widget.selectOnly;
@@ -444,7 +446,7 @@ internal class _DropdownMenuState__dropdown_menu<T> : State<DropdownMenu<T>>
                     (int)(
                         currentHighlight
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 ].currentContext;
@@ -470,7 +472,7 @@ internal class _DropdownMenuState__dropdown_menu<T> : State<DropdownMenu<T>>
             return box.hasSize ? box.size.width : null;
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual List<DropdownMenuEntry<T>> filter(
@@ -480,7 +482,7 @@ internal class _DropdownMenuState__dropdown_menu<T> : State<DropdownMenu<T>>
     {
         string filterText = textEditingController.text.toLowerCase();
         return entries.where((entry) => entry.label.toLowerCase().contains(filterText)).ToList();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _shouldUpdateCurrentHighlight(List<DropdownMenuEntry<T>> entries)
@@ -495,9 +497,7 @@ internal class _DropdownMenuState__dropdown_menu<T> : State<DropdownMenu<T>>
             || (
                 (
                     currentHighlight
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) >= checked(entries.Count)
             )
         )
@@ -508,9 +508,7 @@ internal class _DropdownMenuState__dropdown_menu<T> : State<DropdownMenu<T>>
             entries[
                 (int)(
                     currentHighlight
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             ]
                 .label.toLowerCase()
@@ -520,7 +518,7 @@ internal class _DropdownMenuState__dropdown_menu<T> : State<DropdownMenu<T>>
             return false;
         }
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual long? search(
@@ -535,7 +533,7 @@ internal class _DropdownMenuState__dropdown_menu<T> : State<DropdownMenu<T>>
         }
         long index = entries.indexWhere((entry) => entry.label.toLowerCase().contains(searchText));
         return (index != -1L) ? index : null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual List<Widget> _buildButtons(
@@ -586,7 +584,7 @@ internal class _DropdownMenuState__dropdown_menu<T> : State<DropdownMenu<T>>
                         new HashSet<WidgetState> { WidgetState.focused }
                     );
                     throw new InvalidOperationException(
-                        "Dart control flow completed without a value."
+                        "Control flow completed without returning a value."
                     );
                 }
                 Color focusedForegroundColor = resolveFocusedColor(
@@ -630,7 +628,7 @@ internal class _DropdownMenuState__dropdown_menu<T> : State<DropdownMenu<T>>
                             maxWidth: (
                                 widget.width
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             ) - horizontalPadding
                         ),
@@ -719,7 +717,7 @@ internal class _DropdownMenuState__dropdown_menu<T> : State<DropdownMenu<T>>
                     (
                         currentHighlight
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) - 1L
                 ) % checked(filteredEntries.Count);
@@ -728,7 +726,7 @@ internal class _DropdownMenuState__dropdown_menu<T> : State<DropdownMenu<T>>
                     (int)(
                         currentHighlight
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 ].enabled
@@ -739,7 +737,7 @@ internal class _DropdownMenuState__dropdown_menu<T> : State<DropdownMenu<T>>
                         (
                             currentHighlight
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ) - 1L
                     ) % checked(filteredEntries.Count);
@@ -747,9 +745,7 @@ internal class _DropdownMenuState__dropdown_menu<T> : State<DropdownMenu<T>>
             string currentLabel = filteredEntries[
                 (int)(
                     currentHighlight
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             ].label;
             _effectiveTextEditingController.value = new TextEditingValue(
@@ -775,7 +771,7 @@ internal class _DropdownMenuState__dropdown_menu<T> : State<DropdownMenu<T>>
                     (
                         currentHighlight
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) + 1L
                 ) % checked(filteredEntries.Count);
@@ -784,7 +780,7 @@ internal class _DropdownMenuState__dropdown_menu<T> : State<DropdownMenu<T>>
                     (int)(
                         currentHighlight
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 ].enabled
@@ -795,7 +791,7 @@ internal class _DropdownMenuState__dropdown_menu<T> : State<DropdownMenu<T>>
                         (
                             currentHighlight
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ) + 1L
                     ) % checked(filteredEntries.Count);
@@ -803,9 +799,7 @@ internal class _DropdownMenuState__dropdown_menu<T> : State<DropdownMenu<T>>
             string currentLabel = filteredEntries[
                 (int)(
                     currentHighlight
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             ].label;
             _effectiveTextEditingController.value = new TextEditingValue(
@@ -855,9 +849,7 @@ internal class _DropdownMenuState__dropdown_menu<T> : State<DropdownMenu<T>>
             DropdownMenuEntry<T> entry = filteredEntries[
                 (int)(
                     currentHighlight
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             ];
             if (entry.enabled)
@@ -956,21 +948,21 @@ internal class _DropdownMenuState__dropdown_menu<T> : State<DropdownMenu<T>>
                                 (
                                     widget.width
                                     ?? throw new global::System.NullReferenceException(
-                                        "Dart null assertion failed."
+                                        "A required value was null."
                                     )
                                 ),
                                 effectiveMaximumWidth
                                     ?? (
                                         widget.width
                                         ?? throw new global::System.NullReferenceException(
-                                            "Dart null assertion failed."
+                                            "A required value was null."
                                         )
                                     )
                             ),
                             0.0
                         );
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 )
@@ -982,9 +974,7 @@ internal class _DropdownMenuState__dropdown_menu<T> : State<DropdownMenu<T>>
             {
                 double anchorWidth__45717__value46193 = (
                     anchorWidth
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 effectiveMenuStyle = effectiveMenuStyle.copyWith(
                     minimumSize: WidgetStateProperty.resolveWith<Size?>(
@@ -1001,7 +991,7 @@ internal class _DropdownMenuState__dropdown_menu<T> : State<DropdownMenu<T>>
                                 0.0
                             );
                             throw new InvalidOperationException(
-                                "Dart closure completed without a value."
+                                "Callback completed without returning a value."
                             );
                         }
                     )
@@ -1017,7 +1007,7 @@ internal class _DropdownMenuState__dropdown_menu<T> : State<DropdownMenu<T>>
                         (
                             widget.menuHeight
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     )
@@ -1033,7 +1023,9 @@ internal class _DropdownMenuState__dropdown_menu<T> : State<DropdownMenu<T>>
                 true => isButton ? SystemMouseCursors.click : SystemMouseCursors.text,
                 false => DartRuntimePrimitives.ConvertValue<SystemMouseCursor>(null),
                 _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                    throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
             }
         );
         Widget menuAnchor = new MenuAnchor(
@@ -1207,7 +1199,9 @@ internal class _DropdownMenuState__dropdown_menu<T> : State<DropdownMenu<T>>
                     shortcuts: selectOnly ? _selectOnlyShortcuts : _editableShortcuts,
                     child: body
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
         if (widget.expandedInsets is EdgeInsetsGeometry paddingLocal)
@@ -1311,7 +1305,7 @@ internal class _DropdownMenuState__dropdown_menu<T> : State<DropdownMenu<T>>
             prefixIcon: widget.leadingIcon,
             suffixIcon: _buildDefaultSuffixIcon(context, controller)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget? _buildDefaultSuffixIcon(
@@ -1344,7 +1338,7 @@ internal class _DropdownMenuState__dropdown_menu<T> : State<DropdownMenu<T>>
                 )
             )
             : null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1379,7 +1373,7 @@ internal class _DropdownMenuBody__dropdown_menu : MultiChildRenderObjectWidget
     public override RenderObject createRenderObject(BuildContext context)
     {
         return new _RenderDropdownMenuBody__dropdown_menu(width: width);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -1472,9 +1466,7 @@ public class _RenderDropdownMenuBody__dropdown_menu
                 width ?? maxWidthLocal,
                 (
                     maxHeightLocal
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             )
         );
@@ -1519,13 +1511,11 @@ public class _RenderDropdownMenuBody__dropdown_menu
                 width ?? maxWidthLocal,
                 (
                     maxHeightLocal
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicWidth(double height)
@@ -1558,7 +1548,7 @@ public class _RenderDropdownMenuBody__dropdown_menu
             child = childParentDataLocal.nextSibling;
         }
         return Math.Max((width), Dropdown_menuLibrary._kMinimumWidth);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicWidth(double height)
@@ -1591,7 +1581,7 @@ public class _RenderDropdownMenuBody__dropdown_menu
             child = childParentDataLocal.nextSibling;
         }
         return Math.Max((width), Dropdown_menuLibrary._kMinimumWidth);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicHeight(double width)
@@ -1603,7 +1593,7 @@ public class _RenderDropdownMenuBody__dropdown_menu
             widthLocal = Math.Max((widthLocal), child.getMinIntrinsicHeight(((widthLocal))));
         }
         return ((widthLocal));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicHeight(double width)
@@ -1615,7 +1605,7 @@ public class _RenderDropdownMenuBody__dropdown_menu
             widthLocal = Math.Max((widthLocal), child.getMaxIntrinsicHeight(((widthLocal))));
         }
         return ((widthLocal));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool hitTestChildren(BoxHitTestResult result, Offset position)
@@ -1633,7 +1623,9 @@ public class _RenderDropdownMenuBody__dropdown_menu
                         Equals(transformed, position - childParentData.offset)
                     );
                     return child.hitTest(result, position: transformed);
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
             if (isHit)
@@ -1642,7 +1634,7 @@ public class _RenderDropdownMenuBody__dropdown_menu
             }
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void visitChildrenForSemantics(Action<RenderObject> visitor)
@@ -1669,7 +1661,7 @@ public class _RenderDropdownMenuBody__dropdown_menu
             childParentData = ((_DropdownMenuBodyParentData__dropdown_menu?)child.parentData!)!;
         }
         return Equals(child, equals);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool _debugUltimateNextSiblingOf(RenderBox child, RenderBox? equals = null)
@@ -1682,7 +1674,7 @@ public class _RenderDropdownMenuBody__dropdown_menu
             childParentData = ((_DropdownMenuBodyParentData__dropdown_menu?)child.parentData!)!;
         }
         return Equals(child, equals);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual long childCount => _childCount;
@@ -1727,7 +1719,7 @@ public class _RenderDropdownMenuBody__dropdown_menu
             return true;
         });
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _insertIntoChildList(RenderBox child, RenderBox? after = null)
@@ -1959,7 +1951,7 @@ public class _RenderDropdownMenuBody__dropdown_menu
         DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         var childParentData = ((_DropdownMenuBodyParentData__dropdown_menu?)child.parentData!)!;
         return childParentData.previousSibling;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual RenderBox? childAfter(RenderBox child)
@@ -1967,7 +1959,7 @@ public class _RenderDropdownMenuBody__dropdown_menu
         DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         var childParentData = ((_DropdownMenuBodyParentData__dropdown_menu?)child.parentData!)!;
         return childParentData.nextSibling;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override List<DiagnosticsNode> debugDescribeChildren()
@@ -1994,7 +1986,7 @@ public class _RenderDropdownMenuBody__dropdown_menu
             }
         }
         return children;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double? defaultComputeDistanceToFirstActualBaseline(TextBaseline baseline)
@@ -2009,16 +2001,14 @@ public class _RenderDropdownMenuBody__dropdown_menu
             {
                 double result__138852__value138916 = (
                     result
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 return (result__138852__value138916) + childParentData.offset.dy;
             }
             child = childParentData.nextSibling;
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double? defaultComputeDistanceToHighestActualBaseline(TextBaseline baseline)
@@ -2036,7 +2026,7 @@ public class _RenderDropdownMenuBody__dropdown_menu
             child = childParentData.nextSibling;
         }
         return minBaseline.offset;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool defaultHitTestChildren(BoxHitTestResult result, Offset position)
@@ -2054,7 +2044,9 @@ public class _RenderDropdownMenuBody__dropdown_menu
                         Equals(transformed, position - childParentData.offset)
                     );
                     return child!.hitTest(result, position: transformed);
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
             if (isHit)
@@ -2064,7 +2056,7 @@ public class _RenderDropdownMenuBody__dropdown_menu
             child = childParentData.previousSibling;
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void defaultPaint(PaintingContext context, Offset offset)
@@ -2089,7 +2081,7 @@ public class _RenderDropdownMenuBody__dropdown_menu
             child = childParentData.nextSibling;
         }
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 

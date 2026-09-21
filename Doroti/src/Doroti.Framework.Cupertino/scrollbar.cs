@@ -110,9 +110,7 @@ internal class _CupertinoScrollbarState__scrollbar : RawScrollbarState<Cupertino
         {
             return (
                     widget.thickness
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
                 + (
                     _thicknessAnimationController.value
@@ -121,7 +119,7 @@ internal class _CupertinoScrollbarState__scrollbar : RawScrollbarState<Cupertino
                         - (
                             widget.thickness
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     )
@@ -137,7 +135,7 @@ internal class _CupertinoScrollbarState__scrollbar : RawScrollbarState<Cupertino
                     widget.radius,
                     widget.radiusWhileDragging,
                     _thicknessAnimationController.value
-                ) ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ) ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
     }
@@ -194,12 +192,14 @@ internal class _CupertinoScrollbarState__scrollbar : RawScrollbarState<Cupertino
         }
         _pressStartAxisPosition = (
             direction
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         ) switch
         {
             Axis.vertical => localPosition.dy,
             Axis.horizontal => localPosition.dx,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
     }
 
@@ -226,12 +226,14 @@ internal class _CupertinoScrollbarState__scrollbar : RawScrollbarState<Cupertino
         base.handleThumbPressEnd(localPosition, velocity);
         var (axisPosition, axisVelocity) = (
             direction
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         ) switch
         {
             Axis.horizontal => (localPosition.dx, velocity.pixelsPerSecond.dx),
             Axis.vertical => (localPosition.dy, velocity.pixelsPerSecond.dy),
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         if ((axisPosition != _pressStartAxisPosition) && (axisVelocity.abs() < 10L))
         {

@@ -34,7 +34,7 @@ public class SensitiveContentService
         ContentSensitivity contentSensitivity = Enum.GetValues<ContentSensitivity>().ToList()[
             (int)(
                 result
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         ];
         if (Equals(contentSensitivity, ContentSensitivity._unknown))
@@ -47,7 +47,7 @@ public class SensitiveContentService
             );
         }
         return contentSensitivity;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual async Future<bool> isSupported()
@@ -57,6 +57,6 @@ public class SensitiveContentService
             return false;
         }
         return (await sensitiveContentChannel.invokeMethod<bool>("SensitiveContent.isSupported"));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

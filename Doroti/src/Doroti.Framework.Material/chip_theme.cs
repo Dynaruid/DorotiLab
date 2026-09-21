@@ -20,13 +20,13 @@ public class ChipTheme : InheritedTheme
     {
         ChipTheme? inheritedTheme = context.dependOnInheritedWidgetOfExactType<ChipTheme>();
         return inheritedTheme?.data ?? Theme.of(context).chipTheme;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget wrap(BuildContext context, Widget child)
     {
         return new ChipTheme(data: data, child: child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget) =>
@@ -216,7 +216,7 @@ public class ChipThemeData : Diagnosticable
             avatarBoxConstraints: avatarBoxConstraints ?? this.avatarBoxConstraints,
             deleteIconBoxConstraints: deleteIconBoxConstraints ?? this.deleteIconBoxConstraints
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static ChipThemeData? lerp(ChipThemeData? a, ChipThemeData? b, double t)
@@ -274,7 +274,7 @@ public class ChipThemeData : Diagnosticable
                 t
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static BorderSide? _lerpSides(BorderSide? a, BorderSide? b, double t)
@@ -294,7 +294,7 @@ public class ChipThemeData : Diagnosticable
         a ??= new BorderSide(width: 0, color: b!.color.withAlpha(0L));
         b ??= new BorderSide(width: 0, color: a.color.withAlpha(0L));
         return (BorderSide?)BorderSide.lerp(a, b, t);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override int GetHashCode() =>
@@ -451,7 +451,7 @@ public class ChipThemeData : Diagnosticable
             return true;
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -460,6 +460,6 @@ public class ChipThemeData : Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

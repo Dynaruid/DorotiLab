@@ -167,7 +167,7 @@ internal class _SegmentButtonState__segmented_control<T>
             onKeyEvent: (node, @event) => KeyEventResult.ignored,
             child: widget.child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual RadioGroupRegistry<T>? registry
@@ -231,7 +231,7 @@ public class _SegmentedControlState__segmented_control<T>
                 }
             )
         )();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _updateColors()
@@ -289,7 +289,7 @@ public class _SegmentedControlState__segmented_control<T>
         _reverseBackgroundColorTween = new ColorTween(begin: _unselectedColor, end: _selectedColor);
         _textColorTween = new ColorTween(begin: _selectedColor, end: _unselectedColor);
         return changed;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _updateAnimationControllers()
@@ -464,7 +464,7 @@ public class _SegmentedControlState__segmented_control<T>
             return _unselectedColor;
         }
         return _selectedColor;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Color? getBackgroundColor(long index, T currentKey)
@@ -488,7 +488,7 @@ public class _SegmentedControlState__segmented_control<T>
             return _pressedColor;
         }
         return _unselectedColor;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -600,7 +600,7 @@ public class _SegmentedControlState__segmented_control<T>
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
@@ -631,7 +631,7 @@ public class _SegmentedControlState__segmented_control<T>
         )();
         _tickers!.Add(result);
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _removeTicker(_WidgetTicker__ticker_provider ticker)
@@ -722,7 +722,7 @@ internal class _SegmentedControlRenderWidget__segmented_control<T> : MultiChildR
             backgroundColors: backgroundColors,
             borderColor: borderColor
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -869,7 +869,7 @@ public class _RenderSegmentedControl__segmented_control<T>
             child = childParentData.nextSibling;
         }
         return minWidth * childCount;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicWidth(double height)
@@ -886,7 +886,7 @@ public class _RenderSegmentedControl__segmented_control<T>
             child = childParentData.nextSibling;
         }
         return maxWidth * childCount;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicHeight(double width)
@@ -903,7 +903,7 @@ public class _RenderSegmentedControl__segmented_control<T>
             child = childParentData.nextSibling;
         }
         return minHeight;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicHeight(double width)
@@ -920,13 +920,13 @@ public class _RenderSegmentedControl__segmented_control<T>
             child = childParentData.nextSibling;
         }
         return maxHeight;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? computeDistanceToActualBaseline(TextBaseline baseline)
     {
         return defaultComputeDistanceToHighestActualBaseline(baseline);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void setupParentData(RenderObject child)
@@ -1003,13 +1003,13 @@ public class _RenderSegmentedControl__segmented_control<T>
             child = childAfter(child);
         }
         return new Size(childWidth, maxHeight);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Size _computeOverallSizeFromChildSize(Size childSize)
     {
         return constraints.constrain(new Size(childSize.width * childCount, childSize.height));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
@@ -1024,14 +1024,14 @@ public class _RenderSegmentedControl__segmented_control<T>
             );
         }
         return baselineOffset.offset;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Size computeDryLayout(BoxConstraints constraints)
     {
         Size childSize = _calculateChildSize(constraints);
         return _computeOverallSizeFromChildSize(childSize);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void performLayout()
@@ -1138,7 +1138,7 @@ public class _RenderSegmentedControl__segmented_control<T>
                         );
                         return child!.hitTest(result, position: localOffset);
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 );
@@ -1146,7 +1146,7 @@ public class _RenderSegmentedControl__segmented_control<T>
             child = childParentData.previousSibling;
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool _debugUltimatePreviousSiblingOf(RenderBox child, RenderBox? equals = null)
@@ -1159,7 +1159,7 @@ public class _RenderSegmentedControl__segmented_control<T>
             childParentData = ((ContainerBoxParentData<RenderBox>?)child.parentData!)!;
         }
         return Equals(child, equals);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool _debugUltimateNextSiblingOf(RenderBox child, RenderBox? equals = null)
@@ -1172,7 +1172,7 @@ public class _RenderSegmentedControl__segmented_control<T>
             childParentData = ((ContainerBoxParentData<RenderBox>?)child.parentData!)!;
         }
         return Equals(child, equals);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual long childCount => _childCount;
@@ -1217,7 +1217,7 @@ public class _RenderSegmentedControl__segmented_control<T>
             return true;
         });
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _insertIntoChildList(RenderBox child, RenderBox? after = null)
@@ -1445,7 +1445,7 @@ public class _RenderSegmentedControl__segmented_control<T>
         DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         var childParentData = ((ContainerBoxParentData<RenderBox>?)child.parentData!)!;
         return childParentData.previousSibling;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual RenderBox? childAfter(RenderBox child)
@@ -1453,7 +1453,7 @@ public class _RenderSegmentedControl__segmented_control<T>
         DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         var childParentData = ((ContainerBoxParentData<RenderBox>?)child.parentData!)!;
         return childParentData.nextSibling;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override List<DiagnosticsNode> debugDescribeChildren()
@@ -1478,7 +1478,7 @@ public class _RenderSegmentedControl__segmented_control<T>
             }
         }
         return children;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double? defaultComputeDistanceToFirstActualBaseline(TextBaseline baseline)
@@ -1493,16 +1493,14 @@ public class _RenderSegmentedControl__segmented_control<T>
             {
                 double result__138852__value138916 = (
                     result
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 return (result__138852__value138916) + childParentData.offset.dy;
             }
             child = childParentData.nextSibling;
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double? defaultComputeDistanceToHighestActualBaseline(TextBaseline baseline)
@@ -1520,7 +1518,7 @@ public class _RenderSegmentedControl__segmented_control<T>
             child = childParentData.nextSibling;
         }
         return minBaseline.offset;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool defaultHitTestChildren(BoxHitTestResult result, Offset position)
@@ -1538,7 +1536,9 @@ public class _RenderSegmentedControl__segmented_control<T>
                         Equals(transformed, position - childParentData.offset)
                     );
                     return child!.hitTest(result, position: transformed);
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
             if (isHit)
@@ -1548,7 +1548,7 @@ public class _RenderSegmentedControl__segmented_control<T>
             child = childParentData.previousSibling;
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void defaultPaint(PaintingContext context, Offset offset)
@@ -1573,6 +1573,6 @@ public class _RenderSegmentedControl__segmented_control<T>
             child = childParentData.nextSibling;
         }
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

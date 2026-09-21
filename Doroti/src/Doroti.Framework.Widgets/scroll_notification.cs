@@ -83,7 +83,7 @@ public class ScrollUpdateNotification : ScrollNotification
         {
             long depth__value8172 = (
                 depth
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             _depth = (depth__value8172);
         }
@@ -186,6 +186,6 @@ public static partial class Scroll_notificationLibrary
     public static bool defaultScrollNotificationPredicate(ScrollNotification notification)
     {
         return notification.depth == 0L;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

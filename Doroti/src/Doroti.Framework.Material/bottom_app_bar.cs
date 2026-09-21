@@ -84,7 +84,7 @@ internal class _BottomAppBarState__bottom_app_bar : State<BottomAppBar>
             (widget.elevation ?? babTheme.elevation)
             ?? (
                 defaults.elevation
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         double? heightLocal = (widget.height ?? babTheme.height) ?? defaults.height;
         Color colorLocal = (widget.color ?? babTheme.color) ?? defaults.color!;
@@ -151,9 +151,7 @@ internal class _BottomAppBarClipper__bottom_app_bar : CustomClipper<Path>
             {
                 double bottomNavigationBarTop__9605__value9677 = (
                     bottomNavigationBarTopLocal
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 return ((bottomNavigationBarTop__9605__value9677));
             }
@@ -169,7 +167,7 @@ internal class _BottomAppBarClipper__bottom_app_bar : CustomClipper<Path>
             bottomNavigationBarTop * -1.0
         );
         return shape.getOuterPath(Offset.zero & size, button?.inflate(notchMargin));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool shouldReclip(CustomClipper<Path> oldClipper)
@@ -178,7 +176,7 @@ internal class _BottomAppBarClipper__bottom_app_bar : CustomClipper<Path>
         return (!Equals(__oldClipper.geometry, geometry))
             || (!Equals(__oldClipper.shape, shape))
             || (__oldClipper.notchMargin != notchMargin);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 

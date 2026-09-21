@@ -16,6 +16,6 @@ public class Spacer : StatelessWidget
     public override Widget build(BuildContext context)
     {
         return new Expanded(flex: flex, child: SizedBox.CreateShrink());
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

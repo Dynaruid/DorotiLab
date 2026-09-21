@@ -82,7 +82,7 @@ public static partial class Context_menuLibrary
             renderBoxContainer.localToGlobal(renderBoxContainer.paintBounds.topLeft),
             renderBoxContainer.localToGlobal(renderBoxContainer.paintBounds.bottomRight)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -242,7 +242,7 @@ internal class _CupertinoContextMenuState__context_menu
             Context_menuLibrary._kMinScaleFactor,
             Context_menuLibrary._kOpenScale
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static Widget _defaultPreviewBuilder(
@@ -260,7 +260,7 @@ internal class _CupertinoContextMenuState__context_menu
                 child: child
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _openContextMenu()
@@ -276,7 +276,7 @@ internal class _CupertinoContextMenuState__context_menu
             contextMenuLocation: _contextMenuLocation,
             previousChildRect: (
                 _decoyChildEndRect
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             scaleFactor: _scaleFactor,
             builder: (context, animation) =>
@@ -290,7 +290,9 @@ internal class _CupertinoContextMenuState__context_menu
                     return widget.builder(context, localAnimation);
                 }
                 return _defaultPreviewBuilder(context, animation, widget.child!);
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
         DartRuntimePrimitives.Ignore(Navigator.of(context, rootNavigator: true).push(_route!));
@@ -422,7 +424,9 @@ internal class _CupertinoContextMenuState__context_menu
                     builder: widget.builder,
                     child: widget.child
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
         Overlay.of(context, rootOverlay: true, debugRequiredFor: widget).insert(_lastOverlayEntry!);
@@ -447,7 +451,7 @@ internal class _CupertinoContextMenuState__context_menu
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void dispose()
@@ -520,7 +524,7 @@ internal class _CupertinoContextMenuState__context_menu
         )();
         _tickers!.Add(result);
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _removeTicker(_WidgetTicker__ticker_provider ticker)
@@ -668,11 +672,11 @@ internal class _DecoyChildState__context_menu
         return Positioned.CreateFromRect(
             rect: (
                 _rect.value
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             child: new Container(decoration: _boxDecoration.value, child: widget.child)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _buildBuilder(BuildContext context, Widget? child)
@@ -680,11 +684,11 @@ internal class _DecoyChildState__context_menu
         return Positioned.CreateFromRect(
             rect: (
                 _rect.value
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             child: widget.builder!(context, widget.controller)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void dispose()
@@ -740,7 +744,7 @@ internal class _DecoyChildState__context_menu
                 ),
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
@@ -771,7 +775,7 @@ internal class _DecoyChildState__context_menu
         )();
         _tickers!.Add(result);
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _removeTicker(_WidgetTicker__ticker_provider ticker)
@@ -912,7 +916,7 @@ internal class _ContextMenuRoute__context_menu<T> : PopupRoute<T>
             childRect.top + ((childRect.size.height - sizeScaled.height) / 2L)
         );
         return offsetScaled & sizeScaled;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static AlignmentDirectional getSheetAlignment(
@@ -927,9 +931,11 @@ internal class _ContextMenuRoute__context_menu<T> : PopupRoute<T>
             _ContextMenuLocation__context_menu.center => AlignmentDirectional.topCenter,
             _ContextMenuLocation__context_menu.right => AlignmentDirectional.topEnd,
             _ContextMenuLocation__context_menu.left => AlignmentDirectional.topStart,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static Rect _getSheetRectBegin(
@@ -964,9 +970,11 @@ internal class _ContextMenuRoute__context_menu<T> : PopupRoute<T>
                 return targetAlternate & sheetRect.size;
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _onDismiss(BuildContext context, double scale, double opacity)
@@ -991,7 +999,7 @@ internal class _ContextMenuRoute__context_menu<T> : PopupRoute<T>
                     (
                         _scale
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 );
@@ -1013,7 +1021,7 @@ internal class _ContextMenuRoute__context_menu<T> : PopupRoute<T>
         _sheetRectTween.end = sheetRect;
         _sheetScaleTween.begin = 0.0;
         _sheetScaleTween.end = (
-            _scale ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            _scale ?? throw new global::System.NullReferenceException("A required value was null.")
         );
         _rectTweenReverse.begin = childRectOriginal;
         _rectTweenReverse.end = childRect;
@@ -1029,7 +1037,7 @@ internal class _ContextMenuRoute__context_menu<T> : PopupRoute<T>
     {
         _updateTweenRects();
         return base.didPop(result);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool offstage
@@ -1056,7 +1064,7 @@ internal class _ContextMenuRoute__context_menu<T> : PopupRoute<T>
             debugLabel: "renderContextMenuRouteOffstage"
         );
         return base.didPush();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Animation<double> createAnimation()
@@ -1069,7 +1077,7 @@ internal class _ContextMenuRoute__context_menu<T> : PopupRoute<T>
         }
         _sheetOpacity = _opacityTween.animate(_curvedAnimation!);
         return animation;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget buildPage(
@@ -1079,7 +1087,7 @@ internal class _ContextMenuRoute__context_menu<T> : PopupRoute<T>
     )
     {
         return SizedBox.CreateShrink();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget buildTransitions(
@@ -1100,26 +1108,26 @@ internal class _ContextMenuRoute__context_menu<T> : PopupRoute<T>
                         ? (
                             _rectAnimatableReverse.evaluate(animation)
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                         : (
                             _rectAnimatable.evaluate(animation)
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         );
                     Rect sheetRect = reverseLocal
                         ? (
                             _sheetRectAnimatableReverse.evaluate(animation)
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                         : (
                             _sheetRectAnimatable.evaluate(animation)
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         );
                     double sheetScale = reverseLocal
@@ -1169,10 +1177,12 @@ internal class _ContextMenuRoute__context_menu<T> : PopupRoute<T>
                     childRect: _previousChildRect,
                     child: _builder!(context, animation)
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void dispose()
@@ -1247,7 +1257,7 @@ internal class _ContextMenuRouteStaticState__context_menu
     {
         double dyDirectional = (dy <= 0.0) ? dy : -dy;
         return Math.Max(_kMinScale, (maxDragDistance + dyDirectional) / maxDragDistance);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _onPanStart(Gestures.DragStartDetails details)
@@ -1405,7 +1415,7 @@ internal class _ContextMenuRouteStaticState__context_menu
             )
         );
         return childLocal;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _buildSheetAnimation(BuildContext context, Widget? child)
@@ -1418,7 +1428,7 @@ internal class _ContextMenuRouteStaticState__context_menu
             scale: _sheetScaleAnimation.value,
             child: new FadeTransition(opacity: _sheetOpacityAnimation, child: child)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _buildChildAnimation(BuildContext context, Widget? child)
@@ -1429,13 +1439,13 @@ internal class _ContextMenuRouteStaticState__context_menu
             _moveAnimation.value.dy
         );
         return Transform.CreateScale(key: widget.childGlobalKey, scale: _lastScale, child: child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _buildAnimation(BuildContext context, Widget? child)
     {
         return Transform.CreateTranslate(offset: _moveAnimation.value, child: child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void initState()
@@ -1528,7 +1538,7 @@ internal class _ContextMenuRouteStaticState__context_menu
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
@@ -1559,7 +1569,7 @@ internal class _ContextMenuRouteStaticState__context_menu
         )();
         _tickers!.Add(result);
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _removeTicker(_WidgetTicker__ticker_provider ticker)
@@ -1726,7 +1736,7 @@ internal class _ContextMenuSheetState__context_menu : State<_ContextMenuSheet__c
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1782,7 +1792,7 @@ internal class _ContextMenuAlignedChildren__context_menu : StatelessWidget
                 ),
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1819,7 +1829,9 @@ internal class _ContextMenuAlignedChildrenDelegate__context_menu : MultiChildLay
             Orientation.portrait => availableWidth,
             Orientation.landscape => availableWidth
                 - _ContextMenuSheetState__context_menu._kMenuWidth,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         DartRuntimePrimitives.Assert(() => availableWidthForChild >= 0.0);
         DartRuntimePrimitives.Assert(() => availableHeightForChild >= 0.0);
@@ -1835,7 +1847,9 @@ internal class _ContextMenuAlignedChildrenDelegate__context_menu : MultiChildLay
             Orientation.portrait => availableHeightForChild
                 - (childSize.height + _ContextMenuRouteStaticState__context_menu._kPadding),
             Orientation.landscape => availableHeightForChild,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         Size menuSize = layoutChild(
             _ContextMenuChild__context_menu.menuSheet,
@@ -1866,7 +1880,9 @@ internal class _ContextMenuAlignedChildrenDelegate__context_menu : MultiChildLay
                         - (menuSize.width / 2L),
                     _ContextMenuLocation__context_menu.left => 0.0,
                     _ContextMenuLocation__context_menu.right => childSize.width - menuSize.width,
-                    _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    _ => throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
                 };
                 secondChildOffset = new Offset(
                     secondChildDx,
@@ -1928,6 +1944,6 @@ internal class _ContextMenuAlignedChildrenDelegate__context_menu : MultiChildLay
             || (!Equals(__oldDelegate.screenBounds, screenBounds))
             || (!Equals(__oldDelegate.orientation, orientation))
             || (!Equals(__oldDelegate.contextMenuLocation, contextMenuLocation));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

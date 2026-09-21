@@ -49,7 +49,7 @@ public class CarouselViewThemeData : Diagnosticable
             padding: padding ?? this.padding,
             itemClipBehavior: itemClipBehavior ?? this.itemClipBehavior
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static CarouselViewThemeData lerp(
@@ -70,7 +70,7 @@ public class CarouselViewThemeData : Diagnosticable
             padding: EdgeInsets.lerp(a?.padding, b?.padding, t),
             itemClipBehavior: (t < 0.5) ? a?.itemClipBehavior : b?.itemClipBehavior
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override int GetHashCode() =>
@@ -143,7 +143,7 @@ public class CarouselViewThemeData : Diagnosticable
             return true;
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -152,7 +152,7 @@ public class CarouselViewThemeData : Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -175,13 +175,13 @@ public class CarouselViewTheme : InheritedTheme
         CarouselViewTheme? inheritedTheme =
             context.dependOnInheritedWidgetOfExactType<CarouselViewTheme>();
         return inheritedTheme?.data ?? Theme.of(context).carouselViewTheme;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget wrap(BuildContext context, Widget child)
     {
         return new CarouselViewTheme(data: data, child: child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget) =>

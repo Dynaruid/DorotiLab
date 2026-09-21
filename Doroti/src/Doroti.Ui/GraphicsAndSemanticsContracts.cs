@@ -1334,7 +1334,7 @@ public class Canvas
 
     public virtual object? noSuchMethod(Invocation invocation) =>
         throw new MissingMethodException(
-            $"Canvas does not implement the requested Dart invocation: {invocation}."
+            $"Canvas does not implement the requested invocation: {invocation}."
         );
 
     public void save()

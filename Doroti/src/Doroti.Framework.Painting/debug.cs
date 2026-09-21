@@ -42,7 +42,7 @@ public class ImageSizeInfo
     internal virtual long _sizeToBytes(Size size)
     {
         return (size.width * size.height * 4L * (4L / 3L)).toInt();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DartMap<string, object?> toJson()
@@ -63,7 +63,7 @@ public class ImageSizeInfo
             ["displaySizeInBytes"] = displaySizeInBytes,
             ["decodedSizeInBytes"] = decodedSizeInBytes,
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool Equals(object? other)
@@ -133,7 +133,7 @@ public static partial class DebugLibrary
             return true;
         });
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -194,6 +194,6 @@ public static partial class DebugLibrary
             return true;
         });
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

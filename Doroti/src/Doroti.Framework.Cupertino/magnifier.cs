@@ -215,7 +215,7 @@ internal class _CupertinoTextMagnifierState__magnifier
                 borderSide: new BorderSide(color: themeData.primaryColor, width: 2.0)
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
@@ -254,7 +254,7 @@ internal class _CupertinoTextMagnifierState__magnifier
         _updateTickerModeNotifier();
         _updateTicker();
         return _ticker!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void activate()
@@ -377,14 +377,12 @@ public class CupertinoMagnifier : StatelessWidget
                     new Offset(0, -kMagnifierAboveFocalPoint),
                     Offset.zero,
                     inOutAnimation?.value ?? 1
-                ) ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ) ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             child: new RawMagnifier(
                 size: (
                     size
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 focalPointOffset: focalPointOffsetLocal,
                 decoration: new MagnifierDecoration(
@@ -396,6 +394,6 @@ public class CupertinoMagnifier : StatelessWidget
                 magnificationScale: magnificationScale
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

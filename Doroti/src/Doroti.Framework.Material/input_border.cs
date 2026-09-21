@@ -86,7 +86,7 @@ internal class _NoInputBorder__input_border : InputBorder
                 }
             )
         )();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Path getOuterPath(Rect rect, TextDirection? textDirection = null)
@@ -101,7 +101,7 @@ internal class _NoInputBorder__input_border : InputBorder
                 }
             )
         )();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paintInterior(
@@ -161,7 +161,7 @@ public class UnderlineInputBorder : InputBorder
             borderSide: borderSide ?? this.borderSide,
             borderRadius: borderRadius ?? this.borderRadius
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override EdgeInsetsGeometry dimensions
@@ -172,7 +172,7 @@ public class UnderlineInputBorder : InputBorder
     public override UnderlineInputBorder scale(double t)
     {
         return new UnderlineInputBorder(borderSide: borderSide.scale(t));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Path getInnerPath(Rect rect, TextDirection? textDirection = null)
@@ -194,7 +194,7 @@ public class UnderlineInputBorder : InputBorder
                 }
             )
         )();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Path getOuterPath(Rect rect, TextDirection? textDirection = null)
@@ -209,7 +209,7 @@ public class UnderlineInputBorder : InputBorder
                 }
             )
         )();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paintInterior(
@@ -236,7 +236,7 @@ public class UnderlineInputBorder : InputBorder
                 );
         }
         return base.lerpFrom(a, t);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override ShapeBorder? lerpTo(ShapeBorder? b, double t)
@@ -251,7 +251,7 @@ public class UnderlineInputBorder : InputBorder
                 );
         }
         return base.lerpTo(b, t);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paint(
@@ -353,7 +353,7 @@ public class OutlineInputBorder : InputBorder
             && (borderRadius.bottomLeft.x == borderRadius.bottomLeft.y)
             && (borderRadius.topRight.x == borderRadius.topRight.y)
             && (borderRadius.bottomRight.x == borderRadius.bottomRight.y);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool isOutline => true;
@@ -370,7 +370,7 @@ public class OutlineInputBorder : InputBorder
             borderRadius: borderRadius ?? this.borderRadius,
             gapPadding: gapPadding ?? this.gapPadding
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override EdgeInsetsGeometry dimensions
@@ -385,7 +385,7 @@ public class OutlineInputBorder : InputBorder
             borderRadius: borderRadius.op_Multiply(t),
             gapPadding: gapPadding * t
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override ShapeBorder? lerpFrom(ShapeBorder? a, double t)
@@ -402,7 +402,7 @@ public class OutlineInputBorder : InputBorder
                 );
         }
         return base.lerpFrom(a, t);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override ShapeBorder? lerpTo(ShapeBorder? b, double t)
@@ -419,7 +419,7 @@ public class OutlineInputBorder : InputBorder
                 );
         }
         return base.lerpTo(b, t);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Path getInnerPath(Rect rect, TextDirection? textDirection = null)
@@ -439,7 +439,7 @@ public class OutlineInputBorder : InputBorder
                 }
             )
         )();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Path getOuterPath(Rect rect, TextDirection? textDirection = null)
@@ -454,7 +454,7 @@ public class OutlineInputBorder : InputBorder
                 }
             )
         )();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paintInterior(
@@ -557,7 +557,7 @@ public class OutlineInputBorder : InputBorder
         }
         path.lineTo(scaledRRect.left, scaledRRect.top + scaledRRect.tlRadiusY);
         return path;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paint(
@@ -584,29 +584,27 @@ public class OutlineInputBorder : InputBorder
         {
             double extent = (
                 Dart_uiLibrary.lerpDouble(0.0, gapExtent + (gapPadding * 2.0), gapPercentage)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             double start = (
                 textDirection
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ) switch
             {
                 TextDirection.rtl => (
                     gapStart
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
                     + gapPadding
                     - extent,
                 TextDirection.ltr => (
                     gapStart
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) - gapPadding,
                 _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                    throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
             };
             Path path = _gapBorderPath(canvas, center, outer.width, Math.Max(0.0, start), extent);
             canvas.drawPath(path, paintLocal);
@@ -672,7 +670,7 @@ public class ShapedInputBorder : InputBorder
             shape: shape ?? this.shape,
             gapPadding: gapPadding ?? this.gapPadding
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override EdgeInsetsGeometry dimensions
@@ -687,7 +685,7 @@ public class ShapedInputBorder : InputBorder
             shape: shape.scale(t),
             gapPadding: gapPadding * t
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override ShapeBorder? lerpFrom(ShapeBorder? a, double t)
@@ -703,7 +701,7 @@ public class ShapedInputBorder : InputBorder
                 );
         }
         return base.lerpFrom(a, t);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override ShapeBorder? lerpTo(ShapeBorder? b, double t)
@@ -719,19 +717,19 @@ public class ShapedInputBorder : InputBorder
                 );
         }
         return base.lerpTo(b, t);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Path getInnerPath(Rect rect, TextDirection? textDirection = null)
     {
         return shape.getInnerPath(rect.deflate(borderSide.width), textDirection: textDirection);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Path getOuterPath(Rect rect, TextDirection? textDirection = null)
     {
         return shape.getOuterPath(rect, textDirection: textDirection);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paintInterior(
@@ -785,7 +783,7 @@ public class ShapedInputBorder : InputBorder
             )
         )();
         return Dart_uiLibrary.Path.combine(PathOperation.difference, outerPath, gapRect);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paint(
@@ -825,29 +823,27 @@ public class ShapedInputBorder : InputBorder
         {
             double extent = (
                 Dart_uiLibrary.lerpDouble(0.0, gapExtent + (gapPadding * 2.0), gapPercentage)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             double start = (
                 textDirection
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ) switch
             {
                 TextDirection.rtl => (
                     gapStart
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
                     + gapPadding
                     - extent,
                 TextDirection.ltr => (
                     gapStart
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) - gapPadding,
                 _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                    throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
             };
             Path path = _gapBorderPath(
                 deflatedRect,
@@ -855,9 +851,7 @@ public class ShapedInputBorder : InputBorder
                 extent,
                 textDirection: (
                     textDirection
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             );
             canvas.drawPath(path, paintLocal);

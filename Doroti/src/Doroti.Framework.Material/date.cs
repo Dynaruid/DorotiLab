@@ -44,7 +44,7 @@ public abstract class CalendarDelegate<T>
     public virtual DateTimeRange<T> datesOnly(DateTimeRange<T> range)
     {
         return new DateTimeRange<T>(start: dateOnly(range.start), end: dateOnly(range.end));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool isSameDay(T? dateA, T? dateB)
@@ -55,7 +55,7 @@ public abstract class CalendarDelegate<T>
         }
 
         return getDateParts(dateA.Value) == getDateParts(dateB.Value);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool isSameMonth(T? dateA, T? dateB)
@@ -68,7 +68,7 @@ public abstract class CalendarDelegate<T>
         var a = getDateParts(dateA.Value);
         var b = getDateParts(dateB.Value);
         return a.Year == b.Year && a.Month == b.Month;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public abstract long monthDelta(T startDate, T endDate);
@@ -83,7 +83,7 @@ public abstract class CalendarDelegate<T>
     public virtual string formatYear(long year, MaterialLocalizations localizations)
     {
         return localizations.formatYear(DartRuntimePrimitives.CreateDateTime(year));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public abstract string formatMediumDate(T date, MaterialLocalizations localizations);
@@ -109,7 +109,7 @@ public class GregorianCalendarDelegate : CalendarDelegate<DateTime>
     public override DateTime addMonthsToMonthDate(DateTime monthDate, long monthsToAdd)
     {
         return DateUtils.addMonthsToMonthDate(monthDate, monthsToAdd);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override DateTime addDaysToDate(DateTime date, long days) =>
@@ -118,7 +118,7 @@ public class GregorianCalendarDelegate : CalendarDelegate<DateTime>
     public override long firstDayOffset(long year, long month, MaterialLocalizations localizations)
     {
         return DateUtils.firstDayOffset(year, month, localizations);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override long getDaysInMonth(long year, long month) =>
@@ -133,37 +133,37 @@ public class GregorianCalendarDelegate : CalendarDelegate<DateTime>
     public override string formatMonthYear(DateTime date, MaterialLocalizations localizations)
     {
         return localizations.formatMonthYear(date);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string formatMediumDate(DateTime date, MaterialLocalizations localizations)
     {
         return localizations.formatMediumDate(date);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string formatShortMonthDay(DateTime date, MaterialLocalizations localizations)
     {
         return localizations.formatShortMonthDay(date);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string formatShortDate(DateTime date, MaterialLocalizations localizations)
     {
         return localizations.formatShortDate(date);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string formatFullDate(DateTime date, MaterialLocalizations localizations)
     {
         return localizations.formatFullDate(date);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string formatCompactDate(DateTime date, MaterialLocalizations localizations)
     {
         return localizations.formatCompactDate(date);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override DateTime? parseCompactDate(
@@ -172,13 +172,13 @@ public class GregorianCalendarDelegate : CalendarDelegate<DateTime>
     )
     {
         return localizations.parseCompactDate(inputString);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string dateHelpText(MaterialLocalizations localizations)
     {
         return localizations.dateHelpText;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -187,13 +187,13 @@ public abstract class DateUtils
     public static DateTime dateOnly(DateTime date)
     {
         return DartRuntimePrimitives.CreateDateTime(date.Year, date.Month, date.Day);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static DateTimeRange<DateTime> datesOnly(DateTimeRange<DateTime> range)
     {
         return new DateTimeRange<DateTime>(start: dateOnly(range.start), end: dateOnly(range.end));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static bool isSameDay(DateTime? dateA, DateTime? dateB)
@@ -201,31 +201,31 @@ public abstract class DateUtils
         return (dateA?.Year == dateB?.Year)
             && (dateA?.Month == dateB?.Month)
             && (dateA?.Day == dateB?.Day);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static bool isSameMonth(DateTime? dateA, DateTime? dateB)
     {
         return (dateA?.Year == dateB?.Year) && (dateA?.Month == dateB?.Month);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static long monthDelta(DateTime startDate, DateTime endDate)
     {
         return ((endDate.Year - startDate.Year) * 12L) + endDate.Month - startDate.Month;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static DateTime addMonthsToMonthDate(DateTime monthDate, long monthsToAdd)
     {
         return DartRuntimePrimitives.CreateDateTime(monthDate.Year, monthDate.Month + monthsToAdd);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static DateTime addDaysToDate(DateTime date, long days)
     {
         return DartRuntimePrimitives.CreateDateTime(date.Year, date.Month, date.Day + days);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static long firstDayOffset(long year, long month, MaterialLocalizations localizations)
@@ -235,7 +235,7 @@ public abstract class DateUtils
         long firstDayOfWeekIndexLocal = localizations.firstDayOfWeekIndex;
         firstDayOfWeekIndexLocal = (firstDayOfWeekIndexLocal + 6) % 7;
         return (weekdayFromMonday - firstDayOfWeekIndexLocal + 7) % 7;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static long getDaysInMonth(long year, long month)
@@ -261,7 +261,7 @@ public abstract class DateUtils
             31L,
         };
         return daysInMonth[(int)(month - 1L)];
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 

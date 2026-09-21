@@ -121,13 +121,13 @@ public class TextStyle : Diagnosticable
                     (
                         height
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                     == (
                         height
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
@@ -233,7 +233,7 @@ public class TextStyle : Diagnosticable
             package: package ?? _package,
             overflow: overflow ?? this.overflow
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual TextStyle apply(
@@ -305,7 +305,7 @@ public class TextStyle : Diagnosticable
                         (
                             fontSize
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ) * fontSizeFactor
                     ) + fontSizeDelta
@@ -327,7 +327,7 @@ public class TextStyle : Diagnosticable
                         (
                             letterSpacing
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ) * letterSpacingFactor
                     ) + letterSpacingDelta
@@ -339,7 +339,7 @@ public class TextStyle : Diagnosticable
                         (
                             wordSpacing
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ) * wordSpacingFactor
                     ) + wordSpacingDelta
@@ -352,7 +352,7 @@ public class TextStyle : Diagnosticable
                         (
                             height
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ) * heightFactor
                     ) + heightDelta
@@ -374,7 +374,7 @@ public class TextStyle : Diagnosticable
                         (
                             decorationThickness
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ) * decorationThicknessFactor
                     ) + decorationThicknessDelta
@@ -383,7 +383,7 @@ public class TextStyle : Diagnosticable
             package: package ?? _package,
             debugLabel: modifiedDebugLabel
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual TextStyle merge(TextStyle? other)
@@ -433,7 +433,7 @@ public class TextStyle : Diagnosticable
             package: other._package,
             overflow: other.overflow
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static TextStyle? lerp(TextStyle? a, TextStyle? b, double t)
@@ -687,7 +687,7 @@ public class TextStyle : Diagnosticable
             package: (t < 0.5) ? a._package : b._package,
             overflow: (t < 0.5) ? a.overflow : b.overflow
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Ui.TextStyle getTextStyle(
@@ -743,7 +743,7 @@ public class TextStyle : Diagnosticable
             fontFeatures: fontFeatures,
             fontVariations: fontVariations
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual ParagraphStyle getParagraphStyle(
@@ -768,9 +768,7 @@ public class TextStyle : Diagnosticable
             || (
                 (
                     maxLines
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) > 0L
             )
         );
@@ -779,9 +777,7 @@ public class TextStyle : Diagnosticable
             || !double.IsNaN(
                 (
                     height
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             )
         );
@@ -795,7 +791,7 @@ public class TextStyle : Diagnosticable
                         leadingDistribution: (
                             leadingDistributionLocal
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     )
@@ -832,7 +828,7 @@ public class TextStyle : Diagnosticable
             ellipsis: ellipsis,
             locale: locale
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual RenderComparison compareTo(TextStyle other)
@@ -876,7 +872,7 @@ public class TextStyle : Diagnosticable
             return RenderComparison.paint;
         }
         return RenderComparison.identical;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool Equals(object? other)
@@ -1038,15 +1034,13 @@ public class TextStyle : Diagnosticable
             {
                 TextDecorationStyle decorationStyle__value66964 = (
                     decorationStyle
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 decorationDescription.Add(
                     (
                         decorationStyle
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ).ToString()
                 );
@@ -1191,6 +1185,6 @@ public static partial class Text_styleLibrary
             }
         }
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

@@ -352,7 +352,9 @@ internal class _CupertinoSwitchState__switch
                         return widget.thumbColor;
                     }
                     return widget.inactiveThumbColor;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
         }
@@ -369,7 +371,9 @@ internal class _CupertinoSwitchState__switch
                         return widget.activeTrackColor;
                     }
                     return widget.inactiveTrackColor;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
         }
@@ -385,7 +389,9 @@ internal class _CupertinoSwitchState__switch
                 return Foundation.ConstantsLibrary.kIsWeb
                     ? SystemMouseCursors.click
                     : MouseCursor.defer;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
 
@@ -397,7 +403,7 @@ internal class _CupertinoSwitchState__switch
             return WidgetStateProperty.resolveAs<Color?>(trackColor__as19180, states);
         }
         return trackColor;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Color? _resolveThumbColor(Color? thumbColor, HashSet<WidgetState> states)
@@ -408,7 +414,7 @@ internal class _CupertinoSwitchState__switch
             return WidgetStateProperty.resolveAs<Color?>(thumbColor__as19402, states);
         }
         return thumbColor;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual double _trackInnerLength
@@ -443,7 +449,9 @@ internal class _CupertinoSwitchState__switch
                 {
                     TextDirection.rtl => -delta,
                     TextDirection.ltr => delta,
-                    _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    _ => throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
                 };
             }
             _dragValue = value;
@@ -457,15 +465,15 @@ internal class _CupertinoSwitchState__switch
             double delta =
                 (
                     details.primaryDelta
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) / SwitchLibrary._kTrackWidth;
             _dragDelta += Directionality.of(context) switch
             {
                 TextDirection.rtl => -delta,
                 TextDirection.ltr => delta,
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             };
             var valueChangedWhileDragging = widget.value != _dragValue;
             double threshold = valueChangedWhileDragging
@@ -510,10 +518,7 @@ internal class _CupertinoSwitchState__switch
         DartRuntimePrimitives.Assert(() => value is not null);
         DartRuntimePrimitives.Assert(() => widget.onChanged is not null);
         widget.onChanged?.Invoke(
-            (
-                value
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
-            )
+            (value ?? throw new global::System.NullReferenceException("A required value was null."))
         );
         _emitVibration();
     }
@@ -736,7 +741,7 @@ internal class _CupertinoSwitchState__switch
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
@@ -767,7 +772,7 @@ internal class _CupertinoSwitchState__switch
         )();
         _tickers!.Add(result);
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _removeTicker(_WidgetTicker__ticker_provider ticker)
@@ -999,7 +1004,7 @@ internal class _CupertinoSwitchState__switch
             mouseCursor: mouseCursor,
             child: new CustomPaint(size: size, painter: painter)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Widget buildToggleableWithChild(
@@ -1028,7 +1033,7 @@ internal class _CupertinoSwitchState__switch
                 child: new Widgets.Semantics(enabled: isInteractive, child: child)
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1354,7 +1359,7 @@ internal class _SwitchPainter__switch : ToggleablePainter
         get =>
             (
                 _textDirection
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         set
         {
@@ -1386,7 +1391,7 @@ internal class _SwitchPainter__switch : ToggleablePainter
         get =>
             (
                 _isInteractive
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         set
         {
@@ -1404,7 +1409,7 @@ internal class _SwitchPainter__switch : ToggleablePainter
         get =>
             (
                 _trackInnerLength
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         set
         {
@@ -1445,7 +1450,7 @@ internal class _SwitchPainter__switch : ToggleablePainter
                 : new DecorationImage(image: image, onError: errorListener),
             shape: new StadiumBorder()
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _handleDecorationChanged()
@@ -1463,7 +1468,9 @@ internal class _SwitchPainter__switch : ToggleablePainter
         {
             TextDirection.rtl => 1.0 - currentValue,
             TextDirection.ltr => currentValue,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         if (Equals(reaction.status, AnimationStatus.reverse) && !_stopPressAnimation)
         {
@@ -1478,9 +1485,7 @@ internal class _SwitchPainter__switch : ToggleablePainter
             (SwitchLibrary._kThumbRadius * 2L)
                 + (
                     _pressedThumbExtension
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
             SwitchLibrary._kThumbRadius * 2L
         );
@@ -1582,7 +1587,7 @@ internal class _SwitchPainter__switch : ToggleablePainter
         {
             var (onLabelColor, offLabelColor) = (
                 onOffLabelColors
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             double leftLabelOpacity = visualPosition * (1.0 - currentReactionValue);
             double rightLabelOpacity = (1.0 - visualPosition) * (1.0 - currentReactionValue);
@@ -1590,7 +1595,9 @@ internal class _SwitchPainter__switch : ToggleablePainter
             {
                 TextDirection.ltr => (leftLabelOpacity, rightLabelOpacity),
                 TextDirection.rtl => (rightLabelOpacity, leftLabelOpacity),
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             };
             var (onLabelOffset, offLabelOffset) = textDirection switch
             {
@@ -1602,7 +1609,9 @@ internal class _SwitchPainter__switch : ToggleablePainter
                     trackRect.centerRight.translate(-SwitchLibrary._kOnLabelPaddingHorizontal, 0),
                     trackRect.centerLeft.translate(SwitchLibrary._kOffLabelPaddingHorizontal, 0)
                 ),
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             };
             var onLabelRect = Rect.fromCenter(
                 center: onLabelOffset,
@@ -1652,7 +1661,7 @@ internal class _SwitchPainter__switch : ToggleablePainter
         double horizontalOffset = (canvasSize.width - SwitchLibrary._kTrackWidth) / 2.0;
         double verticalOffset = (canvasSize.height - SwitchLibrary._kTrackHeight) / 2.0;
         return new Offset(horizontalOffset, verticalOffset);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Offset _computeThumbPaintOffset(
@@ -1669,9 +1678,7 @@ internal class _SwitchPainter__switch : ToggleablePainter
                 trackInnerLength
                 - (
                     _pressedThumbExtension
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             );
         double thumbHorizontalOffset =
@@ -1680,16 +1687,14 @@ internal class _SwitchPainter__switch : ToggleablePainter
             + (
                 (
                     _pressedThumbExtension
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) / 2L
             )
             - (thumbSize.width / 2L)
             + horizontalProgress;
         double thumbVerticalOffset = trackPaintOffset.dy - additionalThumbRadius;
         return new Offset(thumbHorizontalOffset, thumbVerticalOffset);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _paintTrackWith(
@@ -1815,7 +1820,7 @@ internal class _SwitchPainter__switch : ToggleablePainter
                                                 (
                                                     iconFill
                                                     ?? throw new global::System.NullReferenceException(
-                                                        "Dart null assertion failed."
+                                                        "A required value was null."
                                                     )
                                                 )
                                             )
@@ -1829,7 +1834,7 @@ internal class _SwitchPainter__switch : ToggleablePainter
                                                 (
                                                     iconWeight
                                                     ?? throw new global::System.NullReferenceException(
-                                                        "Dart null assertion failed."
+                                                        "A required value was null."
                                                     )
                                                 )
                                             )
@@ -1843,7 +1848,7 @@ internal class _SwitchPainter__switch : ToggleablePainter
                                                 (
                                                     iconGrade
                                                     ?? throw new global::System.NullReferenceException(
-                                                        "Dart null assertion failed."
+                                                        "A required value was null."
                                                     )
                                                 )
                                             )
@@ -1857,7 +1862,7 @@ internal class _SwitchPainter__switch : ToggleablePainter
                                                 (
                                                     iconOpticalSize
                                                     ?? throw new global::System.NullReferenceException(
-                                                        "Dart null assertion failed."
+                                                        "A required value was null."
                                                     )
                                                 )
                                             )

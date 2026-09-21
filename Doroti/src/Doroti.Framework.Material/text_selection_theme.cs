@@ -34,7 +34,7 @@ public class TextSelectionThemeData : Diagnosticable
             selectionColor: selectionColor ?? this.selectionColor,
             selectionHandleColor: selectionHandleColor ?? this.selectionHandleColor
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static TextSelectionThemeData? lerp(
@@ -56,7 +56,7 @@ public class TextSelectionThemeData : Diagnosticable
                 t
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override int GetHashCode() =>
@@ -110,7 +110,7 @@ public class TextSelectionThemeData : Diagnosticable
             return true;
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -119,7 +119,7 @@ public class TextSelectionThemeData : Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -156,13 +156,13 @@ public class TextSelectionTheme : InheritedTheme
         TextSelectionTheme? selectionTheme =
             context.dependOnInheritedWidgetOfExactType<TextSelectionTheme>();
         return selectionTheme?.data ?? Theme.of(context).textSelectionTheme;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget wrap(BuildContext context, Widget child)
     {
         return new TextSelectionTheme(data: data, child: child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget) =>

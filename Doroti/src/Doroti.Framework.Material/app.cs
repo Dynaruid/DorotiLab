@@ -383,10 +383,12 @@ public class MaterialApp : StatefulWidget
             createRectTween: (begin, end) =>
             {
                 return new MaterialRectArcTween(begin: begin, end: end);
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -426,11 +428,13 @@ public class MaterialScrollBehavior : ScrollBehavior
                         return child;
                     }
                     default:
-                        throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                        throw new InvalidOperationException(
+                            "Switch expression did not handle the supplied value."
+                        );
                 }
             }
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget buildOverscrollIndicator(
@@ -466,7 +470,9 @@ public class MaterialScrollBehavior : ScrollBehavior
                         break;
                     }
                     default:
-                        throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                        throw new InvalidOperationException(
+                            "Switch expression did not handle the supplied value."
+                        );
                 }
                 break;
             }
@@ -541,7 +547,7 @@ internal class _MaterialAppState__app : State<MaterialApp>
             isDarkTheme: _isDarkTheme(context),
             buttonKey: key
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _moveExitWidgetSelectionButtonBuilder(
@@ -557,7 +563,7 @@ internal class _MaterialAppState__app : State<MaterialApp>
             icon: usesDefaultAlignment ? Icons.arrow_right : Icons.arrow_left,
             isDarkTheme: _isDarkTheme(context)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _tapBehaviorButtonBuilder(
@@ -574,7 +580,7 @@ internal class _MaterialAppState__app : State<MaterialApp>
             isDarkTheme: _isDarkTheme(context),
             toggledOn: selectionOnTapEnabled
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _isDarkTheme(BuildContext context)
@@ -584,7 +590,7 @@ internal class _MaterialAppState__app : State<MaterialApp>
                 Equals(widget.themeMode, ThemeMode.system)
                 && Equals(MediaQuery.platformBrightnessOf(context), Brightness.dark)
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual ThemeData _themeBuilder(BuildContext context)
@@ -616,7 +622,7 @@ internal class _MaterialAppState__app : State<MaterialApp>
                 : SystemUiOverlayStyle.dark
         );
         return themeLocal;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _materialBuilder(BuildContext context, Widget? child)
@@ -635,7 +641,7 @@ internal class _MaterialAppState__app : State<MaterialApp>
                     {
                         return widget.builder!(context, child);
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 )
@@ -690,7 +696,7 @@ internal class _MaterialAppState__app : State<MaterialApp>
             );
         }
         return childWidget;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _buildWidgetApp(BuildContext context)
@@ -734,7 +740,9 @@ internal class _MaterialAppState__app : State<MaterialApp>
             pageRouteBuilder: (settings, builder) =>
             {
                 return new MaterialPageRoute<object>(settings: settings, builder: builder);
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             home: widget.home,
             routes: widget.routes!,
@@ -763,7 +771,7 @@ internal class _MaterialAppState__app : State<MaterialApp>
             actions: widget.actions,
             restorationScopeId: widget.restorationScopeId
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -788,7 +796,7 @@ internal class _MaterialAppState__app : State<MaterialApp>
             behavior: widget.scrollBehavior ?? new MaterialScrollBehavior(),
             child: new HeroControllerScope(controller: _heroController, child: result)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -859,7 +867,7 @@ internal class _MaterialInspectorButton__app : InspectorButton
             style: _selectionButtonsIconStyle(context),
             icon: new Icon(icon, semanticLabel: semanticsLabel)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual ButtonStyle _selectionButtonsIconStyle(BuildContext context)
@@ -872,7 +880,7 @@ internal class _MaterialInspectorButton__app : InspectorButton
             side: _borderSide(color: foreground),
             tapTargetSize: MaterialTapTargetSize.padded
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual BorderSide? _borderSide(Color color)
@@ -889,9 +897,11 @@ internal class _MaterialInspectorButton__app : InspectorButton
                 return (toggledOn == false) ? new BorderSide(color: color) : null;
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Color foregroundColor(BuildContext context)
@@ -912,17 +922,17 @@ internal class _MaterialInspectorButton__app : InspectorButton
             {
                 return !(
                     toggledOn
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
                     ? secondaryColor
                     : primaryColor;
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Color backgroundColor(BuildContext context)
@@ -942,17 +952,17 @@ internal class _MaterialInspectorButton__app : InspectorButton
             {
                 return !(
                     toggledOn
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
                     ? Colors.transparent
                     : secondaryColor;
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Color _primaryColor(BuildContext context)
@@ -961,7 +971,7 @@ internal class _MaterialInspectorButton__app : InspectorButton
         return isDarkTheme
             ? theme.colorScheme.onPrimaryContainer
             : theme.colorScheme.primaryContainer;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Color _secondaryColor(BuildContext context)
@@ -970,6 +980,6 @@ internal class _MaterialInspectorButton__app : InspectorButton
         return isDarkTheme
             ? theme.colorScheme.primaryContainer
             : theme.colorScheme.onPrimaryContainer;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

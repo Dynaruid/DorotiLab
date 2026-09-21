@@ -16,25 +16,25 @@ public abstract class RenderShiftedBox : RenderBox, RenderObjectWithChildMixin<R
     public override double computeMinIntrinsicWidth(double height)
     {
         return child?.getMinIntrinsicWidth(height) ?? 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicWidth(double height)
     {
         return child?.getMaxIntrinsicWidth(height) ?? 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicHeight(double width)
     {
         return child?.getMinIntrinsicHeight(width) ?? 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicHeight(double width)
     {
         return child?.getMaxIntrinsicHeight(width) ?? 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? computeDistanceToActualBaseline(TextBaseline baseline)
@@ -51,9 +51,7 @@ public abstract class RenderShiftedBox : RenderBox, RenderObjectWithChildMixin<R
             {
                 double result__1798__value2078 = (
                     result
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 result__1798__value2078 += childParentData.offset.dy;
             }
@@ -63,7 +61,7 @@ public abstract class RenderShiftedBox : RenderBox, RenderObjectWithChildMixin<R
             result = base.computeDistanceToActualBaseline(baseline);
         }
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
@@ -80,9 +78,9 @@ public abstract class RenderShiftedBox : RenderBox, RenderObjectWithChildMixin<R
         }
         return (
             childBaseline
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paint(PaintingContext context, Offset offset)
@@ -114,7 +112,7 @@ public abstract class RenderShiftedBox : RenderBox, RenderObjectWithChildMixin<R
             );
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool debugValidateChild(RenderObject child)
@@ -155,7 +153,7 @@ public abstract class RenderShiftedBox : RenderBox, RenderObjectWithChildMixin<R
             return true;
         });
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual RenderBox? child
@@ -212,7 +210,7 @@ public abstract class RenderShiftedBox : RenderBox, RenderObjectWithChildMixin<R
                 ((Diagnosticable)child!).toDiagnosticsNode(name: "child"),
             }
             : new List<DiagnosticsNode>();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -289,7 +287,7 @@ public class RenderPadding : RenderShiftedBox
                 + padding.horizontal;
         }
         return padding.horizontal;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicWidth(double height)
@@ -301,7 +299,7 @@ public class RenderPadding : RenderShiftedBox
                 + padding.horizontal;
         }
         return padding.horizontal;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicHeight(double width)
@@ -313,7 +311,7 @@ public class RenderPadding : RenderShiftedBox
                 + padding.vertical;
         }
         return padding.vertical;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicHeight(double width)
@@ -325,7 +323,7 @@ public class RenderPadding : RenderShiftedBox
                 + padding.vertical;
         }
         return padding.vertical;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Size computeDryLayout(BoxConstraints constraints)
@@ -340,7 +338,7 @@ public class RenderPadding : RenderShiftedBox
         return constraints.constrain(
             new Size(padding.horizontal + childSize.width, padding.vertical + childSize.height)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
@@ -359,9 +357,9 @@ public class RenderPadding : RenderShiftedBox
         }
         return (
                 childBaseline
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ) + padding.top;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void performLayout()
@@ -500,7 +498,7 @@ public class RenderPositionedBox : RenderAligningShiftedBox
             alignment: alignment ?? Alignment.center,
             textDirection: (
                 textDirection
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         )
     {
@@ -544,25 +542,25 @@ public class RenderPositionedBox : RenderAligningShiftedBox
     public override double computeMinIntrinsicWidth(double height)
     {
         return base.computeMinIntrinsicWidth(height) * (_widthFactor ?? 1L);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicWidth(double height)
     {
         return base.computeMaxIntrinsicWidth(height) * (_widthFactor ?? 1L);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicHeight(double width)
     {
         return base.computeMinIntrinsicHeight(width) * (_heightFactor ?? 1L);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicHeight(double width)
     {
         return base.computeMaxIntrinsicHeight(width) * (_heightFactor ?? 1L);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Size computeDryLayout(BoxConstraints constraints)
@@ -591,7 +589,7 @@ public class RenderPositionedBox : RenderAligningShiftedBox
                 shrinkWrapHeight ? 0.0 : double.PositiveInfinity
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void performLayout()
@@ -774,9 +772,9 @@ public class RenderPositionedBox : RenderAligningShiftedBox
         Offset childOffset = resolvedAlignment.alongOffset(size - childSize);
         return (
                 result
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ) + childOffset.dy;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -809,7 +807,7 @@ public class RenderConstrainedOverflowBox : RenderAligningShiftedBox
             alignment: alignment ?? Alignment.center,
             textDirection: (
                 textDirection
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         )
     {
@@ -899,7 +897,7 @@ public class RenderConstrainedOverflowBox : RenderAligningShiftedBox
             minHeight: _minHeight ?? constraints.minHeight,
             maxHeight: _maxHeight ?? constraints.maxHeight
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool sizedByParent =>
@@ -907,7 +905,9 @@ public class RenderConstrainedOverflowBox : RenderAligningShiftedBox
         {
             OverflowBoxFit.max => true,
             OverflowBoxFit.deferToChild => false,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
 
     public override Size computeDryLayout(BoxConstraints constraints)
@@ -916,9 +916,11 @@ public class RenderConstrainedOverflowBox : RenderAligningShiftedBox
         {
             OverflowBoxFit.max => constraints.biggest,
             OverflowBoxFit.deferToChild => child?.getDryLayout(constraints) ?? constraints.smallest,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
@@ -938,9 +940,9 @@ public class RenderConstrainedOverflowBox : RenderAligningShiftedBox
         Size size = getDryLayout(constraints);
         return (
                 result
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ) + resolvedAlignment.alongOffset(size - childSize).dy;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void performLayout()
@@ -1042,7 +1044,7 @@ public class RenderConstraintsTransformBox : RenderAligningShiftedBox, DebugOver
             alignment: alignment,
             textDirection: (
                 textDirection
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             child: child
         )
@@ -1090,7 +1092,7 @@ public class RenderConstraintsTransformBox : RenderAligningShiftedBox, DebugOver
         return base.computeMinIntrinsicHeight(
             constraintsTransform(new BoxConstraints(maxWidth: width)).maxWidth
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicHeight(double width)
@@ -1098,7 +1100,7 @@ public class RenderConstraintsTransformBox : RenderAligningShiftedBox, DebugOver
         return base.computeMaxIntrinsicHeight(
             constraintsTransform(new BoxConstraints(maxWidth: width)).maxWidth
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicWidth(double height)
@@ -1106,7 +1108,7 @@ public class RenderConstraintsTransformBox : RenderAligningShiftedBox, DebugOver
         return base.computeMinIntrinsicWidth(
             constraintsTransform(new BoxConstraints(maxHeight: height)).maxHeight
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicWidth(double height)
@@ -1114,7 +1116,7 @@ public class RenderConstraintsTransformBox : RenderAligningShiftedBox, DebugOver
         return base.computeMaxIntrinsicWidth(
             constraintsTransform(new BoxConstraints(maxHeight: height)).maxHeight
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Size computeDryLayout(BoxConstraints constraints)
@@ -1127,15 +1129,13 @@ public class RenderConstraintsTransformBox : RenderAligningShiftedBox, DebugOver
                     (
                         childSize
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
@@ -1155,9 +1155,9 @@ public class RenderConstraintsTransformBox : RenderAligningShiftedBox, DebugOver
         Size size = constraints.constrain(childSize);
         return (
                 result
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ) + resolvedAlignment.alongOffset(size - childSize).dy;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void performLayout()
@@ -1260,7 +1260,7 @@ public class RenderConstraintsTransformBox : RenderAligningShiftedBox, DebugOver
                 return _isOverflowing ? (Offset.zero & size) : null;
             }
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string toStringShort()
@@ -1274,7 +1274,7 @@ public class RenderConstraintsTransformBox : RenderAligningShiftedBox, DebugOver
             }
         }
         return header;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual string _formatPixels(double value)
@@ -1286,7 +1286,7 @@ public class RenderConstraintsTransformBox : RenderAligningShiftedBox, DebugOver
             > 1.0 => value.toStringAsFixed(1L),
             _ => value.toStringAsPrecision(3L),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual List<_OverflowRegionData__debug_overflow_indicator> _calculateOverflowRegions(
@@ -1382,7 +1382,7 @@ public class RenderConstraintsTransformBox : RenderAligningShiftedBox, DebugOver
             );
         }
         return regions;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _reportOverflow(RelativeRect overflow, List<DiagnosticsNode>? overflowHints)
@@ -1541,7 +1541,7 @@ public class RenderSizedOverflowBox : RenderAligningShiftedBox
             alignment: alignment ?? Alignment.center,
             textDirection: (
                 textDirection
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         )
     {
@@ -1566,25 +1566,25 @@ public class RenderSizedOverflowBox : RenderAligningShiftedBox
     public override double computeMinIntrinsicWidth(double height)
     {
         return _requestedSize.width;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicWidth(double height)
     {
         return _requestedSize.width;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicHeight(double width)
     {
         return _requestedSize.height;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicHeight(double width)
     {
         return _requestedSize.height;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? computeDistanceToActualBaseline(TextBaseline baseline)
@@ -1602,9 +1602,9 @@ public class RenderSizedOverflowBox : RenderAligningShiftedBox
         var childParentData = ((BoxParentData?)(object?)childLocal.parentData!)!;
         return (
                 result
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ) + childParentData.offset.dy;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
@@ -1623,15 +1623,15 @@ public class RenderSizedOverflowBox : RenderAligningShiftedBox
         Size size = getDryLayout(constraints);
         return (
                 result
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ) + resolvedAlignment.alongOffset(size - childSize).dy;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Size computeDryLayout(BoxConstraints constraints)
     {
         return constraints.constrain(_requestedSize);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void performLayout()
@@ -1662,7 +1662,7 @@ public class RenderFractionallySizedOverflowBox : RenderAligningShiftedBox
             alignment: alignment ?? Alignment.center,
             textDirection: (
                 textDirection
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         )
     {
@@ -1711,9 +1711,7 @@ public class RenderFractionallySizedOverflowBox : RenderAligningShiftedBox
                 maxWidthLocal
                 * (
                     _widthFactor
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
             minWidthLocal = width;
             maxWidthLocal = width;
@@ -1726,9 +1724,7 @@ public class RenderFractionallySizedOverflowBox : RenderAligningShiftedBox
                 maxHeightLocal
                 * (
                     _heightFactor
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
             minHeightLocal = height;
             maxHeightLocal = height;
@@ -1739,7 +1735,7 @@ public class RenderFractionallySizedOverflowBox : RenderAligningShiftedBox
             minHeight: minHeightLocal,
             maxHeight: maxHeightLocal
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicWidth(double height)
@@ -1755,7 +1751,7 @@ public class RenderFractionallySizedOverflowBox : RenderAligningShiftedBox
         }
         DartRuntimePrimitives.Assert(() => double.IsFinite(result));
         return result / (_widthFactor ?? 1.0);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicWidth(double height)
@@ -1771,7 +1767,7 @@ public class RenderFractionallySizedOverflowBox : RenderAligningShiftedBox
         }
         DartRuntimePrimitives.Assert(() => double.IsFinite(result));
         return result / (_widthFactor ?? 1.0);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicHeight(double width)
@@ -1787,7 +1783,7 @@ public class RenderFractionallySizedOverflowBox : RenderAligningShiftedBox
         }
         DartRuntimePrimitives.Assert(() => double.IsFinite(result));
         return result / (_heightFactor ?? 1.0);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicHeight(double width)
@@ -1803,7 +1799,7 @@ public class RenderFractionallySizedOverflowBox : RenderAligningShiftedBox
         }
         DartRuntimePrimitives.Assert(() => double.IsFinite(result));
         return result / (_heightFactor ?? 1.0);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Size computeDryLayout(BoxConstraints constraints)
@@ -1814,7 +1810,7 @@ public class RenderFractionallySizedOverflowBox : RenderAligningShiftedBox
             return constraints.constrain(childSize);
         }
         return constraints.constrain(_getInnerConstraints(constraints).constrain(Size.zero));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
@@ -1834,9 +1830,9 @@ public class RenderFractionallySizedOverflowBox : RenderAligningShiftedBox
         Size size = getDryLayout(constraints);
         return (
                 result
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ) + resolvedAlignment.alongOffset(size - childSize).dy;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void performLayout()
@@ -1938,7 +1934,7 @@ public class RenderCustomSingleChildLayoutBox : RenderShiftedBox
     internal virtual Size _getSize(BoxConstraints constraints)
     {
         return constraints.constrain(_delegate.getSize(constraints));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicWidth(double height)
@@ -1949,7 +1945,7 @@ public class RenderCustomSingleChildLayoutBox : RenderShiftedBox
             return widthLocal;
         }
         return 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicWidth(double height)
@@ -1960,7 +1956,7 @@ public class RenderCustomSingleChildLayoutBox : RenderShiftedBox
             return widthLocal;
         }
         return 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicHeight(double width)
@@ -1971,7 +1967,7 @@ public class RenderCustomSingleChildLayoutBox : RenderShiftedBox
             return heightLocal;
         }
         return 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicHeight(double width)
@@ -1982,13 +1978,13 @@ public class RenderCustomSingleChildLayoutBox : RenderShiftedBox
             return heightLocal;
         }
         return 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Size computeDryLayout(BoxConstraints constraints)
     {
         return _getSize(constraints);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
@@ -2006,7 +2002,7 @@ public class RenderCustomSingleChildLayoutBox : RenderShiftedBox
         }
         return (
                 result
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
             + @delegate
                 .getPositionForChild(
@@ -2016,7 +2012,7 @@ public class RenderCustomSingleChildLayoutBox : RenderShiftedBox
                         : childLocal.getDryLayout(childConstraints)
                 )
                 .dy;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void performLayout()
@@ -2103,7 +2099,7 @@ public class RenderBaseline : RenderShiftedBox
             size: constraints.constrain(new Size(childSize.width, topLocal + childSize.height)),
             top: topLocal
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Size computeDryLayout(BoxConstraints constraints)
@@ -2113,7 +2109,7 @@ public class RenderBaseline : RenderShiftedBox
             ChildLayoutHelper.dryLayoutChild,
             ChildLayoutHelper.getDryBaseline
         ).size;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
@@ -2128,13 +2124,13 @@ public class RenderBaseline : RenderShiftedBox
         return this.baseline
             + (
                 result1
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
             - (
                 result2
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void performLayout()

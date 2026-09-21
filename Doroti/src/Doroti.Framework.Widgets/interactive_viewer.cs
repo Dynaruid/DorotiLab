@@ -168,7 +168,7 @@ public class InteractiveViewer : StatefulWidget
         Vector3 l1L2 = l2 - l1;
         double fraction = Dart_uiLibrary.clampDouble(l1P.dot(l1L2) / lengthSquared, 0.0, 1.0);
         return l1 + (l1L2 * fraction);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static Quad getAxisAlignedBoundingBox(Quad quad)
@@ -195,7 +195,7 @@ public class InteractiveViewer : StatefulWidget
             new Vector3(maxX, maxY, 0),
             new Vector3(minX, maxY, 0)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static bool pointIsInside(Vector3 point, Quad quad)
@@ -208,7 +208,7 @@ public class InteractiveViewer : StatefulWidget
         double aMAD = aM.dot(aD);
         double aDAD = aD.dot(aD);
         return (0L <= aMAB) && (aMAB <= aBAB) && (0L <= aMAD) && (aMAD <= aDAD);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static Vector3 getNearestPointInside(Vector3 point, Quad quad)
@@ -239,7 +239,7 @@ public class InteractiveViewer : StatefulWidget
             }
         }
         return closestOverall;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override IState createState() =>
@@ -356,12 +356,14 @@ internal class _InteractiveViewerState__interactive_viewer
                     (
                         _currentAxis
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 ),
                 PanAxis.free => translation,
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             };
         }
         else
@@ -449,7 +451,7 @@ internal class _InteractiveViewerState__interactive_viewer
                 }
             )
         )();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Matrix4 _matrixScale(Matrix4 matrix, double scale)
@@ -480,7 +482,7 @@ internal class _InteractiveViewerState__interactive_viewer
                 }
             )
         )();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Matrix4 _matrixRotate(Matrix4 matrix, double rotation, Offset focalPoint)
@@ -502,7 +504,7 @@ internal class _InteractiveViewerState__interactive_viewer
                 }
             )
         )();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _gestureIsSupported(_GestureType__interactive_viewer? gestureType)
@@ -513,9 +515,11 @@ internal class _InteractiveViewerState__interactive_viewer
             _GestureType__interactive_viewer.scale => widget.scaleEnabled,
             _GestureType__interactive_viewer.pan => widget.panEnabled,
             null => widget.panEnabled,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual _GestureType__interactive_viewer _getGestureType(ScaleUpdateDetails details)
@@ -537,7 +541,7 @@ internal class _InteractiveViewerState__interactive_viewer
                 return _GestureType__interactive_viewer.pan;
             }
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _onScaleStart(ScaleStartDetails details)
@@ -585,7 +589,7 @@ internal class _InteractiveViewerState__interactive_viewer
         switch (
             (
                 _gestureType
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         )
         {
@@ -596,7 +600,7 @@ internal class _InteractiveViewerState__interactive_viewer
                     (
                         _scaleStart
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) * details.scale;
                 double scaleChange = desiredScale / scaleLocal;
@@ -608,7 +612,7 @@ internal class _InteractiveViewerState__interactive_viewer
                         - (
                             _referenceFocalPoint
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                 );
@@ -619,7 +623,7 @@ internal class _InteractiveViewerState__interactive_viewer
                             (
                                 _referenceFocalPoint
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             )
                         ),
@@ -642,7 +646,7 @@ internal class _InteractiveViewerState__interactive_viewer
                     (
                         _rotationStart
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) + details.rotation;
                 _transformer.value = _matrixRotate(
@@ -665,7 +669,7 @@ internal class _InteractiveViewerState__interactive_viewer
                     (
                         _referenceFocalPoint
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ),
                     focalPointScene
@@ -675,7 +679,7 @@ internal class _InteractiveViewerState__interactive_viewer
                     - (
                         _referenceFocalPoint
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     );
                 _transformer.value = _matrixTranslate(_transformer.value, translationChange);
@@ -984,7 +988,7 @@ internal class _InteractiveViewerState__interactive_viewer
                 }
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         _tickerModeNotifier?.removeListener(_updateTickers);
         _tickerModeNotifier = null;
@@ -1031,7 +1035,7 @@ internal class _InteractiveViewerState__interactive_viewer
                             )
                         );
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 )
@@ -1050,7 +1054,7 @@ internal class _InteractiveViewerState__interactive_viewer
                 child: childLocal
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
@@ -1081,7 +1085,7 @@ internal class _InteractiveViewerState__interactive_viewer
         )();
         _tickers!.Add(result);
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _removeTicker(_WidgetTicker__ticker_provider ticker)
@@ -1187,7 +1191,7 @@ internal class _InteractiveViewerBuilt__interactive_viewer : StatelessWidget
             );
         }
         return new ClipRect(clipBehavior: clipBehavior, child: childLocal);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1203,7 +1207,7 @@ public class TransformationController : ValueNotifier<Matrix4>
             new Vector3(viewportPoint.dx, viewportPoint.dy, 0)
         );
         return new Offset(untransformed.x, untransformed.y);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1224,7 +1228,7 @@ public static partial class Interactive_viewerLibrary
     {
         return Dart_mathLibrary.log(effectivelyMotionless / velocity)
             / Dart_mathLibrary.log(drag / 100L);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1234,7 +1238,7 @@ public static partial class Interactive_viewerLibrary
     {
         Vector3 nextTranslation = matrix.getTranslation();
         return new Offset(nextTranslation.x, nextTranslation.y);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1262,7 +1266,7 @@ public static partial class Interactive_viewerLibrary
                 new Vector3(viewport.bottomLeft.dx, viewport.bottomLeft.dy, 0.0)
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1294,7 +1298,7 @@ public static partial class Interactive_viewerLibrary
             rotationMatrix.transform3(new Vector3(rect.left, rect.bottom, 0.0))
         );
         return InteractiveViewer.getAxisAlignedBoundingBox(boundariesRotated);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1324,7 +1328,7 @@ public static partial class Interactive_viewerLibrary
             }
         }
         return _round(largestExcess);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1342,7 +1346,7 @@ public static partial class Interactive_viewerLibrary
                 System.Globalization.CultureInfo.InvariantCulture
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1354,9 +1358,11 @@ public static partial class Interactive_viewerLibrary
         {
             Axis.horizontal => new Offset(offset.dx, 0.0),
             Axis.vertical => new Offset(0.0, offset.dy),
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1371,7 +1377,7 @@ public static partial class Interactive_viewerLibrary
         double x = point2.dx - point1.dx;
         double y = point2.dy - point1.dy;
         return (x.abs() > y.abs()) ? Axis.horizontal : Axis.vertical;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 

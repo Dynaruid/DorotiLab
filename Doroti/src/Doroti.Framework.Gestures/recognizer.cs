@@ -95,7 +95,7 @@ public abstract class GestureRecognizer : GestureArenaMember, DiagnosticableTree
     {
         return ((supportedDevices is null) || supportedDevices!.Contains(@event.kind))
             && allowedButtonsFilter(@event.buttons);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void handleNonAllowedPointerPanZoom(PointerPanZoomStartEvent @event) { }
@@ -103,21 +103,21 @@ public abstract class GestureRecognizer : GestureArenaMember, DiagnosticableTree
     public virtual bool isPointerPanZoomAllowed(PointerPanZoomStartEvent @event)
     {
         return (supportedDevices is null) || supportedDevices!.Contains(@event.kind);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual PointerDeviceKind getKindForPointer(long pointer)
     {
         DartRuntimePrimitives.Assert(() => _pointerToEventData.ContainsKey(pointer));
         return _pointerToEventData.GetValueOrDefault(pointer)!.kind;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual long getButtonsForPointer(long pointer)
     {
         DartRuntimePrimitives.Assert(() => _pointerToEventData.ContainsKey(pointer));
         return _pointerToEventData.GetValueOrDefault(pointer)!.buttons;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void dispose()
@@ -183,7 +183,7 @@ public abstract class GestureRecognizer : GestureArenaMember, DiagnosticableTree
             );
         }
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -295,7 +295,7 @@ public abstract class OneSequenceGestureRecognizer : GestureRecognizer
     public virtual GestureArenaEntry _addPointerToArena(long pointer)
     {
         return _team?.add(pointer, this) ?? GestureBinding.instance.gestureArena.add(pointer, this);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void startTrackingPointer(long pointer, Matrix4? transform = null)
@@ -414,15 +414,13 @@ public abstract class PrimaryPointerGestureRecognizer : OneSequenceGestureRecogn
             {
                 Duration deadline__value27990 = (
                     deadline
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 _timer = new Timer(
                     (
                         deadline
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ),
                     () => didExceedDeadlineWithEvent(@event)
@@ -452,7 +450,7 @@ public abstract class PrimaryPointerGestureRecognizer : OneSequenceGestureRecogn
                     > (
                         preAcceptSlopTolerance
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 );
@@ -464,7 +462,7 @@ public abstract class PrimaryPointerGestureRecognizer : OneSequenceGestureRecogn
                     > (
                         postAcceptSlopTolerance
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 );
@@ -479,7 +477,7 @@ public abstract class PrimaryPointerGestureRecognizer : OneSequenceGestureRecogn
                     (
                         primaryPointer
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 );
@@ -550,7 +548,7 @@ public abstract class PrimaryPointerGestureRecognizer : OneSequenceGestureRecogn
     {
         Offset offset = @event.position - initialPosition!.global;
         return offset.distance;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -591,13 +589,13 @@ public class OffsetPair
     public virtual OffsetPair op_Add(OffsetPair other)
     {
         return new OffsetPair(local: local + other.local, global: global + other.global);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual OffsetPair op_Subtract(OffsetPair other)
     {
         return new OffsetPair(local: local - other.local, global: global - other.global);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string ToString() =>

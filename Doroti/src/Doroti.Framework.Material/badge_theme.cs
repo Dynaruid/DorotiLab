@@ -59,7 +59,7 @@ public class BadgeThemeData : Diagnosticable
             alignment: alignment ?? this.alignment,
             offset: offset ?? this.offset
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static BadgeThemeData lerp(BadgeThemeData? a, BadgeThemeData? b, double t)
@@ -78,7 +78,7 @@ public class BadgeThemeData : Diagnosticable
             alignment: AlignmentGeometry.lerp(a?.alignment, b?.alignment, t),
             offset: Dart_uiLibrary.Offset.lerp(a?.offset, b?.offset, t)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override int GetHashCode() =>
@@ -155,7 +155,7 @@ public class BadgeThemeData : Diagnosticable
             return true;
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -164,7 +164,7 @@ public class BadgeThemeData : Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -182,13 +182,13 @@ public class BadgeTheme : InheritedTheme
     {
         BadgeTheme? badgeThemeLocal = context.dependOnInheritedWidgetOfExactType<BadgeTheme>();
         return badgeThemeLocal?.data ?? Theme.of(context).badgeTheme;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget wrap(BuildContext context, Widget child)
     {
         return new BadgeTheme(data: data, child: child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget) =>

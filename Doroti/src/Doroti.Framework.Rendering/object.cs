@@ -266,7 +266,7 @@ public class PaintingContext : ClipContext
     public virtual Action addCompositionCallback(Action<Layer> callback)
     {
         return _containerLayer.addCompositionCallback(callback);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void stopRecordingIfNeeded()
@@ -366,7 +366,7 @@ public class PaintingContext : ClipContext
     public virtual PaintingContext createChildContext(ContainerLayer childLayer, Rect bounds)
     {
         return new PaintingContext(childLayer, bounds);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual ClipRectLayer? pushClipRect(
@@ -411,7 +411,7 @@ public class PaintingContext : ClipContext
             );
             return null;
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual ClipRRectLayer? pushClipRRect(
@@ -458,7 +458,7 @@ public class PaintingContext : ClipContext
             );
             return null;
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual ClipRSuperellipseLayer? pushClipRSuperellipse(
@@ -505,7 +505,7 @@ public class PaintingContext : ClipContext
             );
             return null;
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual ClipPathLayer? pushClipPath(
@@ -552,7 +552,7 @@ public class PaintingContext : ClipContext
             );
             return null;
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual ColorFilterLayer pushColorFilter(
@@ -566,7 +566,7 @@ public class PaintingContext : ClipContext
         layer.colorFilter = colorFilter;
         pushLayer(layer, painter, offset);
         return layer;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual TransformLayer? pushTransform(
@@ -620,7 +620,7 @@ public class PaintingContext : ClipContext
             canvas.restore();
             return null;
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual OpacityLayer pushOpacity(
@@ -644,7 +644,7 @@ public class PaintingContext : ClipContext
         )();
         pushLayer(layer, painter, Offset.zero);
         return layer;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string ToString() =>
@@ -665,7 +665,7 @@ public abstract class Constraints
     {
         DartRuntimePrimitives.Assert(() => isNormalized);
         return isNormalized;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -880,9 +880,7 @@ public class PipelineOwner : DiagnosticableTreeMixin
             {
                 _debugAllowMutationsToDirtySubtrees = (
                     oldState
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 return true;
             });
@@ -1021,7 +1019,7 @@ public class PipelineOwner : DiagnosticableTreeMixin
         _outstandingSemanticsHandles += 1L;
         _updateSemanticsOwner();
         return new _LocalSemanticsHandle__object(this, listener);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _updateSemanticsOwner()
@@ -1316,7 +1314,7 @@ public class PipelineOwner : DiagnosticableTreeMixin
     public override List<DiagnosticsNode> debugDescribeChildren()
     {
         return new List<DiagnosticsNode>();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -1331,7 +1329,7 @@ public class PipelineOwner : DiagnosticableTreeMixin
     {
         child._debugParent = parent;
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual string _debugRootSuffixForTimelineEventNames =>
@@ -1637,13 +1635,13 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
             return true;
         });
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool debugCanParentUseSize =>
         (
             _debugCanParentUseSize
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         );
     internal virtual (RenderObject, bool)? _debugClosestMutationRoot
     {
@@ -1662,7 +1660,9 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
                 } __object91542 => (this, true),
                 RenderObject { _debugMutationsLocked: true } __object91746 => (this, false),
                 RenderObject __object91812 => debugLayoutParent?._debugClosestMutationRoot,
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             };
         }
     }
@@ -1881,9 +1881,7 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
             if (
                 (
                     node._isRelayoutBoundary
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             )
             {
@@ -1891,7 +1889,7 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
             }
         }
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void markNeedsLayout()
@@ -2089,7 +2087,7 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
                                 long targetFrame__112422__value112715 = (
                                     targetFrame
                                     ?? throw new global::System.NullReferenceException(
-                                        "Dart null assertion failed."
+                                        "A required value was null."
                                     )
                                 );
                                 break;
@@ -2102,7 +2100,7 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
                             (
                                 targetFrame
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             ) < checked(stack.Count)
                         )
@@ -2111,7 +2109,7 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
                         long targetFrame__112422__value112799 = (
                             targetFrame
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         );
                         Pattern targetFramePattern = new RegExp("^#[0-9]+ +(.+)$");
@@ -2336,7 +2334,7 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
     {
         DartRuntimePrimitives.Assert(() => isRepaintBoundary);
         return oldLayer ?? new OffsetLayer();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual ContainerLayer? layer
@@ -2766,7 +2764,7 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
     {
         DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Matrix4 getTransformTo(RenderObject? target)
@@ -2840,7 +2838,7 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
                     }
                 )
             )() ?? toTransform;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Rect? describeApproximatePaintClip(RenderObject child) => null;
@@ -2993,7 +2991,7 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
             }
         }
         return header;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string ToString() => ToString(DiagnosticLevel.info);
@@ -3016,7 +3014,7 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
                 wrapWidth: wrapWidth
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string toStringShallow(
@@ -3027,7 +3025,7 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
         return _withDebugActiveLayoutCleared(() =>
             base.toStringShallow(joiner: joiner, minLevel: minLevel)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -3111,7 +3109,7 @@ public abstract class RenderObject : DiagnosticableTreeMixin, HitTestTarget
     )
     {
         return toDiagnosticsNode(name: name, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -3633,9 +3631,7 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
             {
                 return (
                     _blocksPreviousSibling
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
             }
             _blocksPreviousSibling = configProvider
@@ -3644,9 +3640,7 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
             if (
                 (
                     _blocksPreviousSibling
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             )
             {
@@ -3668,7 +3662,7 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
             );
             return (
                 _blocksPreviousSibling
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
     }
@@ -3865,7 +3859,7 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
             }
         );
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual HashSet<SemanticsTag>? _getTagsForChildren()
@@ -3891,7 +3885,7 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
             }
         }
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual (
@@ -4009,7 +4003,7 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
             }
         }
         return (mergeUpLocal, siblingMergeGroupsLocal);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _didUpdateParentData(_SemanticsParentData__object newParentData)
@@ -4293,7 +4287,7 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
             );
         }
         return new SemanticsNode(showOnScreen: () => owner.renderObject.showOnScreen());
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _mergeSiblingGroup(HashSet<long> usedSemanticsIds)
@@ -4436,7 +4430,7 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
                         (
                             parentGeometry.semanticsClipRect
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     );
@@ -4450,7 +4444,7 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
                         (
                             parentGeometry.paintClipRect
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     );
@@ -4466,7 +4460,7 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
                         __cascade.rect = (
                             rectLocal
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         );
                         __cascade.transform = null;
@@ -4597,7 +4591,7 @@ public class _RenderObjectSemantics__object : _SemanticsFragment__object, Diagno
     public virtual List<DiagnosticsNode> debugDescribeChildren()
     {
         return _children.map((child) => ((Diagnosticable)child).toDiagnosticsNode()).ToList();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -4693,7 +4687,7 @@ public static partial class ObjectLibrary
     internal static string _debugCollectRenderObjectSemanticsTrees(RenderObject root)
     {
         return root._semantics.toStringDeep();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -4779,7 +4773,7 @@ public class _SemanticsGeometry__object
                         ?? (
                             semanticsClipRectLocal
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                 );
@@ -4811,7 +4805,7 @@ public class _SemanticsGeometry__object
         {
             Rect paintClipRect__259962__value262006 = (
                 paintClipRectLocal
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             Rect paintRect = (paintClipRect__259962__value262006).intersect(((rectLocal)));
             isRectHidden = paintRect.isEmpty && !(rectLocal).isEmpty;
@@ -4827,7 +4821,7 @@ public class _SemanticsGeometry__object
             rect: (rectLocal),
             hidden: isRectHidden
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static Rect? _transformRect(
@@ -4843,7 +4837,7 @@ public class _SemanticsGeometry__object
         if (
             (
                 rect
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ).isEmpty || transform.isZero()
         )
         {
@@ -4851,9 +4845,9 @@ public class _SemanticsGeometry__object
         }
         return apply(
             transform,
-            (rect ?? throw new global::System.NullReferenceException("Dart null assertion failed."))
+            (rect ?? throw new global::System.NullReferenceException("A required value was null."))
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static Rect? _intersectRects(Rect? a, Rect? b)
@@ -4863,17 +4857,10 @@ public class _SemanticsGeometry__object
             return a;
         }
         return a?.intersect(
-                (
-                    b
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
-                )
+                (b ?? throw new global::System.NullReferenceException("A required value was null."))
             )
-            ?? (
-                b ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
-            );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+            ?? (b ?? throw new global::System.NullReferenceException("A required value was null."));
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 

@@ -110,6 +110,6 @@ internal class _CupertinoFocusHaloState__cupertino_focus_halo : State<CupertinoF
                 child: widget.child
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

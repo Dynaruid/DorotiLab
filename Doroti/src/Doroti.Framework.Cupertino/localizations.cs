@@ -78,7 +78,7 @@ public abstract class CupertinoLocalizations
             DebugLibrary.debugCheckHasCupertinoLocalizations(context)
         );
         return Localizations.of<CupertinoLocalizations>(context, typeof(CupertinoLocalizations))!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -158,12 +158,12 @@ public class DefaultCupertinoLocalizations : CupertinoLocalizations
         {
             long weekDay__value15239 = (
                 weekDay
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             return $" {_shortWeekdays[(int)((weekDay__value15239) - 1L)]} {dayIndex} ";
         }
         return dayIndex.ToString();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string datePickerHour(long hour) => hour.ToString();
@@ -179,7 +179,7 @@ public class DefaultCupertinoLocalizations : CupertinoLocalizations
             return "1 minute";
         }
         return $"{minute} minutes";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string datePickerMediumDate(DateTime date)
@@ -187,7 +187,7 @@ public class DefaultCupertinoLocalizations : CupertinoLocalizations
         return $"{_shortWeekdays[(int)(date.DayOfWeek.ToDartWeekday() - 1L)]} "
             + $"{_shortMonths[(int)(date.Month - 1L)]} "
             + $"{date.Day.ToString().padRight(2L)}";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override DatePickerDateOrder datePickerDateOrder => DatePickerDateOrder.mdy;
@@ -203,7 +203,7 @@ public class DefaultCupertinoLocalizations : CupertinoLocalizations
         DartRuntimePrimitives.Assert(() => tabIndex >= 1L);
         DartRuntimePrimitives.Assert(() => tabCount >= 1L);
         return $"Tab {tabIndex} of {tabCount}";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string timerPickerHour(long hour) => hour.ToString();
@@ -247,6 +247,6 @@ public class DefaultCupertinoLocalizations : CupertinoLocalizations
     public static Future<CupertinoLocalizations> load(Locale locale)
     {
         return new SynchronousFuture<CupertinoLocalizations>(new DefaultCupertinoLocalizations());
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

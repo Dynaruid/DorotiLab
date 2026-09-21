@@ -156,7 +156,7 @@ public class NavigationDrawer : StatelessWidget
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -213,7 +213,9 @@ public class NavigationDrawerDestination : StatelessWidget
                     child: icon
                 );
                 return animation.isForwardOrCompleted ? selectedIconWidget : unselectedIconWidget;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             buildLabel: (context) =>
             {
@@ -232,12 +234,14 @@ public class NavigationDrawerDestination : StatelessWidget
                         : effectiveUnselectedLabelTextStyle!,
                     child: label
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             enabled: enabled,
             backgroundColor: backgroundColor
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -290,7 +294,7 @@ internal class _NavigationDestinationBuilder__navigation_drawer : StatelessWidge
                                 ?? (
                                     defaults.indicatorSize
                                     ?? throw new global::System.NullReferenceException(
-                                        "Dart null assertion failed."
+                                        "A required value was null."
                                     )
                                 )
                             ).width,
@@ -299,7 +303,7 @@ internal class _NavigationDestinationBuilder__navigation_drawer : StatelessWidge
                                 ?? (
                                     defaults.indicatorSize
                                     ?? throw new global::System.NullReferenceException(
-                                        "Dart null assertion failed."
+                                        "A required value was null."
                                     )
                                 )
                             ).height
@@ -333,7 +337,7 @@ internal class _NavigationDestinationBuilder__navigation_drawer : StatelessWidge
             return new Ink(color: backgroundColor, child: destination);
         }
         return destination;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -360,7 +364,9 @@ internal class _NavigationDestinationSemantics__navigation_drawer : StatelessWid
                     container: true,
                     child: child
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             child: new Stack(
                 alignment: Alignment.center,
@@ -378,7 +384,7 @@ internal class _NavigationDestinationSemantics__navigation_drawer : StatelessWid
                 }
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -443,7 +449,7 @@ internal class _NavigationDrawerDestinationInfo__navigation_drawer : InheritedWi
                 + "which is usually provided by NavigationDrawer."
         );
         return result!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget)
@@ -453,7 +459,7 @@ internal class _NavigationDrawerDestinationInfo__navigation_drawer : InheritedWi
             || (totalNumberOfDestinations != __oldWidget.totalNumberOfDestinations)
             || (!Equals(selectedAnimation, __oldWidget.selectedAnimation))
             || (!Equals(onTap, __oldWidget.onTap));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -555,7 +561,7 @@ public class _SelectableAnimatedBuilderState__navigation_drawer
     public override Widget build(BuildContext context)
     {
         return widget.builder(context, _controller);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
@@ -594,7 +600,7 @@ public class _SelectableAnimatedBuilderState__navigation_drawer
         _updateTickerModeNotifier();
         _updateTicker();
         return _ticker!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void activate()
@@ -719,7 +725,7 @@ internal class _NavigationDrawerDefaultsM3__navigation_drawer : NavigationDrawer
                                 )
                         );
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 );
@@ -744,7 +750,7 @@ internal class _NavigationDrawerDefaultsM3__navigation_drawer : NavigationDrawer
                                 )
                         );
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 );

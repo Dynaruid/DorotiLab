@@ -38,7 +38,7 @@ public class SelectionContainer : StatefulWidget
         SelectionRegistrarScope? scope =
             context.dependOnInheritedWidgetOfExactType<SelectionRegistrarScope>();
         return scope?.registrar;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _disabled => DartRuntimePrimitives.ConvertValue<bool>(@delegate is null);
@@ -149,21 +149,21 @@ internal class _SelectionContainerState__selection_container
     {
         DartRuntimePrimitives.Assert(() => !widget._disabled);
         return widget.@delegate!.getSelectedContent();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual SelectedContentRange? getSelection()
     {
         DartRuntimePrimitives.Assert(() => !widget._disabled);
         return widget.@delegate!.getSelection();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual SelectionResult dispatchSelectionEvent(SelectionEvent @event)
     {
         DartRuntimePrimitives.Assert(() => !widget._disabled);
         return widget.@delegate!.dispatchSelectionEvent(@event);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual SelectionGeometry value
@@ -182,7 +182,7 @@ internal class _SelectionContainerState__selection_container
     {
         DartRuntimePrimitives.Assert(() => !widget._disabled);
         return context.findRenderObject()!.getTransformTo(ancestor);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual long contentLength => widget.@delegate!.contentLength;
@@ -210,7 +210,7 @@ internal class _SelectionContainerState__selection_container
             return SelectionRegistrarScope.Create_disabled(child: widget.child);
         }
         return new SelectionRegistrarScope(registrar: widget.@delegate!, child: widget.child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual SelectionRegistrar? registrar
@@ -297,7 +297,7 @@ public class SelectionRegistrarScope : InheritedWidget
     {
         var __oldWidget = (SelectionRegistrarScope)oldWidget;
         return !Equals(__oldWidget.registrar, registrar);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -330,7 +330,7 @@ public abstract class SelectionContainerDelegate : SelectionHandler, SelectionRe
                 (object?)"getTransformFrom cannot be called before SelectionContainer is laid out."
         );
         return child.getTransformTo(((RenderBox?)_selectionContainerContext!.findRenderObject()!)!);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Matrix4 getTransformTo(RenderObject? ancestor)
@@ -341,7 +341,7 @@ public abstract class SelectionContainerDelegate : SelectionHandler, SelectionRe
         );
         var box = ((RenderBox?)_selectionContainerContext!.findRenderObject()!)!;
         return box.getTransformTo(ancestor);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool hasSize

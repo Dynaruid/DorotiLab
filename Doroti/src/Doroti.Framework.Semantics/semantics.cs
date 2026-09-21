@@ -52,7 +52,7 @@ public static class AccessibilityFocusBlockTypeMembers
             return AccessibilityFocusBlockType.blockNode;
         }
         return AccessibilityFocusBlockType.none;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -104,7 +104,9 @@ internal abstract class _DebugSemanticsRoleChecks__semantics
                     SemanticsRole.comboBox => _unimplemented,
                     SemanticsRole.tooltip => _unimplemented,
                     SemanticsRole.hotKey => _unimplemented,
-                    _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    _ => throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
                 }
             )
         )(node);
@@ -113,7 +115,7 @@ internal abstract class _DebugSemanticsRoleChecks__semantics
             return error;
         }
         return _semanticsGeneral(node);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static FlutterError? _unimplemented(SemanticsNode node) =>
@@ -153,7 +155,7 @@ internal abstract class _DebugSemanticsRoleChecks__semantics
             minVal
             >= (
                 maxVal
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         )
         {
@@ -165,7 +167,7 @@ internal abstract class _DebugSemanticsRoleChecks__semantics
         {
             double currentValue__8479__value9301 = (
                 currentValue
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             if (
                 (
@@ -173,7 +175,7 @@ internal abstract class _DebugSemanticsRoleChecks__semantics
                     < (
                         minVal
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
@@ -182,7 +184,7 @@ internal abstract class _DebugSemanticsRoleChecks__semantics
                     > (
                         maxVal
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
@@ -201,7 +203,7 @@ internal abstract class _DebugSemanticsRoleChecks__semantics
                     (
                         percentValue
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) < 0L
                 )
@@ -209,7 +211,7 @@ internal abstract class _DebugSemanticsRoleChecks__semantics
                     (
                         percentValue
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) > 100L
                 )
@@ -218,14 +220,14 @@ internal abstract class _DebugSemanticsRoleChecks__semantics
         {
             double percentValue__8541__value9681 = (
                 percentValue
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             return new FlutterError(
                 $"Progress bar percentage value ({data.value}) must be between 0% and 100%"
             );
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static FlutterError? _semanticsTab(SemanticsNode node)
@@ -247,7 +249,7 @@ internal abstract class _DebugSemanticsRoleChecks__semantics
             return new FlutterError("A tab must have a tap action");
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static FlutterError? _semanticsTabBar(SemanticsNode node)
@@ -268,7 +270,7 @@ internal abstract class _DebugSemanticsRoleChecks__semantics
             }
         );
         return error;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static FlutterError? _semanticsTable(SemanticsNode node)
@@ -285,7 +287,7 @@ internal abstract class _DebugSemanticsRoleChecks__semantics
             }
         );
         return error;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static FlutterError? _semanticsRow(SemanticsNode node)
@@ -311,7 +313,7 @@ internal abstract class _DebugSemanticsRoleChecks__semantics
             }
         );
         return error;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static FlutterError? _semanticsCell(SemanticsNode node)
@@ -324,7 +326,7 @@ internal abstract class _DebugSemanticsRoleChecks__semantics
             return new FlutterError("A cell must be a child of a row or another cell");
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static FlutterError? _semanticsColumnHeader(SemanticsNode node)
@@ -337,7 +339,7 @@ internal abstract class _DebugSemanticsRoleChecks__semantics
             return new FlutterError("A columnHeader must be a child or another cell");
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static FlutterError? _semanticsRadioGroup(SemanticsNode node)
@@ -369,11 +371,13 @@ internal abstract class _DebugSemanticsRoleChecks__semantics
             }
             DartRuntimePrimitives.Assert(() => error is null);
             return true;
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         node.visitChildren(validateRadioGroupChildren);
         return error;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static FlutterError? _semanticsMenu(SemanticsNode node)
@@ -383,7 +387,7 @@ internal abstract class _DebugSemanticsRoleChecks__semantics
             return new FlutterError("a menu cannot be empty");
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static FlutterError? _semanticsMenuBar(SemanticsNode node)
@@ -393,7 +397,7 @@ internal abstract class _DebugSemanticsRoleChecks__semantics
             return new FlutterError("a menu bar cannot be empty");
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static FlutterError? _semanticsMenuItem(SemanticsNode node)
@@ -411,7 +415,7 @@ internal abstract class _DebugSemanticsRoleChecks__semantics
             currentNode = currentNode?.parent;
         }
         return new FlutterError("A menu item must be a child of a menu or a menu bar");
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static FlutterError? _semanticsMenuItemCheckbox(SemanticsNode node)
@@ -434,7 +438,7 @@ internal abstract class _DebugSemanticsRoleChecks__semantics
             currentNode = currentNode?.parent;
         }
         return new FlutterError("A menu item checkbox must be a child of a menu or a menu bar");
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static FlutterError? _semanticsMenuItemRadio(SemanticsNode node)
@@ -457,7 +461,7 @@ internal abstract class _DebugSemanticsRoleChecks__semantics
             currentNode = currentNode?.parent;
         }
         return new FlutterError("A menu item radio must be a child of a menu or a menu bar");
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static FlutterError? _noLiveRegion(SemanticsNode node)
@@ -472,7 +476,7 @@ internal abstract class _DebugSemanticsRoleChecks__semantics
             );
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static FlutterError? _semanticsListItem(SemanticsNode node)
@@ -495,7 +499,7 @@ internal abstract class _DebugSemanticsRoleChecks__semantics
             );
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static bool _isLandmarkRole(SemanticsData nodeData) =>
@@ -523,7 +527,7 @@ internal abstract class _DebugSemanticsRoleChecks__semantics
             }
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static FlutterError? _semanticsComplementary(SemanticsNode node)
@@ -547,7 +551,7 @@ internal abstract class _DebugSemanticsRoleChecks__semantics
             );
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static FlutterError? _semanticsContentInfo(SemanticsNode node)
@@ -571,7 +575,7 @@ internal abstract class _DebugSemanticsRoleChecks__semantics
             );
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static FlutterError? _semanticsMain(SemanticsNode node)
@@ -595,7 +599,7 @@ internal abstract class _DebugSemanticsRoleChecks__semantics
             );
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static FlutterError? _semanticsNavigation(SemanticsNode node)
@@ -608,7 +612,7 @@ internal abstract class _DebugSemanticsRoleChecks__semantics
             );
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static FlutterError? _semanticsRegion(SemanticsNode node)
@@ -621,7 +625,7 @@ internal abstract class _DebugSemanticsRoleChecks__semantics
             );
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static FlutterError? _semanticsGeneral(SemanticsNode node)
@@ -632,7 +636,7 @@ internal abstract class _DebugSemanticsRoleChecks__semantics
         {
             bool isExpanded__19946__value20016 = (
                 isExpandedLocal
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             bool hasExpandAction = data.hasAction(SemanticsAction.expand);
             bool hasCollapseAction = data.hasAction(SemanticsAction.collapse);
@@ -661,7 +665,7 @@ internal abstract class _DebugSemanticsRoleChecks__semantics
             );
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -720,7 +724,7 @@ public class ChildSemanticsConfigurationsResultBuilder
             return true;
         });
         return new ChildSemanticsConfigurationsResult(_mergeUp, _siblingMergeGroups);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -775,7 +779,7 @@ public class CustomSemanticsAction
     public override string ToString()
     {
         return $"CustomSemanticsAction({_ids.GetValueOrDefault(this)}, label:{label}, hint:{hint}, action:{action})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static long getIdentifier(CustomSemanticsAction action)
@@ -787,13 +791,13 @@ public class CustomSemanticsAction
             _actions[result] = action;
         }
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static CustomSemanticsAction? getAction(long id)
     {
         return _actions.GetValueOrDefault(id);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static void resetForTests()
@@ -866,7 +870,7 @@ public class AttributedString
             }
         }
         return new AttributedString(newString, attributes: newAttributes);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool Equals(object? other)
@@ -888,7 +892,7 @@ public class AttributedString
     public override string ToString()
     {
         return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "AttributedString")}('{@string}', attributes: {attributes})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -937,7 +941,7 @@ public class AttributedStringProperty : DiagnosticsProperty<AttributedString>
             return $"\"{text}\"";
         }
         return $"\"{text}\" {value!.attributes}";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -998,7 +1002,7 @@ public class SemanticsLabelBuilder
                         (
                             partDirection
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     )
@@ -1007,28 +1011,26 @@ public class SemanticsLabelBuilder
             {
                 TextDirection textDirection__value36162 = (
                     textDirection
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 TextDirection partDirection__35987__value36187 = (
                     partDirection
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 string directionalEmbedding = (partDirection__35987__value36187) switch
                 {
                     TextDirection.rtl => Unicode.RLE,
                     TextDirection.ltr => Unicode.LRE,
-                    _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    _ => throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
                 };
                 processedText = directionalEmbedding + partText + Unicode.PDF;
             }
             buffer.write(processedText);
         }
         return buffer.ToString();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void clear()
@@ -1386,7 +1388,7 @@ public class SemanticsData : Diagnosticable
             return true;
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1405,7 +1407,7 @@ internal class _SemanticsDiagnosticableNode__semantics : DiagnosticableNode<Sema
             value: value,
             style: (
                 style
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         )
     {
@@ -1732,7 +1734,7 @@ public class SemanticsProperties : DiagnosticableTree
                         (
                             headingLevel
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ) > 0L
                     ) && (headingLevel <= 6L)
@@ -1941,7 +1943,7 @@ public class SemanticsNode : DiagnosticableTreeMixin
     {
         _lastIdentifier = (_lastIdentifier + 1L) % _maxFrameworkAccessibilityIdentifier;
         return _lastIdentifier;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual long id => _id;
@@ -2193,7 +2195,7 @@ public class SemanticsNode : DiagnosticableTreeMixin
             }
         }
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual SemanticsOwner? owner => _owner;
@@ -2403,7 +2405,7 @@ public class SemanticsNode : DiagnosticableTreeMixin
                 _customSemanticsActions,
                 config._customSemanticsActions
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual long _effectiveActionsAsBits =>
@@ -2464,7 +2466,7 @@ public class SemanticsNode : DiagnosticableTreeMixin
     {
         CustomSemanticsAction? customAction = CustomSemanticsAction.getAction(actionId);
         return (customAction is not null) && _customSemanticsActions.ContainsKey(customAction);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _canHandleAction(SemanticsAction action, object? args)
@@ -2474,7 +2476,7 @@ public class SemanticsNode : DiagnosticableTreeMixin
             return (args is long) && _canPerformCustomAction(((long)args));
         }
         return _canPerformAction(action);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void updateWith(
@@ -2800,7 +2802,7 @@ public class SemanticsNode : DiagnosticableTreeMixin
             minValue: minValueLocal,
             maxValue: maxValueLocal
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static Matrix4 _computeTraversalTransform(SemanticsNode parent, SemanticsNode child)
@@ -2843,7 +2845,7 @@ public class SemanticsNode : DiagnosticableTreeMixin
             }
         }
         return traversalTransform;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Int32List _childrenIdInTraversalOrder()
@@ -2855,7 +2857,7 @@ public class SemanticsNode : DiagnosticableTreeMixin
             childrenInTraversalOrder[i] = checked((int)sortedChildren[(int)i].id);
         }
         return childrenInTraversalOrder;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual List<SemanticsNode> _childrenInHitTestOrder()
@@ -2880,17 +2882,19 @@ public class SemanticsNode : DiagnosticableTreeMixin
                 return traversalParent is not null;
             }
             return true;
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         return _children!.where(shouldNotSkipInHitTest).ToList();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Int32List _childrenIdInHitTestOrder()
     {
         List<SemanticsNode> children = _childrenInHitTestOrder();
         return new Int32List(Enumerable.Reverse(children).map((node) => node.id).ToList());
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _addToUpdate(
@@ -3104,7 +3108,7 @@ public class SemanticsNode : DiagnosticableTreeMixin
             }
         }
         return updatedChildren;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual List<SemanticsNode> _childrenInTraversalOrder()
@@ -3122,7 +3126,7 @@ public class SemanticsNode : DiagnosticableTreeMixin
         {
             TextDirection inheritedTextDirection__162729__value163025 = (
                 inheritedTextDirection
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             childrenInDefaultOrder = SemanticsLibrary._childrenInDefaultOrder(
                 updatedChildren!,
@@ -3179,7 +3183,7 @@ public class SemanticsNode : DiagnosticableTreeMixin
         }
         everythingSorted.AddRange(sortNodes);
         return everythingSorted.map((sortNode) => sortNode.node).ToList();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void sendEvent(SemanticsEvent @event)
@@ -3221,7 +3225,7 @@ public class SemanticsNode : DiagnosticableTreeMixin
             return true;
         });
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string toStringShort() =>
@@ -3274,7 +3278,7 @@ public class SemanticsNode : DiagnosticableTreeMixin
         {
             Offset offset__167351__value167437 = (
                 offset
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             properties.add(
                 new DiagnosticsProperty<Rect>(
@@ -3292,9 +3296,7 @@ public class SemanticsNode : DiagnosticableTreeMixin
             {
                 double scale__167582__value167690 = (
                     scale
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 descriptionLocal =
                     $"{rect} scaled by {(scale__167582__value167690).toStringAsFixed(1L)}x";
@@ -3454,7 +3456,7 @@ public class SemanticsNode : DiagnosticableTreeMixin
                 minLevel: minLevel,
                 wrapWidth: wrapWidth
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -3469,7 +3471,7 @@ public class SemanticsNode : DiagnosticableTreeMixin
             style: style,
             childOrder: childOrder
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override List<DiagnosticsNode> debugDescribeChildren() =>
@@ -3480,7 +3482,7 @@ public class SemanticsNode : DiagnosticableTreeMixin
         return debugListChildrenInOrder(childOrder)
             .map((node) => node.toDiagnosticsNode(childOrder: childOrder))
             .ToList();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual List<SemanticsNode> debugListChildrenInOrder(DebugSemanticsDumpOrder childOrder)
@@ -3493,9 +3495,11 @@ public class SemanticsNode : DiagnosticableTreeMixin
         {
             DebugSemanticsDumpOrder.inverseHitTest => _childrenInHitTestOrder(),
             DebugSemanticsDumpOrder.traversalOrder => _childrenInTraversalOrder(),
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -3516,7 +3520,7 @@ internal class _BoxEdge__semantics : IComparable<_BoxEdge__semantics>
     public virtual long compareTo(_BoxEdge__semantics other)
     {
         return offset.CompareTo(other.offset);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public int CompareTo(_BoxEdge__semantics? other) => checked((int)compareTo(other!));
@@ -3537,7 +3541,7 @@ internal class _SemanticsSortGroup__semantics : IComparable<_SemanticsSortGroup_
     public virtual long compareTo(_SemanticsSortGroup__semantics other)
     {
         return startOffset.CompareTo(other.startOffset);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual List<SemanticsNode> sortedWithinVerticalGroup()
@@ -3594,7 +3598,7 @@ internal class _SemanticsSortGroup__semantics : IComparable<_SemanticsSortGroup_
             horizontalGroups = Enumerable.Reverse(horizontalGroups).ToList();
         }
         return horizontalGroups.expand((group) => group.sortedWithinKnot()).ToList();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual List<SemanticsNode> sortedWithinKnot()
@@ -3690,7 +3694,7 @@ internal class _SemanticsSortGroup__semantics : IComparable<_SemanticsSortGroup_
         return Enumerable
             .Reverse(sortedIds.map((id) => nodeMap.GetValueOrDefault(id)!).ToList())
             .ToList();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public int CompareTo(_SemanticsSortGroup__semantics? other) => checked((int)compareTo(other!));
@@ -3708,7 +3712,7 @@ public static partial class SemanticsLibrary
         var vector = new Vector3(point.dx, point.dy, 0.0);
         traversalTransform.transform3(vector);
         return new Offset(vector.x, vector.y);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -3766,7 +3770,7 @@ public static partial class SemanticsLibrary
         }
         verticalGroups.sort();
         return verticalGroups.expand((group) => group.sortedWithinVerticalGroup()).ToList();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -3794,7 +3798,7 @@ internal class _TraversalSortNode__semantics : IComparable<_TraversalSortNode__s
             return position - other.position;
         }
         return sortKey!.compareTo(other.sortKey!);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public int CompareTo(_TraversalSortNode__semantics? other) => checked((int)compareTo(other!));
@@ -3858,7 +3862,9 @@ public class SemanticsOwner : ChangeNotifier
                     }
                 }
                 return true;
-                throw new InvalidOperationException("Dart control flow completed without a value.");
+                throw new InvalidOperationException(
+                    "Control flow completed without returning a value."
+                );
             }
             SemanticsNode? rootSemanticsNodeLocal = rootSemanticsNode;
             if (rootSemanticsNodeLocal is not null)
@@ -3893,7 +3899,9 @@ public class SemanticsOwner : ChangeNotifier
                         style: DiagnosticsTreeStyle.errorProperty
                     ) ?? new ErrorDescription("which was added as the root SemanticsNode"),
                 };
-                throw new InvalidOperationException("Dart control flow completed without a value.");
+                throw new InvalidOperationException(
+                    "Control flow completed without returning a value."
+                );
             }
             throw new FlutterError([
                 new ErrorSummary("Invisible SemanticsNodes should not be added to the tree."),
@@ -4059,7 +4067,7 @@ public class SemanticsOwner : ChangeNotifier
             return null;
         }
         return result._actions.GetValueOrDefault(action);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void performAction(long id, SemanticsAction action, object? args = null)
@@ -4136,7 +4144,7 @@ public class SemanticsOwner : ChangeNotifier
             }
         }
         return node._actions.GetValueOrDefault(action);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void performActionAt(
@@ -5030,9 +5038,7 @@ public class SemanticsConfiguration
             {
                 bool value__value243016 = (
                     __value
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 _flags = _flags.copyWith(
                     isChecked: (value__value243016) ? CheckedState.isTrue : CheckedState.isFalse
@@ -5471,7 +5477,7 @@ public class SemanticsConfiguration
             return false;
         }
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void absorb(SemanticsConfiguration child)
@@ -5665,7 +5671,7 @@ public class SemanticsConfiguration
                 }
             )
         )();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -5692,13 +5698,15 @@ public static partial class SemanticsLibrary
         {
             TextDirection otherTextDirection__value266687 = (
                 otherTextDirection
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             AttributedString directionEmbedding = (otherTextDirection__value266687) switch
             {
                 TextDirection.rtl => new AttributedString(Unicode.RLE),
                 TextDirection.ltr => new AttributedString(Unicode.LRE),
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             };
             otherAttributedString = directionEmbedding
                 .op_Add(otherAttributedString)
@@ -5711,7 +5719,7 @@ public static partial class SemanticsLibrary
         return thisAttributedString
             .op_Add(new AttributedString("\n"))
             .op_Add(otherAttributedString);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -5745,7 +5753,7 @@ public abstract class SemanticsSortKey : Diagnosticable, IComparable<SemanticsSo
             }
         }
         return name!.CompareTo(other.name!);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public abstract long doCompare(SemanticsSortKey other);
@@ -5779,7 +5787,7 @@ public class OrdinalSortKey : SemanticsSortKey
             return 0L;
         }
         return order.CompareTo(__other.order);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -5794,7 +5802,7 @@ public static partial class SemanticsLibrary
     internal static long _mergeHeadingLevels(long sourceLevel, long targetLevel)
     {
         return (targetLevel == 0L) ? sourceLevel : targetLevel;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -5807,16 +5815,13 @@ public static partial class SemanticsLibrary
             return Tristate.none;
         }
         if (
-            (
-                value
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
-            )
+            (value ?? throw new global::System.NullReferenceException("A required value was null."))
         )
         {
             return Tristate.isTrue;
         }
         return Tristate.isFalse;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -5950,6 +5955,6 @@ public static partial class SemanticsLibrary
             bitmask |= 1L << (int)30L;
         }
         return bitmask;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

@@ -117,7 +117,7 @@ public abstract class BoxBorder : ShapeBorder
         }
         ShapeBorder? result = b?.lerpFrom(a, t) ?? a?.lerpTo(b, t);
         return ((BoxBorder?)(object?)result)! ?? ((t < 0.5) ? a : b);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Path getInnerPath(Rect rect, TextDirection? textDirection = null)
@@ -133,7 +133,7 @@ public abstract class BoxBorder : ShapeBorder
                 }
             )
         )();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Path getOuterPath(Rect rect, TextDirection? textDirection = null)
@@ -149,13 +149,13 @@ public abstract class BoxBorder : ShapeBorder
                 }
             )
         )();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool hitTest(Rect rect, Offset position, TextDirection? textDirection = null)
     {
         return rect.contains(position);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paintInterior(
@@ -377,7 +377,7 @@ public class Border : BoxBorder
             bottom: BorderSide.merge(a.bottom, b.bottom),
             left: BorderSide.merge(a.left, b.left)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override EdgeInsetsGeometry dimensions
@@ -438,7 +438,7 @@ public class Border : BoxBorder
     internal virtual HashSet<Color> _distinctVisibleColors()
     {
         return new HashSet<Color>();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _hasHairlineBorder =>
@@ -461,7 +461,7 @@ public class Border : BoxBorder
             return merge(this, other__as19873);
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Border scale(double t)
@@ -472,7 +472,7 @@ public class Border : BoxBorder
             bottom: bottom.scale(t),
             left: left.scale(t)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override ShapeBorder? lerpFrom(ShapeBorder? a, double t)
@@ -483,7 +483,7 @@ public class Border : BoxBorder
             return lerp(a__as20414, this, t);
         }
         return base.lerpFrom(a, t);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override ShapeBorder? lerpTo(ShapeBorder? b, double t)
@@ -494,7 +494,7 @@ public class Border : BoxBorder
             return lerp(this, b__as20581, t);
         }
         return base.lerpTo(b, t);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static Border? lerp(Border? a, Border? b, double t)
@@ -517,7 +517,7 @@ public class Border : BoxBorder
             bottom: BorderSide.lerp(a.bottom, b.bottom, t),
             left: BorderSide.lerp(a.left, b.left, t)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paint(
@@ -690,7 +690,7 @@ public class Border : BoxBorder
         }
         var arguments = new List<string>();
         return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "Border")}({string.Join(", ", arguments)})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -738,7 +738,7 @@ public class BorderDirectional : BoxBorder
             end: BorderSide.merge(a.end, b.end),
             bottom: BorderSide.merge(a.bottom, b.bottom)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override EdgeInsetsGeometry dimensions
@@ -799,7 +799,7 @@ public class BorderDirectional : BoxBorder
     internal virtual HashSet<Color> _distinctVisibleColors()
     {
         return new HashSet<Color>();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _hasHairlineBorder =>
@@ -864,7 +864,7 @@ public class BorderDirectional : BoxBorder
             );
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override BorderDirectional scale(double t)
@@ -875,7 +875,7 @@ public class BorderDirectional : BoxBorder
             end: end.scale(t),
             bottom: bottom.scale(t)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override ShapeBorder? lerpFrom(ShapeBorder? a, double t)
@@ -886,7 +886,7 @@ public class BorderDirectional : BoxBorder
             return lerp(a__as33516, this, t);
         }
         return base.lerpFrom(a, t);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override ShapeBorder? lerpTo(ShapeBorder? b, double t)
@@ -897,7 +897,7 @@ public class BorderDirectional : BoxBorder
             return lerp(this, b__as33705, t);
         }
         return base.lerpTo(b, t);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static BorderDirectional? lerp(BorderDirectional? a, BorderDirectional? b, double t)
@@ -920,7 +920,7 @@ public class BorderDirectional : BoxBorder
             bottom: BorderSide.lerp(a.bottom, b.bottom, t),
             start: BorderSide.lerp(a.start, b.start, t)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paint(
@@ -974,12 +974,14 @@ public class BorderDirectional : BoxBorder
         DartRuntimePrimitives.Assert(() => textDirection is not null);
         var (leftLocal, rightLocal) = (
             textDirection
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         ) switch
         {
             TextDirection.rtl => ((BorderSide, BorderSide))(end, start),
             TextDirection.ltr => ((BorderSide, BorderSide))(start, end),
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         HashSet<Color> visibleColors = _distinctVisibleColors();
         bool hasHairlineBorder = _hasHairlineBorder;
@@ -999,9 +1001,7 @@ public class BorderDirectional : BoxBorder
                 borderRadius: borderRadius,
                 textDirection: (
                     textDirection
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 top: Equals(top.style, BorderStyle.none) ? BorderSide.none : top,
                 right: Equals(rightLocal.style, BorderStyle.none) ? BorderSide.none : rightLocal,
@@ -1061,6 +1061,6 @@ public class BorderDirectional : BoxBorder
     {
         var arguments = new List<string>();
         return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "BorderDirectional")}({string.Join(", ", arguments)})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

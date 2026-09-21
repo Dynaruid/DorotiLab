@@ -58,7 +58,7 @@ public class DropdownMenuThemeData : Diagnosticable
             menuStyle: menuStyle ?? this.menuStyle,
             disabledColor: disabledColor ?? this.disabledColor
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static DropdownMenuThemeData lerp(
@@ -77,7 +77,7 @@ public class DropdownMenuThemeData : Diagnosticable
             menuStyle: MenuStyle.lerp(a?.menuStyle, b?.menuStyle, t),
             disabledColor: Dart_uiLibrary.Color.lerp(a?.disabledColor, b?.disabledColor, t)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override int GetHashCode() =>
@@ -146,7 +146,7 @@ public class DropdownMenuThemeData : Diagnosticable
             return true;
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -155,7 +155,7 @@ public class DropdownMenuThemeData : Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -176,19 +176,19 @@ public class DropdownMenuTheme : InheritedTheme
     public static DropdownMenuThemeData of(BuildContext context)
     {
         return maybeOf(context) ?? Theme.of(context).dropdownMenuTheme;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static DropdownMenuThemeData? maybeOf(BuildContext context)
     {
         return context.dependOnInheritedWidgetOfExactType<DropdownMenuTheme>()?.data;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget wrap(BuildContext context, Widget child)
     {
         return new DropdownMenuTheme(data: data, child: child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget) =>

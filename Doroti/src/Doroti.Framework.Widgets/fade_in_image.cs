@@ -260,7 +260,7 @@ public class FadeInImage : StatefulWidget
                             (
                                 placeholderScale
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             )
                         )
@@ -368,7 +368,7 @@ internal class _FadeInImageState__fade_in_image : State<FadeInImage>
             gaplessPlayback: true,
             excludeFromSemantics: true
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -407,7 +407,9 @@ internal class _FadeInImageState__fade_in_image : State<FadeInImage>
                     fadeInCurve: widget.fadeInCurve,
                     fadeOutCurve: widget.fadeOutCurve
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
         if (!widget.excludeFromSemantics)
@@ -422,7 +424,7 @@ internal class _FadeInImageState__fade_in_image : State<FadeInImage>
             );
         }
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -569,7 +571,7 @@ internal class _AnimatedFadeOutFadeInState__fade_in_image
             textDirection: TextDirection.ltr,
             children: new List<Widget> { widget.target, widget.placeholder }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)

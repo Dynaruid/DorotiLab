@@ -30,7 +30,7 @@ public class RoundedRectangleBorder : OutlinedBorder, _RRectLikeBorder__rounded_
             side: side.scale(t),
             borderRadius: borderRadius.op_Multiply(t)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override ShapeBorder? lerpFrom(ShapeBorder? a, double t)
@@ -54,7 +54,7 @@ public class RoundedRectangleBorder : OutlinedBorder, _RRectLikeBorder__rounded_
             );
         }
         return base.lerpFrom(a, t);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override ShapeBorder? lerpTo(ShapeBorder? b, double t)
@@ -78,7 +78,7 @@ public class RoundedRectangleBorder : OutlinedBorder, _RRectLikeBorder__rounded_
             );
         }
         return base.lerpTo(b, t);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override RoundedRectangleBorder copyWith(
@@ -103,7 +103,7 @@ public class RoundedRectangleBorder : OutlinedBorder, _RRectLikeBorder__rounded_
             side: side ?? this.side,
             borderRadius: borderRadius ?? this.borderRadius
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Path getInnerPath(Rect rect, TextDirection? textDirection = null)
@@ -120,7 +120,7 @@ public class RoundedRectangleBorder : OutlinedBorder, _RRectLikeBorder__rounded_
                 }
             )
         )();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Path getOuterPath(Rect rect, TextDirection? textDirection = null)
@@ -135,7 +135,7 @@ public class RoundedRectangleBorder : OutlinedBorder, _RRectLikeBorder__rounded_
                 }
             )
         )();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool hitTest(Rect rect, Offset position, TextDirection? textDirection = null)
@@ -146,7 +146,7 @@ public class RoundedRectangleBorder : OutlinedBorder, _RRectLikeBorder__rounded_
             return rect.contains(position);
         }
         return resolvedBorderRadius.toRRect(rect).contains(position);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paintInterior(
@@ -235,7 +235,7 @@ public class RoundedRectangleBorder : OutlinedBorder, _RRectLikeBorder__rounded_
     public override string ToString()
     {
         return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "RoundedRectangleBorder")}({side}, {borderRadius})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -268,7 +268,7 @@ internal class _RoundedRectangleToCircleBorder__rounded_rectangle_border
         {
             double inflation__value5719 = (
                 inflation
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             rrect = rrect.inflate(((inflation__value5719)));
         }
@@ -282,7 +282,7 @@ internal class _RoundedRectangleToCircleBorder__rounded_rectangle_border
         {
             double inflation__value5959 = (
                 inflation
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             rrect = rrect.inflate(((inflation__value5959)));
         }
@@ -296,13 +296,13 @@ internal class _RoundedRectangleToCircleBorder__rounded_rectangle_border
                 }
             )
         )();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool containsOuterShape(Rect rect, BorderRadius radius, Offset position)
     {
         return radius.toRRect(rect).contains(position);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override _RoundedRectangleToCircleBorder__rounded_rectangle_border copyWith(
@@ -329,7 +329,7 @@ internal class _RoundedRectangleToCircleBorder__rounded_rectangle_border
             circularity: circularity ?? this.circularity,
             eccentricity: eccentricity ?? this.eccentricity
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -352,7 +352,7 @@ public class RoundedSuperellipseBorder : OutlinedBorder, _RRectLikeBorder__round
             side: side.scale(t),
             borderRadius: borderRadius.op_Multiply(t)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override ShapeBorder? lerpFrom(ShapeBorder? a, double t)
@@ -376,7 +376,7 @@ public class RoundedSuperellipseBorder : OutlinedBorder, _RRectLikeBorder__round
             );
         }
         return base.lerpFrom(a, t);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override ShapeBorder? lerpTo(ShapeBorder? b, double t)
@@ -400,7 +400,7 @@ public class RoundedSuperellipseBorder : OutlinedBorder, _RRectLikeBorder__round
             );
         }
         return base.lerpTo(b, t);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override RoundedSuperellipseBorder copyWith(
@@ -425,7 +425,7 @@ public class RoundedSuperellipseBorder : OutlinedBorder, _RRectLikeBorder__round
             side: side ?? this.side,
             borderRadius: borderRadius ?? this.borderRadius
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Path getInnerPath(Rect rect, TextDirection? textDirection = null)
@@ -458,7 +458,7 @@ public class RoundedSuperellipseBorder : OutlinedBorder, _RRectLikeBorder__round
                 )
             )();
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Path getOuterPath(Rect rect, TextDirection? textDirection = null)
@@ -491,7 +491,7 @@ public class RoundedSuperellipseBorder : OutlinedBorder, _RRectLikeBorder__round
                 )
             )();
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool hitTest(Rect rect, Offset position, TextDirection? textDirection = null)
@@ -502,7 +502,7 @@ public class RoundedSuperellipseBorder : OutlinedBorder, _RRectLikeBorder__round
             return rect.contains(position);
         }
         return resolvedBorderRadius.toRSuperellipse(rect).contains(position);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paintInterior(
@@ -584,7 +584,7 @@ public class RoundedSuperellipseBorder : OutlinedBorder, _RRectLikeBorder__round
     public override string ToString()
     {
         return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "RoundedSuperellipseBorder")}({side}, {borderRadius})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -617,7 +617,7 @@ internal class _RoundedSuperellipseToCircleBorder__rounded_rectangle_border
         {
             double inflation__value12640 = (
                 inflation
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             rsuperellipse = rsuperellipse.inflate(((inflation__value12640)));
         }
@@ -631,7 +631,7 @@ internal class _RoundedSuperellipseToCircleBorder__rounded_rectangle_border
         {
             double inflation__value12936 = (
                 inflation
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             rsuperellipse = rsuperellipse.inflate(((inflation__value12936)));
         }
@@ -645,13 +645,13 @@ internal class _RoundedSuperellipseToCircleBorder__rounded_rectangle_border
                 }
             )
         )();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool containsOuterShape(Rect rect, BorderRadius radius, Offset position)
     {
         return radius.toRSuperellipse(rect).contains(position);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override _RoundedSuperellipseToCircleBorder__rounded_rectangle_border copyWith(
@@ -678,7 +678,7 @@ internal class _RoundedSuperellipseToCircleBorder__rounded_rectangle_border
             circularity: circularity ?? this.circularity,
             eccentricity: eccentricity ?? this.eccentricity
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -721,7 +721,7 @@ internal abstract class _ShapeToCircleBorder__rounded_rectangle_border<T> : Outl
             circularity: t,
             eccentricity: eccentricity
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override ShapeBorder? lerpFrom(ShapeBorder? a, double t)
@@ -762,7 +762,7 @@ internal abstract class _ShapeToCircleBorder__rounded_rectangle_border<T> : Outl
             );
         }
         return base.lerpFrom(a, t);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override ShapeBorder? lerpTo(ShapeBorder? b, double t)
@@ -803,7 +803,7 @@ internal abstract class _ShapeToCircleBorder__rounded_rectangle_border<T> : Outl
             );
         }
         return base.lerpTo(b, t);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Rect _adjustRect(Rect rect)
@@ -829,7 +829,7 @@ internal abstract class _ShapeToCircleBorder__rounded_rectangle_border<T> : Outl
                 rect.bottom
             );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual BorderRadius _adjustBorderRadius(Rect rect, TextDirection? textDirection)
@@ -873,7 +873,7 @@ internal abstract class _ShapeToCircleBorder__rounded_rectangle_border<T> : Outl
             BorderRadius.CreateCircular(rect.shortestSide / 2L),
             (circularity)
         )!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Path getInnerPath(Rect rect, TextDirection? textDirection = null)
@@ -883,16 +883,16 @@ internal abstract class _ShapeToCircleBorder__rounded_rectangle_border<T> : Outl
             _adjustBorderRadius(rect, textDirection),
             -(
                 Dart_uiLibrary.lerpDouble(side.width, 0L, side.strokeAlign)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Path getOuterPath(Rect rect, TextDirection? textDirection = null)
     {
         return buildPath(_adjustRect(rect), _adjustBorderRadius(rect, textDirection));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool hitTest(Rect rect, Offset position, TextDirection? textDirection = null)
@@ -904,7 +904,7 @@ internal abstract class _ShapeToCircleBorder__rounded_rectangle_border<T> : Outl
             return adjustedRect.contains(position);
         }
         return containsOuterShape(adjustedRect, adjustedBorderRadius, position);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paintInterior(
@@ -1000,6 +1000,6 @@ internal abstract class _ShapeToCircleBorder__rounded_rectangle_border<T> : Outl
             return $"{typeof(T)}({side}, {borderRadius}, {(circularity * 100L).toStringAsFixed(1L)}% of the way to being a CircleBorder that is {(eccentricity * 100L).toStringAsFixed(1L)}% oval)";
         }
         return $"{typeof(T)}({side}, {borderRadius}, {(circularity * 100L).toStringAsFixed(1L)}% of the way to being a CircleBorder)";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

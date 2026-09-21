@@ -71,7 +71,7 @@ public class ObjectKey : LocalKey
             return $"[{DiagnosticsLibrary.describeIdentity(value)}]";
         }
         return $"[{objectRuntimeTypeFunctions.objectRuntimeType(this, "ObjectKey")} {DiagnosticsLibrary.describeIdentity(value)}]";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -123,7 +123,7 @@ public class LabeledGlobalKey<T> : GlobalKey<T>
             return $"[GlobalKey#{DiagnosticsLibrary.shortHash(this)}{label}]";
         }
         return $"[{DiagnosticsLibrary.describeIdentity(this)}{label}]";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -165,7 +165,7 @@ public class GlobalObjectKey<T> : GlobalKey<T>
             selfType = selfType.substring(0L, selfType.Length - suffix.Length);
         }
         return $"[{selfType} {DiagnosticsLibrary.describeIdentity(value)}]";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -211,7 +211,7 @@ public abstract class Widget : DiagnosticableTree
     {
         string @type = objectRuntimeTypeFunctions.objectRuntimeType(this, "Widget");
         return (key is null) ? @type : $"{@type}-{key}";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -240,13 +240,13 @@ public abstract class Widget : DiagnosticableTree
                 DartRuntimePrimitives.RuntimeType(oldWidget),
                 DartRuntimePrimitives.RuntimeType(newWidget)
             ) && Equals(oldWidget.key, newWidget.key);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static long _debugConcreteSubtype(Widget widget)
     {
         return (widget is StatefulWidget) ? 1L : ((widget is StatelessWidget) ? 2L : 0L);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -308,7 +308,9 @@ public abstract class State<T> : IState, Diagnosticable
                     );
                 }
                 return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             });
             return _element!;
         }
@@ -384,7 +386,7 @@ public abstract class State<T> : IState, Diagnosticable
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         object? result = DartRuntimePrimitives.CaptureVoid(() => fn());
         DartRuntimePrimitives.Assert(() =>
@@ -411,7 +413,7 @@ public abstract class State<T> : IState, Diagnosticable
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         _element!.markNeedsBuild();
     }
@@ -429,7 +431,7 @@ public abstract class State<T> : IState, Diagnosticable
         {
             _debugLifecycleState = _StateLifecycle__framework.defunct;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         DartRuntimePrimitives.Assert(() =>
             Foundation.DebugLibrary.debugMaybeDispatchDisposed(this)
@@ -452,7 +454,7 @@ public abstract class State<T> : IState, Diagnosticable
                 )
             );
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         properties.add(new ObjectFlagProperty<T>("_widget", _widget, ifNull: "no widget"));
         properties.add(
@@ -496,10 +498,10 @@ public abstract class State<T> : IState, Diagnosticable
                 .toDiagnosticsNode()
                 .toStringDeep(minLevel: minLevel);
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -508,7 +510,7 @@ public abstract class State<T> : IState, Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -535,7 +537,7 @@ public abstract class ParentDataWidget<T> : ProxyWidget
         DartRuntimePrimitives.Assert(() => !Equals(typeof(T), typeof(object)));
         DartRuntimePrimitives.Assert(() => !Equals(typeof(T), typeof(ParentData)));
         return renderObject.parentData is T;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public abstract Type debugTypicalAncestorWidgetClass { get; }
@@ -559,7 +561,7 @@ public abstract class ParentDataWidget<T> : ProxyWidget
                     + $"Typically, {GetType()} widgets are placed directly inside {debugTypicalAncestorWidgetDescription} widgets."
             ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public abstract void applyParentData(RenderObject renderObject);
@@ -662,7 +664,7 @@ internal class _InactiveElements__framework
                 }
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         element.visitChildren(
             (child) =>
@@ -721,7 +723,7 @@ internal class _InactiveElements__framework
         {
             element.debugDeactivated();
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
     }
 
@@ -776,10 +778,10 @@ internal class _InactiveElements__framework
         {
             result = _elements.Contains(element);
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -901,7 +903,9 @@ public class BuildScope
                         .toTimelineArguments();
                 }
                 return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             });
             FlutterTimeline.startSync(
                 $"{DartRuntimePrimitives.RuntimeType(element.widget)}",
@@ -967,7 +971,7 @@ public class BuildScope
                 }
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _flushDirtyElements(Element debugBuildRoot)
@@ -1028,7 +1032,9 @@ public class BuildScope
                     );
                 }
                 return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             });
         }
         finally
@@ -1051,7 +1057,7 @@ public class BuildScope
         if (
             !(
                 _dirtyElementsNeedsResorting
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         )
         {
@@ -1076,10 +1082,10 @@ public class BuildScope
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return index;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1165,7 +1171,7 @@ public class BuildOwner
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         BuildScope buildScopeLocal = element.buildScope;
         DartRuntimePrimitives.Assert(() =>
@@ -1197,7 +1203,7 @@ public class BuildOwner
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         if (!_scheduledFlushDirtyElements && (onBuildScheduled is not null))
         {
@@ -1214,7 +1220,7 @@ public class BuildOwner
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
     }
 
@@ -1229,7 +1235,7 @@ public class BuildOwner
         {
             _debugStateLockLevel += 1L;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         try
         {
@@ -1241,7 +1247,9 @@ public class BuildOwner
             {
                 _debugStateLockLevel -= 1L;
                 return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             });
         }
         DartRuntimePrimitives.Assert(() => _debugStateLockLevel >= 0L);
@@ -1268,7 +1276,7 @@ public class BuildOwner
             _debugStateLockLevel += 1L;
             _debugBuilding = true;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         if (!Foundation.ConstantsLibrary.kReleaseMode)
         {
@@ -1287,7 +1295,9 @@ public class BuildOwner
                     }.cast<string, string>();
                 }
                 return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             });
             FlutterTimeline.startSync("BUILD", arguments: debugTimelineArguments);
         }
@@ -1304,7 +1314,9 @@ public class BuildOwner
                     debugPreviousBuildTarget = _debugCurrentBuildTarget;
                     _debugCurrentBuildTarget = context;
                     return true;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 });
                 try
                 {
@@ -1321,7 +1333,7 @@ public class BuildOwner
                         _debugElementWasRebuilt(context);
                         return true;
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     });
                 }
@@ -1346,7 +1358,9 @@ public class BuildOwner
                     PrintLibrary.debugPrint("buildScope finished");
                 }
                 return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             });
         }
         DartRuntimePrimitives.Assert(() => _debugStateLockLevel >= 0L);
@@ -1377,7 +1391,7 @@ public class BuildOwner
         {
             _debugGlobalKeyReservations?.GetValueOrDefault(parent)?.remove(child);
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
     }
 
@@ -1397,7 +1411,7 @@ public class BuildOwner
                 _debugIllFatedElements?.Add(oldElement);
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         _globalKeyRegistry[key] = element;
     }
@@ -1420,7 +1434,7 @@ public class BuildOwner
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         if (Equals(_globalKeyRegistry.GetValueOrDefault(key), element))
         {
@@ -1444,7 +1458,7 @@ public class BuildOwner
             }
 
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
     }
 
@@ -1548,7 +1562,7 @@ public class BuildOwner
             );
             _debugGlobalKeyReservations?.Clear();
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
     }
 
@@ -1596,7 +1610,7 @@ public class BuildOwner
                 throw DartRuntimePrimitives.AsException(new FlutterError(information));
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
     }
 
@@ -1729,7 +1743,9 @@ public class BuildOwner
                     _debugElementsThatWillNeedToBeRebuiltDueToGlobalKeyShenanigans?.Clear();
                 }
                 return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             });
         }
         catch (Exception e)
@@ -1804,7 +1820,7 @@ public static partial class FrameworkLibrary
                 DebugLibrary.debugProfileBuildsEnabledUserWidgets
                 && Widget_inspectorLibrary.debugIsWidgetLocalCreation(widget)
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1883,7 +1899,9 @@ public abstract class Element : DiagnosticableTree, BuildContext
                     );
                 }
                 return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             });
             return _depth;
         }
@@ -1902,13 +1920,13 @@ public abstract class Element : DiagnosticableTree, BuildContext
             return isBDirty ? -1L : 1L;
         }
         return 0L;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static long _debugConcreteSubtype(Element element)
     {
         return (element is StatefulElement) ? 1L : ((element is StatelessElement) ? 2L : 0L);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Widget widget => DartRuntimePrimitives.ConvertValue<Widget>(_widget!);
@@ -1922,7 +1940,9 @@ public abstract class Element : DiagnosticableTree, BuildContext
             {
                 isDefunct = Equals(_lifecycleState, _ElementLifecycle__framework.defunct);
                 return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             });
             return isDefunct;
         }
@@ -1936,7 +1956,9 @@ public abstract class Element : DiagnosticableTree, BuildContext
             {
                 isActive = Equals(_lifecycleState, _ElementLifecycle__framework.active);
                 return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             });
             return isActive;
         }
@@ -1964,7 +1986,7 @@ public abstract class Element : DiagnosticableTree, BuildContext
             element = element._parent;
         }
         return Equals(element, target);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual RenderObject? renderObject
@@ -2020,7 +2042,9 @@ public abstract class Element : DiagnosticableTree, BuildContext
             {
                 ancestors.Add(element);
                 return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
         information.Add(
@@ -2046,7 +2070,7 @@ public abstract class Element : DiagnosticableTree, BuildContext
             );
         }
         return information;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static DiagnosticsNode describeElements(string name, IEnumerable<Element> elements)
@@ -2060,7 +2084,7 @@ public abstract class Element : DiagnosticableTree, BuildContext
                 .ToList(),
             allowTruncate: true
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode describeElement(
@@ -2069,7 +2093,7 @@ public abstract class Element : DiagnosticableTree, BuildContext
     )
     {
         return new DiagnosticsProperty<Element>(name, this, style: (style));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode describeWidget(
@@ -2078,13 +2102,13 @@ public abstract class Element : DiagnosticableTree, BuildContext
     )
     {
         return new DiagnosticsProperty<Element>(name, this, style: (style));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode describeOwnershipChain(string name)
     {
         return new StringProperty(name, debugGetCreatorChain(10L));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void visitChildren(Action<Element> visitor) { }
@@ -2114,7 +2138,7 @@ public abstract class Element : DiagnosticableTree, BuildContext
                     }
                 )
             );
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         visitChildren(visitor);
     }
@@ -2149,7 +2173,9 @@ public abstract class Element : DiagnosticableTree, BuildContext
                 long newWidgetClass = Widget._debugConcreteSubtype(newWidget);
                 hasSameSuperclass = oldElementClass == newWidgetClass;
                 return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             });
             if (hasSameSuperclass && Equals(child.widget, newWidget))
             {
@@ -2186,7 +2212,7 @@ public abstract class Element : DiagnosticableTree, BuildContext
                             }
                             return true;
                             throw new InvalidOperationException(
-                                "Dart closure completed without a value."
+                                "Callback completed without returning a value."
                             );
                         });
                         FlutterTimeline.startSync(
@@ -2205,7 +2231,7 @@ public abstract class Element : DiagnosticableTree, BuildContext
                         child.owner!._debugElementWasRebuilt(child);
                         return true;
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     });
                     newChild = child;
@@ -2236,10 +2262,10 @@ public abstract class Element : DiagnosticableTree, BuildContext
                 owner!._debugReserveGlobalKeyFor(this, newChild, key__175416__as175447);
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return newChild;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual List<Element> updateChildren(
@@ -2255,14 +2281,18 @@ public abstract class Element : DiagnosticableTree, BuildContext
         Element? replaceWithNullIfForgotten(Element child)
         {
             return (forgottenChildren?.Contains(child) ?? false) ? null : child;
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         object? slotFor(long newChildIndex, Element? previousChild)
         {
             return (slots is not null)
                 ? slots[(int)newChildIndex]
                 : new IndexedSlot<Element?>(newChildIndex, previousChild);
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         var newChildrenTop = 0L;
         var oldChildrenTop = 0L;
@@ -2444,7 +2474,7 @@ public abstract class Element : DiagnosticableTree, BuildContext
             newChildren.All((element) => element is not _NullElement__framework)
         );
         return newChildren;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void mount(Element? parent, object? newSlot)
@@ -2513,7 +2543,7 @@ public abstract class Element : DiagnosticableTree, BuildContext
             );
             _debugForgottenChildrenWithGlobalKey?.Clear();
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         _widget = newWidget;
     }
@@ -2622,7 +2652,7 @@ public abstract class Element : DiagnosticableTree, BuildContext
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         Element? parent = element._parent;
         if (parent is not null)
@@ -2665,7 +2695,9 @@ public abstract class Element : DiagnosticableTree, BuildContext
                     key
                 );
                 return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             });
             parent.forgetChild(element);
             parent.deactivateChild(element);
@@ -2673,7 +2705,7 @@ public abstract class Element : DiagnosticableTree, BuildContext
         DartRuntimePrimitives.Assert(() => element._parent is null);
         owner!._inactiveElements.remove(element);
         return element;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Element inflateWidget(Widget newWidget, object? newSlot)
@@ -2696,7 +2728,9 @@ public abstract class Element : DiagnosticableTree, BuildContext
                         .toTimelineArguments();
                 }
                 return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             });
             FlutterTimeline.startSync(
                 $"{DartRuntimePrimitives.RuntimeType(newWidget)}",
@@ -2715,7 +2749,9 @@ public abstract class Element : DiagnosticableTree, BuildContext
             {
                 _debugCheckForCycles(newChild);
                 return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             });
             try
             {
@@ -2749,7 +2785,7 @@ public abstract class Element : DiagnosticableTree, BuildContext
                 FlutterTimeline.finishSync();
             }
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _debugCheckForCycles(Element newChild)
@@ -2764,7 +2800,7 @@ public abstract class Element : DiagnosticableTree, BuildContext
             }
             DartRuntimePrimitives.Assert(() => !Equals(node, newChild));
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
     }
 
@@ -2784,7 +2820,7 @@ public abstract class Element : DiagnosticableTree, BuildContext
                 }
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
     }
 
@@ -2826,7 +2862,7 @@ public abstract class Element : DiagnosticableTree, BuildContext
                 _debugForgottenChildrenWithGlobalKey?.Add(child);
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
     }
 
@@ -2844,7 +2880,7 @@ public abstract class Element : DiagnosticableTree, BuildContext
                 PrintLibrary.debugPrint($"Reactivating {this} (now child of {_parent}).");
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         _updateDepth(_parent!.depth);
         _updateBuildScopeRecursively();
@@ -2998,10 +3034,10 @@ public abstract class Element : DiagnosticableTree, BuildContext
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return renderObject;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Size? size
@@ -3060,7 +3096,9 @@ public abstract class Element : DiagnosticableTree, BuildContext
                     );
                 }
                 return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             });
             RenderObject? renderObject = findRenderObject();
             DartRuntimePrimitives.Assert(() =>
@@ -3195,7 +3233,9 @@ public abstract class Element : DiagnosticableTree, BuildContext
                     );
                 }
                 return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             });
             if (renderObject is RenderBox)
             {
@@ -3233,16 +3273,16 @@ public abstract class Element : DiagnosticableTree, BuildContext
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool doesDependOnInheritedElement(InheritedElement ancestor)
     {
         return _dependencies?.Contains(ancestor) ?? false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual InheritedWidget dependOnInheritedElement(
@@ -3258,7 +3298,7 @@ public abstract class Element : DiagnosticableTree, BuildContext
         (_dependencies ??= new HashSet<InheritedElement>()).Add(ancestor);
         ancestor.updateDependencies(this, aspect);
         return ((InheritedWidget?)ancestor.widget)!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual T? dependOnInheritedWidgetOfExactType<T>(object? aspect = null)
@@ -3271,20 +3311,20 @@ public abstract class Element : DiagnosticableTree, BuildContext
         }
         _hadUnsatisfiedDependencies = true;
         return default;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual T? getInheritedWidgetOfExactType<T>()
     {
         return ((T?)(object?)getElementForInheritedWidgetOfExactType<T>()?.widget)!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual InheritedElement? getElementForInheritedWidgetOfExactType<T>()
     {
         DartRuntimePrimitives.Assert(() => _debugCheckStateIsActiveForAncestorLookup());
         return _inheritedElements?.GetValueOrDefault(typeof(T));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void attachNotificationTree()
@@ -3313,7 +3353,7 @@ public abstract class Element : DiagnosticableTree, BuildContext
             ancestor = ancestor._parent;
         }
         return ((T?)(object?)ancestor?.widget)!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual T? findAncestorStateOfType<T>()
@@ -3331,7 +3371,7 @@ public abstract class Element : DiagnosticableTree, BuildContext
         }
         var statefulAncestor = ((StatefulElement?)ancestor)!;
         return ((T?)(object?)statefulAncestor?.state)!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual T? findRootAncestorStateOfType<T>()
@@ -3349,7 +3389,7 @@ public abstract class Element : DiagnosticableTree, BuildContext
             ancestor = ancestor._parent;
         }
         return ((T?)(object?)statefulAncestor?.state)!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual T? findAncestorRenderObjectOfType<T>()
@@ -3369,7 +3409,7 @@ public abstract class Element : DiagnosticableTree, BuildContext
             ancestor = ancestor._parent;
         }
         return default;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void visitAncestorElements(Func<Element, bool> visitor)
@@ -3429,10 +3469,10 @@ public abstract class Element : DiagnosticableTree, BuildContext
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual string debugGetCreatorChain(long limit)
@@ -3449,7 +3489,7 @@ public abstract class Element : DiagnosticableTree, BuildContext
             chain.Add("⋯");
         }
         return string.Join(" ← ", chain);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual List<Element> debugGetDiagnosticChain()
@@ -3462,7 +3502,7 @@ public abstract class Element : DiagnosticableTree, BuildContext
             node = node._parent;
         }
         return chain;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void dispatchNotification(Notification notification)
@@ -3480,7 +3520,7 @@ public abstract class Element : DiagnosticableTree, BuildContext
     )
     {
         return new _ElementDiagnosticableTreeNode__framework(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -3550,7 +3590,7 @@ public abstract class Element : DiagnosticableTree, BuildContext
             }
         );
         return children;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool dirty => _dirty;
@@ -3634,7 +3674,7 @@ public abstract class Element : DiagnosticableTree, BuildContext
                 }
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         if (dirty)
         {
@@ -3669,7 +3709,7 @@ public abstract class Element : DiagnosticableTree, BuildContext
                 }
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         DartRuntimePrimitives.Assert(() =>
             Equals(_lifecycleState, _ElementLifecycle__framework.active)
@@ -3681,7 +3721,7 @@ public abstract class Element : DiagnosticableTree, BuildContext
             debugPreviousBuildTarget = owner!._debugCurrentBuildTarget;
             owner!._debugCurrentBuildTarget = this;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         try
         {
@@ -3709,7 +3749,9 @@ public abstract class Element : DiagnosticableTree, BuildContext
                 DartRuntimePrimitives.Assert(() => Equals(owner!._debugCurrentBuildTarget, this));
                 owner!._debugCurrentBuildTarget = debugPreviousBuildTarget;
                 return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             });
         }
         DartRuntimePrimitives.Assert(() => !_dirty);
@@ -3749,7 +3791,7 @@ internal class _ElementDiagnosticableTreeNode__framework
         }
         json["stateful"] = stateful;
         return json;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -3784,14 +3826,14 @@ public class ErrorWidget : LeafRenderObjectWidget
             messageLocal =
                 $"{_stringify(details.exception)}\nSee also: https://docs.flutter.dev/testing/errors";
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         object exceptionLocal = details.exception;
         return CreateWithDetails(
             message: messageLocal,
             error: (exceptionLocal is FlutterError) ? ((FlutterError)exceptionLocal) : null
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static string _stringify(object? exception)
@@ -3802,7 +3844,7 @@ public class ErrorWidget : LeafRenderObjectWidget
         }
         catch (Exception) { }
         return "Error";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override RenderObject createRenderObject(BuildContext context) =>
@@ -3870,14 +3912,18 @@ public abstract class ComponentElement : Element
             {
                 _debugDoingBuild = true;
                 return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             });
             built = build();
             DartRuntimePrimitives.Assert(() =>
             {
                 _debugDoingBuild = false;
                 return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             });
             DebugLibrary.debugWidgetBuilderValue(widget, built);
         }
@@ -4010,20 +4056,20 @@ public class StatefulElement : ComponentElement
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         DartRuntimePrimitives.Assert(() =>
         {
             state._debugLifecycleState = _StateLifecycle__framework.initialized;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         state.didChangeDependencies();
         DartRuntimePrimitives.Assert(() =>
         {
             state._debugLifecycleState = _StateLifecycle__framework.ready;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         base._firstBuild();
     }
@@ -4078,7 +4124,7 @@ public class StatefulElement : ComponentElement
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         rebuild(force: true);
     }
@@ -4123,7 +4169,7 @@ public class StatefulElement : ComponentElement
                     }
                 )
             );
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         state._element = null;
         _state = null;
@@ -4197,10 +4243,10 @@ public class StatefulElement : ComponentElement
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return base.dependOnInheritedElement(ancestor!, aspect: aspect);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void didChangeDependencies()
@@ -4220,7 +4266,7 @@ public class StatefulElement : ComponentElement
             style: style,
             stateful: true
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -4276,7 +4322,9 @@ public class ParentDataElement<T> : ProxyElement, IParentDataElement
             {
                 @type = typeof(T);
                 return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             });
             if (@type is not null)
             {
@@ -4356,7 +4404,7 @@ public class InheritedElement : ProxyElement
     public virtual object? getDependencies(Element dependent)
     {
         return _dependents.GetValueOrDefault(dependent);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void setDependencies(Element dependent, object? value)
@@ -4402,7 +4450,9 @@ public class InheritedElement : ProxyElement
                     ancestor = ancestor._parent;
                 }
                 return Equals(ancestor, this);
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             });
             DartRuntimePrimitives.Assert(() => dependent._dependencies!.Contains(this));
             notifyDependent(__oldWidget, dependent);
@@ -4446,7 +4496,9 @@ public abstract class RenderObjectElement : Element
                     ancestor = null;
                 }
                 return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             });
             ancestor = ancestor?._parent;
         }
@@ -4457,10 +4509,10 @@ public abstract class RenderObjectElement : Element
                 ancestor = null;
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return ((RenderObjectElement?)ancestor)!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _debugCheckCompetingAncestors(
@@ -4527,7 +4579,7 @@ public abstract class RenderObjectElement : Element
                 }
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
     }
 
@@ -4554,7 +4606,9 @@ public abstract class RenderObjectElement : Element
                         debugAncestorCulprits.Add(DartRuntimePrimitives.RuntimeType(ancestor));
                     }
                     return true;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 });
                 result.Add(ancestor__283177__as284599);
             }
@@ -4573,10 +4627,10 @@ public abstract class RenderObjectElement : Element
                 debugAncestorCulprits
             );
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void mount(Element? parent, object? newSlot)
@@ -4586,26 +4640,26 @@ public abstract class RenderObjectElement : Element
         {
             _debugDoingBuild = true;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         _renderObject = ((RenderObjectWidget?)widget)!.createRenderObject(this);
         DartRuntimePrimitives.Assert(() =>
             !(
                 _renderObject!.debugDisposed
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );
         DartRuntimePrimitives.Assert(() =>
         {
             _debugDoingBuild = false;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         DartRuntimePrimitives.Assert(() =>
         {
             _debugUpdateRenderObjectOwner();
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         DartRuntimePrimitives.Assert(() => Equals(slot, newSlot));
         attachRenderObject(newSlot);
@@ -4621,7 +4675,7 @@ public abstract class RenderObjectElement : Element
         {
             _debugUpdateRenderObjectOwner();
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         _performRebuild();
     }
@@ -4632,7 +4686,7 @@ public abstract class RenderObjectElement : Element
         {
             renderObject.debugCreator = new DebugCreator(this);
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
     }
 
@@ -4647,14 +4701,14 @@ public abstract class RenderObjectElement : Element
         {
             _debugDoingBuild = true;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         ((RenderObjectWidget?)widget)!.updateRenderObject(this, renderObject);
         DartRuntimePrimitives.Assert(() =>
         {
             _debugDoingBuild = false;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         base.performRebuild();
     }
@@ -4676,9 +4730,7 @@ public abstract class RenderObjectElement : Element
             () =>
                 !(
                     renderObject.debugDisposed
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
             () =>
                 (object?)"A RenderObject was disposed prior to its owning element being unmounted: "
@@ -4726,7 +4778,7 @@ public abstract class RenderObjectElement : Element
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         if (applyParentDataLocal)
         {
@@ -4776,7 +4828,7 @@ public abstract class RenderObjectElement : Element
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         _ancestorRenderObjectElement?.insertRenderObjectChild(renderObject, newSlot);
         List<IParentDataElement> parentDataElements = _findAncestorParentDataElements();
@@ -4867,7 +4919,7 @@ public class LeafRenderObjectElement : RenderObjectElement
     public override List<DiagnosticsNode> debugDescribeChildren()
     {
         return widget.debugDescribeChildren();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -5041,10 +5093,10 @@ public class MultiChildRenderObjectElement : RenderObjectElement
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Element inflateWidget(Widget newWidget, object? newSlot)
@@ -5052,7 +5104,7 @@ public class MultiChildRenderObjectElement : RenderObjectElement
         Element newChild = base.inflateWidget(newWidget, newSlot);
         DartRuntimePrimitives.Assert(() => _debugCheckHasAssociatedRenderObject(newChild));
         return newChild;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void mount(Element? parent, object? newSlot)
@@ -5161,7 +5213,7 @@ public abstract class RenderTreeRootElement : RenderObjectElement
             );
         }
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -5195,7 +5247,7 @@ public static partial class FrameworkLibrary
         );
         FlutterError.reportError(details);
         return details;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 

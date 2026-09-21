@@ -60,7 +60,7 @@ internal class _WidgetStateAnd__widget_state : _WidgetStateCombo__widget_state
     public override bool isSatisfiedBy(HashSet<WidgetState> states)
     {
         return first.isSatisfiedBy(states) && second.isSatisfiedBy(states);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool Equals(object? other)
@@ -92,7 +92,7 @@ internal class _WidgetStateOr__widget_state : _WidgetStateCombo__widget_state
     public override bool isSatisfiedBy(HashSet<WidgetState> states)
     {
         return first.isSatisfiedBy(states) || second.isSatisfiedBy(states);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool Equals(object? other)
@@ -288,7 +288,7 @@ public abstract class WidgetStateMouseCursor : MouseCursor, WidgetStateProperty<
     public override MouseCursorSession createSession(long device)
     {
         return resolve(new HashSet<WidgetState>()).createSession(device);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static WidgetStateMouseCursor CreateFromMap(DartMap<WidgetState, MouseCursor> map) =>
@@ -303,7 +303,7 @@ public abstract class WidgetStateMouseCursor : MouseCursor, WidgetStateProperty<
             return SystemMouseCursors.basic;
         }
         return SystemMouseCursors.click;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static MouseCursor _adaptiveClickable(HashSet<WidgetState> states)
@@ -315,7 +315,7 @@ public abstract class WidgetStateMouseCursor : MouseCursor, WidgetStateProperty<
         return Foundation.ConstantsLibrary.kIsWeb
             ? SystemMouseCursors.click
             : SystemMouseCursors.basic;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static MouseCursor _textable(HashSet<WidgetState> states)
@@ -325,7 +325,7 @@ public abstract class WidgetStateMouseCursor : MouseCursor, WidgetStateProperty<
             return SystemMouseCursors.basic;
         }
         return SystemMouseCursors.text;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -380,7 +380,7 @@ public abstract class WidgetStateBorderSide : BorderSide, WidgetStateProperty<Bo
             return a;
         }
         return (WidgetStateProperty<BorderSide?>?)new _LerpSides__widget_state(a, b, t);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -428,7 +428,7 @@ internal class _LerpSides__widget_state : WidgetStateProperty<BorderSide?>
                 );
         }
         return (BorderSide?)BorderSide.lerp(resolvedA, resolvedB, t);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -592,7 +592,7 @@ internal class _LerpProperties__widget_state<T> : WidgetStateProperty<T?>
         T? resolvedA = DartRuntimePrimitives.NullAware(a, __target => __target.resolve(states));
         T? resolvedB = DartRuntimePrimitives.NullAware(b, __target => __target.resolve(states));
         return lerpFunction(resolvedA, resolvedB, t);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -646,7 +646,7 @@ public class WidgetStateMapper<T> : Diagnosticable, WidgetStateProperty<T>, IWid
                 )
             );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool Equals(object? other) =>
@@ -663,7 +663,7 @@ public class WidgetStateMapper<T> : Diagnosticable, WidgetStateProperty<T>, IWid
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
         return $"WidgetStateMapper<{typeof(T)}>({_map})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual dynamic noSuchMethod(Invocation invocation)
@@ -690,7 +690,7 @@ public class WidgetStateMapper<T> : Diagnosticable, WidgetStateProperty<T>, IWid
                 }
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -706,7 +706,7 @@ public class WidgetStateMapper<T> : Diagnosticable, WidgetStateProperty<T>, IWid
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -732,7 +732,7 @@ public class WidgetStatePropertyAll<T> : WidgetStateProperty<T>
         {
             return $"WidgetStatePropertyAll({value})";
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool Equals(object? other)

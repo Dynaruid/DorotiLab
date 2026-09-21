@@ -68,7 +68,7 @@ public class TreeSliverNode<T> : ITreeSliverNode
     {
         return $"TreeSliverNode: {content}, depth: {((depth == 0L) ? "root" : depth)}, "
             + $"{(!Enumerable.Any(children) ? "leaf" : $"parent, expanded: {isExpanded}")}";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -106,21 +106,21 @@ public class TreeSliverController
     {
         DartRuntimePrimitives.Assert(() => _state is not null);
         return _state!.isExpanded(node);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool isActive(ITreeSliverNode node)
     {
         DartRuntimePrimitives.Assert(() => _state is not null);
         return _state!.isActive(node);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual ITreeSliverNode? getNodeFor(object? content)
     {
         DartRuntimePrimitives.Assert(() => _state is not null);
         return _state!.getNodeFor(content);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void toggleNode(ITreeSliverNode node)
@@ -164,7 +164,7 @@ public class TreeSliverController
     {
         DartRuntimePrimitives.Assert(() => _state is not null);
         return _state!.getActiveIndexFor(node);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static TreeSliverController of(BuildContext context)
@@ -205,13 +205,13 @@ public class TreeSliverController
                 }
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static TreeSliverController? maybeOf(BuildContext context)
     {
         return context.findAncestorStateOfType<ITreeSliverState>()?.controller;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -307,10 +307,12 @@ public class TreeSliver<T> : StatefulWidget
                     },
                     child: child
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static double defaultTreeRowExtentBuilder(
@@ -319,7 +321,7 @@ public class TreeSliver<T> : StatefulWidget
     )
     {
         return Sliver_treeLibrary._kDefaultRowExtent;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static Widget defaultTreeNodeBuilder(
@@ -332,7 +334,7 @@ public class TreeSliver<T> : StatefulWidget
         Curve animationCurve = toggleAnimationStyle.curve ?? defaultAnimationCurve;
         long index = (
             TreeSliverController.of(context).getActiveIndexFor(node)
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         );
         return new Padding(
             padding: EdgeInsets.CreateAll(8.0),
@@ -359,7 +361,7 @@ public class TreeSliver<T> : StatefulWidget
                 }
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override IState createState() =>
@@ -427,7 +429,7 @@ internal class _TreeSliverState__sliver_tree<T>
             return true;
         }
         return node.isExpanded;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _unpackActiveNodes(
@@ -552,7 +554,7 @@ internal class _TreeSliverState__sliver_tree<T>
                 }
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         _tickerModeNotifier?.removeListener(_updateTickers);
         _tickerModeNotifier = null;
@@ -586,7 +588,7 @@ internal class _TreeSliverState__sliver_tree<T>
                         long semanticIndex__26512__value26586 = (
                             semanticIndex
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         );
                         childLocal = DartRuntimePrimitives.ConvertValue<Widget>(
@@ -603,29 +605,33 @@ internal class _TreeSliverState__sliver_tree<T>
                         depth: (
                             node.depth
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ),
                         child: childLocal
                     );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             itemExtentBuilder: (index, dimensions) =>
             {
                 return widget.treeRowExtentBuilder(_activeNodes[(int)index], dimensions);
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             addAutomaticKeepAlives: widget.addAutomaticKeepAlives,
             findChildIndexCallback: widget.findChildIndexCallback,
             indentation: widget.indentation.value
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool isExpanded(TreeSliverNode<T> node)
     {
         return _getNode(node.content, widget.tree)?.isExpanded ?? false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool isActive(TreeSliverNode<T> node) => _activeNodes.Contains(node);
@@ -651,7 +657,7 @@ internal class _TreeSliverState__sliver_tree<T>
             return _getNode(content, nextDepth);
         }
         return default;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual long? getActiveIndexFor(TreeSliverNode<T> node)
@@ -661,7 +667,7 @@ internal class _TreeSliverState__sliver_tree<T>
             return _activeNodes.IndexOf(node);
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void expandAll()
@@ -747,7 +753,7 @@ internal class _TreeSliverState__sliver_tree<T>
                     AnimationController controller,
                     UniqueKey key
                 )>(_currentAnimationForParent, node)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             long leadingChildIndex = _activeNodes.IndexOf(node) + 1L;
             TreeSliverNodesAnimation animatingChildren = new TreeSliverNodesAnimation(
@@ -781,9 +787,7 @@ internal class _TreeSliverState__sliver_tree<T>
                         AnimationController controller,
                         UniqueKey key
                     )>(_currentAnimationForParent, node)
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ).animation.dispose();
             }
             if (
@@ -827,7 +831,7 @@ internal class _TreeSliverState__sliver_tree<T>
                                                 UniqueKey key
                                             )>(_currentAnimationForParent, node)
                                             ?? throw new global::System.NullReferenceException(
-                                                "Dart null assertion failed."
+                                                "A required value was null."
                                             )
                                         ).animation.dispose();
                                         (
@@ -837,7 +841,7 @@ internal class _TreeSliverState__sliver_tree<T>
                                                 UniqueKey key
                                             )>(_currentAnimationForParent, node)
                                             ?? throw new global::System.NullReferenceException(
-                                                "Dart null assertion failed."
+                                                "A required value was null."
                                             )
                                         ).controller.dispose();
                                         _currentAnimationForParent.remove(node);
@@ -932,7 +936,7 @@ internal class _TreeSliverState__sliver_tree<T>
         )();
         _tickers!.Add(result);
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _removeTicker(_WidgetTicker__ticker_provider ticker)
@@ -1070,7 +1074,7 @@ internal class _SliverTree__sliver_tree : SliverVariedExtentList
             indentation: indentation,
             childManager: element
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)

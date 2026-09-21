@@ -112,7 +112,7 @@ public class BottomSheet : StatefulWidget
             debugLabel: "BottomSheet",
             vsync: vsync
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -162,7 +162,7 @@ internal class _BottomSheetState__bottom_sheet : State<BottomSheet>
         widget.animationController!.value -=
             (
                 details.primaryDelta
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ) / _childHeight;
     }
 
@@ -227,7 +227,7 @@ internal class _BottomSheetState__bottom_sheet : State<BottomSheet>
             widget.onClosing();
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _handleDragHandleHover(bool hovering)
@@ -374,7 +374,7 @@ internal class _DragHandle__bottom_sheet : StatelessWidget
             (dragHandleSize ?? bottomSheetThemeLocal.dragHandleSize)
             ?? (
                 m3Defaults.dragHandleSize
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         return new MouseRegion(
             onEnter: (@event) =>
@@ -412,7 +412,7 @@ internal class _DragHandle__bottom_sheet : StatelessWidget
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -446,7 +446,7 @@ internal class _BottomSheetLayoutWithSizeListener__bottom_sheet : SingleChildRen
             isScrollControlled: isScrollControlled,
             scrollControlDisabledMaxHeightRatio: scrollControlDisabledMaxHeightRatio
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -567,9 +567,9 @@ public class _RenderBottomSheetLayoutWithSizeListener__bottom_sheet : RenderShif
             : childLocal.getDryLayout(childConstraints);
         return (
                 result
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ) + _getPositionForChild(constraints.biggest, childSize).dy;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual BoxConstraints _getConstraintsForChild(BoxConstraints constraints)
@@ -581,13 +581,13 @@ public class _RenderBottomSheetLayoutWithSizeListener__bottom_sheet : RenderShif
                 ? constraints.maxHeight
                 : (constraints.maxHeight * scrollControlDisabledMaxHeightRatio)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Offset _getPositionForChild(Size size, Size childSize)
     {
         return new Offset(0.0, size.height - (childSize.height * animationValue));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void performLayout()
@@ -715,13 +715,15 @@ public class _ModalBottomSheetState__bottom_sheet<T> : State<_ModalBottomSheet__
                 localizations.dialogLabel,
             TargetPlatform.windows => localizations.dialogLabel,
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
 
     internal virtual EdgeInsets _getNewClipDetails(Size topLayerSize)
     {
         return new EdgeInsets(0, 0, 0, topLayerSize.height);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void handleDragStart(Gestures.DragStartDetails details)
@@ -802,10 +804,12 @@ public class _ModalBottomSheetState__bottom_sheet<T> : State<_ModalBottomSheet__
                         )
                     )
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -901,7 +905,7 @@ public class ModalBottomSheetRoute<T> : PopupRoute<T>
         }
         _clipDetailsNotifier.value = newClipDetails;
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Duration transitionDuration =>
@@ -938,7 +942,7 @@ public class ModalBottomSheetRoute<T> : PopupRoute<T>
             );
         }
         return _animationController!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget buildPage(
@@ -1025,7 +1029,7 @@ public class ModalBottomSheetRoute<T> : PopupRoute<T>
                 semanticsOnTapHint: barrierOnTapHint
             );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1089,7 +1093,7 @@ public static partial class Bottom_sheetLibrary
                 requestFocus: requestFocus
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1124,7 +1128,7 @@ public static partial class Bottom_sheetLibrary
                 transitionAnimationController: transitionAnimationController,
                 sheetAnimationStyle: sheetAnimationStyle
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1182,7 +1186,7 @@ internal class _BottomSheetGestureDetector__bottom_sheet : StatelessWidget
             },
             child: child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 

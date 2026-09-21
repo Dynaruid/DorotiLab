@@ -31,7 +31,7 @@ internal class _PinnedHeaderSliver__pinned_header_sliver : SingleChildRenderObje
     public override RenderObject createRenderObject(BuildContext context)
     {
         return new _RenderPinnedHeaderSliver__pinned_header_sliver();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -52,7 +52,9 @@ internal class _RenderPinnedHeaderSliver__pinned_header_sliver : RenderSliverSin
             {
                 Axis.vertical => child!.size.height,
                 Axis.horizontal => child!.size.width,
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             };
         }
     }

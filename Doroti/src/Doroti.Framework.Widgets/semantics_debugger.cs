@@ -100,7 +100,7 @@ internal class _SemanticsDebuggerState__semantics_debugger
         _performAction(
             (
                 _lastPointerDownLocation
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             SemanticsAction.tap
         );
@@ -116,7 +116,7 @@ internal class _SemanticsDebuggerState__semantics_debugger
         _performAction(
             (
                 _lastPointerDownLocation
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             SemanticsAction.longPress
         );
@@ -142,7 +142,7 @@ internal class _SemanticsDebuggerState__semantics_debugger
                     (
                         _lastPointerDownLocation
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ),
                     SemanticsAction.decrease
@@ -151,7 +151,7 @@ internal class _SemanticsDebuggerState__semantics_debugger
                     (
                         _lastPointerDownLocation
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ),
                     SemanticsAction.scrollLeft
@@ -163,7 +163,7 @@ internal class _SemanticsDebuggerState__semantics_debugger
                     (
                         _lastPointerDownLocation
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ),
                     SemanticsAction.increase
@@ -172,7 +172,7 @@ internal class _SemanticsDebuggerState__semantics_debugger
                     (
                         _lastPointerDownLocation
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ),
                     SemanticsAction.scrollRight
@@ -187,7 +187,7 @@ internal class _SemanticsDebuggerState__semantics_debugger
                     (
                         _lastPointerDownLocation
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ),
                     SemanticsAction.scrollUp
@@ -199,7 +199,7 @@ internal class _SemanticsDebuggerState__semantics_debugger
                     (
                         _lastPointerDownLocation
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ),
                     SemanticsAction.scrollDown
@@ -240,7 +240,7 @@ internal class _SemanticsDebuggerState__semantics_debugger
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -285,16 +285,14 @@ internal class _SemanticsDebuggerPainter__semantics_debugger : CustomPainter
         {
             Offset pointerPosition__value6557 = (
                 pointerPosition
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             var paintLocal = new Paint();
             paintLocal.color = new Color(2130743551L);
             canvas.drawCircle(
                 (
                     pointerPosition
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 10.0 * devicePixelRatio,
                 paintLocal
@@ -309,7 +307,7 @@ internal class _SemanticsDebuggerPainter__semantics_debugger : CustomPainter
         return (!Equals(owner, __oldDelegate.owner))
             || (generation != __oldDelegate.generation)
             || (!Equals(pointerPosition, __oldDelegate.pointerPosition));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual string getMessage(SemanticsNode node)
@@ -385,14 +383,14 @@ internal class _SemanticsDebuggerPainter__semantics_debugger : CustomPainter
             {
                 effectiveLabel = (
                     data.textDirection
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) switch
                 {
                     TextDirection.rtl => $"{Unicode.RLI}{tooltipAndLabel}{Unicode.PDI}",
                     TextDirection.ltr => tooltipAndLabel,
-                    _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    _ => throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
                 };
             }
             if (!Enumerable.Any(annotations))
@@ -405,7 +403,7 @@ internal class _SemanticsDebuggerPainter__semantics_debugger : CustomPainter
             }
         }
         return message.Trim();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _paintMessage(Canvas canvas, SemanticsNode node)
@@ -448,11 +446,13 @@ internal class _SemanticsDebuggerPainter__semantics_debugger : CustomPainter
             {
                 childrenDepth = Math.Max(childrenDepth, _findDepth(child));
                 return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
         return childrenDepth + 1L;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _paint(
@@ -533,7 +533,9 @@ internal class _SemanticsDebuggerPainter__semantics_debugger : CustomPainter
                     _paint(canvas, child, childRank, childIndex, childLevel);
                     childIndex += 1L;
                     return true;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
         }
@@ -548,13 +550,13 @@ internal class _SemanticsDebuggerPainter__semantics_debugger : CustomPainter
             1.0,
             0.7
         ).toColor();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static long _getColorSeed(long level, long index)
     {
         return (level * 10000L) + index;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -566,7 +568,7 @@ internal class _IgnorePointerWithSemantics__semantics_debugger : SingleChildRend
     public override RenderObject createRenderObject(BuildContext context)
     {
         return new _RenderIgnorePointerWithSemantics__semantics_debugger();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 

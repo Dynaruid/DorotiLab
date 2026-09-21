@@ -60,7 +60,7 @@ public class PrimaryScrollController : InheritedWidget
             return Equals(result.scrollDirection, (scrollDirection));
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static ScrollController? maybeOf(BuildContext context)
@@ -68,7 +68,7 @@ public class PrimaryScrollController : InheritedWidget
         PrimaryScrollController? result =
             context.dependOnInheritedWidgetOfExactType<PrimaryScrollController>();
         return result?.controller;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static ScrollController of(BuildContext context)
@@ -92,10 +92,10 @@ public class PrimaryScrollController : InheritedWidget
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return controller!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget) =>

@@ -41,7 +41,7 @@ public class AnimationStyle : Diagnosticable
             reverseCurve: reverseCurve ?? this.reverseCurve,
             reverseDuration: reverseDuration ?? this.reverseDuration
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual AnimationStyle merge(AnimationStyle? other)
@@ -56,7 +56,7 @@ public class AnimationStyle : Diagnosticable
             reverseCurve: other.reverseCurve,
             reverseDuration: other.reverseDuration
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static AnimationStyle? lerp(AnimationStyle? a, AnimationStyle? b, double t)
@@ -91,7 +91,7 @@ public class AnimationStyle : Diagnosticable
                 _lerpDuration
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static T? _lerp<T>(T? a, T? b, double t, Func<T?, T?, double, T> lerp)
@@ -105,7 +105,7 @@ public class AnimationStyle : Diagnosticable
             return b;
         }
         return lerp(a, b, t);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static Duration _lerpDuration(Duration? a, Duration? b, double t)
@@ -115,7 +115,7 @@ public class AnimationStyle : Diagnosticable
                 ((a?.inMicroseconds ?? 0L) * (1.0 - t)) + ((b?.inMicroseconds ?? 0L) * t)
             ).round()
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool Equals(object? other)
@@ -180,7 +180,7 @@ internal class _LerpedCurve__animation_style : Curve
         double a = first.transform(t);
         double b = second.transform(t);
         return ((a) * (1.0 - _t)) + ((b) * _t);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool Equals(object? other)

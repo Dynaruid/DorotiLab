@@ -262,7 +262,9 @@ internal class _RadioState__radio<T> : State<Radio<T>>
                         );
                     }
                     default:
-                        throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                        throw new InvalidOperationException(
+                            "Switch expression did not handle the supplied value."
+                        );
                 }
                 break;
             }
@@ -279,7 +281,9 @@ internal class _RadioState__radio<T> : State<Radio<T>>
                         WidgetStateMouseCursor.adaptiveClickable,
                         states
                     );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
         return new RawRadio<T>(
@@ -306,10 +310,12 @@ internal class _RadioState__radio<T> : State<Radio<T>>
                     side: widget.side,
                     innerRadius: widget.innerRadius
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -406,7 +412,9 @@ internal class _RadioPaintState__radio : State<_RadioPaint__radio>
                         return widget.activeColor;
                     }
                     return null;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
         }
@@ -426,7 +434,7 @@ internal class _RadioPaintState__radio : State<_RadioPaint__radio>
             return side;
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -568,7 +576,7 @@ internal class _RadioPaintState__radio : State<_RadioPaint__radio>
             widget.materialTapTargetSize
             ?? radioTheme.materialTapTargetSize
             ?? defaults.materialTapTargetSize
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         );
         VisualDensity effectiveVisualDensity =
             (widget.visualDensity ?? radioTheme.visualDensity) ?? defaults.visualDensity!;
@@ -585,7 +593,9 @@ internal class _RadioPaintState__radio : State<_RadioPaint__radio>
                     Widgets.ConstantsLibrary.kMinInteractiveDimension - 8.0
                 ),
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
         sizeLocal += effectiveVisualDensity.baseSizeAdjustment;
         BorderSide activeSideLocal =
@@ -719,7 +729,7 @@ internal class _RadioPainter__radio : ToggleablePainter
         get =>
             (
                 _innerRadius
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         set
         {
@@ -863,7 +873,9 @@ internal class _RadioDefaultsM3__radio : RadioThemeData
                         return _colors.onSurface;
                     }
                     return _colors.onSurfaceVariant;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
         }
@@ -904,7 +916,9 @@ internal class _RadioDefaultsM3__radio : RadioThemeData
                         return _colors.onSurface.withOpacity(0.1);
                     }
                     return Colors.transparent;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
         }

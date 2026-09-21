@@ -26,7 +26,7 @@ public class Priority
             offset = kMaxOffset * Math.Sign(offset);
         }
         return new Priority(_value + offset);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Priority op_Subtract(long offset) => op_Add(-offset);

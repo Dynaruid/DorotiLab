@@ -47,7 +47,9 @@ public class IndexedStack : StatelessWidget
                         isVisible: isSelected,
                         child: new ExcludeFocus(excluding: !isSelected, child: children[i])
                     );
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );
@@ -59,7 +61,7 @@ public class IndexedStack : StatelessWidget
             index: index,
             children: wrappedChildren
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -91,7 +93,7 @@ public class _RawIndexedStack__indexed_stack : Stack
                         (
                             index
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ) == 0L
                     ) && (checked(this.children.Count) == 0L)
@@ -102,7 +104,7 @@ public class _RawIndexedStack__indexed_stack : Stack
                         (
                             index
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ) < checked(this.children.Count)
                     )
@@ -128,7 +130,7 @@ public class _RawIndexedStack__indexed_stack : Stack
             );
         }
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override RenderObject createRenderObject(BuildContext context)
@@ -141,7 +143,7 @@ public class _RawIndexedStack__indexed_stack : Stack
             alignment: alignment,
             textDirection: textDirection ?? Directionality.maybeOf(context)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -169,7 +171,7 @@ public class _RawIndexedStack__indexed_stack : Stack
     public override MultiChildRenderObjectElement createElement()
     {
         return new _IndexedStackElement__indexed_stack(this);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -188,7 +190,7 @@ internal class _IndexedStackElement__indexed_stack : MultiChildRenderObjectEleme
         {
             long index__6279__value6418 = (
                 indexLocal
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             visitor(children.elementAt(((index__6279__value6418))));
         }
@@ -285,14 +287,16 @@ public class Visibility : StatelessWidget
                 {
                     ancestorContext = DartRuntimePrimitives.ConvertValue<BuildContext>(parent);
                     return false;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
             ancestor =
                 ancestorContext.getElementForInheritedWidgetOfExactType<_VisibilityScope__indexed_stack>();
         }
         return isVisibleLocal;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -339,7 +343,7 @@ public class Visibility : StatelessWidget
             }
         }
         return new _VisibilityScope__indexed_stack(isVisible: visible, child: result);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -392,7 +396,7 @@ internal class _VisibilityScope__indexed_stack : InheritedWidget
     {
         var __old = (_VisibilityScope__indexed_stack)oldWidget;
         return isVisible != __old.isVisible;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -499,7 +503,7 @@ public class SliverVisibility : StatelessWidget
         DartRuntimePrimitives.Assert(() => !maintainAnimation);
         DartRuntimePrimitives.Assert(() => !maintainState);
         return visible ? sliver : replacementSliver;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -553,7 +557,7 @@ internal class _Visibility__indexed_stack : SingleChildRenderObjectWidget
     public override RenderObject createRenderObject(BuildContext context)
     {
         return new _RenderVisibility__indexed_stack(visible, maintainSemantics);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -652,7 +656,7 @@ internal class _SliverVisibility__indexed_stack : SingleChildRenderObjectWidget
     public override RenderObject createRenderObject(BuildContext context)
     {
         return new _RenderSliverVisibility__indexed_stack(visible, maintainSemantics);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)

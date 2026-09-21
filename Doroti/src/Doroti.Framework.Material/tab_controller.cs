@@ -75,7 +75,7 @@ public class TabController : ChangeNotifier
         {
             long index__value5320 = (
                 index
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             _animationController!.value = (index__value5320).toDouble();
         }
@@ -89,7 +89,7 @@ public class TabController : ChangeNotifier
         _animationController = null;
         dispose();
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Animation<double>? animation => _animationController?.view;
@@ -111,16 +111,14 @@ public class TabController : ChangeNotifier
             && (
                 (
                     duration
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) > Duration.zero
             )
         )
         {
             Duration duration__value7060 = (
                 duration
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             _indexIsChangingCount += 1L;
             notifyListeners();
@@ -206,7 +204,7 @@ internal class _TabControllerScope__tab_controller : InheritedWidget
     {
         var __old = (_TabControllerScope__tab_controller)oldWidget;
         return (enabled != __old.enabled) || (!Equals(controller, __old.controller));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -241,7 +239,7 @@ public class DefaultTabController : StatefulWidget
         return context
             .dependOnInheritedWidgetOfExactType<_TabControllerScope__tab_controller>()
             ?.controller;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static TabController of(BuildContext context)
@@ -267,7 +265,7 @@ public class DefaultTabController : StatefulWidget
             return true;
         });
         return controller!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override IState createState() =>
@@ -336,7 +334,7 @@ internal class _DefaultTabControllerState__tab_controller
             enabled: TickerMode.of(context),
             child: widget.child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void didUpdateWidget(DefaultTabController oldWidget)
@@ -405,7 +403,7 @@ internal class _DefaultTabControllerState__tab_controller
         _updateTickerModeNotifier();
         _updateTicker();
         return _ticker!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void activate()

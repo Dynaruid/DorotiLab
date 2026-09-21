@@ -48,7 +48,7 @@ public class CupertinoUserInterfaceLevel : InheritedWidget
                     + $"  {context}"
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static CupertinoUserInterfaceLevelData? maybeOf(BuildContext context)
@@ -56,7 +56,7 @@ public class CupertinoUserInterfaceLevel : InheritedWidget
         CupertinoUserInterfaceLevel? query =
             context.dependOnInheritedWidgetOfExactType<CupertinoUserInterfaceLevel>();
         return query?._data;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)

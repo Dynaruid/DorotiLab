@@ -63,7 +63,7 @@ internal class _GridPaperPainter__grid_paper : CustomPainter
             || (__oldPainter.interval != interval)
             || (__oldPainter.divisions != divisions)
             || (__oldPainter.subdivisions != subdivisions);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool? hitTest(Offset position) => false;
@@ -108,6 +108,6 @@ public class GridPaper : StatelessWidget
             ),
             child: child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

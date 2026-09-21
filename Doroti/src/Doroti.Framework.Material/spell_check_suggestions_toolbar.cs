@@ -99,7 +99,7 @@ public class SpellCheckSuggestionsToolbar : StatelessWidget
         );
         buttonItems.Add(deleteButton);
         return buttonItems;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static void _replaceText(
@@ -137,9 +137,9 @@ public class SpellCheckSuggestionsToolbar : StatelessWidget
             ? anchors.primaryAnchor
             : (
                 anchors.secondaryAnchor
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual List<Widget> _buildToolbarButtons(BuildContext context)
@@ -169,11 +169,13 @@ public class SpellCheckSuggestionsToolbar : StatelessWidget
                         ),
                         child: button
                     );
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
             .ToList();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -222,7 +224,7 @@ public class SpellCheckSuggestionsToolbar : StatelessWidget
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -256,6 +258,6 @@ internal class _SpellCheckSuggestionsToolbarContainer__spell_check_suggestions_t
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

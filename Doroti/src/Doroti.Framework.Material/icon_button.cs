@@ -110,7 +110,7 @@ public class IconButton : StatelessWidget
                     (
                         splashRadius
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) > 0L
                 )
@@ -462,7 +462,7 @@ public class IconButton : StatelessWidget
             alignment: alignment,
             splashFactory: splashFactory
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -657,7 +657,7 @@ internal class _SelectableIconButtonState__icon_button : State<_SelectableIconBu
             tooltip: widget.tooltip,
             child: new Widgets.Semantics(selected: widget.isSelected, child: widget.child)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void dispose()
@@ -724,9 +724,11 @@ internal class _IconButtonM3__icon_button : ButtonStyleButton
                     new _IconButtonDefaultsM3__icon_button(context, toggleable)
                 ),
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override ButtonStyle? themeStyleOf(BuildContext context)
@@ -740,7 +742,9 @@ internal class _IconButtonM3__icon_button : ButtonStyleButton
                 Brightness.light => ConstantsLibrary.kDefaultIconDarkColor,
                 Brightness.dark => ConstantsLibrary.kDefaultIconLightColor,
                 _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                    throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
             }
         );
         ButtonStyle iconThemeStyle = IconButton.styleFrom(
@@ -748,7 +752,7 @@ internal class _IconButtonM3__icon_button : ButtonStyleButton
             iconSize: isDefaultSize ? null : iconTheme.size
         );
         return IconButtonTheme.of(context).style?.merge(iconThemeStyle) ?? iconThemeStyle;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -800,7 +804,9 @@ internal class _IconButtonDefaultsM3__icon_button : ButtonStyle
                         return _colors.primary;
                     }
                     return _colors.onSurfaceVariant;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );
@@ -837,7 +843,9 @@ internal class _IconButtonDefaultsM3__icon_button : ButtonStyle
                         return _colors.onSurfaceVariant.withOpacity(0.1);
                     }
                     return Colors.transparent;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );
@@ -932,7 +940,9 @@ internal class _FilledIconButtonDefaultsM3__icon_button : ButtonStyle
                         return _colors.surfaceContainerHighest;
                     }
                     return _colors.primary;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );
@@ -954,7 +964,9 @@ internal class _FilledIconButtonDefaultsM3__icon_button : ButtonStyle
                         return _colors.primary;
                     }
                     return _colors.onPrimary;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );
@@ -1006,7 +1018,9 @@ internal class _FilledIconButtonDefaultsM3__icon_button : ButtonStyle
                         return _colors.onPrimary.withOpacity(0.1);
                     }
                     return Colors.transparent;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );
@@ -1101,7 +1115,9 @@ internal class _FilledTonalIconButtonDefaultsM3__icon_button : ButtonStyle
                         return _colors.surfaceContainerHighest;
                     }
                     return _colors.secondaryContainer;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );
@@ -1123,7 +1139,9 @@ internal class _FilledTonalIconButtonDefaultsM3__icon_button : ButtonStyle
                         return _colors.onSurfaceVariant;
                     }
                     return _colors.onSecondaryContainer;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );
@@ -1175,7 +1193,9 @@ internal class _FilledTonalIconButtonDefaultsM3__icon_button : ButtonStyle
                         return _colors.onSecondaryContainer.withOpacity(0.1);
                     }
                     return Colors.transparent;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );
@@ -1270,7 +1290,9 @@ internal class _OutlinedIconButtonDefaultsM3__icon_button : ButtonStyle
                         return _colors.inverseSurface;
                     }
                     return Colors.transparent;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );
@@ -1288,7 +1310,9 @@ internal class _OutlinedIconButtonDefaultsM3__icon_button : ButtonStyle
                         return _colors.onInverseSurface;
                     }
                     return _colors.onSurfaceVariant;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );
@@ -1325,7 +1349,9 @@ internal class _OutlinedIconButtonDefaultsM3__icon_button : ButtonStyle
                         return _colors.onSurfaceVariant.withOpacity(0.08);
                     }
                     return Colors.transparent;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );
@@ -1373,7 +1399,9 @@ internal class _OutlinedIconButtonDefaultsM3__icon_button : ButtonStyle
                     }
                     return new BorderSide(color: _colors.outline);
                 }
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
     public override WidgetStateProperty<OutlinedBorder>? shape =>

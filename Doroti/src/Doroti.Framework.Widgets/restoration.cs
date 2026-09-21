@@ -23,7 +23,7 @@ public class RestorationScope : StatefulWidget
     public static RestorationBucket? maybeOf(BuildContext context)
     {
         return context.dependOnInheritedWidgetOfExactType<UnmanagedRestorationScope>()?.bucket;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static RestorationBucket of(BuildContext context)
@@ -60,10 +60,10 @@ public class RestorationScope : StatefulWidget
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return bucket!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override IState createState() =>
@@ -89,7 +89,7 @@ internal class _RestorationScopeState__restoration
     public override Widget build(BuildContext context)
     {
         return new UnmanagedRestorationScope(bucket: bucket, child: widget.child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual RestorationBucket? bucket => _bucket;
@@ -145,7 +145,7 @@ internal class _RestorationScopeState__restoration
         {
             _debugPropertiesWaitingForReregistration?.Remove(property);
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
     }
 
@@ -231,7 +231,7 @@ internal class _RestorationScopeState__restoration
         {
             _debugPropertiesWaitingForReregistration = _properties.Keys.ToList();
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         restoreState(oldBucket, _firstRestorePending);
         _firstRestorePending = false;
@@ -256,7 +256,7 @@ internal class _RestorationScopeState__restoration
             }
             _debugPropertiesWaitingForReregistration = null;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
     }
 
@@ -287,7 +287,7 @@ internal class _RestorationScopeState__restoration
         _bucket!.rename(restorationId!);
         parent.adoptChild(_bucket!);
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool _setNewBucketIfNecessary(RestorationBucket? newBucket, bool restorePending)
@@ -309,7 +309,7 @@ internal class _RestorationScopeState__restoration
             didToggleBucket(oldBucket);
         }
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _updateProperty(IRestorableProperty property)
@@ -331,7 +331,7 @@ internal class _RestorationScopeState__restoration
         {
             _debugPropertiesWaitingForReregistration?.Remove(property);
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         property.removeListener(listener);
         property._unregister();
@@ -372,7 +372,7 @@ public class UnmanagedRestorationScope : InheritedWidget
     {
         var __oldWidget = (UnmanagedRestorationScope)oldWidget;
         return !Equals(__oldWidget.bucket, bucket);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -485,7 +485,7 @@ internal class _RootRestorationScopeState__restoration : State<RootRestorationSc
         if (
             (
                 _okToRenderBlankContainer
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ) && _isWaitingForRootBucket
         )
         {
@@ -495,7 +495,7 @@ internal class _RootRestorationScopeState__restoration : State<RootRestorationSc
             bucket: _ancestorBucket ?? _rootBucket,
             child: new RestorationScope(restorationId: widget.restorationId, child: widget.child)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 

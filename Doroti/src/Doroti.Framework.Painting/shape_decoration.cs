@@ -78,7 +78,7 @@ public class ShapeDecoration : Decoration
     public override Path getClipPath(Rect rect, TextDirection textDirection)
     {
         return shape.getOuterPath(rect, textDirection: (textDirection));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override EdgeInsetsGeometry padding => shape.dimensions;
@@ -92,7 +92,7 @@ public class ShapeDecoration : Decoration
             ShapeDecoration __typed6634 => lerp((ShapeDecoration?)__typed6634, this, t),
             _ => ((ShapeDecoration?)base.lerpFrom(a, t))!,
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override ShapeDecoration? lerpTo(Decoration? b, double t)
@@ -103,7 +103,7 @@ public class ShapeDecoration : Decoration
             ShapeDecoration __typed6944 => lerp(this, (ShapeDecoration?)__typed6944, t),
             _ => ((ShapeDecoration?)base.lerpTo(b, t))!,
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static ShapeDecoration? lerp(ShapeDecoration? a, ShapeDecoration? b, double t)
@@ -146,7 +146,7 @@ public class ShapeDecoration : Decoration
             shadows: BoxShadow.lerpList(a?.shadows, b?.shadows, t),
             shape: ShapeBorder.lerp(a?.shape, b?.shape, t)!
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool Equals(object? other)
@@ -205,14 +205,14 @@ public class ShapeDecoration : Decoration
     public override bool hitTest(Size size, Offset position, TextDirection? textDirection = null)
     {
         return shape.hitTest(Offset.zero & size, position, textDirection: textDirection);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override BoxPainter createBoxPainter(Action onChanged = default!)
     {
         DartRuntimePrimitives.Assert(() => (onChanged is not null) || (image is null));
         return new _ShapeDecorationPainter__shape_decoration(this, onChanged!);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -321,7 +321,9 @@ internal class _ShapeDecorationPainter__shape_decoration : BoxPainter
                 canvas.clipPath(clipPathLocal);
             }
             return true;
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         bool debugHandleDisabledShadowEnd(Canvas canvas, BoxShadow boxShadow)
         {
@@ -330,7 +332,9 @@ internal class _ShapeDecorationPainter__shape_decoration : BoxPainter
                 canvas.restore();
             }
             return true;
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         if (_shadowCount is not null)
         {
@@ -342,7 +346,7 @@ internal class _ShapeDecorationPainter__shape_decoration : BoxPainter
                         < (
                             _shadowCount
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         );
                     index += 1L
@@ -377,7 +381,7 @@ internal class _ShapeDecorationPainter__shape_decoration : BoxPainter
                         < (
                             _shadowCount
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         );
                     indexLocal += 1L
@@ -431,7 +435,7 @@ internal class _ShapeDecorationPainter__shape_decoration : BoxPainter
             }
         }
         return rect;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _paintImage(Canvas canvas, ImageConfiguration configuration)
@@ -445,7 +449,7 @@ internal class _ShapeDecorationPainter__shape_decoration : BoxPainter
             canvas,
             (
                 _lastRect
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             _innerPath,
             configuration
@@ -465,7 +469,7 @@ internal class _ShapeDecorationPainter__shape_decoration : BoxPainter
             offset
             & (
                 configuration.size
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         TextDirection? textDirectionLocal = configuration.textDirection;
         _precache(rect, textDirectionLocal);

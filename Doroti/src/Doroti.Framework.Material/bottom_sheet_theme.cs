@@ -84,7 +84,7 @@ public class BottomSheetThemeData : Diagnosticable
             clipBehavior: clipBehavior ?? this.clipBehavior,
             constraints: constraints ?? this.constraints
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static BottomSheetThemeData? lerp(
@@ -124,7 +124,7 @@ public class BottomSheetThemeData : Diagnosticable
             clipBehavior: (t < 0.5) ? a?.clipBehavior : b?.clipBehavior,
             constraints: BoxConstraints.lerp(a?.constraints, b?.constraints, t)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override int GetHashCode() =>
@@ -222,7 +222,7 @@ public class BottomSheetThemeData : Diagnosticable
             return true;
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -231,6 +231,6 @@ public class BottomSheetThemeData : Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

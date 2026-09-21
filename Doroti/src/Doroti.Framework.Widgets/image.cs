@@ -20,7 +20,7 @@ public static partial class ImageLibrary
             size: size,
             platform: PlatformLibrary.defaultTargetPlatform
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -80,7 +80,7 @@ public static partial class ImageLibrary
         );
         stream.addListener(listener);
         return completer.future;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -417,7 +417,7 @@ public class Image : StatefulWidget
                         (
                             scale
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     ),
@@ -657,13 +657,13 @@ internal class _ImageState__image : State<Image>, WidgetsBindingObserver
                         (
                             widget.width
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ),
                         (
                             widget.height
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     )
@@ -701,7 +701,7 @@ internal class _ImageState__image : State<Image>, WidgetsBindingObserver
                                 }
                                 return true;
                                 throw new InvalidOperationException(
-                                    "Dart closure completed without a value."
+                                    "Callback completed without returning a value."
                                 );
                             });
                         }
@@ -711,7 +711,7 @@ internal class _ImageState__image : State<Image>, WidgetsBindingObserver
             );
         }
         return _imageStreamListener!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _handleImageFrame(ImageInfo imageInfo, bool synchronousCall)
@@ -729,7 +729,7 @@ internal class _ImageState__image : State<Image>, WidgetsBindingObserver
                         (
                             _frameNumber
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ) + 1L
                     );
@@ -850,7 +850,7 @@ internal class _ImageState__image : State<Image>, WidgetsBindingObserver
                 ),
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -924,7 +924,7 @@ internal class _ImageState__image : State<Image>, WidgetsBindingObserver
             result = widget.loadingBuilder!(context, result, _loadingProgress);
         }
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder description)

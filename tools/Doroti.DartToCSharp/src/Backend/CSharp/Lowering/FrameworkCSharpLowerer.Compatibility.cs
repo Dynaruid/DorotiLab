@@ -4150,7 +4150,7 @@ internal sealed partial class FrameworkCSharpLowerer
                 // is unreachable for exhaustive Dart switches but remains needed
                 // because enum-like engine values are lowered as open CLR types.
                 builder.AppendLine(
-                    "throw new InvalidOperationException(\"Dart closure completed without a value.\");"
+                    "throw new InvalidOperationException(\"Callback completed without returning a value.\");"
                 );
             }
             builder.Append('}');

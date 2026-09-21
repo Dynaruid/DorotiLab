@@ -64,7 +64,7 @@ public class NavigationToolbar : StatelessWidget
             ),
             children: children
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -108,7 +108,9 @@ internal class _ToolbarLayout__navigation_toolbar : MultiChildLayoutDelegate
             {
                 TextDirection.rtl => size.width - leadingWidth,
                 TextDirection.ltr => 0.0,
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             };
             positionChild(_ToolbarSlot__navigation_toolbar.leading, new Offset(leadingX, 0.0));
         }
@@ -123,7 +125,9 @@ internal class _ToolbarLayout__navigation_toolbar : MultiChildLayoutDelegate
             {
                 TextDirection.rtl => 0.0,
                 TextDirection.ltr => size.width - trailingSize.width,
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             };
             double trailingY = (size.height - trailingSize.height) / 2.0;
             trailingWidth = trailingSize.width;
@@ -167,7 +171,9 @@ internal class _ToolbarLayout__navigation_toolbar : MultiChildLayoutDelegate
             {
                 TextDirection.rtl => size.width - middleSize.width - middleStart,
                 TextDirection.ltr => middleStart,
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             };
             positionChild(_ToolbarSlot__navigation_toolbar.middle, new Offset(middleX, middleY));
         }
@@ -179,6 +185,6 @@ internal class _ToolbarLayout__navigation_toolbar : MultiChildLayoutDelegate
         return (__oldDelegate.centerMiddle != centerMiddle)
             || (__oldDelegate.middleSpacing != middleSpacing)
             || (!Equals(__oldDelegate.textDirection, textDirection));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

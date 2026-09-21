@@ -217,7 +217,9 @@ internal class _CupertinoRadioState__radio<T> : State<CupertinoRadio<T>>
                             ? SystemMouseCursors.click
                             : SystemMouseCursors.basic
                     );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
         return new RawRadio<T>(
@@ -240,10 +242,12 @@ internal class _CupertinoRadioState__radio<T> : State<CupertinoRadio<T>>
                     toggleableState: state,
                     focused: _effectiveFocusNode.hasFocus
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -335,7 +339,9 @@ internal class _RadioPaintState__radio : State<_RadioPaint__radio>
                             );
                     }
                     return widget.inactiveColor ?? CupertinoColors.white;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
         }
@@ -367,7 +373,9 @@ internal class _RadioPaintState__radio : State<_RadioPaint__radio>
                             );
                     }
                     return CupertinoColors.white;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
         }
@@ -399,7 +407,9 @@ internal class _RadioPaintState__radio : State<_RadioPaint__radio>
                         CheckboxLibrary._kDefaultBorderColor,
                         context
                     );
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
         }
@@ -466,7 +476,7 @@ internal class _RadioPaintState__radio : State<_RadioPaint__radio>
                 )
             )()
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 

@@ -70,7 +70,7 @@ public class ScaffoldMessenger : StatefulWidget
         _ScaffoldMessengerScope__scaffold scope =
             context.dependOnInheritedWidgetOfExactType<_ScaffoldMessengerScope__scaffold>()!;
         return scope._scaffoldMessengerState;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static ScaffoldMessengerState? maybeOf(BuildContext context)
@@ -78,7 +78,7 @@ public class ScaffoldMessenger : StatefulWidget
         _ScaffoldMessengerScope__scaffold? scope =
             context.dependOnInheritedWidgetOfExactType<_ScaffoldMessengerScope__scaffold>();
         return scope?._scaffoldMessengerState;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override IState createState() =>
@@ -151,7 +151,7 @@ public class ScaffoldMessengerState
     {
         ScaffoldState? parent = scaffold.context.findAncestorStateOfType<ScaffoldState>();
         return (parent is null) || !_scaffolds.contains(parent);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSnackBar(
@@ -244,7 +244,7 @@ public class ScaffoldMessengerState
             throw;
         }
         return controller;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _didUpdateAnimationStyle(AnimationStyle? snackBarAnimationStyle)
@@ -346,7 +346,7 @@ public class ScaffoldMessengerState
                                 completer.complete(reason);
                             }
                             throw new InvalidOperationException(
-                                "Dart closure completed without a value."
+                                "Callback completed without returning a value."
                             );
                         }
                     )
@@ -413,7 +413,7 @@ public class ScaffoldMessengerState
         });
         _updateScaffolds();
         return controller;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _handleMaterialBannerStatusChanged(AnimationStatus status)
@@ -487,7 +487,7 @@ public class ScaffoldMessengerState
                                 completer.complete(reason);
                             }
                             throw new InvalidOperationException(
-                                "Dart closure completed without a value."
+                                "Callback completed without returning a value."
                             );
                         }
                     )
@@ -543,7 +543,7 @@ public class ScaffoldMessengerState
             scaffoldMessengerState: this,
             child: widget.child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void dispose()
@@ -617,7 +617,7 @@ public class ScaffoldMessengerState
         )();
         _tickers!.Add(result);
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _removeTicker(_WidgetTicker__ticker_provider ticker)
@@ -763,13 +763,13 @@ internal class _TransitionSnapshotFabLocation__scaffold : FloatingActionButtonLo
             end: end.getOffset(scaffoldGeometry),
             progress: progress
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string ToString()
     {
         return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "_TransitionSnapshotFabLocation")}(begin: {begin}, end: {end}, progress: {progress})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -801,16 +801,14 @@ public class ScaffoldGeometry
             Dart_uiLibrary.Rect.lerp(
                 (
                     floatingActionButtonArea
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ).center & Size.zero,
                 floatingActionButtonArea,
                 scaleFactor
-            ) ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ) ?? throw new global::System.NullReferenceException("A required value was null.")
         );
         return copyWith(floatingActionButtonArea: scaledButton);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual ScaffoldGeometry copyWith(
@@ -822,7 +820,7 @@ public class ScaffoldGeometry
             bottomNavigationBarTop: bottomNavigationBarTop ?? this.bottomNavigationBarTop,
             floatingActionButtonArea: floatingActionButtonArea ?? this.floatingActionButtonArea
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -860,9 +858,7 @@ public class _ScaffoldGeometryNotifier__scaffold : ChangeNotifier, ValueListenab
             return geometry._scaleFloatingActionButton(
                 (
                     floatingActionButtonScale
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             );
         }
@@ -975,10 +971,12 @@ internal class _BodyBuilder__scaffold : StatelessWidget
                     ),
                     child: body
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1077,7 +1075,7 @@ internal class _ScaffoldLayout__scaffold : MultiChildLayoutDelegate
                     (
                         bottomNavigationBarTopLocal
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
@@ -1222,7 +1220,7 @@ internal class _ScaffoldLayout__scaffold : MultiChildLayoutDelegate
                     (
                         snackBarWidth
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) < size.width
                 );
@@ -1246,7 +1244,7 @@ internal class _ScaffoldLayout__scaffold : MultiChildLayoutDelegate
                     double bottomNavigationBarTop__40047__value47887 = (
                         bottomNavigationBarTopLocal
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     );
                     snackBarYOffsetBase = Math.Min(
@@ -1273,7 +1271,7 @@ internal class _ScaffoldLayout__scaffold : MultiChildLayoutDelegate
                         - (
                             snackBarWidth
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     ) / 2L
@@ -1356,7 +1354,7 @@ internal class _ScaffoldLayout__scaffold : MultiChildLayoutDelegate
             )
             || (__oldDelegate.extendBody != extendBody)
             || (__oldDelegate.extendBodyBehindAppBar != extendBodyBehindAppBar);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1615,7 +1613,7 @@ public class _FloatingActionButtonTransitionState__scaffold
     {
         return widget is FloatingActionButton floatingActionButton
             && floatingActionButton.isExtended;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -1688,7 +1686,7 @@ public class _FloatingActionButtonTransitionState__scaffold
                 )
             )()
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _onProgressChanged()
@@ -1729,7 +1727,7 @@ public class _FloatingActionButtonTransitionState__scaffold
         )();
         _tickers!.Add(result);
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _removeTicker(_WidgetTicker__ticker_provider ticker)
@@ -1926,13 +1924,13 @@ public class Scaffold : StatefulWidget
                 }
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static ScaffoldState? maybeOf(BuildContext context)
     {
         return context.findAncestorStateOfType<ScaffoldState>();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static ValueListenable<ScaffoldGeometry> geometryOf(BuildContext context)
@@ -1970,7 +1968,7 @@ public class Scaffold : StatefulWidget
             );
         }
         return scaffoldScope.geometryNotifier;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static bool hasDrawer(BuildContext context, bool registerForUpdates = true)
@@ -1986,7 +1984,7 @@ public class Scaffold : StatefulWidget
             ScaffoldState? scaffoldLocal = context.findAncestorStateOfType<ScaffoldState>();
             return scaffoldLocal?.hasDrawer ?? false;
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static Widget _defaultBottomSheetScrimBuilder(
@@ -2010,10 +2008,12 @@ public class Scaffold : StatefulWidget
                     dismissible: false,
                     color: Colors.black.withOpacity(opacity)
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override IState createState() =>
@@ -2229,7 +2229,9 @@ public class ScaffoldState
                     }
                 }
                 return false;
-                throw new InvalidOperationException("Dart control flow completed without a value.");
+                throw new InvalidOperationException(
+                    "Control flow completed without returning a value."
+                );
             }
             if (Enumerable.Any(_dismissedBottomSheets))
             {
@@ -2252,13 +2254,15 @@ public class ScaffoldState
                                 {
                                     return widget.bottomSheet ?? SizedBox.CreateShrink();
                                     throw new InvalidOperationException(
-                                        "Dart closure completed without a value."
+                                        "Callback completed without returning a value."
                                     );
                                 }
                             )
                         )
                     );
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 },
                 isPersistent: true,
                 animationController: animationControllerLocal
@@ -2462,7 +2466,7 @@ public class ScaffoldState
             },
             !isPersistent
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual PersistentBottomSheetController showBottomSheet(
@@ -2526,13 +2530,13 @@ public class ScaffoldState
             );
         });
         return _currentBottomSheet!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Scheduler.TickerFuture _showFloatingActionButton()
     {
         return _floatingActionButtonVisibilityController.forward();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _moveFloatingActionButton(FloatingActionButtonLocation newLocation)
@@ -2923,7 +2927,7 @@ public class ScaffoldState
                     (
                         _appBarMaxHeight
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) >= 0.0
                 )
@@ -2931,7 +2935,7 @@ public class ScaffoldState
                     (
                         _appBarMaxHeight
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
@@ -2943,7 +2947,7 @@ public class ScaffoldState
                         maxHeight: (
                             _appBarMaxHeight
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     ),
@@ -2951,7 +2955,7 @@ public class ScaffoldState
                         currentExtent: (
                             _appBarMaxHeight
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ),
                         child: (Widget)widget.appBar!
@@ -3113,7 +3117,9 @@ public class ScaffoldState
             TargetPlatform.windows =>
                 DartRuntimePrimitives.ConvertValue<_HitTestableAtOrigin__scaffold>(null),
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
         _addIfNonNull(
             childrenLocal,
@@ -3184,14 +3190,14 @@ public class ScaffoldState
                                 )
                             );
                             throw new InvalidOperationException(
-                                "Dart closure completed without a value."
+                                "Callback completed without returning a value."
                             );
                         }
                     )
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
@@ -3222,7 +3228,7 @@ public class ScaffoldState
         )();
         _tickers!.Add(result);
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _removeTicker(_WidgetTicker__ticker_provider ticker)
@@ -3459,7 +3465,7 @@ public class ScaffoldState
         _bucket!.rename(restorationId!);
         parent.adoptChild(_bucket!);
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool _setNewBucketIfNecessary(RestorationBucket? newBucket, bool restorePending)
@@ -3481,7 +3487,7 @@ public class ScaffoldState
             didToggleBucket(oldBucket);
         }
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _updateProperty(IRestorableProperty property)
@@ -3523,7 +3529,7 @@ internal class _DismissDrawerAction__scaffold : DismissAction
         ScaffoldState scaffold = Scaffold.of(this.context);
         return (scaffold.isDrawerOpen || scaffold.isEndDrawerOpen)
             && scaffold.isDrawerBarrierDismissible;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override object? invoke(DismissIntent intent, BuildContext? context = null)
@@ -3534,7 +3540,7 @@ internal class _DismissDrawerAction__scaffold : DismissAction
             scaffold.closeDrawer();
             scaffold.closeEndDrawer();
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -3697,7 +3703,7 @@ public class _StandardBottomSheetState__scaffold : State<_StandardBottomSheet__s
             close();
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -3711,7 +3717,9 @@ public class _StandardBottomSheetState__scaffold : State<_StandardBottomSheet__s
                     heightFactor: animationCurve.transform(widget.animationController.value),
                     child: child
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             child: new Widgets.Semantics(
                 container: true,
@@ -3735,7 +3743,7 @@ public class _StandardBottomSheetState__scaffold : State<_StandardBottomSheet__s
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -3778,7 +3786,7 @@ internal class _ScaffoldScope__scaffold : InheritedWidget
     {
         var __oldWidget = (_ScaffoldScope__scaffold)oldWidget;
         return hasDrawer != __oldWidget.hasDrawer;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -3810,7 +3818,7 @@ internal class _HitTestableAtOrigin__scaffold : StatelessWidget
         var result = new Gestures.HitTestResult();
         WidgetsBinding.instance.hitTestInView(result, Offset.zero, viewIdLocal);
         return result.path.any((entry) => Equals(entry.target, renderObjectLocal));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -3820,6 +3828,6 @@ internal class _HitTestableAtOrigin__scaffold : StatelessWidget
             behavior: HitTestBehavior.translucent,
             child: SizedBox.CreateExpand()
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

@@ -68,7 +68,7 @@ public static class DartErrorHandlers
             Action<Exception> callback => InvokeAction(callback, error),
             _ => throw new ArgumentException(
                 "Unsupported Future error delegate. Use Action/Func accepting object or Exception, "
-                    + "or DartErrorHandlers.Adapt/AdaptTask for a custom exception or delegate type.",
+                    + "or provide an adapter for the custom exception or delegate type.",
                 nameof(handler)
             ),
         };

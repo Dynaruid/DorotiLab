@@ -22,6 +22,6 @@ Run CSharpier after `apply`, then build both Debug and Release configurations.
 `DartRuntimePrimitives.RequireValue` was a public runtime API and its three
 overloads have been removed. This is a source and binary compatibility break for
 external callers. Consumers must replace calls with an explicit C# branch,
-pattern, or `?? throw new NullReferenceException("Dart null assertion failed.")`
+pattern, or `?? throw new NullReferenceException("A required value was null.")`
 as appropriate, then rebuild against the updated Doroti runtime. No compatibility
 shim is retained.

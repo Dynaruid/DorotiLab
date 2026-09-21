@@ -40,7 +40,7 @@ public class DraggableScrollableController : ChangeNotifier
     {
         _assertAttached();
         return _attachedController!.extent.sizeToPixels(size);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool isAttached =>
@@ -52,7 +52,7 @@ public class DraggableScrollableController : ChangeNotifier
     {
         _assertAttached();
         return _attachedController!.extent.pixelsToSize(pixels);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual async Future animateTo(double size, Duration duration, Curve curve)
@@ -221,7 +221,7 @@ public class DraggableScrollableSheet : StatefulWidget
                     (
                         snapAnimationDuration
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) > Duration.zero
                 )
@@ -372,13 +372,13 @@ public class _DraggableSheetExtent__draggable_scrollable_sheet
     public virtual double pixelsToSize(double pixels)
     {
         return pixels / availablePixels * maxSize;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double sizeToPixels(double size)
     {
         return size / maxSize * availablePixels;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void dispose()
@@ -415,7 +415,7 @@ public class _DraggableSheetExtent__draggable_scrollable_sheet
             hasChanged: hasChanged,
             shouldCloseOnMinExtent: shouldCloseOnMinExtent
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -469,7 +469,7 @@ internal class _DraggableScrollableSheetState__draggable_scrollable_sheet
             return new List<double> { widget.minChildSize, widget.maxChildSize };
         }
         return new List<double>();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void didUpdateWidget(DraggableScrollableSheet oldWidget)
@@ -508,13 +508,13 @@ internal class _DraggableScrollableSheetState__draggable_scrollable_sheet
                         );
                         return widget.expand ? SizedBox.CreateExpand(child: sheet) : sheet;
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 ),
             child: widget.builder(context, _scrollController)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void dispose()
@@ -582,14 +582,16 @@ internal class _DraggableScrollableSheetState__draggable_scrollable_sheet
                         return $">>> {snapSizeString} <<<";
                     }
                     return snapSizeString;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
             .ToList()
             .ToList();
         return $"Invalid snapSize '{widget.snapSizes![(int)invalidIndex]}' at index {invalidIndex} of:\n"
             + $"  {snapSizesWithIndicator}";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -619,7 +621,7 @@ internal class _DraggableScrollableSheetScrollController__draggable_scrollable_s
             oldPosition: oldPosition,
             getExtent: () => extent
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillDescription(List<string> description)
@@ -737,10 +739,12 @@ public class _DraggableScrollableSheetScrollPosition__draggable_scrollable_sheet
             {
                 return (extent.currentSize - snapSize).abs()
                     <= extent.pixelsToSize(physics.toleranceFor(this).distance);
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _isAtSnapSize() =>
@@ -832,7 +836,7 @@ public class _DraggableScrollableSheetScrollPosition__draggable_scrollable_sheet
                         double snapSize__39055__value39101 = (
                             snapSize
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         );
                         extent.updateSize(
@@ -872,7 +876,7 @@ public class _DraggableScrollableSheetScrollPosition__draggable_scrollable_sheet
     {
         _dragCancelCallback = dragCancelCallback;
         return base.drag(details, () => dragCancelCallback());
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -891,7 +895,7 @@ public class DraggableScrollableActuator : StatefulWidget
         _InheritedResetNotifier__draggable_scrollable_sheet? notifier =
             context.dependOnInheritedWidgetOfExactType<_InheritedResetNotifier__draggable_scrollable_sheet>();
         return notifier?._sendReset() ?? false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override IState createState() =>
@@ -912,7 +916,7 @@ internal class _DraggableScrollableActuatorState__draggable_scrollable_sheet
             notifier: _notifier,
             child: widget.child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void dispose()
@@ -937,7 +941,7 @@ public class _ResetNotifier__draggable_scrollable_sheet : ChangeNotifier
         _wasCalled = true;
         notifyListeners();
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -967,7 +971,7 @@ internal class _InheritedResetNotifier__draggable_scrollable_sheet
         bool wasCalled = inheritedNotifier.notifier!._wasCalled;
         inheritedNotifier.notifier!._wasCalled = false;
         return wasCalled;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -997,13 +1001,13 @@ internal class _SnappingSimulation__draggable_scrollable_sheet : Physics.Simulat
             return 0;
         }
         return velocity;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool isDone(double time)
     {
         return x(time) == _pixelSnapSize;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double x(double time)
@@ -1017,7 +1021,7 @@ internal class _SnappingSimulation__draggable_scrollable_sheet : Physics.Simulat
             return _pixelSnapSize;
         }
         return newPosition;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual double _getSnapSize(double initialVelocity, List<double> pixelSnapSizes)
@@ -1049,6 +1053,6 @@ internal class _SnappingSimulation__draggable_scrollable_sheet : Physics.Simulat
             return pixelSnapSizes[(int)(indexOfNextSize - 1L)];
         }
         return pixelSnapSizes[(int)indexOfNextSize];
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

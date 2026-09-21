@@ -32,7 +32,7 @@ public class TweenSequence<T> : Animatable<T>
         TweenSequenceItem<T> element = _items[(int)index];
         double tInterval = _intervals[(int)index].value(t);
         return element.tween.transform(tInterval);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override T transform(double t)
@@ -52,7 +52,7 @@ public class TweenSequence<T> : Animatable<T>
         throw new InvalidOperationException(
             $"TweenSequence.evaluate() could not find an interval for {t}"
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string ToString() => $"TweenSequence({checked((long)_items.Count)} items)";

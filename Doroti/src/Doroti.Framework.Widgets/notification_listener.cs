@@ -19,7 +19,7 @@ public abstract class Notification
         var description = new List<string>();
         debugFillDescription(description);
         return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "Notification")}({string.Join(", ", description)})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void debugFillDescription(List<string> description) { }
@@ -43,7 +43,7 @@ public class NotificationListener<T> : ProxyWidget
     public override Element createElement()
     {
         return new _NotificationElement__notification_listener<T>(this);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -62,7 +62,7 @@ internal class _NotificationElement__notification_listener<T> : ProxyElement, No
             return listener.onNotification!(notification__as5574);
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void notifyClients(ProxyWidget oldWidget) { }

@@ -75,7 +75,7 @@ public abstract class MultiChildLayoutDelegate
         });
         child!.layout(constraints, parentUsesSize: true);
         return child.size;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void positionChild(object childId, Offset offset)
@@ -100,7 +100,7 @@ public abstract class MultiChildLayoutDelegate
     {
         var childParentData = ((MultiChildLayoutParentData?)(object?)child.parentData!)!;
         return new DiagnosticsProperty<RenderBox>($"{childParentData.id}", child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _callPerformLayout(Size size, RenderBox? firstChild)
@@ -275,7 +275,7 @@ public class RenderCustomMultiChildLayoutBox
     {
         DartRuntimePrimitives.Assert(() => constraints.debugAssertIsValid());
         return constraints.constrain(_delegate.getSize(constraints));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicWidth(double height)
@@ -286,7 +286,7 @@ public class RenderCustomMultiChildLayoutBox
             return widthLocal;
         }
         return 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicWidth(double height)
@@ -297,7 +297,7 @@ public class RenderCustomMultiChildLayoutBox
             return widthLocal;
         }
         return 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicHeight(double width)
@@ -308,7 +308,7 @@ public class RenderCustomMultiChildLayoutBox
             return heightLocal;
         }
         return 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicHeight(double width)
@@ -319,13 +319,13 @@ public class RenderCustomMultiChildLayoutBox
             return heightLocal;
         }
         return 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Size computeDryLayout(BoxConstraints constraints)
     {
         return _getSize(constraints);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void performLayout()
@@ -342,7 +342,7 @@ public class RenderCustomMultiChildLayoutBox
     public override bool hitTestChildren(BoxHitTestResult result, Offset position)
     {
         return defaultHitTestChildren(result, position: position);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool _debugUltimatePreviousSiblingOf(RenderBox child, RenderBox? equals = null)
@@ -355,7 +355,7 @@ public class RenderCustomMultiChildLayoutBox
             childParentData = ((MultiChildLayoutParentData?)(object?)child.parentData!)!;
         }
         return Equals(child, equals);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool _debugUltimateNextSiblingOf(RenderBox child, RenderBox? equals = null)
@@ -368,7 +368,7 @@ public class RenderCustomMultiChildLayoutBox
             childParentData = ((MultiChildLayoutParentData?)(object?)child.parentData!)!;
         }
         return Equals(child, equals);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual long childCount => _childCount;
@@ -411,7 +411,7 @@ public class RenderCustomMultiChildLayoutBox
             return true;
         });
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _insertIntoChildList(RenderBox child, RenderBox? after = null)
@@ -598,7 +598,7 @@ public class RenderCustomMultiChildLayoutBox
         DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         var childParentData = ((MultiChildLayoutParentData?)(object?)child.parentData!)!;
         return childParentData.previousSibling;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual RenderBox? childAfter(RenderBox child)
@@ -606,7 +606,7 @@ public class RenderCustomMultiChildLayoutBox
         DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         var childParentData = ((MultiChildLayoutParentData?)(object?)child.parentData!)!;
         return childParentData.nextSibling;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override List<DiagnosticsNode> debugDescribeChildren()
@@ -629,7 +629,7 @@ public class RenderCustomMultiChildLayoutBox
             }
         }
         return children;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double? defaultComputeDistanceToFirstActualBaseline(TextBaseline baseline)
@@ -644,16 +644,14 @@ public class RenderCustomMultiChildLayoutBox
             {
                 double result__138852__value138916 = (
                     result
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 return (result__138852__value138916) + childParentData.offset.dy;
             }
             child = childParentData.nextSibling;
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double? defaultComputeDistanceToHighestActualBaseline(TextBaseline baseline)
@@ -671,7 +669,7 @@ public class RenderCustomMultiChildLayoutBox
             child = childParentData.nextSibling;
         }
         return minBaseline.offset;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool defaultHitTestChildren(BoxHitTestResult result, Offset position)
@@ -703,7 +701,7 @@ public class RenderCustomMultiChildLayoutBox
             child = childParentData.previousSibling;
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void defaultPaint(PaintingContext context, Offset offset)
@@ -734,6 +732,6 @@ public class RenderCustomMultiChildLayoutBox
             child = childParentData.nextSibling;
         }
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

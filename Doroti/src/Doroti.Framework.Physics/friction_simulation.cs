@@ -21,7 +21,7 @@ public static partial class Friction_simulationLibrary
             guess = guess - ((f(guess) - target) / df(guess));
         }
         return guess;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -86,7 +86,7 @@ public class FrictionSimulation : Simulation
                 Dart_mathLibrary.e,
                 (startVelocity - endVelocity) / (startPosition - endPosition)
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double x(double time)
@@ -99,7 +99,7 @@ public class FrictionSimulation : Simulation
             + (_v * Dart_mathLibrary.pow(_drag, time) / _dragLog)
             - (_v / _dragLog)
             - (_constantDeceleration / 2L * time * time);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double dx(double time)
@@ -109,7 +109,7 @@ public class FrictionSimulation : Simulation
             return 0;
         }
         return (_v * Dart_mathLibrary.pow(_drag, time)) - (_constantDeceleration * time);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double finalX
@@ -141,13 +141,13 @@ public class FrictionSimulation : Simulation
             df: dx,
             iterations: 10L
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool isDone(double time)
     {
         return dx(time).abs() < tolerance.velocity;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string ToString() =>
@@ -178,7 +178,7 @@ public class BoundedFrictionSimulation : FrictionSimulation
     public override double x(double time)
     {
         return Dart_uiLibrary.clampDouble(base.x(time), _minX, _maxX);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool isDone(double time)
@@ -186,7 +186,7 @@ public class BoundedFrictionSimulation : FrictionSimulation
         return base.isDone(time)
             || ((x(time) - _minX).abs() < tolerance.distance)
             || ((x(time) - _maxX).abs() < tolerance.distance);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string ToString() =>

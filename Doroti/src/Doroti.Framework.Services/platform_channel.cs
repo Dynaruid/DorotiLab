@@ -56,7 +56,7 @@ internal class _ProfiledBinaryMessenger : BinaryMessenger
     )
     {
         return proxy.handlePlatformMessage(channel, data, callback);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual async Future<ByteData?> sendWithPostfix(
@@ -97,7 +97,7 @@ internal class _ProfiledBinaryMessenger : BinaryMessenger
             result
         );
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Future<ByteData?> send(string channel, ByteData? message) =>
@@ -219,7 +219,7 @@ public static partial class Platform_channelLibrary
         return (!ConstantsLibrary.kIsWeb && (ServicesBinding.rootIsolateToken is null))
             ? BackgroundIsolateBinaryMessenger.instance
             : ServicesBinding.instance.defaultBinaryMessenger;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -261,7 +261,7 @@ public class BasicMessageChannel<T>
     {
         var sending = binaryMessenger.send(name, codec.encodeMessage(message));
         return codec.decodeMessage(sending is null ? null : await sending);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void setMessageHandler(Func<T?, Future>? handler)
@@ -344,13 +344,13 @@ public class MethodChannel
             );
         }
         return ((T?)codec.decodeEnvelope(result))!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Future<T?> invokeMethod<T>(string method, object? arguments = null)
     {
         return _invokeMethod<T>(method, missingOk: false, arguments: arguments);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual async Future<List<T>?> invokeListMethod<T>(
@@ -360,7 +360,7 @@ public class MethodChannel
     {
         List<object>? result = await invokeMethod<List<object>>(method, arguments);
         return result?.cast<T>().ToList();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual async Future<DartMap<K, V>?> invokeMapMethod<K, V>(
@@ -373,7 +373,7 @@ public class MethodChannel
             arguments
         );
         return result?.cast<K, V>();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void setMethodCallHandler(Func<MethodCall, Future>? handler)
@@ -409,7 +409,7 @@ public class MethodChannel
         {
             return codec.encodeErrorEnvelope(code: "error", message: error.ToString());
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -426,7 +426,7 @@ public class OptionalMethodChannel : MethodChannel
         where T : default
     {
         return await base._invokeMethod<T>(method, missingOk: true, arguments: arguments);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -522,6 +522,6 @@ public class EventChannel
             }
         );
         return controller.stream;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

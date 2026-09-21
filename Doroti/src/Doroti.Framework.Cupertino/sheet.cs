@@ -170,18 +170,20 @@ public static partial class SheetLibrary
                                             child: builder(context)
                                         );
                                         throw new InvalidOperationException(
-                                            "Dart closure completed without a value."
+                                            "Callback completed without returning a value."
                                         );
                                     }
                                 ),
                             };
                             throw new InvalidOperationException(
-                                "Dart closure completed without a value."
+                                "Callback completed without returning a value."
                             );
                         }
                     )
                 );
-                throw new InvalidOperationException("Dart control flow completed without a value.");
+                throw new InvalidOperationException(
+                    "Control flow completed without returning a value."
+                );
             }
             var routeLocal = new CupertinoSheetRoute<T>(
                 scrollableBuilder: (context, controller) =>
@@ -196,7 +198,7 @@ public static partial class SheetLibrary
             );
             return Navigator.of(context, rootNavigator: true).push(routeLocal);
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -314,7 +316,7 @@ public class CupertinoSheetTransition : StatefulWidget
                                         child: contrastedChild
                                     );
                                     throw new InvalidOperationException(
-                                        "Dart closure completed without a value."
+                                        "Callback completed without returning a value."
                                     );
                                 }
                             )
@@ -323,7 +325,7 @@ public class CupertinoSheetTransition : StatefulWidget
                 ),
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static Widget _delegatedCoverSheetSecondaryTransition(
@@ -354,7 +356,7 @@ public class CupertinoSheetTransition : StatefulWidget
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override IState createState() =>
@@ -479,7 +481,7 @@ internal class _CupertinoSheetTransitionState__sheet
         Animation<Offset> positionAnimation = curvedAnimation.drive(offsetTween);
         curvedAnimation.dispose();
         return new SlideTransition(position: positionAnimation, child: child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _coverSheetSecondaryTransition(
@@ -497,7 +499,7 @@ internal class _CupertinoSheetTransitionState__sheet
                 child: child
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -524,13 +526,13 @@ internal class _CupertinoSheetTransitionState__sheet
                             )
                         );
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
@@ -569,7 +571,7 @@ internal class _CupertinoSheetTransitionState__sheet
         _updateTickerModeNotifier();
         _updateTicker();
         return _ticker!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void activate()
@@ -637,14 +639,14 @@ internal class _StretchDragControllerProvider__sheet : InheritedWidget
     public static _StretchDragControllerProvider__sheet? maybeOf(BuildContext context)
     {
         return context.getInheritedWidgetOfExactType<_StretchDragControllerProvider__sheet>();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget)
     {
         var __oldWidget = (_StretchDragControllerProvider__sheet)oldWidget;
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -734,7 +736,7 @@ public class CupertinoSheetRoute<T> : PageRoute<T>, _CupertinoSheetRouteTransiti
                 ),
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Widget buildContent(BuildContext context)
@@ -760,13 +762,13 @@ public class CupertinoSheetRoute<T> : PageRoute<T>, _CupertinoSheetRouteTransiti
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static bool hasParentSheet(BuildContext context)
     {
         return _CupertinoSheetScope__sheet.maybeOf(context) is not null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static void popSheet(BuildContext context)
@@ -809,13 +811,13 @@ public class CupertinoSheetRoute<T> : PageRoute<T>, _CupertinoSheetRouteTransiti
     )
     {
         return buildContent(context);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool canTransitionFrom(dynamic previousRoute)
     {
         return !_hasCustomTopGap;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool canTransitionTo(dynamic nextRoute)
@@ -825,7 +827,7 @@ public class CupertinoSheetRoute<T> : PageRoute<T>, _CupertinoSheetRouteTransiti
             return false;
         }
         return nextRoute is _CupertinoSheetRouteTransitionMixin__sheet<object>;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget buildTransitions(
@@ -844,7 +846,7 @@ public class CupertinoSheetRoute<T> : PageRoute<T>, _CupertinoSheetRouteTransiti
             enableDrag,
             topGap
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -856,7 +858,7 @@ internal class _CupertinoSheetScope__sheet : InheritedWidget
     public static _CupertinoSheetScope__sheet? maybeOf(BuildContext context)
     {
         return context.getInheritedWidgetOfExactType<_CupertinoSheetScope__sheet>();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget) => false;
@@ -980,7 +982,7 @@ internal class _CupertinoDragGestureDetectorState__sheet<T>
     public virtual double sheetHeight =>
         (
             context.size
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         ).height;
 
     public override void initState()
@@ -1050,7 +1052,7 @@ internal class _CupertinoDragGestureDetectorState__sheet<T>
                     (
                         details.primaryDelta
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) / sheetHeight
                 )
@@ -1100,7 +1102,7 @@ internal class _CupertinoDragGestureDetectorState__sheet<T>
             behavior: HitTestBehavior.translucent,
             child: widget.child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1149,7 +1151,7 @@ public class _CupertinoDragGestureController__sheet<T>
     public virtual bool isDragged()
     {
         return popDragController.value != 1.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void dragEnd(double velocity, AnimationController? upController)
@@ -1256,7 +1258,7 @@ internal class _CupertinoSheetScrollController__sheet : ScrollController
             onDragEnd: onDragEnd,
             sheetIsDraggedDown: sheetIsDraggedDown
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1364,7 +1366,7 @@ public class _CupertinoSheetScrollPosition__sheet : ScrollPositionWithSingleCont
     {
         _dragCancelCallback = dragCancelCallback;
         return base.drag(details, () => dragCancelCallback());
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1453,14 +1455,14 @@ internal class _CupertinoDraggableScrollableSheetState__sheet<T>
                         (
                             context.size
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ).height
                         - (
                             (
                                 context.size
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             ).height * SheetLibrary._kTopGapRatio
                         )
@@ -1480,7 +1482,7 @@ internal class _CupertinoDraggableScrollableSheetState__sheet<T>
                     / (
                         context.size
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ).height,
                 null
@@ -1492,6 +1494,6 @@ internal class _CupertinoDraggableScrollableSheetState__sheet<T>
     public override Widget build(BuildContext context)
     {
         return widget.builder(context, _scrollController);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

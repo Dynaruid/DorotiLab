@@ -37,7 +37,7 @@ public abstract class SliverChildDelegate
         var description = new List<string>();
         debugFillDescription(description);
         return $"{DiagnosticsLibrary.describeIdentity(this)}({string.Join(", ", description)})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void debugFillDescription(List<string> description)
@@ -49,9 +49,7 @@ public abstract class SliverChildDelegate
             {
                 long children__9813__value9855 = (
                     children
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 description.Add($"estimated child count: {(children__9813__value9855)}");
             }
@@ -129,7 +127,7 @@ public class SliverChildBuilderDelegate : SliverChildDelegate
             childKey = key;
         }
         return findChildIndexCallback!(childKey);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget? build(BuildContext context, long index)
@@ -143,7 +141,7 @@ public class SliverChildBuilderDelegate : SliverChildDelegate
                     >= (
                         childCount
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
@@ -183,9 +181,7 @@ public class SliverChildBuilderDelegate : SliverChildDelegate
             {
                 long semanticIndex__23314__value23377 = (
                     semanticIndex
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 childLocal = DartRuntimePrimitives.ConvertValue<Widget>(
                     new IndexedSemantics(
@@ -204,7 +200,7 @@ public class SliverChildBuilderDelegate : SliverChildDelegate
             );
         }
         return (Widget?)new KeyedSubtree(key: keyLocal, child: childLocal);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override long? estimatedChildCount => childCount;
@@ -292,7 +288,7 @@ public class SliverChildListDelegate : SliverChildDelegate
         {
             long index = (
                 DartCollectionRuntime.NullableMapValue<long>(_keyToIndex, null)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             while (index < checked(children.Count))
             {
@@ -315,7 +311,7 @@ public class SliverChildListDelegate : SliverChildDelegate
             return DartCollectionRuntime.NullableMapValue<long>(_keyToIndex, key);
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override long? findIndexByKey(Key key)
@@ -332,7 +328,7 @@ public class SliverChildListDelegate : SliverChildDelegate
             childKey = key;
         }
         return _findChildIndex(childKey);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget? build(BuildContext context, long index)
@@ -359,9 +355,7 @@ public class SliverChildListDelegate : SliverChildDelegate
             {
                 long semanticIndex__31496__value31559 = (
                     semanticIndex
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 childLocal = DartRuntimePrimitives.ConvertValue<Widget>(
                     new IndexedSemantics(
@@ -380,7 +374,7 @@ public class SliverChildListDelegate : SliverChildDelegate
             );
         }
         return (Widget?)new KeyedSubtree(key: keyLocal, child: childLocal);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override long? estimatedChildCount => checked(children.Count);
@@ -389,7 +383,7 @@ public class SliverChildListDelegate : SliverChildDelegate
     {
         var __oldDelegate = (SliverChildListDelegate)oldDelegate;
         return !Equals(children, __oldDelegate.children);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -444,7 +438,7 @@ internal class _SelectionKeepAliveState__scroll_delegate
                 _updateSelectablesWithSelections(selectable, add: false);
             }
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _updateSelectablesWithSelections(Selectable selectable, bool add)
@@ -541,7 +535,7 @@ internal class _SelectionKeepAliveState__scroll_delegate
             return widget.child;
         }
         return new SelectionRegistrarScope(registrar: this, child: widget.child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _ensureKeepAlive()
@@ -609,7 +603,7 @@ public static partial class Scroll_delegateLibrary
         );
         FlutterError.reportError(details);
         return ErrorWidget.builder(details);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -689,7 +683,7 @@ public class TwoDimensionalChildBuilderDelegate : TwoDimensionalChildDelegate
                     > (
                         maxXIndex
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
@@ -707,7 +701,7 @@ public class TwoDimensionalChildBuilderDelegate : TwoDimensionalChildDelegate
                     > (
                         maxYIndex
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
@@ -745,7 +739,7 @@ public class TwoDimensionalChildBuilderDelegate : TwoDimensionalChildDelegate
             );
         }
         return childLocal;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool shouldRebuild(TwoDimensionalChildDelegate oldDelegate) => true;
@@ -797,13 +791,13 @@ public class TwoDimensionalChildListDelegate : TwoDimensionalChildDelegate
             );
         }
         return childLocal;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool shouldRebuild(TwoDimensionalChildDelegate oldDelegate)
     {
         var __oldDelegate = (TwoDimensionalChildListDelegate)oldDelegate;
         return !Equals(children, __oldDelegate.children);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

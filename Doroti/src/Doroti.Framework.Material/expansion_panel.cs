@@ -61,7 +61,7 @@ internal class _SaltedKey__expansion_panel<S, V> : LocalKey
         var saltString = Equals(typeof(S), typeof(string)) ? $"<'{salt}'>" : $"<{salt}>";
         var valueString = Equals(typeof(V), typeof(string)) ? $"<'{value}'>" : $"<{value}>";
         return $"[{saltString} {valueString}]";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -266,7 +266,7 @@ internal class _ExpansionPanelListState__expansion_panel : State<ExpansionPanelL
             identifierMap[child.value] = true;
         }
         return checked(identifierMap.Count) == checked((long)widget.children.Count);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _isChildExpanded(long index)
@@ -277,7 +277,7 @@ internal class _ExpansionPanelListState__expansion_panel : State<ExpansionPanelL
             return Equals(_currentOpenPanel?.value, radioWidget.value);
         }
         return widget.children[(int)index].isExpanded;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _handlePressed(bool isExpanded, long index)
@@ -318,7 +318,7 @@ internal class _ExpansionPanelListState__expansion_panel : State<ExpansionPanelL
             }
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -469,6 +469,6 @@ internal class _ExpansionPanelListState__expansion_panel : State<ExpansionPanelL
             elevation: widget.elevation,
             children: items
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

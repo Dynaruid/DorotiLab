@@ -33,20 +33,20 @@ Check(
 );
 int? zero = 0;
 Check(
-    (zero ?? throw new NullReferenceException("Dart null assertion failed.")) == 0
+    (zero ?? throw new NullReferenceException("A required value was null.")) == 0
         && zero.Value == 0,
     "Value assertion must accept zero."
 );
 bool? falseValue = false;
 Check(
-    (falseValue ?? throw new NullReferenceException("Dart null assertion failed.")) == false,
+    (falseValue ?? throw new NullReferenceException("A required value was null.")) == false,
     "Value assertion must accept false."
 );
 foreach (
     var action in new Action[]
     {
-        () => _ = (int?)null ?? throw new NullReferenceException("Dart null assertion failed."),
-        () => _ = (string?)null ?? throw new NullReferenceException("Dart null assertion failed."),
+        () => _ = (int?)null ?? throw new NullReferenceException("A required value was null."),
+        () => _ = (string?)null ?? throw new NullReferenceException("A required value was null."),
         () => DartRuntimePrimitives.RequireReference<string?>(null),
     }
 )
@@ -59,7 +59,7 @@ foreach (
     catch (NullReferenceException error)
     {
         Check(
-            error.Message == "Dart null assertion failed.",
+            error.Message == "A required value was null.",
             "Preserve null assertion exception and message."
         );
     }
@@ -71,14 +71,14 @@ int? NextRequiredValue()
     return 5;
 }
 var evaluatedOnce =
-    NextRequiredValue() ?? throw new NullReferenceException("Dart null assertion failed.");
+    NextRequiredValue() ?? throw new NullReferenceException("A required value was null.");
 Check(evaluatedOnce == 5 && evaluationCount == 1, "Null assertion evaluates its operand once.");
 string? delayedValue = null;
 var delayedInvocations = 0;
 Func<string> delayedAssertion = () =>
 {
     delayedInvocations++;
-    return delayedValue ?? throw new NullReferenceException("Dart null assertion failed.");
+    return delayedValue ?? throw new NullReferenceException("A required value was null.");
 };
 Check(delayedInvocations == 0, "A callback null assertion remains delayed.");
 try
@@ -89,7 +89,7 @@ try
 catch (NullReferenceException error)
 {
     Check(
-        delayedInvocations == 1 && error.Message == "Dart null assertion failed.",
+        delayedInvocations == 1 && error.Message == "A required value was null.",
         "A callback null assertion runs at invocation time."
     );
 }
@@ -105,6 +105,29 @@ Check(
     DartRuntimePrimitives.ConvertValue<int>(null) == 0,
     "Existing null-to-value conversion remains unchanged."
 );
+Check(new TypeError().Message == "Type error.", "Type errors use runtime-neutral wording.");
+Check(
+    DartRuntimePrimitives.AsException(null).Message == "A null value was thrown.",
+    "Null throws use runtime-neutral wording."
+);
+foreach (
+    var contract in new (Action Action, string Message)[]
+    {
+        (() => FoundationRuntimePorts.Length(null), "Length was read from a null value."),
+        (() => FoundationRuntimePorts.Index(null, 0), "Index access targeted a null value."),
+    }
+)
+{
+    try
+    {
+        contract.Action();
+        throw new InvalidOperationException("A null runtime operation did not throw.");
+    }
+    catch (NullReferenceException error)
+    {
+        Check(error.Message == contract.Message, "Runtime operations use neutral null wording.");
+    }
+}
 
 var incomplete = new TaskCompletionSource<int>(TaskCreationOptions.RunContinuationsAsynchronously);
 var future = Future<int>.fromTask(incomplete.Task);

@@ -55,7 +55,7 @@ internal class _PlaceholderPainter__placeholder : CustomPainter
     {
         var __oldPainter = (_PlaceholderPainter__placeholder)oldDelegate;
         return (!Equals(__oldPainter.color, color)) || (__oldPainter.strokeWidth != strokeWidth);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool? hitTest(Offset position) => false;
@@ -101,7 +101,7 @@ public class Placeholder : StatelessWidget
                 child: child
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)

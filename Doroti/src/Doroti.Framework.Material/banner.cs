@@ -100,7 +100,7 @@ public class MaterialBanner : StatefulWidget
             debugLabel: "MaterialBanner",
             vsync: vsync
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual MaterialBanner withAnimation(
@@ -128,7 +128,7 @@ public class MaterialBanner : StatefulWidget
             animation: newAnimation,
             onVisible: onVisible
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override IState createState() =>
@@ -384,7 +384,7 @@ internal class _MaterialBannerState__banner : State<MaterialBanner>
                             child: child
                         );
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     },
                     child: materialBanner

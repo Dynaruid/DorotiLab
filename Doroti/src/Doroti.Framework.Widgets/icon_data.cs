@@ -87,7 +87,7 @@ public class IconDataProperty : DiagnosticsProperty<IconData>
             };
         }
         return json;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 

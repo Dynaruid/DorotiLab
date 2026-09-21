@@ -355,7 +355,7 @@ public class RenderListWheelViewport
                     (
                         childManager.childCount
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) - 1L
                 ) * _itemExtent
@@ -374,7 +374,7 @@ public class RenderListWheelViewport
     internal virtual double _getUntransformedPaintingCoordinateY(double layoutCoordinateY)
     {
         return layoutCoordinateY - _topScrollMarginExtent - offset.pixels;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual double _maxVisibleRadian
@@ -399,19 +399,19 @@ public class RenderListWheelViewport
             child = childAfter(child);
         }
         return extent;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicWidth(double height)
     {
         return _getIntrinsicCrossAxis((child) => child.getMinIntrinsicWidth(height));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicWidth(double height)
     {
         return _getIntrinsicCrossAxis((child) => child.getMaxIntrinsicWidth(height));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicHeight(double width)
@@ -422,9 +422,9 @@ public class RenderListWheelViewport
         }
         return (
                 childManager.childCount
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ) * _itemExtent;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicHeight(double width)
@@ -435,9 +435,9 @@ public class RenderListWheelViewport
         }
         return (
                 childManager.childCount
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ) * _itemExtent;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool sizedByParent => true;
@@ -445,7 +445,7 @@ public class RenderListWheelViewport
     public override Size computeDryLayout(BoxConstraints constraints)
     {
         return constraints.biggest;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual long indexOf(RenderBox child)
@@ -454,9 +454,9 @@ public class RenderListWheelViewport
         DartRuntimePrimitives.Assert(() => childParentData.index is not null);
         return (
             childParentData.index
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual long scrollOffsetToIndex(double scrollOffset) =>
@@ -601,7 +601,7 @@ public class RenderListWheelViewport
             || (
                 size.height < (highestUntransformedPaintY + _maxEstimatedScrollExtent + _itemExtent)
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paint(PaintingContext context, Offset offset)
@@ -761,9 +761,7 @@ public class RenderListWheelViewport
                 (center is null)
                 || (
                     center
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             ) && inCenter
         )
@@ -791,9 +789,7 @@ public class RenderListWheelViewport
                 (center is null)
                 || !(
                     center
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             ) && inCenter
         )
@@ -821,9 +817,7 @@ public class RenderListWheelViewport
                 (center is null)
                 || !(
                     center
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             ) && !inCenter
         )
@@ -889,7 +883,7 @@ public class RenderListWheelViewport
                 }
             )
         )();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Matrix4 _centerOriginTransform(Matrix4 originalMatrix)
@@ -910,7 +904,7 @@ public class RenderListWheelViewport
             1
         );
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static bool _debugAssertValidHitTestOffsets(
@@ -926,7 +920,7 @@ public class RenderListWheelViewport
             );
         }
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void applyPaintTransform(RenderObject child, Matrix4 transform)
@@ -947,7 +941,7 @@ public class RenderListWheelViewport
             return Offset.zero & size;
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool hitTestChildren(BoxHitTestResult result, Offset position)
@@ -994,7 +988,7 @@ public class RenderListWheelViewport
             child = childParentData.previousSibling;
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual RevealedOffset getOffsetToReveal(
@@ -1018,15 +1012,13 @@ public class RenderListWheelViewport
             (
                 (
                     rect
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             )
         );
         Rect targetRect = bounds.translate(0.0, (size.height - itemExtent) / 2L);
         return new RevealedOffset(offset: targetOffset, rect: targetRect);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void showOnScreen(
@@ -1062,7 +1054,7 @@ public class RenderListWheelViewport
             childParentData = ((ListWheelParentData?)(object?)child.parentData!)!;
         }
         return Equals(child, equals);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool _debugUltimateNextSiblingOf(RenderBox child, RenderBox? equals = null)
@@ -1075,7 +1067,7 @@ public class RenderListWheelViewport
             childParentData = ((ListWheelParentData?)(object?)child.parentData!)!;
         }
         return Equals(child, equals);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual long childCount => _childCount;
@@ -1118,7 +1110,7 @@ public class RenderListWheelViewport
             return true;
         });
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _insertIntoChildList(RenderBox child, RenderBox? after = null)
@@ -1304,7 +1296,7 @@ public class RenderListWheelViewport
         DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         var childParentData = ((ListWheelParentData?)(object?)child.parentData!)!;
         return childParentData.previousSibling;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual RenderBox? childAfter(RenderBox child)
@@ -1312,7 +1304,7 @@ public class RenderListWheelViewport
         DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         var childParentData = ((ListWheelParentData?)(object?)child.parentData!)!;
         return childParentData.nextSibling;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override List<DiagnosticsNode> debugDescribeChildren()
@@ -1337,6 +1329,6 @@ public class RenderListWheelViewport
             }
         }
         return children;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

@@ -19,14 +19,14 @@ public abstract class TextBoundary
         }
         long start = getTextBoundaryAt(position).start;
         return (start >= 0L) ? start : null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual long? getTrailingTextBoundaryAt(long position)
     {
         long end = getTextBoundaryAt(Math.Max(0L, position)).end;
         return (end >= 0L) ? end : null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual TextRange getTextBoundaryAt(long position)
@@ -34,7 +34,7 @@ public abstract class TextBoundary
         long start = getLeadingTextBoundaryAt(position) ?? -1L;
         long end = getTrailingTextBoundaryAt(position) ?? -1L;
         return new TextRange(start: start, end: end);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -59,7 +59,7 @@ public class CharacterBoundary : TextBoundary
         ).stringBeforeLength;
         DartRuntimePrimitives.Assert(() => new CharacterRange(_text, graphemeStart).Count == 0);
         return graphemeStart;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override long? getTrailingTextBoundaryAt(long position)
@@ -74,7 +74,7 @@ public class CharacterBoundary : TextBoundary
             (nextBoundary == _text.Length) || (new CharacterRange(_text, nextBoundary).Count == 0)
         );
         return nextBoundary;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override TextRange getTextBoundaryAt(long position)
@@ -100,7 +100,7 @@ public class CharacterBoundary : TextBoundary
                 start: rangeAtPosition.stringBeforeLength,
                 end: getTrailingTextBoundaryAt(position) ?? -1L
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -165,7 +165,7 @@ public class ParagraphBoundary : TextBoundary
             index -= 1L;
         }
         return Math.Max(index, 0L);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override long? getTrailingTextBoundaryAt(long position)
@@ -194,7 +194,7 @@ public class ParagraphBoundary : TextBoundary
         )
             ? (index + 2L)
             : (index + 1L);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 

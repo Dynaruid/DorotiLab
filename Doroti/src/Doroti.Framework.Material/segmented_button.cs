@@ -164,7 +164,7 @@ public class SegmentedButton<T> : StatefulWidget
                 ),
                 overlayColor: overlayColorProp
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static WidgetStateProperty<Color?>? _defaultColor(
@@ -186,7 +186,7 @@ public class SegmentedButton<T> : StatefulWidget
                     [WidgetStateMembers.any] = enabled,
                 }.cast<WidgetStatesConstraint, Color?>()
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override IState createState() =>
@@ -251,7 +251,9 @@ public class SegmentedButtonState<T> : State<SegmentedButton<T>>
                         controller.dispose();
                         return true;
                     }
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
         }
@@ -304,7 +306,9 @@ public class SegmentedButtonState<T> : State<SegmentedButton<T>>
             P? themeValue = getProperty(theme.style);
             P? defaultValue = getProperty(defaults.style);
             return (widgetValue ?? themeValue) ?? defaultValue;
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         P? resolve<P>(
             Func<ButtonStyle?, WidgetStateProperty<P>?> getProperty,
@@ -323,7 +327,9 @@ public class SegmentedButtonState<T> : State<SegmentedButton<T>>
                             )
                     )
             );
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         ButtonStyle segmentStyleFor(ButtonStyle? style)
         {
@@ -346,7 +352,9 @@ public class SegmentedButtonState<T> : State<SegmentedButton<T>>
                 alignment: style?.alignment,
                 splashFactory: style?.splashFactory
             );
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         ButtonStyle segmentStyle = segmentStyleFor(widget.style);
         ButtonStyle segmentThemeStyle = segmentStyleFor(theme.style)
@@ -395,7 +403,7 @@ public class SegmentedButtonState<T> : State<SegmentedButton<T>>
                         spacing: (
                             Dart_uiLibrary.lerpDouble(8L, 4L, scaleLocal)
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ),
                         children: Equals(effectiveIconAlignment, IconAlignment.start)
@@ -492,13 +500,15 @@ public class SegmentedButtonState<T> : State<SegmentedButton<T>>
                         - effectedButtonHeight
                 ),
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
         return new Material(
             type: MaterialType.transparency,
             elevation: (
                 resolve((style) => style?.elevation)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             shadowColor: resolve((style) => style?.shadowColor),
             surfaceTintColor: resolve((style) => style?.surfaceTintColor),
@@ -575,7 +585,7 @@ internal class _SegmentedButtonRenderWidget__segmented_button<T> : MultiChildRen
             tapTargetVerticalPadding: tapTargetVerticalPadding,
             isExpanded: isExpanded
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -756,7 +766,7 @@ public class _RenderSegmentedButton__segmented_button<T>
             child = childParentData.nextSibling;
         }
         return minWidth * childCount;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicWidth(double height)
@@ -773,7 +783,7 @@ public class _RenderSegmentedButton__segmented_button<T>
             child = childParentData.nextSibling;
         }
         return maxWidth * childCount;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicHeight(double width)
@@ -790,7 +800,7 @@ public class _RenderSegmentedButton__segmented_button<T>
             child = childParentData.nextSibling;
         }
         return minHeight;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicHeight(double width)
@@ -807,13 +817,13 @@ public class _RenderSegmentedButton__segmented_button<T>
             child = childParentData.nextSibling;
         }
         return maxHeight;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? computeDistanceToActualBaseline(TextBaseline baseline)
     {
         return defaultComputeDistanceToHighestActualBaseline(baseline);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void setupParentData(RenderObject child)
@@ -868,7 +878,7 @@ public class _RenderSegmentedButton__segmented_button<T>
         return Equals(direction, Axis.horizontal)
             ? _calculateHorizontalChildSize(constraints)
             : _calculateVerticalChildSize(constraints);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Size _calculateHorizontalChildSize(BoxConstraints constraints)
@@ -901,7 +911,7 @@ public class _RenderSegmentedButton__segmented_button<T>
             child = childAfter(child);
         }
         return new Size(childWidth, maxHeight);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Size _calculateVerticalChildSize(BoxConstraints constraints)
@@ -939,7 +949,7 @@ public class _RenderSegmentedButton__segmented_button<T>
             childSize = new Size(constraints.maxWidth, childSize.height);
         }
         return childSize;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Size _computeOverallSizeFromChildSize(Size childSize)
@@ -949,14 +959,14 @@ public class _RenderSegmentedButton__segmented_button<T>
             return constraints.constrain(new Size(childSize.width, childSize.height * childCount));
         }
         return constraints.constrain(new Size(childSize.width * childCount, childSize.height));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Size computeDryLayout(BoxConstraints constraints)
     {
         Size childSize = _calculateChildSize(constraints);
         return _computeOverallSizeFromChildSize(childSize);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
@@ -971,7 +981,7 @@ public class _RenderSegmentedButton__segmented_button<T>
             );
         }
         return baselineOffset.offset;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void performLayout()
@@ -1206,7 +1216,7 @@ public class _RenderSegmentedButton__segmented_button<T>
                         );
                         return child!.hitTest(result, position: localOffset);
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 );
@@ -1214,7 +1224,7 @@ public class _RenderSegmentedButton__segmented_button<T>
             child = childParentData.previousSibling;
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool _debugUltimatePreviousSiblingOf(RenderBox child, RenderBox? equals = null)
@@ -1227,7 +1237,7 @@ public class _RenderSegmentedButton__segmented_button<T>
             childParentData = ((ContainerBoxParentData<RenderBox>?)child.parentData!)!;
         }
         return Equals(child, equals);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool _debugUltimateNextSiblingOf(RenderBox child, RenderBox? equals = null)
@@ -1240,7 +1250,7 @@ public class _RenderSegmentedButton__segmented_button<T>
             childParentData = ((ContainerBoxParentData<RenderBox>?)child.parentData!)!;
         }
         return Equals(child, equals);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual long childCount => _childCount;
@@ -1285,7 +1295,7 @@ public class _RenderSegmentedButton__segmented_button<T>
             return true;
         });
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _insertIntoChildList(RenderBox child, RenderBox? after = null)
@@ -1513,7 +1523,7 @@ public class _RenderSegmentedButton__segmented_button<T>
         DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         var childParentData = ((ContainerBoxParentData<RenderBox>?)child.parentData!)!;
         return childParentData.previousSibling;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual RenderBox? childAfter(RenderBox child)
@@ -1521,7 +1531,7 @@ public class _RenderSegmentedButton__segmented_button<T>
         DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         var childParentData = ((ContainerBoxParentData<RenderBox>?)child.parentData!)!;
         return childParentData.nextSibling;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override List<DiagnosticsNode> debugDescribeChildren()
@@ -1546,7 +1556,7 @@ public class _RenderSegmentedButton__segmented_button<T>
             }
         }
         return children;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double? defaultComputeDistanceToFirstActualBaseline(TextBaseline baseline)
@@ -1561,16 +1571,14 @@ public class _RenderSegmentedButton__segmented_button<T>
             {
                 double result__138852__value138916 = (
                     result
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 return (result__138852__value138916) + childParentData.offset.dy;
             }
             child = childParentData.nextSibling;
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double? defaultComputeDistanceToHighestActualBaseline(TextBaseline baseline)
@@ -1588,7 +1596,7 @@ public class _RenderSegmentedButton__segmented_button<T>
             child = childParentData.nextSibling;
         }
         return minBaseline.offset;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool defaultHitTestChildren(BoxHitTestResult result, Offset position)
@@ -1606,7 +1614,9 @@ public class _RenderSegmentedButton__segmented_button<T>
                         Equals(transformed, position - childParentData.offset)
                     );
                     return child!.hitTest(result, position: transformed);
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
             if (isHit)
@@ -1616,7 +1626,7 @@ public class _RenderSegmentedButton__segmented_button<T>
             child = childParentData.previousSibling;
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void defaultPaint(PaintingContext context, Offset offset)
@@ -1641,7 +1651,7 @@ public class _RenderSegmentedButton__segmented_button<T>
             child = childParentData.nextSibling;
         }
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1703,7 +1713,7 @@ internal class _SegmentedButtonDefaultsM3__segmented_button : SegmentedButtonThe
                         }
                         return null;
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 ),
@@ -1747,7 +1757,7 @@ internal class _SegmentedButtonDefaultsM3__segmented_button : SegmentedButtonThe
                             return _colors.onSurface;
                         }
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 ),
@@ -1786,7 +1796,7 @@ internal class _SegmentedButtonDefaultsM3__segmented_button : SegmentedButtonThe
                         }
                         return null;
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 ),
@@ -1802,7 +1812,7 @@ internal class _SegmentedButtonDefaultsM3__segmented_button : SegmentedButtonThe
                         }
                         return new BorderSide(color: _colors.outline);
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 ),
@@ -1846,6 +1856,6 @@ internal class _SegmentedButtonDefaultsM3__segmented_button : SegmentedButtonThe
                 [WidgetStateMembers.any] = Colors.transparent,
             }.cast<WidgetStatesConstraint, Color?>()
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

@@ -61,14 +61,12 @@ public class RenderSliverList : RenderSliverMultiBoxAdaptor
         for (
             double earliestScrollOffset = (
                 childScrollOffset(earliestUsefulChild!)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             earliestScrollOffset > scrollOffsetLocal;
             earliestScrollOffset = (
                     childScrollOffset(earliestUsefulChild)
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
         )
         {
@@ -115,7 +113,7 @@ public class RenderSliverList : RenderSliverMultiBoxAdaptor
         DartRuntimePrimitives.Assert(() =>
             (
                 childScrollOffset(firstChild!)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ) > -Foundation.ConstantsLibrary.precisionErrorTolerance
         );
         if (scrollOffsetLocal < Foundation.ConstantsLibrary.precisionErrorTolerance)
@@ -124,9 +122,7 @@ public class RenderSliverList : RenderSliverMultiBoxAdaptor
             {
                 double earliestScrollOffsetLocal = (
                     childScrollOffset(firstChild!)
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 earliestUsefulChild = insertAndLayoutLeadingChild(
                     childConstraints,
@@ -155,7 +151,7 @@ public class RenderSliverList : RenderSliverMultiBoxAdaptor
         DartRuntimePrimitives.Assert(() =>
             (
                 childScrollOffset(earliestUsefulChild!)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ) <= scrollOffsetLocal
         );
         if (leadingChildWithLayout is null)
@@ -170,7 +166,7 @@ public class RenderSliverList : RenderSliverMultiBoxAdaptor
         double endScrollOffset =
             (
                 childScrollOffset(child)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ) + paintExtentOf(child);
         bool advance()
         {
@@ -212,12 +208,12 @@ public class RenderSliverList : RenderSliverMultiBoxAdaptor
             endScrollOffset =
                 (
                     childScrollOffset(child!)
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) + paintExtentOf(child!);
             return true;
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         while (endScrollOffset < scrollOffsetLocal)
         {
@@ -232,7 +228,7 @@ public class RenderSliverList : RenderSliverMultiBoxAdaptor
                     (
                         childScrollOffset(lastChild!)
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) + paintExtentOf(lastChild!);
                 geometry = new SliverGeometry(scrollExtent: extent, maxPaintExtent: extent);
@@ -279,7 +275,7 @@ public class RenderSliverList : RenderSliverMultiBoxAdaptor
                     - (
                         childScrollOffset(firstChild!)
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
@@ -289,7 +285,7 @@ public class RenderSliverList : RenderSliverMultiBoxAdaptor
             constraintsLocal,
             from: (
                 childScrollOffset(firstChild!)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             to: endScrollOffset
         );
@@ -297,7 +293,7 @@ public class RenderSliverList : RenderSliverMultiBoxAdaptor
             constraintsLocal,
             from: (
                 childScrollOffset(firstChild!)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             to: endScrollOffset
         );

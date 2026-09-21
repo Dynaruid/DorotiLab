@@ -30,7 +30,7 @@ public class AnimatedList : _AnimatedScrollView__animated_scroll_view
             controller: controller,
             primary: (
                 primary
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             physics: physics,
             shrinkWrap: shrinkWrap,
@@ -109,16 +109,16 @@ public class AnimatedList : _AnimatedScrollView__animated_scroll_view
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return result!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static AnimatedListState? maybeOf(BuildContext context)
     {
         return context.findAncestorStateOfType<AnimatedListState>();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static long _computeChildCountWithSeparators(long itemCount)
@@ -128,7 +128,7 @@ public class AnimatedList : _AnimatedScrollView__animated_scroll_view
             return 0L;
         }
         return (itemCount * 2L) - 1L;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override IState createState() =>
@@ -147,7 +147,7 @@ public class AnimatedListState : _AnimatedScrollViewState__animated_scroll_view<
             ),
             widget.scrollDirection
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -178,7 +178,7 @@ public class AnimatedGrid : _AnimatedScrollView__animated_scroll_view
             controller: controller,
             primary: (
                 primary
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             physics: physics,
             padding: padding,
@@ -219,16 +219,16 @@ public class AnimatedGrid : _AnimatedScrollView__animated_scroll_view
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return result!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static AnimatedGridState? maybeOf(BuildContext context)
     {
         return context.findAncestorStateOfType<AnimatedGridState>();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override IState createState() =>
@@ -248,7 +248,7 @@ public class AnimatedGridState : _AnimatedScrollViewState__animated_scroll_view<
             ),
             widget.scrollDirection
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -332,7 +332,7 @@ public abstract class _AnimatedScrollViewState__animated_scroll_view<T>
                     (
                         duration
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
@@ -347,7 +347,7 @@ public abstract class _AnimatedScrollViewState__animated_scroll_view<T>
                     (
                         duration
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
@@ -360,7 +360,7 @@ public abstract class _AnimatedScrollViewState__animated_scroll_view<T>
                         (
                             duration
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     )
@@ -385,7 +385,7 @@ public abstract class _AnimatedScrollViewState__animated_scroll_view<T>
                     (
                         duration
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
@@ -402,7 +402,7 @@ public abstract class _AnimatedScrollViewState__animated_scroll_view<T>
                     (
                         duration
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
@@ -427,7 +427,7 @@ public abstract class _AnimatedScrollViewState__animated_scroll_view<T>
                     (
                         duration
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
@@ -444,7 +444,7 @@ public abstract class _AnimatedScrollViewState__animated_scroll_view<T>
                     (
                         duration
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
@@ -460,7 +460,7 @@ public abstract class _AnimatedScrollViewState__animated_scroll_view<T>
                             (
                                 duration
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             )
                         )
@@ -475,7 +475,7 @@ public abstract class _AnimatedScrollViewState__animated_scroll_view<T>
                             (
                                 duration
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             )
                         )
@@ -500,7 +500,7 @@ public abstract class _AnimatedScrollViewState__animated_scroll_view<T>
                     (
                         duration
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
@@ -518,7 +518,7 @@ public abstract class _AnimatedScrollViewState__animated_scroll_view<T>
                         (
                             duration
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     )
@@ -534,7 +534,7 @@ public abstract class _AnimatedScrollViewState__animated_scroll_view<T>
                         (
                             duration
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     )
@@ -559,7 +559,7 @@ public abstract class _AnimatedScrollViewState__animated_scroll_view<T>
         var isNewLastIndex = index == separatedItemsCount;
         long indexAdjustedForSeparators = index * 2L;
         return isNewLastIndex ? (indexAdjustedForSeparators - 1L) : indexAdjustedForSeparators;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Func<BuildContext, Animation<double>, Widget> _toRemovedItemBuilder(
@@ -570,9 +570,9 @@ public abstract class _AnimatedScrollViewState__animated_scroll_view<T>
         return (context, animation) =>
         {
             return builder(context, index, animation);
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _wrap(Widget sliver, Axis direction)
@@ -621,7 +621,7 @@ public abstract class _AnimatedScrollViewState__animated_scroll_view<T>
             scrollCacheExtent: widget.scrollCacheExtent,
             slivers: new List<Widget> { sliver }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
@@ -652,7 +652,7 @@ public abstract class _AnimatedScrollViewState__animated_scroll_view<T>
         )();
         _tickers!.Add(result);
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _removeTicker(_WidgetTicker__ticker_provider ticker)
@@ -728,7 +728,7 @@ public abstract class _AnimatedScrollViewState__animated_scroll_view<T>
                 }
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         _tickerModeNotifier?.removeListener(_updateTickers);
         _tickerModeNotifier = null;
@@ -856,16 +856,16 @@ public class SliverAnimatedList : _SliverAnimatedMultiBoxAdaptor__animated_scrol
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return result!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static SliverAnimatedListState? maybeOf(BuildContext context)
     {
         return context.findAncestorStateOfType<SliverAnimatedListState>();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -875,7 +875,7 @@ public class SliverAnimatedListState
     public override Widget build(BuildContext context)
     {
         return new SliverList(@delegate: _createDelegate());
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -927,16 +927,16 @@ public class SliverAnimatedGrid : _SliverAnimatedMultiBoxAdaptor__animated_scrol
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return result!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static SliverAnimatedGridState? maybeOf(BuildContext context)
     {
         return context.findAncestorStateOfType<SliverAnimatedGridState>();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -946,7 +946,7 @@ public class SliverAnimatedGridState
     public override Widget build(BuildContext context)
     {
         return new SliverGrid(gridDelegate: widget.gridDelegate, @delegate: _createDelegate());
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1035,7 +1035,7 @@ public abstract class _SliverAnimatedMultiBoxAdaptorState__animated_scroll_view<
                 }
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         _tickerModeNotifier?.removeListener(_updateTickers);
         _tickerModeNotifier = null;
@@ -1052,7 +1052,7 @@ public abstract class _SliverAnimatedMultiBoxAdaptorState__animated_scroll_view<
             _ActiveItem__animated_scroll_view.CreateIndex(itemIndex)
         );
         return (i == -1L) ? null : items.removeAt(i);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual _ActiveItem__animated_scroll_view? _activeItemAt(
@@ -1065,7 +1065,7 @@ public abstract class _SliverAnimatedMultiBoxAdaptorState__animated_scroll_view<
             _ActiveItem__animated_scroll_view.CreateIndex(itemIndex)
         );
         return (i == -1L) ? null : items[(int)i];
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual long _indexToItemIndex(long index)
@@ -1083,7 +1083,7 @@ public abstract class _SliverAnimatedMultiBoxAdaptorState__animated_scroll_view<
             }
         }
         return itemIndexLocal;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual long _itemIndexToIndex(long itemIndex)
@@ -1102,7 +1102,7 @@ public abstract class _SliverAnimatedMultiBoxAdaptorState__animated_scroll_view<
             }
         }
         return index;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual SliverChildDelegate _createDelegate()
@@ -1122,19 +1122,19 @@ public abstract class _SliverAnimatedMultiBoxAdaptorState__animated_scroll_view<
                                     (
                                         index
                                         ?? throw new global::System.NullReferenceException(
-                                            "Dart null assertion failed."
+                                            "A required value was null."
                                         )
                                     )
                                 )
                             )
                             : null;
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _itemBuilder(BuildContext context, long itemIndex)
@@ -1148,7 +1148,7 @@ public abstract class _SliverAnimatedMultiBoxAdaptorState__animated_scroll_view<
         Animation<double> animation =
             incomingItem?.controller?.view ?? AnimationsLibrary.kAlwaysCompleteAnimation;
         return widget.itemBuilder(context, _itemIndexToIndex(itemIndex), animation);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void insertItem(long index, Duration? duration = null)
@@ -1175,7 +1175,7 @@ public abstract class _SliverAnimatedMultiBoxAdaptorState__animated_scroll_view<
         var controllerLocal = new AnimationController(
             duration: (
                 duration
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             vsync: this
         );
@@ -1206,7 +1206,7 @@ public abstract class _SliverAnimatedMultiBoxAdaptorState__animated_scroll_view<
                         _removeActiveItemAt(_incomingItems, incomingItem.itemIndex)!
                             .controller!.dispose();
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 )
@@ -1223,7 +1223,7 @@ public abstract class _SliverAnimatedMultiBoxAdaptorState__animated_scroll_view<
                     (
                         duration
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
@@ -1252,9 +1252,7 @@ public abstract class _SliverAnimatedMultiBoxAdaptorState__animated_scroll_view<
             ?? new AnimationController(
                 duration: (
                     duration
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 value: 1.0,
                 vsync: this
@@ -1307,7 +1305,7 @@ public abstract class _SliverAnimatedMultiBoxAdaptorState__animated_scroll_view<
                             _ = _itemsCount -= 1L;
                         });
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 )
@@ -1331,7 +1329,7 @@ public abstract class _SliverAnimatedMultiBoxAdaptorState__animated_scroll_view<
                     (
                         duration
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
@@ -1367,7 +1365,7 @@ public abstract class _SliverAnimatedMultiBoxAdaptorState__animated_scroll_view<
         )();
         _tickers!.Add(result);
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _removeTicker(_WidgetTicker__ticker_provider ticker)

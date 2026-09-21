@@ -264,7 +264,7 @@ public class LongPressGestureRecognizer : PrimaryPointerGestureRecognizer
             }
         }
         return base.isPointerAllowed(@event);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void didExceedDeadline()
@@ -274,7 +274,7 @@ public class LongPressGestureRecognizer : PrimaryPointerGestureRecognizer
         base.acceptGesture(
             (
                 primaryPointer
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );
         _checkLongPressStart();
@@ -345,7 +345,7 @@ public class LongPressGestureRecognizer : PrimaryPointerGestureRecognizer
                                 (
                                     primaryPointer
                                     ?? throw new global::System.NullReferenceException(
-                                        "Dart null assertion failed."
+                                        "A required value was null."
                                     )
                                 )
                             );

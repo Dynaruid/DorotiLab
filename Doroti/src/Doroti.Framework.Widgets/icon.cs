@@ -60,7 +60,7 @@ public class Icon : StatelessWidget
                         <= (
                             fill
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     ) && (fill <= 1.0)
@@ -72,7 +72,7 @@ public class Icon : StatelessWidget
                     < (
                         weight
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
         );
@@ -82,7 +82,7 @@ public class Icon : StatelessWidget
                     < (
                         opticalSize
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
         );
@@ -131,7 +131,7 @@ public class Icon : StatelessWidget
                         __cascade.blendMode = (
                             blendMode
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         );
                         __cascade.color = iconColor;
@@ -204,7 +204,7 @@ public class Icon : StatelessWidget
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)

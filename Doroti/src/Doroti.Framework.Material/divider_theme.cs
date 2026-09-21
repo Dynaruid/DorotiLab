@@ -49,7 +49,7 @@ public class DividerThemeData : Diagnosticable
             endIndent: endIndent ?? this.endIndent,
             radius: radius ?? this.radius
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static DividerThemeData lerp(DividerThemeData? a, DividerThemeData? b, double t)
@@ -66,7 +66,7 @@ public class DividerThemeData : Diagnosticable
             endIndent: Dart_uiLibrary.lerpDouble(a?.endIndent, b?.endIndent, t),
             radius: BorderRadiusGeometry.lerp(a?.radius, b?.radius, t)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override int GetHashCode() =>
@@ -126,7 +126,7 @@ public class DividerThemeData : Diagnosticable
             return true;
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -135,7 +135,7 @@ public class DividerThemeData : Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -154,13 +154,13 @@ public class DividerTheme : InheritedTheme
         DividerTheme? dividerThemeLocal =
             context.dependOnInheritedWidgetOfExactType<DividerTheme>();
         return dividerThemeLocal?.data ?? Theme.of(context).dividerTheme;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget wrap(BuildContext context, Widget child)
     {
         return new DividerTheme(data: data, child: child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget) =>

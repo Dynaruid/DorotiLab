@@ -101,11 +101,13 @@ public interface RenderInlineChildrenContainerDefaults
                         (
                             spanLocal.baseline
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     ),
-                    _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    _ => throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
                 }
             );
     }
@@ -205,7 +207,7 @@ public class RenderParagraph
                     (
                         maxLines
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) > 0L
                 )
@@ -377,7 +379,7 @@ public class RenderParagraph
             startLocal += 1L;
         }
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool selectableBelongsToParagraph(Selectable selectable)
@@ -387,7 +389,7 @@ public class RenderParagraph
             return false;
         }
         return _lastSelectableFragments!.Contains(selectable);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _disposeSelectableFragments()
@@ -444,7 +446,7 @@ public class RenderParagraph
         get =>
             (
                 _textPainter.textDirection
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         set
         {
@@ -541,7 +543,7 @@ public class RenderParagraph
                     (
                         __value
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) > 0L
                 )
@@ -637,7 +639,7 @@ public class RenderParagraph
     {
         return getOffsetForCaret(position, Rect.zero)
             + new Offset(0, getFullHeightForCaret(position));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicWidth(double height)
@@ -659,7 +661,7 @@ public class RenderParagraph
                 }
             )
         )().minIntrinsicWidth;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicWidth(double height)
@@ -681,7 +683,7 @@ public class RenderParagraph
                 }
             )
         )().maxIntrinsicWidth;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double preferredLineHeight => _textPainter.preferredLineHeight;
@@ -705,19 +707,19 @@ public class RenderParagraph
                 }
             )
         )().height;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicHeight(double width)
     {
         return _computeIntrinsicHeight(width);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicHeight(double width)
     {
         return _computeIntrinsicHeight(width);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool hitTestSelf(Offset position) => true;
@@ -743,7 +745,7 @@ public class RenderParagraph
                 return hitTestInlineChildren(result, position);
             }
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool debugHasOverflowShader => _overflowShader is not null;
@@ -759,7 +761,7 @@ public class RenderParagraph
         return (softWrap || Equals(overflow, TextOverflow.ellipsis))
             ? maxWidth
             : double.PositiveInfinity;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _layoutTextWithConstraints(BoxConstraints constraints)
@@ -803,7 +805,7 @@ public class RenderParagraph
             )
         )().size;
         return constraints.constrain(sizeLocal);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? computeDistanceToActualBaseline(TextBaseline baseline)
@@ -812,7 +814,7 @@ public class RenderParagraph
         DartRuntimePrimitives.Assert(() => constraints.debugAssertIsValid());
         _layoutTextWithConstraints(constraints);
         return _textPainter.computeDistanceToActualBaseline(TextBaseline.alphabetic);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
@@ -839,7 +841,7 @@ public class RenderParagraph
             )
         )();
         return _textIntrinsics.computeDistanceToActualBaseline(TextBaseline.alphabetic);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void performLayout()
@@ -900,7 +902,7 @@ public class RenderParagraph
                             TextDirection.rtl => (fadeSizePainter.width, 0.0),
                             TextDirection.ltr => (size.width - fadeSizePainter.width, size.width),
                             _ => throw new InvalidOperationException(
-                                "Non-exhaustive Dart switch value."
+                                "Switch expression did not handle the supplied value."
                             ),
                         };
                         _overflowShader = Ui.Gradient.linear(
@@ -1028,7 +1030,7 @@ public class RenderParagraph
         DartRuntimePrimitives.Assert(() => !debugNeedsLayout);
         _layoutTextWithConstraints(constraints);
         return _textPainter.getOffsetForCaret(position, caretPrototype);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double getFullHeightForCaret(TextPosition position)
@@ -1036,7 +1038,7 @@ public class RenderParagraph
         DartRuntimePrimitives.Assert(() => !debugNeedsLayout);
         _layoutTextWithConstraints(constraints);
         return _textPainter.getFullHeightForCaret(position, Rect.zero);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual List<TextBox> getBoxesForSelection(
@@ -1052,7 +1054,7 @@ public class RenderParagraph
             boxHeightStyle: boxHeightStyle,
             boxWidthStyle: boxWidthStyle
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual TextPosition getPositionForOffset(Offset offset)
@@ -1060,7 +1062,7 @@ public class RenderParagraph
         DartRuntimePrimitives.Assert(() => !debugNeedsLayout);
         _layoutTextWithConstraints(constraints);
         return _textPainter.getPositionForOffset(offset);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual TextRange getWordBoundary(TextPosition position)
@@ -1068,7 +1070,7 @@ public class RenderParagraph
         DartRuntimePrimitives.Assert(() => !debugNeedsLayout);
         _layoutTextWithConstraints(constraints);
         return _textPainter.getWordBoundary(position);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual TextRange _getLineAtOffset(TextPosition position) =>
@@ -1079,7 +1081,7 @@ public class RenderParagraph
         double preferredLineHeightLocal = _textPainter.preferredLineHeight;
         double verticalOffset = -0.5 * preferredLineHeightLocal;
         return _getTextPositionVertical(position, verticalOffset);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual TextPosition _getTextPositionBelow(TextPosition position)
@@ -1087,7 +1089,7 @@ public class RenderParagraph
         double preferredLineHeightLocal = _textPainter.preferredLineHeight;
         double verticalOffset = 1.5 * preferredLineHeightLocal;
         return _getTextPositionVertical(position, verticalOffset);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual TextPosition _getTextPositionVertical(
@@ -1098,7 +1100,7 @@ public class RenderParagraph
         Offset caretOffset = _textPainter.getOffsetForCaret(position, Rect.zero);
         Offset caretOffsetTranslated = caretOffset.translate(0.0, verticalOffset);
         return _textPainter.getPositionForOffset(caretOffsetTranslated);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Size textSize
@@ -1216,7 +1218,7 @@ public class RenderParagraph
             }
         }
         return builder.build();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static bool _childConfigBelongsToPlaceholder(
@@ -1239,7 +1241,7 @@ public class RenderParagraph
             }
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual SemanticsConfiguration _createSemanticsConfigForTextInfo(
@@ -1277,7 +1279,7 @@ public class RenderParagraph
                 }
             )
         )();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void assembleSemanticsNode(
@@ -1418,7 +1420,7 @@ public class RenderParagraph
                     Rect paintRect = (
                         node.parentPaintClipRect
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ).intersect(currentRect);
                     configuration.isHidden = paintRect.isEmpty && !currentRect.isEmpty;
@@ -1470,7 +1472,7 @@ public class RenderParagraph
             SemanticsNode node = _cachedChildNodes!.GetValueOrDefault(key)!;
             showOnScreen(descendant: this, rect: node.rect);
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void clearSemantics()
@@ -1488,7 +1490,7 @@ public class RenderParagraph
                 style: DiagnosticsTreeStyle.transition
             ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -1528,7 +1530,7 @@ public class RenderParagraph
             childParentData = ((TextParentData?)child.parentData!)!;
         }
         return Equals(child, equals);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool _debugUltimateNextSiblingOf(RenderBox child, RenderBox? equals = null)
@@ -1541,7 +1543,7 @@ public class RenderParagraph
             childParentData = ((TextParentData?)child.parentData!)!;
         }
         return Equals(child, equals);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual long childCount => _childCount;
@@ -1584,7 +1586,7 @@ public class RenderParagraph
             return true;
         });
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _insertIntoChildList(RenderBox child, RenderBox? after = null)
@@ -1792,7 +1794,7 @@ public class RenderParagraph
         DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         var childParentData = ((TextParentData?)child.parentData!)!;
         return childParentData.previousSibling;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual RenderBox? childAfter(RenderBox child)
@@ -1800,7 +1802,7 @@ public class RenderParagraph
         DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         var childParentData = ((TextParentData?)child.parentData!)!;
         return childParentData.nextSibling;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void setupParentData(RenderObject child)
@@ -1820,7 +1822,7 @@ public class RenderParagraph
     {
         var constraints = new BoxConstraints(maxWidth: maxWidth);
         return new List<PlaceholderDimensions>();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void positionInlineChildren(List<TextBox> boxes)
@@ -1882,15 +1884,11 @@ public class RenderParagraph
             transform.translateByDouble(
                 (
                     offsetLocal
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ).dx,
                 (
                     offsetLocal
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ).dy,
                 0,
                 1
@@ -1913,9 +1911,7 @@ public class RenderParagraph
                 child,
                 (
                     childOffset
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) + offset
             );
             child = childAfter(child);
@@ -1936,9 +1932,7 @@ public class RenderParagraph
             bool isHit = result.addWithPaintOffset(
                 offset: (
                     childOffset
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 position: position,
                 hitTest: (result, transformed) => child!.hitTest(result, position: transformed)
@@ -1950,7 +1944,7 @@ public class RenderParagraph
             child = childAfter(child);
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _scheduleSystemFontsUpdate()
@@ -2070,7 +2064,7 @@ internal class _SelectableFragment__paragraph
             status: selectionCollapsed ? SelectionStatus.collapsed : SelectionStatus.uncollapsed,
             hasContent: true
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual SelectionResult dispatchSelectionEvent(SelectionEvent @event)
@@ -2185,7 +2179,7 @@ internal class _SelectableFragment__paragraph
             _didChangeSelection();
         }
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual SelectedContent? getSelectedContent()
@@ -2197,7 +2191,7 @@ internal class _SelectableFragment__paragraph
         long start = Math.Min(_textSelectionStart!.offset, _textSelectionEnd!.offset);
         long end = Math.Max(_textSelectionStart!.offset, _textSelectionEnd!.offset);
         return new SelectedContent(plainText: fullText.substring(start, end));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual SelectedContentRange? getSelection()
@@ -2210,7 +2204,7 @@ internal class _SelectableFragment__paragraph
             startOffset: _textSelectionStart!.offset,
             endOffset: _textSelectionEnd!.offset
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _didChangeSelection()
@@ -2232,7 +2226,7 @@ internal class _SelectableFragment__paragraph
         {
             (TextPosition boundaryEnd, TextPosition boundaryStart) textBoundary__value61232 = (
                 textBoundary
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             DartRuntimePrimitives.Assert(() =>
                 ((textBoundary__value61232).boundaryStart.offset >= range.start)
@@ -2343,7 +2337,7 @@ internal class _SelectableFragment__paragraph
             }
         }
         return targetPosition ?? position;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual TextPosition _updateSelectionEndEdgeByTextBoundary(
@@ -2359,7 +2353,7 @@ internal class _SelectableFragment__paragraph
         {
             (TextPosition boundaryEnd, TextPosition boundaryStart) textBoundary__value65725 = (
                 textBoundary
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             DartRuntimePrimitives.Assert(() =>
                 ((textBoundary__value65725).boundaryStart.offset >= range.start)
@@ -2470,7 +2464,7 @@ internal class _SelectableFragment__paragraph
             }
         }
         return targetPosition ?? position;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual SelectionResult _updateSelectionEdgeByTextBoundary(
@@ -2515,7 +2509,7 @@ internal class _SelectableFragment__paragraph
                         (
                             textBoundary
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                             .boundaryStart
@@ -2525,7 +2519,7 @@ internal class _SelectableFragment__paragraph
                         (
                             textBoundary
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                             .boundaryEnd
@@ -2537,7 +2531,7 @@ internal class _SelectableFragment__paragraph
                         (
                             textBoundary
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                             .boundaryStart
@@ -2547,7 +2541,7 @@ internal class _SelectableFragment__paragraph
                         (
                             textBoundary
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                             .boundaryEnd
@@ -2560,9 +2554,7 @@ internal class _SelectableFragment__paragraph
             (TextPosition boundaryEnd, TextPosition boundaryStart) textBoundary__71646__value71751 =
                 (
                     textBoundary
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
             textBoundary = null;
         }
@@ -2593,7 +2585,7 @@ internal class _SelectableFragment__paragraph
             return SelectionResult.previous;
         }
         return SelectionUtils.getResultBasedOnRect(_rect, localPosition);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual SelectionResult _updateSelectionEdge(Offset globalPosition, bool isEnd)
@@ -2629,7 +2621,7 @@ internal class _SelectableFragment__paragraph
             return SelectionResult.previous;
         }
         return SelectionUtils.getResultBasedOnRect(_rect, localPosition);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual SelectionResult? _updateSelectionStartEdgeByMultiSelectableTextBoundary(
@@ -2872,7 +2864,7 @@ internal class _SelectableFragment__paragraph
             }
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual SelectionResult? _updateSelectionEndEdgeByMultiSelectableTextBoundary(
@@ -3112,7 +3104,7 @@ internal class _SelectableFragment__paragraph
             }
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual SelectionResult? _updateSelectionStartEdgeAtPlaceholderByMultiSelectableTextBoundary(
@@ -3343,16 +3335,14 @@ internal class _SelectableFragment__paragraph
                 }
                 RenderParagraph targetParagraph = (
                     targetDetails
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ).paragraph;
                 TextPosition positionRelativeToTargetParagraph =
                     targetParagraph.getPositionForOffset(
                         (
                             targetDetails
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ).localPosition
                     );
@@ -3473,7 +3463,7 @@ internal class _SelectableFragment__paragraph
             }
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual SelectionResult? _updateSelectionEndEdgeAtPlaceholderByMultiSelectableTextBoundary(
@@ -3704,16 +3694,14 @@ internal class _SelectableFragment__paragraph
                 }
                 RenderParagraph targetParagraph = (
                     targetDetails
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ).paragraph;
                 TextPosition positionRelativeToTargetParagraph =
                     targetParagraph.getPositionForOffset(
                         (
                             targetDetails
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ).localPosition
                     );
@@ -3831,7 +3819,7 @@ internal class _SelectableFragment__paragraph
             }
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual SelectionResult _updateSelectionEdgeByMultiSelectableTextBoundary(
@@ -3922,7 +3910,7 @@ internal class _SelectableFragment__paragraph
         {
             SelectionResult result__118831__value120148 = (
                 resultLocal
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             return (result__118831__value120148);
         }
@@ -3936,7 +3924,7 @@ internal class _SelectableFragment__paragraph
                         (
                             textBoundary
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                             .boundaryStart
@@ -3946,7 +3934,7 @@ internal class _SelectableFragment__paragraph
                         (
                             textBoundary
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                             .boundaryEnd
@@ -3958,7 +3946,7 @@ internal class _SelectableFragment__paragraph
                         (
                             textBoundary
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                             .boundaryStart
@@ -3968,7 +3956,7 @@ internal class _SelectableFragment__paragraph
                         (
                             textBoundary
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                             .boundaryEnd
@@ -3983,7 +3971,7 @@ internal class _SelectableFragment__paragraph
                 TextPosition boundaryStart
             ) textBoundary__120500__value120620 = (
                 textBoundary
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             textBoundary = null;
         }
@@ -4014,7 +4002,7 @@ internal class _SelectableFragment__paragraph
             return SelectionResult.previous;
         }
         return SelectionUtils.getResultBasedOnRect(_rect, localPosition);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual TextPosition _closestTextBoundary(
@@ -4027,7 +4015,7 @@ internal class _SelectableFragment__paragraph
         return (differenceA < differenceB)
             ? (textBoundary).boundaryStart
             : (textBoundary).boundaryEnd;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _isPlaceholder()
@@ -4043,7 +4031,7 @@ internal class _SelectableFragment__paragraph
             current = current.parent;
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual RenderParagraph _getOriginParagraph()
@@ -4079,7 +4067,7 @@ internal class _SelectableFragment__paragraph
             current = current.parent;
         }
         return originParagraph ?? paragraph;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual (
@@ -4112,7 +4100,7 @@ internal class _SelectableFragment__paragraph
             current = current.parent;
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _boundingBoxesContains(Offset position)
@@ -4125,7 +4113,7 @@ internal class _SelectableFragment__paragraph
             }
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual TextPosition _clampTextPosition(TextPosition position)
@@ -4144,7 +4132,7 @@ internal class _SelectableFragment__paragraph
             return new TextPosition(offset: range.start);
         }
         return position;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _setSelectionPosition(TextPosition? position, bool isEnd)
@@ -4165,7 +4153,7 @@ internal class _SelectableFragment__paragraph
         _textSelectionEnd = null;
         _selectableContainsOriginTextBoundary = false;
         return SelectionResult.none;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual SelectionResult _handleSelectAll()
@@ -4173,7 +4161,7 @@ internal class _SelectableFragment__paragraph
         _textSelectionStart = new TextPosition(offset: range.start);
         _textSelectionEnd = new TextPosition(offset: range.end, affinity: TextAffinity.upstream);
         return SelectionResult.none;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual SelectionResult _handleSelectTextBoundary(
@@ -4205,7 +4193,7 @@ internal class _SelectableFragment__paragraph
         _textSelectionEnd = (textBoundary).boundaryEnd;
         _selectableContainsOriginTextBoundary = true;
         return SelectionResult.end;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual TextRange? _intersect(TextRange a, TextRange b)
@@ -4219,7 +4207,7 @@ internal class _SelectableFragment__paragraph
             return new TextRange(start: startMax, end: endMin);
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual SelectionResult _handleSelectMultiFragmentTextBoundary(
@@ -4260,7 +4248,7 @@ internal class _SelectableFragment__paragraph
             return SelectionResult.end;
         }
         return SelectionResult.none;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual (
@@ -4280,7 +4268,7 @@ internal class _SelectableFragment__paragraph
             endLocal = new TextPosition(offset: textBoundary.end, affinity: TextAffinity.upstream);
         }
         return (boundaryEnd: endLocal, boundaryStart: startLocal);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual SelectionResult _handleSelectWord(Offset globalPosition)
@@ -4298,7 +4286,7 @@ internal class _SelectableFragment__paragraph
         (TextPosition boundaryEnd, TextPosition boundaryStart) wordBoundary =
             _getWordBoundaryAtPosition(position);
         return _handleSelectTextBoundary(wordBoundary);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual (
@@ -4309,7 +4297,7 @@ internal class _SelectableFragment__paragraph
         TextRange word = paragraph.getWordBoundary(position);
         DartRuntimePrimitives.Assert(() => word.isNormalized);
         return _adjustTextBoundaryAtPosition(word, position);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual SelectionResult _handleSelectParagraph(Offset globalPosition)
@@ -4319,7 +4307,7 @@ internal class _SelectableFragment__paragraph
         (TextPosition boundaryEnd, TextPosition boundaryStart) paragraphBoundary =
             _getParagraphBoundaryAtPosition(position, fullText);
         return _handleSelectMultiFragmentTextBoundary(paragraphBoundary);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual TextPosition _getPositionInParagraph(RenderParagraph targetParagraph)
@@ -4329,7 +4317,7 @@ internal class _SelectableFragment__paragraph
         Offset localPos = MatrixUtils.transformPoint(transform, localCenter);
         TextPosition position = targetParagraph.getPositionForOffset(localPos);
         return position;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual (
@@ -4352,7 +4340,7 @@ internal class _SelectableFragment__paragraph
         var paragraphRange = new TextRange(start: paragraphStart, end: paragraphEnd);
         DartRuntimePrimitives.Assert(() => paragraphRange.isNormalized);
         return _adjustTextBoundaryAtPosition(paragraphRange, position);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual (
@@ -4383,7 +4371,7 @@ internal class _SelectableFragment__paragraph
         var paragraphRange = new TextRange(start: paragraphStart, end: paragraphEnd);
         DartRuntimePrimitives.Assert(() => paragraphRange.isNormalized);
         return _adjustTextBoundaryAtPosition(paragraphRange, position);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual SelectionResult _handleDirectionallyExtendSelection(
@@ -4467,7 +4455,7 @@ internal class _SelectableFragment__paragraph
             _textSelectionStart = newPosition;
         }
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual SelectionResult _handleGranularlyExtendSelection(
@@ -4576,7 +4564,7 @@ internal class _SelectableFragment__paragraph
             _textSelectionStart = newPosition;
         }
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual TextPosition _moveBeyondTextBoundaryAtDirection(
@@ -4589,7 +4577,7 @@ internal class _SelectableFragment__paragraph
             ? (textBoundary.getTrailingTextBoundaryAt(end.offset) ?? range.end)
             : (textBoundary.getLeadingTextBoundaryAt(end.offset - 1L) ?? range.start);
         return new TextPosition(offset: newOffset);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual TextPosition _moveToTextBoundaryAtDirection(
@@ -4628,7 +4616,7 @@ internal class _SelectableFragment__paragraph
             ? (textBoundary.getTrailingTextBoundaryAt(caretOffset) ?? range.end)
             : (textBoundary.getLeadingTextBoundaryAt(caretOffset) ?? range.start);
         return new TextPosition(offset: offsetLocal);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual MapEntry<TextPosition, SelectionResult> _handleVerticalMovement(
@@ -4691,7 +4679,7 @@ internal class _SelectableFragment__paragraph
         DartRuntimePrimitives.Assert(() => (!Equals(result, SelectionResult.next)) || below);
         DartRuntimePrimitives.Assert(() => (!Equals(result, SelectionResult.previous)) || !below);
         return new MapEntry<TextPosition, SelectionResult>(newPosition, result);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _positionIsWithinCurrentSelection(TextPosition position)
@@ -4714,7 +4702,7 @@ internal class _SelectableFragment__paragraph
         }
         return (_compareTextPositions(currentStart, position) >= 0L)
             && (_compareTextPositions(currentEnd, position) <= 0L);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static long _compareTextPositions(TextPosition position, TextPosition otherPosition)
@@ -4741,13 +4729,13 @@ internal class _SelectableFragment__paragraph
                 }
             }
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Matrix4 getTransformTo(RenderObject? ancestor)
     {
         return paragraph.getTransformTo(ancestor);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void pushHandleLayers(LayerLink? startHandle, LayerLink? endHandle)
@@ -4834,7 +4822,7 @@ internal class _SelectableFragment__paragraph
             }
             return (
                 _cachedRect
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
     }
@@ -4917,19 +4905,19 @@ internal class _SelectableFragment__paragraph
         long startLocal = line.start.clamp(range.start, range.end);
         long endLocal = line.end.clamp(range.start, range.end);
         return new TextSelection(baseOffset: startLocal, extentOffset: endLocal);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual TextPosition getTextPositionAbove(TextPosition position)
     {
         return _clampTextPosition(paragraph._getTextPositionAbove(position));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual TextPosition getTextPositionBelow(TextPosition position)
     {
         return _clampTextPosition(paragraph._getTextPositionBelow(position));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual TextRange getWordBoundary(TextPosition position) =>

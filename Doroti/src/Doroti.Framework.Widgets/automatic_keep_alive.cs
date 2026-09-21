@@ -94,7 +94,7 @@ internal class _AutomaticKeepAliveState__automatic_keep_alive : State<AutomaticK
             }
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual ParentDataElement<KeepAliveParentDataMixin>? _getChildElement()
@@ -112,7 +112,7 @@ internal class _AutomaticKeepAliveState__automatic_keep_alive : State<AutomaticK
             (childElement is null) || (childElement is ParentDataElement<KeepAliveParentDataMixin>)
         );
         return ((ParentDataElement<KeepAliveParentDataMixin>?)childElement)!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _updateParentDataOfChild(
@@ -143,7 +143,9 @@ internal class _AutomaticKeepAliveState__automatic_keep_alive : State<AutomaticK
                     );
                 }
                 return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             });
             _handles!.remove(handle);
             handle.removeListener(callback);
@@ -177,13 +179,13 @@ internal class _AutomaticKeepAliveState__automatic_keep_alive : State<AutomaticK
                 }
             }
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
     {
         return new KeepAlive(keepAlive: _keepingAlive, child: _child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder description)
@@ -250,6 +252,6 @@ internal class _NullWidget__automatic_keep_alive : StatelessWidget
                     + "call super.build() but must ignore the return value of the superclass."
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

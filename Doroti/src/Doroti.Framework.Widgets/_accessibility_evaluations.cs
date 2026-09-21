@@ -46,7 +46,7 @@ public abstract class AccessibilityEvaluationIo
             );
         }
         return _evaluate(binding);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal abstract object _evaluate(WidgetsBinding binding);
@@ -72,7 +72,7 @@ public class MinimumTapTargetEvaluationIo : AccessibilityEvaluationIo
             );
         }
         return new EvaluationResultIo(violations);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual List<ViolationIo> _traverse(DorotiView view, SemanticsNode node)
@@ -83,7 +83,9 @@ public class MinimumTapTargetEvaluationIo : AccessibilityEvaluationIo
             {
                 violations.AddRange(_traverse(view, child));
                 return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
         if (node.isMergedIntoParent)
@@ -138,7 +140,7 @@ public class MinimumTapTargetEvaluationIo : AccessibilityEvaluationIo
             );
         }
         return violations;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static bool _isAtBoundary(Rect child, Rect parent)
@@ -153,7 +155,7 @@ public class MinimumTapTargetEvaluationIo : AccessibilityEvaluationIo
             return false;
         }
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool shouldSkipNode(SemanticsNode node)
@@ -171,7 +173,7 @@ public class MinimumTapTargetEvaluationIo : AccessibilityEvaluationIo
             return true;
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -187,7 +189,7 @@ public class LabeledTapTargetEvaluationIo : AccessibilityEvaluationIo
             violations.AddRange(_traverse(view.owner!.semanticsOwner!.rootSemanticsNode!));
         }
         return new EvaluationResultIo(violations);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual List<ViolationIo> _traverse(SemanticsNode node)
@@ -198,7 +200,9 @@ public class LabeledTapTargetEvaluationIo : AccessibilityEvaluationIo
             {
                 violations.AddRange(_traverse(child));
                 return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
         if (
@@ -226,7 +230,7 @@ public class LabeledTapTargetEvaluationIo : AccessibilityEvaluationIo
             );
         }
         return violations;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -252,7 +256,7 @@ public abstract class _ContrastEvaluation___accessibility_evaluations : Accessib
             image.dispose();
         }
         return new EvaluationResultIo(violations);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual async Future<List<ViolationIo>> _evaluateNode(
@@ -274,7 +278,9 @@ public abstract class _ContrastEvaluation___accessibility_evaluations : Accessib
             {
                 children.Add(child);
                 return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
         foreach (var childLocal in children)
@@ -288,7 +294,7 @@ public abstract class _ContrastEvaluation___accessibility_evaluations : Accessib
             return violations;
         }
         return await evaluateNodeContent(node, data, image, byteData, renderView);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _shouldSkipNodeTraversal(SemanticsNode node)
@@ -298,7 +304,7 @@ public abstract class _ContrastEvaluation___accessibility_evaluations : Accessib
             || node.isMergedIntoParent
             || node.flagsCollection.isHidden
             || isDisabled;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal abstract bool _shouldSkipNodeEvaluation(SemanticsData data);
@@ -317,7 +323,7 @@ public abstract class _ContrastEvaluation___accessibility_evaluations : Accessib
             || (paintBounds.left < -50.0)
             || (paintBounds.bottom > (windowLogicalSize.height + 50.0))
             || (paintBounds.right > (windowLogicalSize.width + 50.0));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -369,7 +375,7 @@ public class MinimumTextContrastEvaluationIo : _ContrastEvaluation___accessibili
             );
         }
         return violations;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual async Future<List<ViolationIo>> _evaluateElement(
@@ -474,7 +480,7 @@ public class MinimumTextContrastEvaluationIo : _ContrastEvaluation___accessibili
                     + "https://www.w3.org/TR/UNDERSTANDING-WCAG20/visual-audio-contrast-contrast.html"
             ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual double _targetContrastRatio(double? fontSize, bool bold)
@@ -488,7 +494,7 @@ public class MinimumTextContrastEvaluationIo : _ContrastEvaluation___accessibili
             return minLargeTextContrastRatio;
         }
         return minNormalTextContrastRatio;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -513,7 +519,7 @@ public class MinimumNonTextContrastEvaluationIo : _ContrastEvaluation___accessib
             || data.hasAction(SemanticsAction.tap)
             || data.hasAction(SemanticsAction.longPress);
         return !isControl;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override async Future<List<ViolationIo>> evaluateNodeContent(
@@ -574,7 +580,7 @@ public class MinimumNonTextContrastEvaluationIo : _ContrastEvaluation___accessib
             )
         );
         return violations;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -621,16 +627,12 @@ internal class _ContrastReport___accessibility_evaluations
             lightColor?.key
                 ?? (
                     darkColor
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ).key,
             darkColor?.key
                 ?? (
                     lightColor
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ).key
         );
     }
@@ -668,7 +670,9 @@ public static partial class _accessibility_evaluationsLibrary
         {
             long offset = ((y * width) + x) * 4L;
             return data.getUint32(offset);
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         for (var xLocal = leftX; xLocal < rightX; xLocal++)
         {
@@ -686,10 +690,12 @@ public static partial class _accessibility_evaluationsLibrary
             {
                 long argb = (rgba << (int)24L) | ((rgba >> (int)8L) & 4294967295L);
                 return new MapEntry<Color, long>(new Color(argb), count);
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -709,7 +715,7 @@ public static partial class _accessibility_evaluationsLibrary
             }
         );
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -764,7 +770,7 @@ public static partial class _accessibility_evaluationsLibrary
             return true;
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -780,7 +786,7 @@ public class UnlabeledLeafNodeEvaluationIo : AccessibilityEvaluationIo
             violations.AddRange(_traverse(view.owner!.semanticsOwner!.rootSemanticsNode!));
         }
         return new EvaluationResultIo(violations);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual List<ViolationIo> _traverse(SemanticsNode node)
@@ -793,7 +799,9 @@ public class UnlabeledLeafNodeEvaluationIo : AccessibilityEvaluationIo
                 hasChildren = true;
                 violations.AddRange(_traverse(child));
                 return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
         if (node.isInvisible || node.flagsCollection.isHidden)
@@ -825,7 +833,7 @@ public class UnlabeledLeafNodeEvaluationIo : AccessibilityEvaluationIo
             );
         }
         return violations;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -849,7 +857,7 @@ public class TitleEvaluationIo : AccessibilityEvaluationIo
             );
         }
         return new EvaluationResultIo(violations);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _hasTitleWidget(Element element)
@@ -869,6 +877,6 @@ public class TitleEvaluationIo : AccessibilityEvaluationIo
             }
         );
         return found;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

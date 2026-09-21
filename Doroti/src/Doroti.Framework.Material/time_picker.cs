@@ -484,7 +484,9 @@ internal class _DialTimePickerHeader__time_picker : StatelessWidget
                 )
             ),
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
         return new Widgets.Semantics(
             label: MaterialLocalizations
@@ -571,7 +573,7 @@ internal class _DialTimeSelectorControl__time_picker : StatelessWidget
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -617,9 +619,13 @@ internal class _DialHourControl__time_picker : StatelessWidget
                     );
                 }
                 default:
-                    throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                    throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    );
             }
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         TimeOfDay nextHour = hoursFromSelected(1L);
         string formattedNextHour = localizations.formatHour(
@@ -663,7 +669,7 @@ internal class _DialHourControl__time_picker : StatelessWidget
                         .onHourDoubleTapped()
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -686,7 +692,9 @@ internal class _TimeSelectorSeparator__time_picker : StatelessWidget
             TimeOfDayFormat.HH_dot_mm => ".",
             TimeOfDayFormat.frenchCanadian => "h",
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
 
     public override Widget build(BuildContext context)
@@ -724,7 +732,9 @@ internal class _TimeSelectorSeparator__time_picker : StatelessWidget
             TimePickerEntryMode.input => defaultTheme.hourMinuteInputSize.height,
             TimePickerEntryMode.inputOnly => defaultTheme.hourMinuteInputSize.height,
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
         return new ExcludeSemantics(
             child: new SizedBox(
@@ -794,7 +804,7 @@ internal class _DialMinuteControl__time_picker : StatelessWidget
                         .onMinuteDoubleTapped()
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -869,7 +879,9 @@ internal class _DayPeriodControl__time_picker : StatelessWidget
                     Orientation.portrait => defaultTheme.dayPeriodPortraitSize,
                     Orientation.landscape => defaultTheme.dayPeriodLandscapeSize,
                     _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                        throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                        throw new InvalidOperationException(
+                            "Switch expression did not handle the supplied value."
+                        ),
                 };
                 break;
             }
@@ -1037,9 +1049,11 @@ internal class _DayPeriodControl__time_picker : StatelessWidget
                 );
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1127,7 +1141,7 @@ internal class _AmPmButton__time_picker : StatelessWidget
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1150,7 +1164,7 @@ internal class _DayPeriodInputPadding__time_picker : SingleChildRenderObjectWidg
     public override RenderObject createRenderObject(BuildContext context)
     {
         return new _RenderInputPadding__time_picker(minSize, orientation);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -1224,7 +1238,7 @@ public class _RenderInputPadding__time_picker : RenderShiftedBox
             return Math.Max(child!.getMinIntrinsicWidth(height), minSize.width);
         }
         return 0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicHeight(double width)
@@ -1234,7 +1248,7 @@ public class _RenderInputPadding__time_picker : RenderShiftedBox
             return Math.Max(child!.getMinIntrinsicHeight(width), minSize.height);
         }
         return 0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicWidth(double height)
@@ -1244,7 +1258,7 @@ public class _RenderInputPadding__time_picker : RenderShiftedBox
             return Math.Max(child!.getMaxIntrinsicWidth(height), minSize.width);
         }
         return 0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicHeight(double width)
@@ -1254,7 +1268,7 @@ public class _RenderInputPadding__time_picker : RenderShiftedBox
             return Math.Max(child!.getMaxIntrinsicHeight(width), minSize.height);
         }
         return 0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Size _computeSize(
@@ -1270,7 +1284,7 @@ public class _RenderInputPadding__time_picker : RenderShiftedBox
             return constraints.constrain(new Size(widthLocal, heightLocal));
         }
         return Size.zero;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Size computeDryLayout(BoxConstraints constraints)
@@ -1279,7 +1293,7 @@ public class _RenderInputPadding__time_picker : RenderShiftedBox
             constraints: constraints,
             layoutChild: ChildLayoutHelper.dryLayoutChild
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
@@ -1299,9 +1313,9 @@ public class _RenderInputPadding__time_picker : RenderShiftedBox
         Offset childOffset = Alignment.center.alongOffset(drySize - childSize);
         return (
                 result
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ) + childOffset.dy;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void performLayout()
@@ -1337,7 +1351,9 @@ public class _RenderInputPadding__time_picker : RenderShiftedBox
             Orientation.portrait => new Offset(0, -1),
             Orientation.landscape => new Offset(-1, 0),
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
         return result.addWithRawTransform(
             transform: MatrixUtils.forceToPoint(newPosition),
@@ -1346,10 +1362,12 @@ public class _RenderInputPadding__time_picker : RenderShiftedBox
             {
                 DartRuntimePrimitives.Assert(() => Equals(position, newPosition));
                 return child!.hitTest(result, position: newPosition);
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1480,7 +1498,9 @@ public class _DialPainter__time_picker : CustomPainter
                     radius * Dart_mathLibrary.cos(theta),
                     -radius * Dart_mathLibrary.sin(theta)
                 );
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         void paintLabels(List<_TappableLabel__time_picker> labels, double radius)
         {
@@ -1582,7 +1602,7 @@ public class _DialPainter__time_picker : CustomPainter
             || (!Equals(__oldPainter.backgroundColor, backgroundColor))
             || (!Equals(__oldPainter.handColor, handColor))
             || (__oldPainter.theta != theta);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1785,7 +1805,7 @@ public class _DialState__time_picker
     internal static double _nearest(double target, double a, double b)
     {
         return ((target - a).abs() < (target - b).abs()) ? a : b;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _animateTo(double targetTheta, double targetRadius)
@@ -1859,7 +1879,9 @@ public class _DialState__time_picker
                         : 1,
                     _HourDialType__time_picker.twelveHour => 1,
                     _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                        throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                        throw new InvalidOperationException(
+                            "Switch expression did not handle the supplied value."
+                        ),
                 };
             }
             case _HourMinuteMode__time_picker.minute:
@@ -1867,9 +1889,11 @@ public class _DialState__time_picker
                 return 1;
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual double _getThetaForTime(TimeOfDay time)
@@ -1879,19 +1903,23 @@ public class _DialState__time_picker
             _HourDialType__time_picker.twentyFourHourDoubleRing => TimeOfDay.hoursPerPeriod,
             _HourDialType__time_picker.twelveHour => TimeOfDay.hoursPerPeriod,
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
         double fraction = widget.hourMinuteMode switch
         {
             _HourMinuteMode__time_picker.hour => (double)(time.hour % hoursFactor) / hoursFactor,
             _HourMinuteMode__time_picker.minute => (double)time.minute / TimeOfDay.minutesPerHour,
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
         var theta = (Dart_mathLibrary.pi / 2) - (fraction * Time_pickerLibrary._kTwoPi);
         return ((theta % Time_pickerLibrary._kTwoPi) + Time_pickerLibrary._kTwoPi)
             % Time_pickerLibrary._kTwoPi;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual TimeOfDay _getTimeForTheta(
@@ -1942,9 +1970,11 @@ public class _DialState__time_picker
                 return widget.selectedTime.replacing(minute: minuteLocal);
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual TimeOfDay _notifyOnChangedIfNeeded(bool roundMinutes = false)
@@ -1963,7 +1993,7 @@ public class _DialState__time_picker
             widget.onChanged!(current);
         }
         return current;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _updateThetaForPan(bool roundMinutes = false)
@@ -1973,22 +2003,18 @@ public class _DialState__time_picker
             Offset offset =
                 (
                     _position
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
                 - (
                     _center
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
             double labelRadius =
                 (
                     (
                         _dialSize
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ).shortestSide / 2L
                 ) - Time_pickerLibrary._kTimePickerDialPadding;
@@ -2045,7 +2071,7 @@ public class _DialState__time_picker
         _dialSize = box.size;
         _center = (
             _dialSize
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         ).center(Offset.zero);
         _updateThetaForPan();
         _notifyOnChangedIfNeeded();
@@ -2056,7 +2082,7 @@ public class _DialState__time_picker
         _position =
             (
                 _position
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ) + details.delta;
         _updateThetaForPan();
         _notifyOnChangedIfNeeded();
@@ -2109,9 +2135,13 @@ public class _DialState__time_picker
                     minute: widget.selectedTime.minute
                 ),
                 _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                    throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
             };
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         switch (widget.hourMinuteMode)
         {
@@ -2203,7 +2233,7 @@ public class _DialState__time_picker
             )(),
             onTap: onTap
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual List<_TappableLabel__time_picker> _build24HourRing(
@@ -2280,7 +2310,7 @@ public class _DialState__time_picker
                 }
             )
         )();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual List<_TappableLabel__time_picker> _buildMinutes(
@@ -2328,7 +2358,7 @@ public class _DialState__time_picker
                 }
             )
         )();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -2475,7 +2505,7 @@ public class _DialState__time_picker
         _updateTickerModeNotifier();
         _updateTicker();
         return _ticker!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void activate()
@@ -2644,7 +2674,7 @@ internal class _TimePickerInputState__time_picker
                     (
                         newHour
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) < 24L
                 )
@@ -2652,9 +2682,7 @@ internal class _TimePickerInputState__time_picker
             {
                 return (
                     newHour
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
             }
         }
@@ -2665,7 +2693,7 @@ internal class _TimePickerInputState__time_picker
                     (
                         newHour
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) > 0L
                 )
@@ -2673,7 +2701,7 @@ internal class _TimePickerInputState__time_picker
                     (
                         newHour
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) < 13L
                 )
@@ -2686,7 +2714,7 @@ internal class _TimePickerInputState__time_picker
                             (
                                 newHour
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             ) != 12L
                         )
@@ -2697,7 +2725,7 @@ internal class _TimePickerInputState__time_picker
                             (
                                 newHour
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             ) == 12L
                         )
@@ -2709,21 +2737,19 @@ internal class _TimePickerInputState__time_picker
                             (
                                 newHour
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             ) + TimeOfDay.hoursPerPeriod
                         ) % TimeOfDay.hoursPerDay;
                 }
                 return (
                     newHour
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
             }
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual long? _parseMinute(string? value)
@@ -2744,20 +2770,18 @@ internal class _TimePickerInputState__time_picker
             && (
                 (
                     newMinute
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) < 60L
             )
         )
         {
             return (
                 newMinute
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _handleHourSavedSubmitted(string? value)
@@ -2767,7 +2791,7 @@ internal class _TimePickerInputState__time_picker
         {
             long newHour__62523__value62560 = (
                 newHour
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             _selectedTime.value = new TimeOfDay(
                 hour: ((newHour__62523__value62560)),
@@ -2785,7 +2809,7 @@ internal class _TimePickerInputState__time_picker
         {
             long newHour__62852__value62889 = (
                 newHour
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             FocusScope.of(context).nextFocus();
         }
@@ -2798,7 +2822,7 @@ internal class _TimePickerInputState__time_picker
         {
             long newMinute__63120__value63161 = (
                 newMinute
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             _selectedTime.value = new TimeOfDay(
                 hour: _selectedTime.value.hour,
@@ -2823,7 +2847,7 @@ internal class _TimePickerInputState__time_picker
             hourHasError.value = newHour is null;
         });
         return (newHour is null) ? "" : null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual string? _validateMinute(string? value)
@@ -2834,7 +2858,7 @@ internal class _TimePickerInputState__time_picker
             minuteHasError.value = newMinute is null;
         });
         return (newMinute is null) ? "" : null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -3351,7 +3375,7 @@ internal class _TimePickerInputState__time_picker
         _bucket!.rename(restorationId!);
         parent.adoptChild(_bucket!);
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool _setNewBucketIfNecessary(RestorationBucket? newBucket, bool restorePending)
@@ -3373,7 +3397,7 @@ internal class _TimePickerInputState__time_picker
             didToggleBucket(oldBucket);
         }
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _updateProperty(IRestorableProperty property)
@@ -3455,7 +3479,7 @@ internal class _HourTextField__time_picker : StatelessWidget
             emptyInitialTime: emptyInitialTime,
             onChanged: onChanged
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -3509,7 +3533,7 @@ internal class _MinuteTextField__time_picker : StatelessWidget
             emptyInitialTime: emptyInitialTime,
             onSavedSubmitted: onSavedSubmitted
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -3976,7 +4000,7 @@ internal class _HourMinuteTextFieldState__time_picker
         _bucket!.rename(restorationId!);
         parent.adoptChild(_bucket!);
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool _setNewBucketIfNecessary(RestorationBucket? newBucket, bool restorePending)
@@ -3998,7 +4022,7 @@ internal class _HourMinuteTextFieldState__time_picker
             didToggleBucket(oldBucket);
         }
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _updateProperty(IRestorableProperty property)
@@ -4296,7 +4320,9 @@ internal class _TimePickerDialogState__time_picker
                     Orientation.portrait => _kTimePickerMinPortraitSize,
                     Orientation.landscape => _kTimePickerMinLandscapeSize,
                     _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                        throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                        throw new InvalidOperationException(
+                            "Switch expression did not handle the supplied value."
+                        ),
                 };
             }
             case TimePickerEntryMode.input:
@@ -4332,9 +4358,11 @@ internal class _TimePickerDialogState__time_picker
                 return new Size(timePickerWidth, _kTimePickerMinInputSize.height);
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Size _dialogSize(BuildContext context)
@@ -4515,7 +4543,9 @@ internal class _TimePickerDialogState__time_picker
             var __constant95381 when Equals(__constant95381, MaterialTapTargetSize.shrinkWrap) =>
                 new Offset(0, -12),
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
         Size dialogSize = _dialogSize(context) + tapTargetSizeOffset;
         Size minDialogSize = _minDialogSize(context) + tapTargetSizeOffset;
@@ -4609,7 +4639,7 @@ internal class _TimePickerDialogState__time_picker
                                                         }
                                                         return childLocal;
                                                         throw new InvalidOperationException(
-                                                            "Dart closure completed without a value."
+                                                            "Callback completed without returning a value."
                                                         );
                                                     }
                                                 )
@@ -4621,7 +4651,7 @@ internal class _TimePickerDialogState__time_picker
                             )
                         );
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 )
@@ -4842,7 +4872,7 @@ internal class _TimePickerDialogState__time_picker
         _bucket!.rename(restorationId!);
         parent.adoptChild(_bucket!);
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool _setNewBucketIfNecessary(RestorationBucket? newBucket, bool restorePending)
@@ -4864,7 +4894,7 @@ internal class _TimePickerDialogState__time_picker
             didToggleBucket(oldBucket);
         }
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _updateProperty(IRestorableProperty property)
@@ -5214,7 +5244,9 @@ internal class _TimePickerState__time_picker
             HourFormat.HH or HourFormat.H => _HourDialType__time_picker.twentyFourHourDoubleRing,
             HourFormat.h => _HourDialType__time_picker.twelveHour,
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
         string helpTextLocal = default!;
         Widget picker = default!;
@@ -5242,7 +5274,9 @@ internal class _TimePickerState__time_picker
                         EdgeInsetsDirectional.CreateOnly(start: 64)
                     ),
                     _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                        throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                        throw new InvalidOperationException(
+                            "Switch expression did not handle the supplied value."
+                        ),
                 };
                 Widget dialLocal = new Padding(
                     padding: dialPadding,
@@ -5571,7 +5605,7 @@ internal class _TimePickerState__time_picker
         _bucket!.rename(restorationId!);
         parent.adoptChild(_bucket!);
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool _setNewBucketIfNecessary(RestorationBucket? newBucket, bool restorePending)
@@ -5593,7 +5627,7 @@ internal class _TimePickerState__time_picker
             didToggleBucket(oldBucket);
         }
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _updateProperty(IRestorableProperty property)
@@ -5674,12 +5708,14 @@ public static partial class Time_pickerLibrary
             builder: (context) =>
             {
                 return (builder is null) ? dialog : builder(context, dialog);
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             routeSettings: routeSettings,
             anchorPoint: anchorPoint
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -5727,7 +5763,7 @@ public static partial class Time_pickerLibrary
         TimePickerEntryMode entryMode = _TimePickerModel__time_picker.entryModeOf(context);
         return Equals(entryMode, TimePickerEntryMode.dial)
             || Equals(entryMode, TimePickerEntryMode.dialOnly);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -5801,7 +5837,9 @@ internal class _TimePickerDefaultsM3__time_picker : _TimePickerDefaults__time_pi
                         return _colors.tertiaryContainer;
                     }
                     return Colors.transparent;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
         }
@@ -5863,7 +5901,9 @@ internal class _TimePickerDefaultsM3__time_picker : _TimePickerDefaults__time_pi
                         return _colors.onSurfaceVariant;
                     }
                     return _colors.onSurfaceVariant;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
         }
@@ -5908,7 +5948,9 @@ internal class _TimePickerDefaultsM3__time_picker : _TimePickerDefaults__time_pi
                         return _colors.onPrimary;
                     }
                     return _colors.onSurface;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
         }
@@ -5934,7 +5976,9 @@ internal class _TimePickerDefaultsM3__time_picker : _TimePickerDefaults__time_pi
                 {
                     TextStyle textStyle = _textTheme.labelMedium!;
                     return textStyle.copyWith(color: _colors.onSurfaceVariant);
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
         }
@@ -6012,7 +6056,9 @@ internal class _TimePickerDefaultsM3__time_picker : _TimePickerDefaults__time_pi
                             _colors.surfaceContainerHighest
                         );
                     }
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
         }
@@ -6053,7 +6099,9 @@ internal class _TimePickerDefaultsM3__time_picker : _TimePickerDefaults__time_pi
                 (states) =>
                 {
                     return _hourMinuteTextColor.resolve(states);
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
         }
@@ -6097,7 +6145,9 @@ internal class _TimePickerDefaultsM3__time_picker : _TimePickerDefaults__time_pi
                         }
                         return _colors.onSurface;
                     }
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
         }
@@ -6125,10 +6175,12 @@ internal class _TimePickerDefaultsM3__time_picker : _TimePickerDefaults__time_pi
                         ),
                         _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
                             throw new InvalidOperationException(
-                                "Non-exhaustive Dart switch value."
+                                "Switch expression did not handle the supplied value."
                             ),
                     };
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
         }

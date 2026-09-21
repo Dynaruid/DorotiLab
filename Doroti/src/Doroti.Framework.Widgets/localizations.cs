@@ -55,7 +55,9 @@ public static partial class LocalizationsLibrary
                         ?? throw new InvalidOperationException(
                             "A localization delegate must return a resource."
                         );
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
             if (completedValue is not null)
@@ -89,10 +91,12 @@ public static partial class LocalizationsLibrary
                         output[typeAlternate] = values[(int)i];
                     }
                     return output;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -151,7 +155,7 @@ public abstract class WidgetsLocalizations
     {
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasWidgetsLocalizations(context));
         return Localizations.of<WidgetsLocalizations>(context, typeof(WidgetsLocalizations))!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -198,7 +202,7 @@ public class DefaultWidgetsLocalizations : WidgetsLocalizations
     public static Future<WidgetsLocalizations> load(Locale locale)
     {
         return new SynchronousFuture<WidgetsLocalizations>(new DefaultWidgetsLocalizations());
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -227,7 +231,7 @@ internal class _LocalizationsScope__localizations : InheritedWidget
     {
         var __old = (_LocalizationsScope__localizations)oldWidget;
         return !Equals(typeToResources, __old.typeToResources);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -302,13 +306,13 @@ public class Localizations : StatefulWidget
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return (
             scope!.localizationsState.locale
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static Locale? maybeLocaleOf(BuildContext context)
@@ -316,7 +320,7 @@ public class Localizations : StatefulWidget
         _LocalizationsScope__localizations? scope =
             context.dependOnInheritedWidgetOfExactType<_LocalizationsScope__localizations>();
         return scope?.localizationsState.locale;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static List<object> _delegatesOf(BuildContext context)
@@ -332,7 +336,7 @@ public class Localizations : StatefulWidget
                 scope!.localizationsState.widget.delegates
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static T? of<T>(BuildContext context, Type type)
@@ -340,7 +344,7 @@ public class Localizations : StatefulWidget
         _LocalizationsScope__localizations? scope =
             context.dependOnInheritedWidgetOfExactType<_LocalizationsScope__localizations>();
         return scope is null ? default : scope.localizationsState.resourcesFor<T>(type);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override IState createState() =>
@@ -376,14 +380,12 @@ internal class _LocalizationsState__localizations : State<Localizations>
             WidgetsBinding.instance.platformDispatcher.setApplicationLocale(
                 (
                     locale
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             );
             _locale = (
                 locale
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
     }
@@ -423,7 +425,7 @@ internal class _LocalizationsState__localizations : State<Localizations>
             }
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void didUpdateWidget(Localizations old)
@@ -450,7 +452,9 @@ internal class _LocalizationsState__localizations : State<Localizations>
                 (value) =>
                 {
                     return typeToResources = value.cast<Type, object>();
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
         if (typeToResources is not null)
@@ -484,7 +488,7 @@ internal class _LocalizationsState__localizations : State<Localizations>
     {
         var resources = ((T?)_typeToResources.GetValueOrDefault(type))!;
         return resources;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual TextDirection _textDirection
@@ -513,16 +517,14 @@ internal class _LocalizationsState__localizations : State<Localizations>
                 key: _localizedResourcesScopeKey,
                 locale: (
                     _locale
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 localizationsState: this,
                 typeToResources: _typeToResources,
                 child: new Directionality(textDirection: _textDirection, child: widget.child!)
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -600,7 +602,7 @@ public class LocalizationsResolver : ChangeNotifier, WidgetsBindingObserver
                             (
                                 _locale
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             ),
                         },
@@ -609,7 +611,7 @@ public class LocalizationsResolver : ChangeNotifier, WidgetsBindingObserver
                     : (
                         _resolvedLocale
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     );
             DartRuntimePrimitives.Assert(() => _debugCheckLocalizations(appLocale));
@@ -670,9 +672,7 @@ public class LocalizationsResolver : ChangeNotifier, WidgetsBindingObserver
             {
                 Locale locale__32547__value32633 = (
                     locale
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 return ((locale__32547__value32633));
             }
@@ -689,9 +689,7 @@ public class LocalizationsResolver : ChangeNotifier, WidgetsBindingObserver
             {
                 Locale locale__32838__value33016 = (
                     localeLocal
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 return ((locale__32838__value33016));
             }
@@ -700,7 +698,7 @@ public class LocalizationsResolver : ChangeNotifier, WidgetsBindingObserver
             preferredLocales,
             supportedLocales.Cast<Locale>()
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string ToString() => $"{typeof(LocalizationsResolver)}";
@@ -756,9 +754,9 @@ public class LocalizationsResolver : ChangeNotifier, WidgetsBindingObserver
                 )
             );
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

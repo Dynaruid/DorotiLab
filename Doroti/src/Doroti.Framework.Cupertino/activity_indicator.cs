@@ -149,7 +149,7 @@ internal class _CupertinoActivityIndicatorState__activity_indicator
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
@@ -188,7 +188,7 @@ internal class _CupertinoActivityIndicatorState__activity_indicator
         _updateTickerModeNotifier();
         _updateTicker();
         return _ticker!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void activate()
@@ -325,7 +325,7 @@ internal class _CupertinoActivityIndicatorPainter__activity_indicator : CustomPa
         return (!Equals(__oldPainter.position, position))
             || (!Equals(__oldPainter.activeColor, activeColor))
             || (__oldPainter.progress != progress);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -361,7 +361,7 @@ public class CupertinoLinearActivityIndicator : StatelessWidget
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 

@@ -154,6 +154,6 @@ public static partial class Box_fitLibrary
             }
         }
         return new FittedSizes(sourceSize, destinationSize);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

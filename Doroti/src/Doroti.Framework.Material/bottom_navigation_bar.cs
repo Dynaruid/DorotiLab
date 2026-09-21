@@ -184,7 +184,7 @@ internal class _BottomNavigationTile__bottom_navigation_bar : StatelessWidget
         long sizeLocal = default!;
         double selectedFontSize = (
             selectedLabelStyle.fontSize
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         );
         double selectedIconSize = selectedIconTheme?.size ?? iconSize;
         double unselectedIconSize = unselectedIconTheme?.size ?? iconSize;
@@ -235,13 +235,13 @@ internal class _BottomNavigationTile__bottom_navigation_bar : StatelessWidget
             BottomNavigationBarType.shifting => (
                 (
                     flex
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) * 1000.0
             ).round(),
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
         Widget result = new InkResponse(
             onTap: onTap,
@@ -301,7 +301,7 @@ internal class _BottomNavigationTile__bottom_navigation_bar : StatelessWidget
             )
         );
         return new Expanded(flex: sizeLocal, child: result);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -353,7 +353,7 @@ internal class _Tile__bottom_navigation_bar : StatelessWidget
                 DartRuntimePrimitives.ConvertValue<Widget>(label),
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -400,7 +400,7 @@ internal class _TileIcon__bottom_navigation_bar : StatelessWidget
             heightFactor: 1.0,
             child: new IconTheme(data: iconThemeData, child: selected ? item.activeIcon : item.icon)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -454,13 +454,13 @@ internal class _Label__bottom_navigation_bar : StatelessWidget
                             begin: (
                                 unselectedFontSize
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             )
                                 / (
                                     selectedFontSize
                                     ?? throw new global::System.NullReferenceException(
-                                        "Dart null assertion failed."
+                                        "A required value was null."
                                     )
                                 ),
                             end: 1.0
@@ -511,7 +511,7 @@ internal class _Label__bottom_navigation_bar : StatelessWidget
             text = MediaQuery.withClampedTextScaling(maxScaleFactor: 1.0, child: text);
         }
         return text;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -562,7 +562,9 @@ public class _BottomNavigationBarState__bottom_navigation_bar
                             }
                         )
                     )();
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );
@@ -576,7 +578,9 @@ public class _BottomNavigationBarState__bottom_navigation_bar
                         curve: Curves.fastOutSlowIn,
                         reverseCurve: Curves.fastOutSlowIn.flipped
                     );
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );
@@ -602,7 +606,9 @@ public class _BottomNavigationBarState__bottom_navigation_bar
             BottomNavigationBarType.shifting => false,
             BottomNavigationBarType.@fixed => true,
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
 
     public override void initState()
@@ -746,13 +752,13 @@ public class _BottomNavigationBarState__bottom_navigation_bar
     {
         textStyle ??= new TextStyle();
         return (textStyle.fontSize is null) ? textStyle.copyWith(fontSize: fontSize) : textStyle;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static IconThemeData _effectiveIconTheme(IconThemeData? iconTheme, Color? itemColor)
     {
         return iconTheme ?? new IconThemeData(color: itemColor);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual List<Widget> _createTiles(BottomNavigationBarLandscapeLayout layout)
@@ -765,7 +771,9 @@ public class _BottomNavigationBarState__bottom_navigation_bar
             Brightness.light => themeData.colorScheme.primary,
             Brightness.dark => themeData.colorScheme.secondary,
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
         TextStyle effectiveSelectedLabelStyle = _effectiveTextStyle(
             widget.selectedLabelStyle ?? bottomTheme.selectedLabelStyle,
@@ -941,7 +949,7 @@ public class _BottomNavigationBarState__bottom_navigation_bar
             );
         }
         return tiles;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -964,7 +972,9 @@ public class _BottomNavigationBarState__bottom_navigation_bar
             BottomNavigationBarType.@fixed => widget.backgroundColor ?? bottomTheme.backgroundColor,
             BottomNavigationBarType.shifting => _backgroundColor,
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
         return new Widgets.Semantics(
             explicitChildNodes: true,
@@ -1003,7 +1013,7 @@ public class _BottomNavigationBarState__bottom_navigation_bar
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
@@ -1034,7 +1044,7 @@ public class _BottomNavigationBarState__bottom_navigation_bar
         )();
         _tickers!.Add(result);
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _removeTicker(_WidgetTicker__ticker_provider ticker)
@@ -1130,7 +1140,7 @@ internal class _Bar__bottom_navigation_bar : StatelessWidget
             );
         }
         return new Material(elevation: elevation, color: color, child: alignedChild);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1172,7 +1182,9 @@ public class _Circle__bottom_navigation_bar
                     (double)0.0,
                     (sum, value) => sum + value
                 );
-                throw new InvalidOperationException("Dart control flow completed without a value.");
+                throw new InvalidOperationException(
+                    "Control flow completed without returning a value."
+                );
             }
             double allWeights = weightSum(state._animations.Cast<Animation<double>>());
             double leadingWeights = weightSum(
@@ -1209,7 +1221,7 @@ internal class _RadialPainter__bottom_navigation_bar : CustomPainter
         double maxX = Math.Max(center.dx, size.width - center.dx);
         double maxY = Math.Max(center.dy, size.height - center.dy);
         return Dart_mathLibrary.sqrt((maxX * maxX) + (maxY * maxY));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool shouldRepaint(CustomPainter oldDelegate)
@@ -1235,7 +1247,7 @@ internal class _RadialPainter__bottom_navigation_bar : CustomPainter
             }
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paint(Canvas canvas, Size size)
@@ -1259,7 +1271,9 @@ internal class _RadialPainter__bottom_navigation_bar : CustomPainter
                 TextDirection.rtl => 1.0 - circle.horizontalLeadingOffset,
                 TextDirection.ltr => circle.horizontalLeadingOffset,
                 _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                    throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
             };
             var center = new Offset(leftFraction * size.width, size.height / 2.0);
             var radiusTween = new Tween<double>(begin: 0.0, end: _maxRadius(center, size));

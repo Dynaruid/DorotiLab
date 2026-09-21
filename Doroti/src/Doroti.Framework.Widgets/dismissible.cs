@@ -165,9 +165,11 @@ internal class _DismissibleClipper__dismissible : CustomClipper<Rect>
                 return Rect.fromLTRB(0.0, 0.0, size.width, offsetLocal);
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Rect getApproximateClipRect(Size size) => getClip(size);
@@ -177,7 +179,7 @@ internal class _DismissibleClipper__dismissible : CustomClipper<Rect>
         var __oldClipper = (_DismissibleClipper__dismissible)oldClipper;
         return (!Equals(__oldClipper.axis, axis))
             || (!Equals(__oldClipper.moveAnimation.value, moveAnimation.value));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -292,7 +294,7 @@ internal class _DismissibleState__dismissible
                 }
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         _tickerModeNotifier?.removeListener(_updateTickers);
         _tickerModeNotifier = null;
@@ -323,11 +325,13 @@ internal class _DismissibleState__dismissible
                 TextDirection.ltr when extent > 0L => DismissDirection.startToEnd,
                 TextDirection.rtl => DismissDirection.endToStart,
                 TextDirection.ltr => DismissDirection.endToStart,
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             };
         }
         return (extent > 0L) ? DismissDirection.down : DismissDirection.up;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual DismissDirection _dismissDirection => _extentToDirection(_dragExtent);
@@ -344,7 +348,7 @@ internal class _DismissibleState__dismissible
         {
             Size sizeLocal = (
                 context.size
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             return _directionIsXAxis ? sizeLocal.width : sizeLocal.height;
         }
@@ -381,7 +385,7 @@ internal class _DismissibleState__dismissible
         }
         double delta = (
             details.primaryDelta
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         );
         double oldDragExtent = _dragExtent;
         switch (widget.direction)
@@ -540,7 +544,7 @@ internal class _DismissibleState__dismissible
             return _FlingGestureKind__dismissible.forward;
         }
         return _FlingGestureKind__dismissible.reverse;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _handleDragEnd(DragEndDetails details)
@@ -652,7 +656,7 @@ internal class _DismissibleState__dismissible
             }
         }
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _startResizeAnimation()
@@ -751,7 +755,9 @@ internal class _DismissibleState__dismissible
                     );
                 }
                 return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             });
             return new SizeTransition(
                 sizeFactor: _resizeAnimation!,
@@ -760,13 +766,13 @@ internal class _DismissibleState__dismissible
                     width: (
                         _sizePriorToCollapse
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ).width,
                     height: (
                         _sizePriorToCollapse
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ).height,
                     child: backgroundLocal
@@ -798,7 +804,7 @@ internal class _DismissibleState__dismissible
             dragStartBehavior: widget.dragStartBehavior,
             child: content
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
@@ -829,7 +835,7 @@ internal class _DismissibleState__dismissible
         )();
         _tickers!.Add(result);
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _removeTicker(_WidgetTicker__ticker_provider ticker)

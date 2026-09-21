@@ -77,19 +77,19 @@ internal class _TapTracker__multitap
     {
         Offset offset = @event.position - _initialGlobalPosition;
         return offset.distance <= tolerance;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool hasElapsedMinTime()
     {
         return _doubleTapMinTimeCountdown.timeout;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool hasSameButton(PointerDownEvent @event)
     {
         return @event.buttons == initialButtons;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -133,7 +133,7 @@ public class DoubleTapGestureRecognizer : GestureRecognizer
             _reset();
         }
         return isPointerAllowedLocal;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void addAllowedPointer(PointerDownEvent @event)
@@ -793,7 +793,7 @@ public class SerialTapGestureRecognizer : GestureRecognizer
             return false;
         }
         return base.isPointerAllowed(@event);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void addAllowedPointer(PointerDownEvent @event)
@@ -815,7 +815,7 @@ public class SerialTapGestureRecognizer : GestureRecognizer
         return tap.hasElapsedMinTime()
             && tap.hasSameButton(@event)
             && tap.isWithinGlobalTolerance(@event, ConstantsLibrary.kDoubleTapSlop);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _trackTap(PointerDownEvent @event)

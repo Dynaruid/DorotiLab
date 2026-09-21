@@ -145,7 +145,7 @@ public abstract class Route<T> : RouteBase
                 }
             )
         )();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void didAdd()
@@ -171,7 +171,7 @@ public abstract class Route<T> : RouteBase
     public override async Future<RoutePopDisposition> willPop()
     {
         return isFirst ? RoutePopDisposition.bubble : RoutePopDisposition.pop;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override RoutePopDisposition popDisposition
@@ -212,7 +212,7 @@ public abstract class Route<T> : RouteBase
     {
         didComplete(result);
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void didComplete(T? result)
@@ -353,7 +353,7 @@ public abstract class Route<T> : RouteBase
             );
         }
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -403,7 +403,7 @@ public abstract class Page<T> : RouteSettings
     {
         return Equals(DartRuntimePrimitives.RuntimeType(other), GetType())
             && Equals(other.key, key);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public abstract Route<T> createRoute(BuildContext context);
@@ -459,7 +459,7 @@ public class HeroControllerScope : InheritedWidget
         HeroControllerScope? host =
             context.dependOnInheritedWidgetOfExactType<HeroControllerScope>();
         return host?.controller;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static HeroController of(BuildContext context)
@@ -483,17 +483,17 @@ public class HeroControllerScope : InheritedWidget
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return controller!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget)
     {
         var __oldWidget = (HeroControllerScope)oldWidget;
         return !Equals(__oldWidget.controller, controller);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -578,10 +578,10 @@ public abstract class TransitionDelegate<T>
                     + "required routes. Do you remember to merge all exiting routes?"
             );
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return results;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public abstract IEnumerable<RouteTransitionRecord> resolve(
@@ -672,7 +672,7 @@ public class DefaultTransitionDelegate<T> : TransitionDelegate<T>
             handleExitingRoute(pageRoute, isLastIteration);
         }
         return results;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -779,7 +779,7 @@ public class Navigator : StatefulWidget
     )
     {
         return of(context).pushNamed<T>(routeName, arguments: arguments);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static string restorablePushNamed<T>(
@@ -789,7 +789,7 @@ public class Navigator : StatefulWidget
     )
     {
         return of(context).restorablePushNamed<T>(routeName, arguments: arguments);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static Future<T?> pushReplacementNamed<T, TO>(
@@ -801,7 +801,7 @@ public class Navigator : StatefulWidget
     {
         return of(context)
             .pushReplacementNamed<T, TO>(routeName, arguments: arguments, result: result);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static string restorablePushReplacementNamed<T, TO>(
@@ -813,7 +813,7 @@ public class Navigator : StatefulWidget
     {
         return of(context)
             .restorablePushReplacementNamed<T, TO>(routeName, arguments: arguments, result: result);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static Future<T?> popAndPushNamed<T, TO>(
@@ -824,7 +824,7 @@ public class Navigator : StatefulWidget
     )
     {
         return of(context).popAndPushNamed<T, TO>(routeName, arguments: arguments, result: result);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static string restorablePopAndPushNamed<T, TO>(
@@ -836,7 +836,7 @@ public class Navigator : StatefulWidget
     {
         return of(context)
             .restorablePopAndPushNamed<T, TO>(routeName, arguments: arguments, result: result);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static Future<T?> pushNamedAndRemoveUntil<T>(
@@ -848,7 +848,7 @@ public class Navigator : StatefulWidget
     {
         return of(context)
             .pushNamedAndRemoveUntil<T>(newRouteName, predicate, arguments: arguments);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static string restorablePushNamedAndRemoveUntil<T>(
@@ -860,13 +860,13 @@ public class Navigator : StatefulWidget
     {
         return of(context)
             .restorablePushNamedAndRemoveUntil<T>(newRouteName, predicate, arguments: arguments);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static Future<T?> push<T>(BuildContext context, Route<T> route)
     {
         return of(context).push(route);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static string restorablePush<T>(
@@ -876,7 +876,7 @@ public class Navigator : StatefulWidget
     )
     {
         return of(context).restorablePush(routeBuilder, arguments: arguments);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static Future<T?> pushReplacement<T, TO>(
@@ -886,7 +886,7 @@ public class Navigator : StatefulWidget
     )
     {
         return of(context).pushReplacement(newRoute, result: result);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static string restorablePushReplacement<T, TO>(
@@ -898,7 +898,7 @@ public class Navigator : StatefulWidget
     {
         return of(context)
             .restorablePushReplacement(routeBuilder, result: result, arguments: arguments);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static Future<T?> pushAndRemoveUntil<T>(
@@ -908,7 +908,7 @@ public class Navigator : StatefulWidget
     )
     {
         return of(context).pushAndRemoveUntil(newRoute, predicate);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static string restorablePushAndRemoveUntil<T>(
@@ -920,7 +920,7 @@ public class Navigator : StatefulWidget
     {
         return of(context)
             .restorablePushAndRemoveUntil(newRouteBuilder, predicate, arguments: arguments);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static void replace<T>(BuildContext context, dynamic oldRoute, Route<T> newRoute)
@@ -942,7 +942,7 @@ public class Navigator : StatefulWidget
                 newRouteBuilder: newRouteBuilder,
                 arguments: arguments
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static void replaceRouteBelow<T>(
@@ -972,20 +972,20 @@ public class Navigator : StatefulWidget
                 newRouteBuilder: newRouteBuilder,
                 arguments: arguments
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static bool canPop(BuildContext context)
     {
         NavigatorState? navigator = maybeOf(context);
         return (navigator is not null) && navigator.canPop();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static Future<bool> maybePop<T>(BuildContext context, T? result = default)
     {
         return of(context).maybePop(result);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static void pop<T>(BuildContext context, T? result = default)
@@ -1046,10 +1046,10 @@ public class Navigator : StatefulWidget
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return navigator!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static NavigatorState? maybeOf(BuildContext context, bool rootNavigator = false)
@@ -1062,7 +1062,7 @@ public class Navigator : StatefulWidget
         return rootNavigator
             ? (context.findRootAncestorStateOfType<NavigatorState>() ?? navigator)
             : (navigator ?? context.findAncestorStateOfType<NavigatorState>());
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static List<object> defaultGenerateInitialRoutes(
@@ -1080,7 +1080,9 @@ public class Navigator : StatefulWidget
             {
                 debugRouteNames = new List<string> { defaultRouteName };
                 return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             });
             result.Add(
                 navigator._routeNamed<object>(defaultRouteName, arguments: null, allowNull: true)
@@ -1097,7 +1099,7 @@ public class Navigator : StatefulWidget
                         debugRouteNames!.Add(routeName);
                         return true;
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     });
                     result.Add(
@@ -1118,7 +1120,9 @@ public class Navigator : StatefulWidget
                         )
                     );
                     return true;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 });
                 foreach (var routeLocal in result)
                 {
@@ -1154,7 +1158,7 @@ public class Navigator : StatefulWidget
             );
         }
         return result.OfType<object>().ToList();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override IState createState() =>
@@ -1260,7 +1264,7 @@ public class _RouteEntry__navigator : RouteTransitionRecord
         }
         var routePage = ((Page<object?>?)route.settings)!;
         return page.canUpdate(routePage);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void handleAdd(NavigatorState navigator, RouteBase? previousPresent)
@@ -1314,7 +1318,7 @@ public class _RouteEntry__navigator : RouteTransitionRecord
                         navigator._debugLocked = true;
                         return true;
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     });
                     navigator._flushHistoryUpdates();
@@ -1323,7 +1327,7 @@ public class _RouteEntry__navigator : RouteTransitionRecord
                         navigator._debugLocked = false;
                         return true;
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     });
                 }
@@ -1404,7 +1408,7 @@ public class _RouteEntry__navigator : RouteTransitionRecord
                                     }
                                 }
                                 throw new InvalidOperationException(
-                                    "Dart closure completed without a value."
+                                    "Callback completed without returning a value."
                                 );
                             }
                         )
@@ -1452,7 +1456,7 @@ public class _RouteEntry__navigator : RouteTransitionRecord
         }
         pendingResult = null;
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void handleComplete()
@@ -1664,7 +1668,7 @@ public class _RouteEntry__navigator : RouteTransitionRecord
                 lastAnnouncedNextRoute
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static bool isPresentPredicate(_RouteEntry__navigator entry) => entry.isPresent;
@@ -1677,7 +1681,7 @@ public class _RouteEntry__navigator : RouteTransitionRecord
     public static Func<_RouteEntry__navigator, bool> isRoutePredicate(RouteBase route)
     {
         return (entry) => Equals(entry.route, route);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool isWaitingForEnteringDecision =>
@@ -1726,7 +1730,9 @@ public class _RouteEntry__navigator : RouteTransitionRecord
                 {
                     attempt += 1L;
                     return attempt < kDebugPopAttemptLimit;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 },
                 () =>
                     (object?)
@@ -1840,7 +1846,7 @@ public class _History__navigator : ChangeNotifier, IEnumerable<_RouteEntry__navi
     public virtual long indexWhere(Func<_RouteEntry__navigator, bool> test, long start = 0)
     {
         return _value.indexWhere(test, start);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void add(_RouteEntry__navigator element)
@@ -1879,7 +1885,7 @@ public class _History__navigator : ChangeNotifier, IEnumerable<_RouteEntry__navi
         _RouteEntry__navigator entry = _value.removeAt(index);
         notifyListeners();
         return entry;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual _RouteEntry__navigator removeLast()
@@ -1887,7 +1893,7 @@ public class _History__navigator : ChangeNotifier, IEnumerable<_RouteEntry__navi
         _RouteEntry__navigator entry = _value.removeLast();
         notifyListeners();
         return entry;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public _RouteEntry__navigator this[long index]
@@ -1903,7 +1909,7 @@ public class _History__navigator : ChangeNotifier, IEnumerable<_RouteEntry__navi
     public override string ToString()
     {
         return $"[{string.Join(", ", _value)}]";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() =>
@@ -2006,7 +2012,7 @@ public class NavigatorState
         );
         return (lastEntry is not null)
             && Equals(lastEntry.route.popDisposition, RoutePopDisposition.doNotPop);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _debugCheckPageApiParameters()
@@ -2044,7 +2050,7 @@ public class NavigatorState
             }
         }
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void initState()
@@ -2157,14 +2163,14 @@ public class NavigatorState
         {
             _debugLocked = true;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         _flushHistoryUpdates();
         DartRuntimePrimitives.Assert(() =>
         {
             _debugLocked = false;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
     }
 
@@ -2219,7 +2225,9 @@ public class NavigatorState
             {
                 entry.forcedDispose();
                 return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
         while (Enumerable.Any(_history))
@@ -2300,7 +2308,9 @@ public class NavigatorState
                         );
                     }
                     return true;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 });
                 NavigatorObserver._navigators[newHeroController] = this;
             }
@@ -2365,7 +2375,9 @@ public class NavigatorState
                     );
                 }
                 return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             });
             _updatePages();
         }
@@ -2393,7 +2405,7 @@ public class NavigatorState
                 }
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
     }
 
@@ -2428,7 +2440,7 @@ public class NavigatorState
         {
             _debugLocked = true;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         DartRuntimePrimitives.Assert(() => !Enumerable.Any(_effectiveObservers));
         _updateHeroController(null);
@@ -2474,7 +2486,7 @@ public class NavigatorState
             _debugCheckDuplicatedPageKeys();
             _debugUpdatingPage = true;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         var needsExplicitDecision = false;
         var newPagesBottom = 0L;
@@ -2675,7 +2687,7 @@ public class NavigatorState
             {
                 return newPagesBottom > newPagesTop;
             }
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         while (oldEntriesBottom <= oldEntriesTop && newPagesBottom <= newPagesTop)
         {
@@ -2745,20 +2757,20 @@ public class NavigatorState
         {
             _debugUpdatingPage = false;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         DartRuntimePrimitives.Assert(() =>
         {
             _debugLocked = true;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         _flushHistoryUpdates();
         DartRuntimePrimitives.Assert(() =>
         {
             _debugLocked = false;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
     }
 
@@ -3066,7 +3078,7 @@ public class NavigatorState
     {
         index = _getIndexBefore(index, predicate);
         return (index >= 0L) ? _history[index] : null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual long _getIndexBefore(long index, Func<_RouteEntry__navigator, bool> predicate)
@@ -3076,7 +3088,7 @@ public class NavigatorState
             index -= 1L;
         }
         return index;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual _RouteEntry__navigator? _getRouteAfter(
@@ -3089,7 +3101,7 @@ public class NavigatorState
             index += 1L;
         }
         return (index < _history.Count()) ? _history[index] : null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Route<T?>? _routeNamed<T>(
@@ -3119,7 +3131,7 @@ public class NavigatorState
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         var settings = new RouteSettings(name: name, arguments: arguments);
         var route = ((Route<T?>?)(object?)widget.onGenerateRoute!(settings))!;
@@ -3150,7 +3162,9 @@ public class NavigatorState
                     );
                 }
                 return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             });
             route = ((Route<T?>?)(object?)widget.onUnknownRoute!(settings))!;
             DartRuntimePrimitives.Assert(() =>
@@ -3177,18 +3191,20 @@ public class NavigatorState
                     );
                 }
                 return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             });
         }
         DartRuntimePrimitives.Assert(() => (route is not null) || allowNull);
         return route;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Future<T?> pushNamed<T>(string routeName, object? arguments = null)
     {
         return push(_routeNamed<T>(routeName, arguments: arguments)!);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual string restorablePushNamed<T>(string routeName, object? arguments = null)
@@ -3206,7 +3222,7 @@ public class NavigatorState
             .toRouteEntry(this, initialState: _RouteLifecycle__navigator.push);
         _pushEntry(entry);
         return entry.restorationId!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Future<T?> pushReplacementNamed<T, TO>(
@@ -3216,7 +3232,7 @@ public class NavigatorState
     )
     {
         return pushReplacement(_routeNamed<T>(routeName, arguments: arguments)!, result: result);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual string restorablePushReplacementNamed<T, TO>(
@@ -3238,7 +3254,7 @@ public class NavigatorState
             .toRouteEntry(this, initialState: _RouteLifecycle__navigator.pushReplace);
         _pushReplacementEntry(entry, result);
         return entry.restorationId!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Future<T?> popAndPushNamed<T, TO>(
@@ -3249,7 +3265,7 @@ public class NavigatorState
     {
         pop(result);
         return pushNamed<T>(routeName, arguments: arguments);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual string restorablePopAndPushNamed<T, TO>(
@@ -3260,7 +3276,7 @@ public class NavigatorState
     {
         pop(result);
         return restorablePushNamed<object>(routeName, arguments: arguments);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Future<T?> pushNamedAndRemoveUntil<T>(
@@ -3270,7 +3286,7 @@ public class NavigatorState
     )
     {
         return pushAndRemoveUntil(_routeNamed<T>(newRouteName, arguments: arguments)!, predicate);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual string restorablePushNamedAndRemoveUntil<T>(
@@ -3292,7 +3308,7 @@ public class NavigatorState
             .toRouteEntry(this, initialState: _RouteLifecycle__navigator.push);
         _pushEntryAndRemoveUntil(entry, predicate);
         return entry.restorationId!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Future<T?> push<T>(Route<T> route)
@@ -3305,7 +3321,7 @@ public class NavigatorState
             )
         );
         return route.popped;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _debugIsStaticCallback(Delegate callback)
@@ -3317,10 +3333,10 @@ public class NavigatorState
                 Foundation.ConstantsLibrary.kIsWeb
                 || (Dart_uiLibrary.PluginUtilities.getCallbackHandle(callback) is not null);
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return (result);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual string restorablePush<T>(
@@ -3345,7 +3361,7 @@ public class NavigatorState
             .toRouteEntry(this, initialState: _RouteLifecycle__navigator.push);
         _pushEntry(entry);
         return entry.restorationId!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _pushEntry(_RouteEntry__navigator entry)
@@ -3355,7 +3371,7 @@ public class NavigatorState
         {
             _debugLocked = true;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         DartRuntimePrimitives.Assert(() => !entry.route._installed);
         DartRuntimePrimitives.Assert(() =>
@@ -3367,7 +3383,7 @@ public class NavigatorState
         {
             _debugLocked = false;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         _afterNavigation(entry.route);
     }
@@ -3424,7 +3440,7 @@ public class NavigatorState
             result
         );
         return newRoute.popped;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual string restorablePushReplacement<T, TO>(
@@ -3450,7 +3466,7 @@ public class NavigatorState
             .toRouteEntry(this, initialState: _RouteLifecycle__navigator.pushReplace);
         _pushReplacementEntry(entry, result);
         return entry.restorationId!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _pushReplacementEntry<TO>(_RouteEntry__navigator entry, TO? result)
@@ -3460,7 +3476,7 @@ public class NavigatorState
         {
             _debugLocked = true;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         DartRuntimePrimitives.Assert(() => !entry.route._installed);
         DartRuntimePrimitives.Assert(() => Enumerable.Any(_history));
@@ -3480,7 +3496,7 @@ public class NavigatorState
         {
             _debugLocked = false;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         _afterNavigation(entry.route);
     }
@@ -3501,7 +3517,7 @@ public class NavigatorState
             predicate
         );
         return newRoute.popped;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual string restorablePushAndRemoveUntil<T>(
@@ -3527,7 +3543,7 @@ public class NavigatorState
             .toRouteEntry(this, initialState: _RouteLifecycle__navigator.push);
         _pushEntryAndRemoveUntil(entry, predicate);
         return entry.restorationId!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _pushEntryAndRemoveUntil(
@@ -3540,7 +3556,7 @@ public class NavigatorState
         {
             _debugLocked = true;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         DartRuntimePrimitives.Assert(() => !entry.route._installed);
         DartRuntimePrimitives.Assert(() => !Enumerable.Any(entry.route.overlayEntries));
@@ -3563,7 +3579,7 @@ public class NavigatorState
         {
             _debugLocked = false;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         _afterNavigation(entry.route);
     }
@@ -3608,7 +3624,7 @@ public class NavigatorState
             .toRouteEntry(this, initialState: _RouteLifecycle__navigator.replace);
         _replaceEntry(entry, typedOldRoute);
         return entry.restorationId!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _replaceEntry(_RouteEntry__navigator entry, RouteBase oldRoute)
@@ -3622,7 +3638,7 @@ public class NavigatorState
         {
             _debugLocked = true;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         DartRuntimePrimitives.Assert(() =>
             Equals(entry.currentState, _RouteLifecycle__navigator.replace)
@@ -3645,7 +3661,7 @@ public class NavigatorState
         {
             _debugLocked = false;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         if (wasCurrent)
         {
@@ -3693,7 +3709,7 @@ public class NavigatorState
             .toRouteEntry(this, initialState: _RouteLifecycle__navigator.replace);
         _replaceEntryBelow(entry, typedAnchorRoute);
         return entry.restorationId!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _replaceEntryBelow(_RouteEntry__navigator entry, RouteBase anchorRoute)
@@ -3703,7 +3719,7 @@ public class NavigatorState
         {
             _debugLocked = true;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         long anchorIndex = _history.indexWhere(
             _RouteEntry__navigator.isRoutePredicate(anchorRoute)
@@ -3736,7 +3752,7 @@ public class NavigatorState
         {
             _debugLocked = false;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
     }
 
@@ -3758,7 +3774,7 @@ public class NavigatorState
             return false;
         }
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual async Future<bool> maybePop<T>(T? result = default)
@@ -3806,9 +3822,11 @@ public class NavigatorState
                 return true;
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void pop<T>(T? result = default)
@@ -3820,13 +3838,13 @@ public class NavigatorState
                 _RouteEntry__navigator.isPresentPredicate
             );
             return entry?.route._debugCheckCanConsumeResult(result, methodName: "pop") ?? true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         DartRuntimePrimitives.Assert(() =>
         {
             _debugLocked = true;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         _RouteEntry__navigator entryLocal = _history.lastWhere(
             _RouteEntry__navigator.isPresentPredicate
@@ -3865,7 +3883,7 @@ public class NavigatorState
         {
             _debugLocked = false;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         _afterNavigation(entryLocal.route);
     }
@@ -3919,7 +3937,7 @@ public class NavigatorState
         {
             _debugLocked = true;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         DartRuntimePrimitives.Assert(() => route._isInstalledIn(this));
         bool wasCurrent = route.isCurrent;
@@ -3932,7 +3950,7 @@ public class NavigatorState
         {
             _debugLocked = false;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         if (wasCurrent)
         {
@@ -3949,7 +3967,7 @@ public class NavigatorState
         {
             _debugLocked = true;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         DartRuntimePrimitives.Assert(() => anchorRoute._isInstalledIn(this));
         long anchorIndex = _history.indexWhere(
@@ -3982,7 +4000,7 @@ public class NavigatorState
         {
             _debugLocked = false;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
     }
 
@@ -3995,7 +4013,7 @@ public class NavigatorState
             wasDebugLocked = _debugLocked;
             _debugLocked = true;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         DartRuntimePrimitives.Assert(() =>
             _history
@@ -4042,10 +4060,10 @@ public class NavigatorState
         {
             _debugLocked = (
                 wasDebugLocked
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
     }
 
@@ -4054,7 +4072,7 @@ public class NavigatorState
         return (
             (Route<T>?)_firstRouteEntryWhereOrNull((entry) => entry.restorationId == id)?.route
         )!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual long _userGesturesInProgress
@@ -4150,7 +4168,7 @@ public class NavigatorState
             }
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual _RouteEntry__navigator? _lastRouteEntryWhereOrNull(
@@ -4166,7 +4184,7 @@ public class NavigatorState
             }
         }
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -4180,7 +4198,7 @@ public class NavigatorState
                 ? _allRouteOverlayEntries.ToList()
                 : new List<OverlayEntry>()
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
@@ -4211,7 +4229,7 @@ public class NavigatorState
         )();
         _tickers!.Add(result);
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _removeTicker(_WidgetTicker__ticker_provider ticker)
@@ -4310,7 +4328,7 @@ public class NavigatorState
         {
             _debugPropertiesWaitingForReregistration?.Remove(property);
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
     }
 
@@ -4369,7 +4387,7 @@ public class NavigatorState
         {
             _debugPropertiesWaitingForReregistration = _properties.Keys.ToList();
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         restoreState(oldBucket, _firstRestorePending);
         _firstRestorePending = false;
@@ -4394,7 +4412,7 @@ public class NavigatorState
             }
             _debugPropertiesWaitingForReregistration = null;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
     }
 
@@ -4425,7 +4443,7 @@ public class NavigatorState
         _bucket!.rename(restorationId!);
         parent.adoptChild(_bucket!);
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool _setNewBucketIfNecessary(RestorationBucket? newBucket, bool restorePending)
@@ -4447,7 +4465,7 @@ public class NavigatorState
             didToggleBucket(oldBucket);
         }
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _updateProperty(IRestorableProperty property)
@@ -4469,7 +4487,7 @@ public class NavigatorState
         {
             _debugPropertiesWaitingForReregistration?.Remove(property);
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         property.removeListener(listener);
         property._unregister();
@@ -4530,7 +4548,9 @@ public abstract class _RestorationInformation__navigator
                 );
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
     }
 
@@ -4541,13 +4561,13 @@ public abstract class _RestorationInformation__navigator
     {
         _serializableData ??= computeSerializableData();
         return _serializableData!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual List<object> computeSerializableData()
     {
         return new List<object> { FoundationRuntimePorts.EnumIndex(type) };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public abstract RouteBase createRoute(NavigatorState navigator);
@@ -4564,7 +4584,7 @@ public abstract class _RestorationInformation__navigator
             initialState: initialState,
             restorationInformation: this
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -4618,14 +4638,14 @@ internal class _NamedRestorationInformation__navigator : _RestorationInformation
                 }
             )
         )();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override RouteBase createRoute(NavigatorState navigator)
     {
         RouteBase route = navigator._routeNamed<object>(name, arguments: arguments)!;
         return route;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -4696,14 +4716,14 @@ internal class _AnonymousRestorationInformation__navigator : _RestorationInforma
                 }
             )
         )();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override RouteBase createRoute(NavigatorState navigator)
     {
         object? result = routeBuilder(navigator.context, arguments);
         return Navigator._requireRoute(result);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -4844,7 +4864,7 @@ internal class _HistoryProperty__navigator : RestorableProperty<DartMap<string?,
             }
         }
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void clear()
@@ -4889,13 +4909,13 @@ internal class _HistoryProperty__navigator : RestorableProperty<DartMap<string?,
             );
         }
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override DartMap<string?, List<object>>? createDefaultValue()
     {
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override DartMap<string?, List<object>>? fromPrimitives(object? data)
@@ -4912,7 +4932,7 @@ internal class _HistoryProperty__navigator : RestorableProperty<DartMap<string?,
                     )
                 )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void initWithValue(DartMap<string?, List<object>>? value)
@@ -4923,7 +4943,7 @@ internal class _HistoryProperty__navigator : RestorableProperty<DartMap<string?,
     public override object? toPrimitives()
     {
         return _pageToPagelessRoutes;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool enabled => hasData;
@@ -4987,14 +5007,14 @@ public class RestorableRouteFuture<T> : RestorableProperty<string?>
         DartRuntimePrimitives.Assert(() => route is not null);
         DartRuntimePrimitives.Assert(() => enabled);
         return route?.restorationScopeId.value;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string? fromPrimitives(object? data)
     {
         DartRuntimePrimitives.Assert(() => data is not null);
         return ((string?)data!)!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void dispose()
@@ -5055,6 +5075,6 @@ public class NavigationNotification : Notification
     public override string ToString()
     {
         return $"NavigationNotification canHandlePop: {canHandlePop}";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

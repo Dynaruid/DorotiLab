@@ -44,7 +44,7 @@ public class SuggestionSpan
     public override string ToString()
     {
         return $"SuggestionSpan(range: {range}, suggestions: {suggestions})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -85,7 +85,7 @@ public class SpellCheckResults
     public override string ToString()
     {
         return $"SpellCheckResults(spellCheckText: {spellCheckedText}, suggestionSpans: {suggestionSpans})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -138,7 +138,7 @@ public class DefaultSpellCheckService : SpellCheckService
         mergedResults.AddRange(oldResults.Skip(checked((int)oldSpanPointer)).ToList());
         mergedResults.AddRange(newResults.Skip(checked((int)newSpanPointer)).ToList());
         return mergedResults;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual async Future<List<SuggestionSpan>?> fetchSpellCheckSuggestions(
@@ -177,6 +177,6 @@ public class DefaultSpellCheckService : SpellCheckService
         }
         lastSavedResults = new SpellCheckResults(text, suggestionSpans);
         return suggestionSpans;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

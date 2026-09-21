@@ -44,9 +44,11 @@ public class _AxisSize__wrap
         {
             Axis.horizontal => size,
             Axis.vertical => size.flipped,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double mainAxisExtent => _size.width;
@@ -60,10 +62,12 @@ public class _AxisSize__wrap
         {
             Axis.horizontal => constraints,
             Axis.vertical => constraints.flipped,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         return Create_(effectiveConstraints.constrain(_size));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual _AxisSize__wrap flipped => Create_(_size.flipped);
@@ -123,9 +127,11 @@ public static class WrapAlignmentMembers
                 freeSpace / (itemCount + 1L),
                 (freeSpace / (itemCount + 1L)) + itemSpacing
             ),
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -144,7 +150,9 @@ public static class WrapCrossAlignmentMembers
             WrapCrossAlignment.start => WrapCrossAlignment.end,
             WrapCrossAlignment.end => WrapCrossAlignment.start,
             WrapCrossAlignment.center => WrapCrossAlignment.center,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
 
     internal static double _alignment(this WrapCrossAlignment value) =>
@@ -153,7 +161,9 @@ public static class WrapCrossAlignmentMembers
             WrapCrossAlignment.start => 0,
             WrapCrossAlignment.end => 1,
             WrapCrossAlignment.center => 0.5,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
 }
 
@@ -196,7 +206,7 @@ internal class _RunMetrics__wrap
             }
             return null;
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -476,7 +486,7 @@ public class RenderWrap
                 return getDryLayout(new BoxConstraints(maxHeight: height)).width;
             }
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicWidth(double height)
@@ -499,7 +509,7 @@ public class RenderWrap
                 return getDryLayout(new BoxConstraints(maxHeight: height)).width;
             }
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicHeight(double width)
@@ -525,7 +535,7 @@ public class RenderWrap
                 return heightLocal;
             }
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicHeight(double width)
@@ -548,13 +558,13 @@ public class RenderWrap
                 return heightLocal;
             }
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? computeDistanceToActualBaseline(TextBaseline baseline)
     {
         return defaultComputeDistanceToHighestActualBaseline(baseline);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual double _getMainAxisExtent(Size childSize)
@@ -563,9 +573,11 @@ public class RenderWrap
         {
             Axis.horizontal => childSize.width,
             Axis.vertical => childSize.height,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual double _getCrossAxisExtent(Size childSize)
@@ -574,9 +586,11 @@ public class RenderWrap
         {
             Axis.horizontal => childSize.height,
             Axis.vertical => childSize.width,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Offset _getOffset(double mainAxisOffset, double crossAxisOffset)
@@ -585,9 +599,11 @@ public class RenderWrap
         {
             Axis.horizontal => new Offset(mainAxisOffset, crossAxisOffset),
             Axis.vertical => new Offset(crossAxisOffset, mainAxisOffset),
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual (bool, bool) _areAxesFlipped
@@ -598,19 +614,25 @@ public class RenderWrap
             {
                 TextDirection.ltr => false,
                 TextDirection.rtl => true,
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             };
             bool flipVertical = verticalDirection switch
             {
                 VerticalDirection.down => false,
                 VerticalDirection.up => true,
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             };
             return direction switch
             {
                 Axis.horizontal => (flipHorizontal, flipVertical),
                 Axis.vertical => (flipVertical, flipHorizontal),
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             };
         }
     }
@@ -625,7 +647,9 @@ public class RenderWrap
         {
             Axis.horizontal => new BoxConstraints(maxWidth: constraints.maxWidth),
             Axis.vertical => new BoxConstraints(maxHeight: constraints.maxHeight),
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         var (childrenAxisSize, runMetrics) = _computeRuns(
             constraints,
@@ -647,7 +671,9 @@ public class RenderWrap
         Size getChildSize(RenderBox child)
         {
             return child.getDryLayout(childConstraints);
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         _positionChildren(
             runMetrics,
@@ -657,13 +683,13 @@ public class RenderWrap
             getChildSize
         );
         return baselineOffset.offset;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Size computeDryLayout(BoxConstraints constraints)
     {
         return _computeDryLayout(constraints);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     // Dart library-private member: distinct from the same name in the base library.
@@ -678,7 +704,9 @@ public class RenderWrap
                 (new BoxConstraints(maxWidth: constraints.maxWidth), constraints.maxWidth),
             Axis.vertical => ((BoxConstraints, double))
                 (new BoxConstraints(maxHeight: constraints.maxHeight), constraints.maxHeight),
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         var mainAxisExtent = 0.0;
         var crossAxisExtent = 0.0;
@@ -718,10 +746,12 @@ public class RenderWrap
             {
                 Axis.horizontal => new Size(mainAxisExtent, crossAxisExtent),
                 Axis.vertical => new Size(crossAxisExtent, mainAxisExtent),
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static Size _getChildSize(RenderBox child) => child.size;
@@ -774,7 +804,9 @@ public class RenderWrap
                 (new BoxConstraints(maxWidth: constraints.maxWidth), constraints.maxWidth),
             Axis.vertical => ((BoxConstraints, double))
                 (new BoxConstraints(maxHeight: constraints.maxHeight), constraints.maxHeight),
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         var (flipMainAxis, _) = _areAxesFlipped;
         double spacingLocal = spacing;
@@ -814,7 +846,7 @@ public class RenderWrap
             )
         );
         return (childrenAxisSize.flipped, runMetrics);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _positionChildren(
@@ -887,7 +919,7 @@ public class RenderWrap
     public override bool hitTestChildren(BoxHitTestResult result, Offset position)
     {
         return defaultHitTestChildren(result, position: position);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paint(PaintingContext context, Offset offset)
@@ -947,7 +979,7 @@ public class RenderWrap
             childParentData = ((WrapParentData?)(object?)child.parentData!)!;
         }
         return Equals(child, equals);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool _debugUltimateNextSiblingOf(RenderBox child, RenderBox? equals = null)
@@ -960,7 +992,7 @@ public class RenderWrap
             childParentData = ((WrapParentData?)(object?)child.parentData!)!;
         }
         return Equals(child, equals);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual long childCount => _childCount;
@@ -1003,7 +1035,7 @@ public class RenderWrap
             return true;
         });
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _insertIntoChildList(RenderBox child, RenderBox? after = null)
@@ -1211,7 +1243,7 @@ public class RenderWrap
         DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         var childParentData = ((WrapParentData?)(object?)child.parentData!)!;
         return childParentData.previousSibling;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual RenderBox? childAfter(RenderBox child)
@@ -1219,7 +1251,7 @@ public class RenderWrap
         DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         var childParentData = ((WrapParentData?)(object?)child.parentData!)!;
         return childParentData.nextSibling;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override List<DiagnosticsNode> debugDescribeChildren()
@@ -1244,7 +1276,7 @@ public class RenderWrap
             }
         }
         return children;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double? defaultComputeDistanceToFirstActualBaseline(TextBaseline baseline)
@@ -1259,16 +1291,14 @@ public class RenderWrap
             {
                 double result__138852__value138916 = (
                     result
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 return (result__138852__value138916) + childParentData.offset.dy;
             }
             child = childParentData.nextSibling;
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double? defaultComputeDistanceToHighestActualBaseline(TextBaseline baseline)
@@ -1286,7 +1316,7 @@ public class RenderWrap
             child = childParentData.nextSibling;
         }
         return minBaseline.offset;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool defaultHitTestChildren(BoxHitTestResult result, Offset position)
@@ -1313,7 +1343,7 @@ public class RenderWrap
             child = childParentData.previousSibling;
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void defaultPaint(PaintingContext context, Offset offset)
@@ -1338,6 +1368,6 @@ public class RenderWrap
             child = childParentData.nextSibling;
         }
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

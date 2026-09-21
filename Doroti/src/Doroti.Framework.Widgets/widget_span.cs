@@ -19,7 +19,7 @@ public class WidgetSpan : PlaceholderSpan
             alignment: alignment,
             baseline: (
                 baseline
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             style: style
         )
@@ -54,9 +54,7 @@ public class WidgetSpan : PlaceholderSpan
             {
                 double fontSizeToPush__3823__value3977 = (
                     fontSizeToPush
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 fontSizeStack.Add(((fontSizeToPush__3823__value3977)));
             }
@@ -91,9 +89,7 @@ public class WidgetSpan : PlaceholderSpan
             {
                 double fontSizeToPush__3823__value4876 = (
                     fontSizeToPush
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 double poppedFontSize = fontSizeStack.removeLast();
                 DartRuntimePrimitives.Assert(() => Enumerable.Any(fontSizeStack));
@@ -102,11 +98,13 @@ public class WidgetSpan : PlaceholderSpan
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         visitSubtree(span);
         return widgets;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void build(
@@ -149,7 +147,7 @@ public class WidgetSpan : PlaceholderSpan
         }
         offset.increment(1L);
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override long? codeUnitAtVisitor(long index, Accumulator offset)
@@ -160,7 +158,7 @@ public class WidgetSpan : PlaceholderSpan
         return (localOffset == 0L)
             ? global::Doroti.Framework.Painting.PlaceholderSpan.placeholderCodeUnit
             : null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override RenderComparison compareTo(InlineSpan other)
@@ -199,7 +197,7 @@ public class WidgetSpan : PlaceholderSpan
             }
         }
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool Equals(object? other)
@@ -237,13 +235,13 @@ public class WidgetSpan : PlaceholderSpan
     {
         DartRuntimePrimitives.Assert(() => debugAssertIsValid());
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool debugAssertIsValid()
     {
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -295,7 +293,7 @@ internal class _AutoScaleInlineWidget__widget_span : SingleChildRenderObjectWidg
             span.baseline,
             textScaleFactor
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -386,25 +384,25 @@ public class _RenderScaledInlineWidget__widget_span
     public override double computeMaxIntrinsicHeight(double width)
     {
         return (child?.getMaxIntrinsicHeight(width / scale) ?? 0.0) * scale;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicWidth(double height)
     {
         return (child?.getMaxIntrinsicWidth(height / scale) ?? 0.0) * scale;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicHeight(double width)
     {
         return (child?.getMinIntrinsicHeight(width / scale) ?? 0.0) * scale;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicWidth(double height)
     {
         return (child?.getMinIntrinsicWidth(height / scale) ?? 0.0) * scale;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? computeDistanceToActualBaseline(TextBaseline baseline)
@@ -414,7 +412,7 @@ public class _RenderScaledInlineWidget__widget_span
             null => base.computeDistanceToActualBaseline((baseline)),
             double childBaseline => scale * childBaseline,
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
@@ -429,12 +427,10 @@ public class _RenderScaledInlineWidget__widget_span
                 scale
                 * (
                     distance
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Size computeDryLayout(BoxConstraints constraints)
@@ -444,7 +440,7 @@ public class _RenderScaledInlineWidget__widget_span
             child?.getDryLayout(new BoxConstraints(maxWidth: constraints.maxWidth / scale))
             ?? Size.zero;
         return constraints.constrain(unscaledSize * scale);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void performLayout()
@@ -507,7 +503,7 @@ public class _RenderScaledInlineWidget__widget_span
             hitTest: (result, transformedOffset) =>
                 childLocal.hitTest(result, position: transformedOffset)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool debugValidateChild(RenderObject child)
@@ -548,10 +544,10 @@ public class _RenderScaledInlineWidget__widget_span
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual RenderBox? child
@@ -608,6 +604,6 @@ public class _RenderScaledInlineWidget__widget_span
                 ((Diagnosticable)child!).toDiagnosticsNode(name: "child"),
             }
             : new List<DiagnosticsNode>();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

@@ -97,7 +97,7 @@ public class TextInputType : IDartEnumIndex
             ["signed"] = signed,
             ["decimal"] = @decimal,
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string ToString()
@@ -106,7 +106,7 @@ public class TextInputType : IDartEnumIndex
             + $"name: {_name}, "
             + $"signed: {signed}, "
             + $"decimal: {@decimal})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool Equals(object? other)
@@ -263,7 +263,7 @@ public class TextInputConfiguration
             hintLocales: hintLocales ?? this.hintLocales,
             enableInlinePrediction: enableInlinePrediction ?? this.enableInlinePrediction
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DartMap<string, object?> toJson()
@@ -291,7 +291,7 @@ public class TextInputConfiguration
             ["hintLocales"] = hintLocales?.Select(locale => locale.toLanguageTag()).ToList(),
             ["enableInlinePrediction"] = enableInlinePrediction,
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool Equals(object? other)
@@ -378,7 +378,7 @@ public class TextInputConfiguration
             $"enableDeltaModel: {enableDeltaModel}",
         };
         return $"TextInputConfiguration({string.Join(", ", description)})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -394,7 +394,7 @@ public static partial class Text_inputLibrary
                 TextAffinity.upstream,
             _ => null,
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -473,7 +473,7 @@ public class TextEditingValue
             selection: selection ?? this.selection,
             composing: composing ?? this.composing
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool isComposingRangeValid =>
@@ -507,7 +507,9 @@ public class TextEditingValue
                 originalIndex.clamp(replacementRange.start, replacementRange.end)
                 - replacementRange.start;
             return originalIndex + replacedLength - removedLength;
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         var adjustedSelection = new TextSelection(
             baseOffset: adjustIndex(selection.baseOffset),
@@ -524,7 +526,7 @@ public class TextEditingValue
             selection: adjustedSelection,
             composing: adjustedComposing
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DartMap<string, object?> toJSON()
@@ -541,7 +543,7 @@ public class TextEditingValue
             ["composingBase"] = composing.start,
             ["composingExtent"] = composing.end,
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string ToString() =>
@@ -581,7 +583,7 @@ public class TextEditingValue
         DartRuntimePrimitives.Assert(() => (range.start >= 0L) && (range.start <= text.Length));
         DartRuntimePrimitives.Assert(() => (range.end >= 0L) && (range.end <= text.Length));
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -783,7 +785,7 @@ public class TextInputStyle : Diagnosticable
             ["wordSpacing"] = wordSpacing,
             ["lineHeight"] = lineHeight,
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -976,7 +978,7 @@ public static partial class Text_inputLibrary
                 }
             ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -999,7 +1001,7 @@ public static partial class Text_inputLibrary
                 }
             ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1024,7 +1026,7 @@ public static partial class Text_inputLibrary
             ? new Offset(ReadCoordinate("X"), ReadCoordinate("Y"))
             : Offset.zero;
         return new RawFloatingCursorPoint(offset: offset, state: state);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1176,7 +1178,7 @@ public class TextInput
         var connection = new TextInputConnection(client);
         _instance._attach(connection, configuration);
         return connection;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _attach(
@@ -1217,7 +1219,7 @@ public class TextInput
             return true;
         });
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static DartMap<string, ScribbleClient> scribbleClients => _instance._scribbleClients;
@@ -1248,7 +1250,7 @@ public class TextInput
             );
             throw;
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual async Future<object> _handleTextInputInvocation(MethodCall methodCall)
@@ -1516,7 +1518,7 @@ public class TextInput
                 throw new MissingPluginException();
             }
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _scheduleHide()
@@ -2002,7 +2004,7 @@ internal class _PlatformTextInputControl : TextInputControl
             json["inputType"] = noneLocal;
         }
         return json;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void attach(TextInputClient client, TextInputConfiguration configuration)
@@ -2334,7 +2336,7 @@ public class SystemContextMenuController : SystemContextMenuClient, Diagnosticab
                 },
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Future showWithItems(Rect targetRect, List<IOSSystemContextMenuItemData> items)
@@ -2389,7 +2391,7 @@ public class SystemContextMenuController : SystemContextMenuClient, Diagnosticab
                 ["items"] = itemsJson,
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual async Future hide()

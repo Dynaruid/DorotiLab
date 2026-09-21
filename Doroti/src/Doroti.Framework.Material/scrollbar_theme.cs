@@ -74,7 +74,7 @@ public class ScrollbarThemeData : Diagnosticable
             mainAxisMargin: mainAxisMargin ?? this.mainAxisMargin,
             minThumbLength: minThumbLength ?? this.minThumbLength
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static ScrollbarThemeData lerp(ScrollbarThemeData? a, ScrollbarThemeData? b, double t)
@@ -116,7 +116,7 @@ public class ScrollbarThemeData : Diagnosticable
             mainAxisMargin: Dart_uiLibrary.lerpDouble(a?.mainAxisMargin, b?.mainAxisMargin, t),
             minThumbLength: Dart_uiLibrary.lerpDouble(a?.minThumbLength, b?.minThumbLength, t)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override int GetHashCode() =>
@@ -240,7 +240,7 @@ public class ScrollbarThemeData : Diagnosticable
             return true;
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -249,7 +249,7 @@ public class ScrollbarThemeData : Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -277,13 +277,13 @@ public class ScrollbarTheme : InheritedTheme
         ScrollbarTheme? scrollbarThemeLocal =
             context.dependOnInheritedWidgetOfExactType<ScrollbarTheme>();
         return scrollbarThemeLocal?.data ?? Theme.of(context).scrollbarTheme;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget wrap(BuildContext context, Widget child)
     {
         return new ScrollbarTheme(data: data, child: child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget) =>

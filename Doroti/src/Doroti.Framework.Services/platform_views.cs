@@ -23,7 +23,7 @@ public class PlatformViewsRegistry
         var MAX_INT32 = 2147483647L;
         DartRuntimePrimitives.Assert(() => _nextPlatformViewId <= MAX_INT32);
         return _nextPlatformViewId++;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -149,7 +149,7 @@ public class PlatformViewsService
             }
         }
         return Future.value();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static AndroidViewController initAndroidView(
@@ -173,7 +173,7 @@ public class PlatformViewsService
         );
         _instance._focusCallbacks[id] = onFocus ?? (() => { });
         return controller;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static SurfaceAndroidViewController initSurfaceAndroidView(
@@ -197,7 +197,7 @@ public class PlatformViewsService
         );
         _instance._focusCallbacks[id] = onFocus ?? (() => { });
         return controller;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static ExpensiveAndroidViewController initExpensiveAndroidView(
@@ -218,7 +218,7 @@ public class PlatformViewsService
         );
         _instance._focusCallbacks[id] = onFocus ?? (() => { });
         return controller;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static HybridAndroidViewController initHybridAndroidView(
@@ -239,7 +239,7 @@ public class PlatformViewsService
         );
         _instance._focusCallbacks[id] = onFocus ?? (() => { });
         return controller;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static async Future<UiKitViewController> initUiKitView(
@@ -269,7 +269,9 @@ public class PlatformViewsService
             var __case10667
                 when Equals(__case10667, UiKitViewGestureBlockingPolicy.doNotBlockGesture) =>
                 "doNotBlockGesture",
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         var args = new DartMap<string, object>
         {
@@ -288,7 +290,7 @@ public class PlatformViewsService
             _instance._focusCallbacks[id] = onFocus;
         }
         return new UiKitViewController(id, layoutDirection);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static async Future<AppKitViewController> initAppKitView(
@@ -315,7 +317,7 @@ public class PlatformViewsService
             _instance._focusCallbacks[id] = onFocus;
         }
         return new AppKitViewController(id, layoutDirection);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -340,7 +342,7 @@ public class AndroidPointerProperties
     public override string ToString()
     {
         return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "AndroidPointerProperties")}(id: {id}, toolType: {toolType})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -393,13 +395,13 @@ public class AndroidPointerCoords
             x,
             y,
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string ToString()
     {
         return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "AndroidPointerCoords")}(orientation: {orientation}, pressure: {pressure}, size: {size}, toolMajor: {toolMajor}, toolMinor: {toolMinor}, touchMajor: {touchMajor}, touchMinor: {touchMinor}, x: {x}, y: {y})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -480,13 +482,13 @@ public class AndroidMotionEvent
             flags,
             motionEventId,
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string ToString()
     {
         return $"AndroidPointerEvent(downTime: {downTime}, eventTime: {eventTime}, action: {action}, pointerCount: {pointerCount}, pointerProperties: {pointerProperties}, pointerCoords: {pointerCoords}, metaState: {metaState}, buttonState: {buttonState}, xPrecision: {xPrecision}, yPrecision: {yPrecision}, deviceId: {deviceId}, edgeFlags: {edgeFlags}, source: {source}, flags: {flags}, motionEventId: {motionEventId})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -608,12 +610,12 @@ internal class _AndroidMotionEventConverter
         return new AndroidMotionEvent(
             downTime: (
                 downTimeMillis
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             eventTime: @event.timeStamp.inMilliseconds,
             action: (
                 action
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             pointerCount: pointerPositions.Count,
             pointerProperties: pointers
@@ -630,7 +632,7 @@ internal class _AndroidMotionEventConverter
             flags: 0L,
             motionEventId: @event.embedderId
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static long sourceFor(PointerEvent @event)
@@ -649,9 +651,11 @@ internal class _AndroidMotionEventConverter
                 AndroidViewController.kInputDeviceSourceStylus,
             var __case28567 when Equals(__case28567, PointerDeviceKind.unknown) =>
                 AndroidViewController.kInputDeviceSourceUnknown,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual AndroidPointerProperties propertiesFor(PointerEvent @event, long pointerId)
@@ -672,10 +676,12 @@ internal class _AndroidMotionEventConverter
                     AndroidPointerProperties.kToolTypeEraser,
                 var __case29236 when Equals(__case29236, PointerDeviceKind.unknown) =>
                     AndroidPointerProperties.kToolTypeUnknown,
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -745,15 +751,17 @@ public abstract class AndroidViewController : PlatformViewController
                 kAndroidLayoutDirectionLtr,
             var __case33673 when Equals(__case33673, TextDirection.rtl) =>
                 kAndroidLayoutDirectionRtl,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static long pointerAction(long pointerId, long action)
     {
         return ((pointerId << (int)8L) & 65280L) | (action & 255L);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal abstract Future _sendDisposeMessage();
@@ -805,7 +813,7 @@ public abstract class AndroidViewController : PlatformViewController
         {
             return await _sendResizeMessage(size);
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public abstract Future setOffset(Offset off);
@@ -900,7 +908,7 @@ public abstract class AndroidViewController : PlatformViewController
             return Future.value();
         }
         return _service.Channel.invokeMethod<object?>("clearFocus", viewId);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override async Future dispose()
@@ -935,7 +943,7 @@ public class SurfaceAndroidViewController : AndroidViewController
     internal override async Future<bool> _sendCreateMessage(Size? size, Offset? position = null)
     {
         var __size = (
-            size ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            size ?? throw new global::System.NullReferenceException("A required value was null.")
         );
         DartRuntimePrimitives.Assert(() => !__size.isEmpty);
         object? response = await _AndroidViewControllerInternals.sendCreateMessage(
@@ -958,7 +966,7 @@ public class SurfaceAndroidViewController : AndroidViewController
             _internals = new _HybridAndroidViewControllerInternals();
         }
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override long? textureId
@@ -973,19 +981,19 @@ public class SurfaceAndroidViewController : AndroidViewController
     internal override Future _sendDisposeMessage()
     {
         return _internals.sendDisposeMessage(viewId: viewId);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal override Future<Size> _sendResizeMessage(Size size)
     {
         return _internals.setSize(size, viewId: viewId, viewState: _state);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Future setOffset(Offset off)
     {
         return _internals.setOffset(off, viewId: viewId, viewState: _state);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1030,19 +1038,19 @@ public class ExpensiveAndroidViewController : AndroidViewController
     internal override Future _sendDisposeMessage()
     {
         return _internals.sendDisposeMessage(viewId: viewId);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal override Future<Size> _sendResizeMessage(Size size)
     {
         return _internals.setSize(size, viewId: viewId, viewState: _state);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Future setOffset(Offset off)
     {
         return _internals.setOffset(off, viewId: viewId, viewState: _state);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1091,19 +1099,19 @@ public class HybridAndroidViewController : AndroidViewController
     internal override Future _sendDisposeMessage()
     {
         return _internals.sendDisposeMessage(viewId: viewId);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal override Future<Size> _sendResizeMessage(Size size)
     {
         return _internals.setSize(size, viewId: viewId, viewState: _state);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Future setOffset(Offset off)
     {
         return _internals.setOffset(off, viewId: viewId, viewState: _state);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override async Future sendMotionEvent(AndroidMotionEvent @event)
@@ -1131,7 +1139,7 @@ public class TextureAndroidViewController : AndroidViewController
     internal override async Future _sendCreateMessage(Size? size, Offset? position = null)
     {
         var __size = (
-            size ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            size ?? throw new global::System.NullReferenceException("A required value was null.")
         );
         DartRuntimePrimitives.Assert(() => !__size.isEmpty);
         object? response = await _AndroidViewControllerInternals.sendCreateMessage(
@@ -1173,7 +1181,7 @@ public class TextureAndroidViewController : AndroidViewController
     internal override Future _sendDisposeMessage()
     {
         return _internals.sendDisposeMessage(viewId: viewId);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal override Future<Size> _sendResizeMessage(Size size)
@@ -1183,7 +1191,7 @@ public class TextureAndroidViewController : AndroidViewController
             return Future<Size>.value(size);
         }
         return _internals.setSize(size, viewId: viewId, viewState: _state);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Future setOffset(Offset off)
@@ -1193,7 +1201,7 @@ public class TextureAndroidViewController : AndroidViewController
             return Future.value();
         }
         return _internals.setOffset(off, viewId: viewId, viewState: _state);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1270,7 +1278,7 @@ internal class _TextureAndroidViewControllerInternals : _AndroidViewControllerIn
             (double)meta!.GetValueOrDefault("width")!,
             (double)meta.GetValueOrDefault("height")!
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual async Future setOffset(Offset offset, long viewId, _AndroidViewState viewState)
@@ -1301,7 +1309,7 @@ internal class _TextureAndroidViewControllerInternals : _AndroidViewControllerIn
             "dispose",
             new DartMap<string, object> { ["id"] = viewId, ["hybrid"] = false }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1317,13 +1325,13 @@ internal class _HybridAndroidViewControllerInternals : _AndroidViewControllerInt
     public virtual Future<Size> setSize(Size size, long viewId, _AndroidViewState viewState)
     {
         throw new NotImplementedException("Not supported for hybrid composition.");
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Future setOffset(Offset offset, long viewId, _AndroidViewState viewState)
     {
         throw new NotImplementedException("Not supported for hybrid composition.");
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Future sendDisposeMessage(long viewId)
@@ -1332,7 +1340,7 @@ internal class _HybridAndroidViewControllerInternals : _AndroidViewControllerInt
             "dispose",
             new DartMap<string, object> { ["id"] = viewId, ["hybrid"] = true }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1348,7 +1356,7 @@ internal class _Hybrid2AndroidViewControllerInternals : _AndroidViewControllerIn
                 new DartMap<string, object?>()
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual long? textureId
@@ -1360,13 +1368,13 @@ internal class _Hybrid2AndroidViewControllerInternals : _AndroidViewControllerIn
     public virtual Future<Size> setSize(Size size, long viewId, _AndroidViewState viewState)
     {
         throw new NotImplementedException("Not supported for hybrid composition.");
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Future setOffset(Offset offset, long viewId, _AndroidViewState viewState)
     {
         throw new NotImplementedException("Not supported for hybrid composition.");
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Future sendDisposeMessage(long viewId)
@@ -1375,7 +1383,7 @@ internal class _Hybrid2AndroidViewControllerInternals : _AndroidViewControllerIn
             "dispose",
             new DartMap<string, object> { ["id"] = viewId, ["hybrid"] = true }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1406,14 +1414,14 @@ public abstract class DarwinPlatformViewController
     {
         var args = new DartMap<string, object> { ["id"] = id };
         return _service.Channel.invokeMethod<object?>("acceptGesture", args);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Future rejectGesture()
     {
         var args = new DartMap<string, object> { ["id"] = id };
         return _service.Channel.invokeMethod<object?>("rejectGesture", args);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual async Future dispose()

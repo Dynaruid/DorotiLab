@@ -43,7 +43,7 @@ public class FractionalOffset : Alignment
             dx - ((FractionalOffset)other).dx,
             dy - ((FractionalOffset)other).dy
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Alignment op_Add(Alignment other)
@@ -56,25 +56,25 @@ public class FractionalOffset : Alignment
             dx + ((FractionalOffset)other).dx,
             dy + ((FractionalOffset)other).dy
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override FractionalOffset op_Subtract()
     {
         return new FractionalOffset(-dx, -dy);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override FractionalOffset op_Multiply(double other)
     {
         return new FractionalOffset(dx * other, dy * other);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override FractionalOffset op_Divide(double other)
     {
         return new FractionalOffset(dx / other, dy / other);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override FractionalOffset ___(double other)
@@ -83,13 +83,13 @@ public class FractionalOffset : Alignment
             checked((long)(dx / other)).toDouble(),
             checked((long)(dy / other)).toDouble()
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override FractionalOffset __(double other)
     {
         return new FractionalOffset(dx % other, dy % other);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static FractionalOffset? lerp(FractionalOffset? a, FractionalOffset? b, double t)
@@ -103,15 +103,11 @@ public class FractionalOffset : Alignment
             return new FractionalOffset(
                 (
                     Dart_uiLibrary.lerpDouble(0.5, b!.dx, t)
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 (
                     Dart_uiLibrary.lerpDouble(0.5, b.dy, t)
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             );
         }
@@ -120,34 +116,30 @@ public class FractionalOffset : Alignment
             return new FractionalOffset(
                 (
                     Dart_uiLibrary.lerpDouble(a.dx, 0.5, t)
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 (
                     Dart_uiLibrary.lerpDouble(a.dy, 0.5, t)
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             );
         }
         return new FractionalOffset(
             (
                 Dart_uiLibrary.lerpDouble(a.dx, b.dx, t)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             (
                 Dart_uiLibrary.lerpDouble(a.dy, b.dy, t)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string ToString()
     {
         return $"FractionalOffset({dx.toStringAsFixed(1L)}, " + $"{dy.toStringAsFixed(1L)})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

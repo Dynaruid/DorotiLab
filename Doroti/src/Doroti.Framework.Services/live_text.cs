@@ -12,7 +12,7 @@ public abstract class LiveText
             await SystemChannels.platform.invokeMethod<bool?>("LiveText.isLiveTextInputAvailable")
             ?? false;
         return supportLiveTextInput;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static async Future startLiveTextInput()

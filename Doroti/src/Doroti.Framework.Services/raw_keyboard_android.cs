@@ -158,9 +158,11 @@ public class RawKeyEventDataAndroid : RawKeyEventData
                 != 0L,
             var __case8750 when Equals(__case8750, KeyboardSide.right) => (metaState & rightMask)
                 != 0L,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool isModifierPressed(ModifierKey key, KeyboardSide side = KeyboardSide.any)
@@ -205,9 +207,11 @@ public class RawKeyEventDataAndroid : RawKeyEventData
             var __case9890 when Equals(__case9890, ModifierKey.symbolModifier) => (
                 metaState & modifierSym
             ) != 0L,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override KeyboardSide? getModifierSide(ModifierKey key)
@@ -239,7 +243,9 @@ public class RawKeyEventDataAndroid : RawKeyEventData
                 return KeyboardSide.all;
             }
             return null;
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         switch (key)
         {
@@ -268,7 +274,7 @@ public class RawKeyEventDataAndroid : RawKeyEventData
                 return KeyboardSide.all;
             }
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)

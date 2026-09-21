@@ -130,7 +130,7 @@ public class ListTileThemeData : Diagnosticable
             controlAffinity: controlAffinity ?? this.controlAffinity,
             isThreeLine: isThreeLine ?? this.isThreeLine
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static ListTileThemeData? lerp(ListTileThemeData? a, ListTileThemeData? b, double t)
@@ -179,7 +179,7 @@ public class ListTileThemeData : Diagnosticable
             controlAffinity: (t < 0.5) ? a?.controlAffinity : b?.controlAffinity,
             isThreeLine: (t < 0.5) ? a?.isThreeLine : b?.isThreeLine
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override int GetHashCode() =>
@@ -349,7 +349,7 @@ public class ListTileThemeData : Diagnosticable
             return true;
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -358,7 +358,7 @@ public class ListTileThemeData : Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -515,7 +515,7 @@ public class ListTileTheme : InheritedTheme
     {
         ListTileTheme? result = context.dependOnInheritedWidgetOfExactType<ListTileTheme>();
         return result?.data ?? Theme.of(context).listTileTheme;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static Widget merge(
@@ -578,10 +578,12 @@ public class ListTileTheme : InheritedTheme
                     ),
                     child: child
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget wrap(BuildContext context, Widget child)
@@ -605,7 +607,7 @@ public class ListTileTheme : InheritedTheme
             ),
             child: child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget) =>

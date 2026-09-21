@@ -272,7 +272,7 @@ public class Chip : StatelessWidget, ChipAttributes, DeletableChipAttributes
             chipAnimationStyle: chipAnimationStyle,
             mouseCursor: mouseCursor
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -655,7 +655,7 @@ internal class _RawChipState__chip : State<RawChip>, TickerProviderStateMixin<Ra
         return (!Equals(resolvedShape.side, BorderSide.none))
             ? resolvedShape
             : resolvedShape.copyWith(side: chipDefaults.side);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Color? resolveColor(
@@ -672,7 +672,7 @@ internal class _RawChipState__chip : State<RawChip>, TickerProviderStateMixin<Ra
                 backgroundColor: backgroundColor,
                 disabledColor: disabledColor
             ).resolve(statesController.value) ?? (defaultColor?.resolve(statesController.value));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Color? _getBackgroundColor(
@@ -783,7 +783,7 @@ internal class _RawChipState__chip : State<RawChip>, TickerProviderStateMixin<Ra
             return child;
         }
         return (Widget?)new Tooltip(message: tooltip, child: child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget? _buildDeleteIcon(
@@ -818,7 +818,7 @@ internal class _RawChipState__chip : State<RawChip>, TickerProviderStateMixin<Ra
             )
             ?? (
                 new _ChipDefaultsM3__chip(context, widget.isEnabled).iconTheme!.size
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         MaterialTapTargetSize effectiveMaterialTapTargetSize =
             widget.materialTapTargetSize ?? theme.materialTapTargetSize;
@@ -829,7 +829,9 @@ internal class _RawChipState__chip : State<RawChip>, TickerProviderStateMixin<Ra
             var __constant45659 when Equals(__constant45659, MaterialTapTargetSize.shrinkWrap) =>
                 new Size(ConstantsLibrary.kMinInteractiveDimension - 8.0),
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
         VisualDensity effectiveVisualDensity = widget.visualDensity ?? theme.visualDensity;
         return (Widget?)
@@ -857,7 +859,7 @@ internal class _RawChipState__chip : State<RawChip>, TickerProviderStateMixin<Ra
                     )
                 )
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -896,7 +898,7 @@ internal class _RawChipState__chip : State<RawChip>, TickerProviderStateMixin<Ra
             (widget.showCheckmark ?? chipTheme.showCheckmark)
             ?? (
                 chipDefaults.showCheckmark
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         EdgeInsetsGeometry paddingLocal =
             (widget.padding ?? chipTheme.padding) ?? chipDefaults.padding!;
@@ -977,7 +979,7 @@ internal class _RawChipState__chip : State<RawChip>, TickerProviderStateMixin<Ra
                             child: child
                         );
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     },
                     child: _wrapWithTooltip(
@@ -1095,7 +1097,7 @@ internal class _RawChipState__chip : State<RawChip>, TickerProviderStateMixin<Ra
         )();
         _tickers!.Add(result);
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _removeTicker(_WidgetTicker__ticker_provider ticker)
@@ -1193,7 +1195,7 @@ internal class _IndividualOverrides__chip : WidgetStateProperty<Color?>
             return selectedColor;
         }
         return backgroundColor;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1213,7 +1215,7 @@ internal class _ChipRedirectingHitDetectionWidget__chip : SingleChildRenderObjec
     public override RenderObject createRenderObject(BuildContext context)
     {
         return new _RenderChipRedirectingHitDetection__chip(constraints);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -1242,10 +1244,12 @@ public class _RenderChipRedirectingHitDetection__chip : RenderConstrainedBox
             {
                 DartRuntimePrimitives.Assert(() => Equals(position, offset));
                 return child!.hitTest(result, position: offset);
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1301,9 +1305,11 @@ internal class _ChipRenderWidget__chip
             _ChipSlot__chip.avatar => theme.avatar,
             _ChipSlot__chip.deleteIcon => theme.deleteIcon,
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -1348,7 +1354,7 @@ internal class _ChipRenderWidget__chip
             avatarBoxConstraints: avatarBoxConstraints,
             deleteIconBoxConstraints: deleteIconBoxConstraints
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1621,7 +1627,7 @@ public class _RenderChip__chip
             + avatar.getMinIntrinsicWidth(height)
             + label.getMinIntrinsicWidth(height)
             + deleteIcon.getMinIntrinsicWidth(height);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicWidth(double height)
@@ -1631,7 +1637,7 @@ public class _RenderChip__chip
             + avatar.getMaxIntrinsicWidth(height)
             + label.getMaxIntrinsicWidth(height)
             + deleteIcon.getMaxIntrinsicWidth(height);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicHeight(double width)
@@ -1642,7 +1648,7 @@ public class _RenderChip__chip
                 + theme.labelPadding.vertical
                 + label.getMinIntrinsicHeight(width)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicHeight(double width) => getMinIntrinsicHeight(width);
@@ -1652,7 +1658,7 @@ public class _RenderChip__chip
         return new BaselineOffset(label.getDistanceToActualBaseline(baseline))
             .op_Add(_boxParentData(label).offset.dy)
             .offset;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual BoxConstraints _labelConstraintsFrom(
@@ -1673,7 +1679,7 @@ public class _RenderChip__chip
             maxHeight: contentSize,
             maxWidth: double.IsFinite(maxLabelWidth) ? maxLabelWidth : rawLabelSize.width
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Size _layoutAvatar(
@@ -1691,7 +1697,7 @@ public class _RenderChip__chip
         }
         double avatarFullWidth = theme.showAvatar ? avatarBoxSize.width : contentSize;
         return new Size(avatarFullWidth * avatarDrawerAnimation.value, avatarBoxSize.height);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Size _layoutDeleteIcon(
@@ -1708,7 +1714,7 @@ public class _RenderChip__chip
             return new Size(0.0, contentSize);
         }
         return new Size(deleteDrawerAnimation.value * boxSize.width, boxSize.height);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool hitTest(BoxHitTestResult result, Offset position)
@@ -1734,16 +1740,18 @@ public class _RenderChip__chip
             {
                 DartRuntimePrimitives.Assert(() => Equals(position, centerLocal));
                 return hitTestChild.hitTest(result, position: centerLocal);
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Size computeDryLayout(BoxConstraints constraints)
     {
         return _computeSizes(constraints, ChildLayoutHelper.dryLayoutChild).size;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
@@ -1756,7 +1764,7 @@ public class _RenderChip__chip
             .op_Add(theme.padding.top)
             .op_Add(theme.labelPadding.top);
         return labelBaseline.offset;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual _ChipSizes__chip _computeSizes(
@@ -1801,7 +1809,7 @@ public class _RenderChip__chip
             label: labelSize,
             deleteIcon: deleteIconSize
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void performLayout()
@@ -1828,7 +1836,9 @@ public class _RenderChip__chip
                 x,
                 (sizes.content - boxSize.height + sizes.densityAdjustment.dy) / 2.0
             );
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         Offset avatarOffset = Offset.zero;
         Offset labelOffset = Offset.zero;
@@ -1963,7 +1973,9 @@ public class _RenderChip__chip
                 Brightness.light => Colors.white,
                 Brightness.dark => Colors.black,
                 _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                    throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
             };
             return new ColorTween(
                 begin: color.withAlpha(ChipLibrary._kDisabledAlpha),
@@ -2024,7 +2036,7 @@ public class _RenderChip__chip
             double strokeT = t * 2.0;
             Offset drawMid = (
                 Dart_uiLibrary.Offset.lerp(start, mid, strokeT)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             path.moveTo(origin.dx + start.dx, origin.dy + start.dy);
             path.lineTo(origin.dx + drawMid.dx, origin.dy + drawMid.dy);
@@ -2034,7 +2046,7 @@ public class _RenderChip__chip
             double strokeTLocal = (t - 0.5) * 2.0;
             Offset drawEnd = (
                 Dart_uiLibrary.Offset.lerp(mid, endLocal, strokeTLocal)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             path.moveTo(origin.dx + start.dx, origin.dy + start.dy);
             path.lineTo(origin.dx + mid.dx, origin.dy + mid.dy);
@@ -2280,7 +2292,7 @@ public class _RenderChip__chip
                         );
                         return true;
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 )
@@ -2336,14 +2348,14 @@ public class _RenderChip__chip
                     (
                         DartCollectionRuntime.NullableMapValue<_ChipSlot__chip>(childToSlot, child)
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
             );
         }
         return value;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _addDiagnostics(RenderBox child, List<DiagnosticsNode> value, string name)
@@ -2446,7 +2458,7 @@ internal class _UnconstrainedInkSplashFactory__chip : InteractiveInkFeatureFacto
             onRemoved: onRemoved,
             textDirection: textDirection
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -2478,9 +2490,11 @@ public static partial class ChipLibrary
                 >= (deflatedSize.width - accessibleDeleteButtonWidth),
             TextDirection.rtl => adjustedPosition.dx <= accessibleDeleteButtonWidth,
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -2497,7 +2511,7 @@ internal class _EnsureMinSemanticsSize__chip : SingleChildRenderObjectWidget
     public override RenderObject createRenderObject(BuildContext context)
     {
         return new _RenderEnsureMinSemanticsSize__chip(semanticSize);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)

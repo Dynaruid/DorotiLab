@@ -52,7 +52,7 @@ public class DisplayFeatureSubScreen : StatelessWidget
                 child: child
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static Offset _fallbackAnchorPoint(BuildContext context)
@@ -61,9 +61,11 @@ public class DisplayFeatureSubScreen : StatelessWidget
         {
             TextDirection.rtl => new Offset(double.MaxValue, 0),
             TextDirection.ltr => Offset.zero,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static IEnumerable<Rect> avoidBounds(MediaQueryData mediaQuery)
@@ -75,7 +77,7 @@ public class DisplayFeatureSubScreen : StatelessWidget
                     || Equals(d.state, DisplayFeatureState.postureHalfOpened)
             )
             .map((d) => d.bounds);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static Rect _closestToAnchorPoint(IEnumerable<Rect> subScreens, Offset anchorPoint)
@@ -92,7 +94,7 @@ public class DisplayFeatureSubScreen : StatelessWidget
             }
         }
         return closestScreen;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static double _distanceFromPointToRect(Offset point, Rect rect)
@@ -154,7 +156,7 @@ public class DisplayFeatureSubScreen : StatelessWidget
                 }
             }
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static IEnumerable<Rect> subScreensInBounds(
@@ -229,7 +231,7 @@ public class DisplayFeatureSubScreen : StatelessWidget
             subScreens = DartRuntimePrimitives.ConvertValue<IEnumerable<Rect>>(newSubScreens);
         }
         return subScreens;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static Offset _capOffset(Offset offset, Size maximum)
@@ -250,6 +252,6 @@ public class DisplayFeatureSubScreen : StatelessWidget
                 Math.Min(Math.Max(0, offset.dy), maximum.height)
             );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

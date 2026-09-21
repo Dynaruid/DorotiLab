@@ -113,7 +113,7 @@ public class DragUpdateDetails : PositionedGestureDetails, Diagnosticable
                         (
                             primaryDelta
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ) == delta.dx
                     ) && (delta.dy == 0.0)
@@ -123,7 +123,7 @@ public class DragUpdateDetails : PositionedGestureDetails, Diagnosticable
                         (
                             primaryDelta
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ) == delta.dy
                     ) && (delta.dx == 0.0)
@@ -178,7 +178,7 @@ public class DragEndDetails : PositionedGestureDetails, Diagnosticable
                         (
                             primaryVelocity
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ) == __velocity.pixelsPerSecond.dx
                     ) && (__velocity.pixelsPerSecond.dy == 0L)
@@ -188,7 +188,7 @@ public class DragEndDetails : PositionedGestureDetails, Diagnosticable
                         (
                             primaryVelocity
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ) == __velocity.pixelsPerSecond.dy
                     ) && (__velocity.pixelsPerSecond.dx == 0L)

@@ -54,7 +54,7 @@ public static partial class Ink_rippleLibrary
             return () => Offset.zero & referenceBox.size;
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -71,7 +71,7 @@ public static partial class Ink_rippleLibrary
         double d1 = sizeLocal.bottomRight(Offset.zero).distance;
         double d2 = (sizeLocal.topRight(Offset.zero) - sizeLocal.bottomLeft(Offset.zero)).distance;
         return Math.Max(d1, d2) / 2.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -106,7 +106,7 @@ internal class _InkRippleFactory__ink_ripple : InteractiveInkFeatureFactory
             onRemoved: onRemoved,
             textDirection: textDirection
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -287,12 +287,12 @@ public class InkRipple : InteractiveInkFeature
                     ? (
                         rect
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ).center
                     : referenceBox.size.center(Offset.zero),
                 Curves.ease.transform(_radiusController.value)
-            ) ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ) ?? throw new global::System.NullReferenceException("A required value was null.")
         );
         paintInkCircle(
             canvas: canvas,

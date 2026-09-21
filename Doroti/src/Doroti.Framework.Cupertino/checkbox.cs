@@ -255,7 +255,9 @@ internal class _CupertinoCheckboxState__checkbox
                             );
                     }
                     return CupertinoColors.white;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
         }
@@ -287,7 +289,9 @@ internal class _CupertinoCheckboxState__checkbox
                             );
                     }
                     return CupertinoColors.white;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
         }
@@ -323,7 +327,9 @@ internal class _CupertinoCheckboxState__checkbox
                             context
                         )
                     );
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
         }
@@ -341,7 +347,7 @@ internal class _CupertinoCheckboxState__checkbox
             return side;
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -394,7 +400,9 @@ internal class _CupertinoCheckboxState__checkbox
                             ? SystemMouseCursors.click
                             : SystemMouseCursors.basic
                     );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
         Size effectiveSize =
@@ -412,7 +420,9 @@ internal class _CupertinoCheckboxState__checkbox
                         CupertinoCheckbox.width
                     ),
                     TargetPlatform.windows => new Size(CupertinoCheckbox.width),
-                    _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    _ => throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
                 }
             );
         return new Widgets.Semantics(
@@ -454,7 +464,7 @@ internal class _CupertinoCheckboxState__checkbox
                 )()
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
@@ -485,7 +495,7 @@ internal class _CupertinoCheckboxState__checkbox
         )();
         _tickers!.Add(result);
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _removeTicker(_WidgetTicker__ticker_provider ticker)
@@ -717,7 +727,7 @@ internal class _CupertinoCheckboxState__checkbox
             mouseCursor: mouseCursor,
             child: new CustomPaint(size: size, painter: painter)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Widget buildToggleableWithChild(
@@ -746,7 +756,7 @@ internal class _CupertinoCheckboxState__checkbox
                 child: new Widgets.Semantics(enabled: isInteractive, child: child)
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -849,13 +859,13 @@ internal class _CheckboxPainter__checkbox : ToggleablePainter
         double size = CupertinoCheckbox.width;
         var rect = Rect.fromLTWH(origin.dx, origin.dy, size, size);
         return rect;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Color _colorAt(bool value)
     {
         return ((value) && isActive) ? activeColor : inactiveColor;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Paint _createStrokePaint()
@@ -873,7 +883,7 @@ internal class _CheckboxPainter__checkbox : ToggleablePainter
                 }
             )
         )();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _drawFillGradient(

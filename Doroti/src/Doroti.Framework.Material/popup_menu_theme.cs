@@ -90,7 +90,7 @@ public class PopupMenuThemeData : Diagnosticable
             iconColor: iconColor ?? this.iconColor,
             iconSize: iconSize ?? this.iconSize
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static PopupMenuThemeData? lerp(PopupMenuThemeData? a, PopupMenuThemeData? b, double t)
@@ -123,7 +123,7 @@ public class PopupMenuThemeData : Diagnosticable
             iconColor: Dart_uiLibrary.Color.lerp(a?.iconColor, b?.iconColor, t),
             iconSize: Dart_uiLibrary.lerpDouble(a?.iconSize, b?.iconSize, t)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override int GetHashCode() =>
@@ -233,7 +233,7 @@ public class PopupMenuThemeData : Diagnosticable
             return true;
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -242,7 +242,7 @@ public class PopupMenuThemeData : Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -265,13 +265,13 @@ public class PopupMenuTheme : InheritedTheme
         PopupMenuTheme? popupMenuThemeLocal =
             context.dependOnInheritedWidgetOfExactType<PopupMenuTheme>();
         return popupMenuThemeLocal?.data ?? Theme.of(context).popupMenuTheme;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget wrap(BuildContext context, Widget child)
     {
         return new PopupMenuTheme(data: data, child: child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget) =>

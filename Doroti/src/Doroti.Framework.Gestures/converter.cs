@@ -27,7 +27,7 @@ public static partial class ConverterLibrary
                 return (buttons == 0L) ? EventsLibrary.kPrimaryButton : buttons;
             }
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -56,7 +56,7 @@ public abstract class PointerEventConverter
                         / (
                             devicePixelRatio
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         );
                     Offset deltaLocal =
@@ -64,7 +64,7 @@ public abstract class PointerEventConverter
                         / (
                             devicePixelRatio
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         );
                     double radiusMinorLocal = _toLogicalPixels(
@@ -73,7 +73,7 @@ public abstract class PointerEventConverter
                             (
                                 devicePixelRatio
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             )
                         )
@@ -84,7 +84,7 @@ public abstract class PointerEventConverter
                             (
                                 devicePixelRatio
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             )
                         )
@@ -95,7 +95,7 @@ public abstract class PointerEventConverter
                             (
                                 devicePixelRatio
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             )
                         )
@@ -106,7 +106,7 @@ public abstract class PointerEventConverter
                             (
                                 devicePixelRatio
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             )
                         )
@@ -311,7 +311,7 @@ public abstract class PointerEventConverter
                                         / (
                                             devicePixelRatio
                                             ?? throw new global::System.NullReferenceException(
-                                                "Dart null assertion failed."
+                                                "A required value was null."
                                             )
                                         );
                                     Offset panDeltaLocal =
@@ -319,7 +319,7 @@ public abstract class PointerEventConverter
                                         / (
                                             devicePixelRatio
                                             ?? throw new global::System.NullReferenceException(
-                                                "Dart null assertion failed."
+                                                "A required value was null."
                                             )
                                         );
                                     return new PointerPanZoomUpdateEvent(
@@ -366,7 +366,7 @@ public abstract class PointerEventConverter
                                 / (
                                     devicePixelRatio
                                     ?? throw new global::System.NullReferenceException(
-                                        "Dart null assertion failed."
+                                        "A required value was null."
                                     )
                                 );
                             return new PointerScrollEvent(
@@ -412,7 +412,7 @@ public abstract class PointerEventConverter
                 }
             )
             .OfType<PointerEvent>();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static double _toLogicalPixels(double physicalPixels, double devicePixelRatio) =>

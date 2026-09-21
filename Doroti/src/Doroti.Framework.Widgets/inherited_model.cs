@@ -50,7 +50,9 @@ public abstract class InheritedModel<T> : InheritedWidget, IInheritedModelAspect
             {
                 modelParent = ancestor;
                 return false;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
         if (modelParent is null)
@@ -84,7 +86,7 @@ public abstract class InheritedModel<T> : InheritedWidget, IInheritedModelAspect
         }
         DartRuntimePrimitives.Assert(() => false);
         return default;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 

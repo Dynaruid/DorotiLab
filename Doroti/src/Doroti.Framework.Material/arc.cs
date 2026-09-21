@@ -23,11 +23,10 @@ public class MaterialPointArcTween : Tween<Offset>
         : base(
             begin: (
                 begin
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             end: (
-                end
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                end ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         ) { }
 
@@ -50,12 +49,14 @@ public class MaterialPointArcTween : Tween<Offset>
                             * (
                                 _radius
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             )
                         )
                 );
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         if ((deltaX > ArcLibrary._kOnAxisDelta) && (deltaY > ArcLibrary._kOnAxisDelta))
         {
@@ -68,7 +69,7 @@ public class MaterialPointArcTween : Tween<Offset>
                             (
                                 _radius
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             ) * Math.Sign((beginLocal).dx - (endLocal).dx)
                         ),
@@ -98,7 +99,7 @@ public class MaterialPointArcTween : Tween<Offset>
                             * (
                                 _radius
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             )
                         )
@@ -110,7 +111,7 @@ public class MaterialPointArcTween : Tween<Offset>
                         (
                             _beginAngle
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ) + (sweepAngle() * Math.Sign((endLocal).dx - (beginLocal).dx));
                 }
@@ -121,7 +122,7 @@ public class MaterialPointArcTween : Tween<Offset>
                         (
                             _beginAngle
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ) + (sweepAngle() * Math.Sign((beginLocal).dx - (endLocal).dx));
                 }
@@ -224,36 +225,36 @@ public class MaterialPointArcTween : Tween<Offset>
         {
             return (
                 Dart_uiLibrary.Offset.lerp(begin, end, t)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
         double angle = (
             Dart_uiLibrary.lerpDouble(_beginAngle, _endAngle, t)
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         );
         double x =
             Dart_mathLibrary.cos(angle)
             * (
                 _radius
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         double y =
             Dart_mathLibrary.sin(angle)
             * (
                 _radius
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         return (
                 _center
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ) + new Offset(x, y);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string ToString()
     {
         return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "MaterialPointArcTween")}({begin} → {end}; center={center}, radius={radius}, beginAngle={beginAngle}, endAngle={endAngle})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -306,7 +307,7 @@ public static partial class ArcLibrary
                     > (
                         maxKey
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
@@ -317,7 +318,7 @@ public static partial class ArcLibrary
             }
         }
         return maxValue;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -331,11 +332,10 @@ public class MaterialRectArcTween : RectTween
         : base(
             begin: (
                 begin
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             end: (
-                end
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                end ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         ) { }
 
@@ -343,12 +343,11 @@ public class MaterialRectArcTween : RectTween
     {
         Offset centersVector =
             (
-                end
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                end ?? throw new global::System.NullReferenceException("A required value was null.")
             ).center
             - (
                 begin
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ).center;
         _Diagonal__arc diagonal = ArcLibrary._maxBy(
             ArcLibrary._allDiagonals.Cast<_Diagonal__arc>(),
@@ -358,18 +357,14 @@ public class MaterialRectArcTween : RectTween
             begin: _cornerFor(
                 (
                     begin
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 diagonal.beginId
             ),
             end: _cornerFor(
                 (
                     end
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 diagonal.beginId
             )
@@ -378,18 +373,14 @@ public class MaterialRectArcTween : RectTween
             begin: _cornerFor(
                 (
                     begin
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 diagonal.endId
             ),
             end: _cornerFor(
                 (
                     end
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 diagonal.endId
             )
@@ -403,24 +394,20 @@ public class MaterialRectArcTween : RectTween
             _cornerFor(
                 (
                     begin
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 diagonal.endId
             )
             - _cornerFor(
                 (
                     begin
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 diagonal.beginId
             );
         double length = delta.distance;
         return (centersVector.dx * delta.dx / length) + (centersVector.dy * delta.dy / length);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Offset _cornerFor(Rect rect, _CornerId__arc id)
@@ -432,9 +419,11 @@ public class MaterialRectArcTween : RectTween
             _CornerId__arc.bottomLeft => rect.bottomLeft,
             _CornerId__arc.bottomRight => rect.bottomRight,
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual MaterialPointArcTween? beginArc
@@ -502,24 +491,23 @@ public class MaterialRectArcTween : RectTween
         {
             return (
                 begin
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
         if (t == 1.0)
         {
             return (
-                end
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                end ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
         return Rect.fromPoints(_beginArc.lerp(t), _endArc.lerp(t));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string ToString()
     {
         return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "MaterialRectArcTween")}({begin} → {end}; beginArc={beginArc}, endArc={endArc})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -532,11 +520,10 @@ public class MaterialRectCenterArcTween : RectTween
         : base(
             begin: (
                 begin
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             end: (
-                end
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                end ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         ) { }
 
@@ -545,11 +532,10 @@ public class MaterialRectCenterArcTween : RectTween
         _centerArc = new MaterialPointArcTween(
             begin: (
                 begin
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ).center,
             end: (
-                end
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                end ?? throw new global::System.NullReferenceException("A required value was null.")
             ).center
         );
         _dirty = false;
@@ -601,14 +587,13 @@ public class MaterialRectCenterArcTween : RectTween
         {
             return (
                 begin
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
         if (t == 1.0)
         {
             return (
-                end
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                end ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
         Offset center = _centerArc.lerp(t);
@@ -616,35 +601,27 @@ public class MaterialRectCenterArcTween : RectTween
             Dart_uiLibrary.lerpDouble(
                 (
                     begin
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ).width,
                 (
                     end
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ).width,
                 t
-            ) ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ) ?? throw new global::System.NullReferenceException("A required value was null.")
         );
         double heightLocal = (
             Dart_uiLibrary.lerpDouble(
                 (
                     begin
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ).height,
                 (
                     end
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ).height,
                 t
-            ) ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ) ?? throw new global::System.NullReferenceException("A required value was null.")
         );
         return Rect.fromLTWH(
             center.dx - (widthLocal / 2.0),
@@ -652,12 +629,12 @@ public class MaterialRectCenterArcTween : RectTween
             widthLocal,
             heightLocal
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string ToString()
     {
         return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "MaterialRectCenterArcTween")}({begin} → {end}; centerArc={centerArc})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

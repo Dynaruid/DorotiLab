@@ -70,9 +70,7 @@ public abstract class ProgressIndicator : StatefulWidget
             : Dart_uiLibrary.clampDouble(
                 (
                     value
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 0.0,
                 1.0
@@ -84,7 +82,7 @@ public abstract class ProgressIndicator : StatefulWidget
                 ((valueColor?.value ?? color) ?? ProgressIndicatorTheme.of(context).color)
                 ?? defaultColor
             ) ?? Theme.of(context).colorScheme.primary;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -103,10 +101,10 @@ public abstract class ProgressIndicator : StatefulWidget
         {
             double value__value5992 = (
                 value
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             expandedSemanticsValue ??=
-                $"{((_effectiveValue ?? throw new global::System.NullReferenceException("Dart null assertion failed.")) * 100L).round()}";
+                $"{((_effectiveValue ?? throw new global::System.NullReferenceException("A required value was null.")) * 100L).round()}";
             isProgressBar = true;
         }
         return new Widgets.Semantics(
@@ -117,7 +115,7 @@ public abstract class ProgressIndicator : StatefulWidget
             value: expandedSemanticsValue,
             child: child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -215,9 +213,7 @@ internal class _LinearProgressIndicatorPainter__progress_indicator : CustomPaint
             double radius = Math.Min(
                 (
                     stopIndicatorRadius
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 maxRadius
             );
@@ -236,7 +232,9 @@ internal class _LinearProgressIndicatorPainter__progress_indicator : CustomPaint
                 TextDirection.rtl => new Offset(maxRadius, maxRadius),
                 TextDirection.ltr => new Offset(size.width - maxRadius, maxRadius),
                 _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                    throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
             };
             canvas.drawCircle(position, radius, indicatorPaint);
         }
@@ -249,7 +247,9 @@ internal class _LinearProgressIndicatorPainter__progress_indicator : CustomPaint
                     Progress_indicatorLibrary._kTrackGapRampDownThreshold
                 )
                 / Progress_indicatorLibrary._kTrackGapRampDownThreshold;
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         double trackGapFractionLocal = effectiveTrackGap / size.width;
         double? effectiveValue =
@@ -259,7 +259,7 @@ internal class _LinearProgressIndicatorPainter__progress_indicator : CustomPaint
                     (
                         value
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ),
                     0.0,
@@ -269,7 +269,7 @@ internal class _LinearProgressIndicatorPainter__progress_indicator : CustomPaint
         {
             double effectiveValue__10098__value10217 = (
                 effectiveValue
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             double trackStartFraction =
                 (trackGapFractionLocal > 0L)
@@ -295,7 +295,7 @@ internal class _LinearProgressIndicatorPainter__progress_indicator : CustomPaint
                     (
                         stopIndicatorRadius
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) > 0L
                 )
@@ -303,9 +303,7 @@ internal class _LinearProgressIndicatorPainter__progress_indicator : CustomPaint
             {
                 double stopIndicatorRadius__value10651 = (
                     stopIndicatorRadius
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 drawStopIndicator();
             }
@@ -405,7 +403,7 @@ internal class _LinearProgressIndicatorPainter__progress_indicator : CustomPaint
             || (!Equals(__oldPainter.stopIndicatorColor, stopIndicatorColor))
             || (__oldPainter.stopIndicatorRadius != stopIndicatorRadius)
             || (__oldPainter.trackGap != trackGap);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -461,7 +459,7 @@ public class LinearProgressIndicator : ProgressIndicator
                     (
                         minHeight
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) > 0L
                 )
@@ -583,7 +581,7 @@ internal class _LinearProgressIndicatorState__progress_indicator
             (widget.minHeight ?? indicatorTheme.linearMinHeight)
             ?? (
                 defaults.linearMinHeight
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         BorderRadiusGeometry? borderRadiusLocal =
             (widget.borderRadius ?? indicatorTheme.borderRadius) ?? defaults.borderRadius;
@@ -642,10 +640,12 @@ internal class _LinearProgressIndicatorState__progress_indicator
             builder: (context, child) =>
             {
                 return _buildIndicator(context, _controller.value, textDirection);
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
@@ -684,7 +684,7 @@ internal class _LinearProgressIndicatorState__progress_indicator
         _updateTickerModeNotifier();
         _updateTicker();
         return _ticker!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void activate()
@@ -803,7 +803,7 @@ internal class _CircularProgressIndicatorPainter__progress_indicator : CustomPai
                         (
                             value
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ),
                         0.0,
@@ -842,9 +842,7 @@ internal class _CircularProgressIndicatorPainter__progress_indicator : CustomPai
             && (
                 (
                     trackGap
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) > 0L
             );
         if (trackColor is not null)
@@ -869,7 +867,7 @@ internal class _CircularProgressIndicatorPainter__progress_indicator : CustomPai
                     (
                         value
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) > _epsilon
                 )
@@ -877,9 +875,7 @@ internal class _CircularProgressIndicatorPainter__progress_indicator : CustomPai
             {
                 double value__value28734 = (
                     value
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 double arcRadius = arcActualSize.shortestSide / 2L;
                 double strokeRadius = strokeWidth / arcRadius;
@@ -887,7 +883,7 @@ internal class _CircularProgressIndicatorPainter__progress_indicator : CustomPai
                     (
                         trackGap
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) / arcRadius;
                 double startGap = strokeRadius + gapRadius;
@@ -896,7 +892,7 @@ internal class _CircularProgressIndicatorPainter__progress_indicator : CustomPai
                         (
                             value
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ) < _epsilon
                     )
@@ -911,7 +907,7 @@ internal class _CircularProgressIndicatorPainter__progress_indicator : CustomPai
                                 (
                                     value
                                     ?? throw new global::System.NullReferenceException(
-                                        "Dart null assertion failed."
+                                        "A required value was null."
                                     )
                                 ),
                                 0.0,
@@ -970,7 +966,7 @@ internal class _CircularProgressIndicatorPainter__progress_indicator : CustomPai
             || (!Equals(__oldPainter.strokeCap, strokeCap))
             || (__oldPainter.trackGap != trackGap)
             || (__oldPainter.year2023 != year2023);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1207,10 +1203,10 @@ internal class _CircularProgressIndicatorState__progress_indicator
             color: tickColor,
             progress: (
                 value
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _buildMaterialIndicator(
@@ -1239,13 +1235,13 @@ internal class _CircularProgressIndicatorState__progress_indicator
             (widget.strokeWidth ?? indicatorTheme.strokeWidth)
             ?? (
                 defaults.strokeWidth
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         double strokeAlignLocal =
             (widget.strokeAlign ?? indicatorTheme.strokeAlign)
             ?? (
                 defaults.strokeAlign
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         StrokeCap? strokeCapLocal = widget.strokeCap ?? indicatorTheme.strokeCap;
         BoxConstraints constraintsLocal =
@@ -1297,10 +1293,12 @@ internal class _CircularProgressIndicatorState__progress_indicator
                     _offsetTween.evaluate(_controller),
                     _rotationTween.evaluate(_controller)
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -1341,15 +1339,17 @@ internal class _CircularProgressIndicatorState__progress_indicator
                             }
                             default:
                                 throw new InvalidOperationException(
-                                    "Non-exhaustive Dart switch value."
+                                    "Switch expression did not handle the supplied value."
                                 );
                         }
                     }
                 }
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
@@ -1388,7 +1388,7 @@ internal class _CircularProgressIndicatorState__progress_indicator
         _updateTickerModeNotifier();
         _updateTicker();
         return _ticker!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void activate()
@@ -1634,7 +1634,7 @@ internal class _RefreshProgressIndicatorState__progress_indicator
         {
             double value__54874__value54914 = (
                 valueLocal
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             _lastValue = (value__54874__value54914);
             _controller.value =
@@ -1642,7 +1642,7 @@ internal class _RefreshProgressIndicatorState__progress_indicator
                 * (1333L / 2L / Progress_indicatorLibrary._kIndeterminateCircularDuration);
         }
         return _buildAnimation();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal override Widget _buildAnimation()
@@ -1658,10 +1658,12 @@ internal class _RefreshProgressIndicatorState__progress_indicator
                     _offsetTween.transform(_controller.value),
                     _rotationTween.transform(_controller.value)
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal override Widget _buildMaterialIndicator(
@@ -1681,7 +1683,7 @@ internal class _RefreshProgressIndicatorState__progress_indicator
                         (
                             valueLocal
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     )
@@ -1700,7 +1702,7 @@ internal class _RefreshProgressIndicatorState__progress_indicator
                         ?? (
                             _lastValue
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                 );
@@ -1723,13 +1725,13 @@ internal class _RefreshProgressIndicatorState__progress_indicator
             (widget.strokeWidth ?? indicatorTheme.strokeWidth)
             ?? (
                 defaults.strokeWidth
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         double strokeAlignLocal =
             (widget.strokeAlign ?? indicatorTheme.strokeAlign)
             ?? (
                 defaults.strokeAlign
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         StrokeCap? strokeCapLocal = widget.strokeCap ?? indicatorTheme.strokeCap;
         return widget._buildSemanticsWrapper(

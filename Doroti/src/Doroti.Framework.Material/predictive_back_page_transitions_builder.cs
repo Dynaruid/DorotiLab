@@ -45,10 +45,12 @@ public class PredictiveBackPageTransitionsBuilder : PageTransitionsBuilder
                 return new FadeForwardsPageTransitionsBuilder(
                     backgroundColor: fallbackColor
                 ).buildTransitions(route, context, animation, secondaryAnimation, child);
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -86,10 +88,12 @@ public class PredictiveBackFullscreenPageTransitionsBuilder : PageTransitionsBui
                 return new ZoomPageTransitionsBuilder(
                     backgroundColor: fallbackColor
                 ).buildTransitions(route, context, animation, secondaryAnimation, child);
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -212,7 +216,7 @@ internal class _PredictiveBackGestureDetectorState__predictive_back_page_transit
         widget.route.handleStartBackGesture(progress: 1L - backEvent.progress);
         startBackEvent = currentBackEvent = backEvent;
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void handleUpdateBackGestureProgress(PredictiveBackEvent backEvent)
@@ -260,7 +264,7 @@ internal class _PredictiveBackGestureDetectorState__predictive_back_page_transit
             ? phase
             : _PredictiveBackPhase__predictive_back_page_transitions_builder.idle;
         return widget.builder(context, effectivePhase, startBackEvent, currentBackEvent);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -350,7 +354,7 @@ internal class _PredictiveBackSharedElementPageTransitionState__predictive_back_
             * Math.Sign(rawYShift)
             * yShiftMax;
         return Dart_uiLibrary.clampDouble(easedYShift, -yShiftMax, yShiftMax);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _updateAnimations(Size screenSize)
@@ -397,7 +401,7 @@ internal class _PredictiveBackSharedElementPageTransitionState__predictive_back_
                         null => new Offset(xShift, _getYShiftPosition(screenSize.height)),
                         _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
                             throw new InvalidOperationException(
-                                "Non-exhaustive Dart switch value."
+                                "Switch expression did not handle the supplied value."
                             ),
                     },
                     end: Offset.zero
@@ -516,11 +520,13 @@ internal class _PredictiveBackSharedElementPageTransitionState__predictive_back_
                         )
                     )
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             child: widget.child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
@@ -559,7 +565,7 @@ internal class _PredictiveBackSharedElementPageTransitionState__predictive_back_
         _updateTickerModeNotifier();
         _updateTicker();
         return _ticker!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void activate()
@@ -768,7 +774,7 @@ internal class _PredictiveBackFullscreenPageTransitionState__predictive_back_pag
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _primaryAnimatedBuilder(BuildContext context, Widget? child)
@@ -792,7 +798,7 @@ internal class _PredictiveBackFullscreenPageTransitionState__predictive_back_pag
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -814,6 +820,6 @@ internal class _PredictiveBackFullscreenPageTransitionState__predictive_back_pag
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

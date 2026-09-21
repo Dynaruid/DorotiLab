@@ -38,9 +38,11 @@ public class _AxisSize__flex
         {
             Axis.horizontal => size,
             Axis.vertical => size.flipped,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double mainAxisExtent => _size.width;
@@ -54,10 +56,12 @@ public class _AxisSize__flex
         {
             Axis.horizontal => constraints,
             Axis.vertical => constraints.flipped,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         return Create_(effectiveConstraints.constrain(_size));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual _AxisSize__flex op_Add(_AxisSize__flex other) =>
@@ -95,14 +99,14 @@ internal class _AscentDescent__flex
                     (
                         baselineOffset
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ),
                     crossSize
                         - (
                             baselineOffset
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                 )
@@ -216,9 +220,11 @@ public static class MainAxisAlignmentMembers
                 freeSpace / (itemCount + 1L),
                 (freeSpace / (itemCount + 1L)) + spacing
             ),
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -249,9 +255,11 @@ public static class CrossAxisAlignmentMembers
                 freeSpace,
                 !flipped
             ),
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -554,7 +562,9 @@ public class RenderFlex
             {
                 Axis.horizontal => true,
                 Axis.vertical => false,
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             };
             Size layoutChild(RenderBox child, BoxConstraints constraints)
             {
@@ -575,7 +585,9 @@ public class RenderFlex
                 return isHorizontal
                     ? new Size(maxMainAxisSize, childSize(child, maxMainAxisSize))
                     : new Size(childSize(child, maxMainAxisSize), maxMainAxisSize);
-                throw new InvalidOperationException("Dart control flow completed without a value.");
+                throw new InvalidOperationException(
+                    "Control flow completed without returning a value."
+                );
             }
             return _computeSizes(
                 constraints: isHorizontal
@@ -585,7 +597,7 @@ public class RenderFlex
                 getBaseline: ChildLayoutHelper.getDryBaseline
             ).axisSize.crossAxisExtent;
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicWidth(double height)
@@ -595,7 +607,7 @@ public class RenderFlex
             extent: height,
             childSize: (child, extent) => child.getMinIntrinsicWidth(extent)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicWidth(double height)
@@ -605,7 +617,7 @@ public class RenderFlex
             extent: height,
             childSize: (child, extent) => child.getMaxIntrinsicWidth(extent)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicHeight(double width)
@@ -615,7 +627,7 @@ public class RenderFlex
             extent: width,
             childSize: (child, extent) => child.getMinIntrinsicHeight(extent)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicHeight(double width)
@@ -625,7 +637,7 @@ public class RenderFlex
             extent: width,
             childSize: (child, extent) => child.getMaxIntrinsicHeight(extent)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? computeDistanceToActualBaseline(TextBaseline baseline)
@@ -634,23 +646,25 @@ public class RenderFlex
         {
             Axis.horizontal => defaultComputeDistanceToHighestActualBaseline(baseline),
             Axis.vertical => defaultComputeDistanceToFirstActualBaseline(baseline),
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static long _getFlex(RenderBox child)
     {
         var childParentData = ((FlexParentData?)(object?)child.parentData!)!;
         return childParentData.flex ?? 0L;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static FlexFit _getFit(RenderBox child)
     {
         var childParentData = ((FlexParentData?)(object?)child.parentData!)!;
         return childParentData.fit ?? FlexFit.tight;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _isBaselineAligned
@@ -663,12 +677,16 @@ public class RenderFlex
                 {
                     Axis.horizontal => true,
                     Axis.vertical => false,
-                    _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    _ => throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
                 },
                 CrossAxisAlignment.start or CrossAxisAlignment.center or CrossAxisAlignment.end =>
                     false,
                 CrossAxisAlignment.stretch => false,
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             };
         }
     }
@@ -679,9 +697,11 @@ public class RenderFlex
         {
             Axis.horizontal => size.height,
             Axis.vertical => size.width,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual double _getMainSize(Size size)
@@ -690,9 +710,11 @@ public class RenderFlex
         {
             Axis.horizontal => size.width,
             Axis.vertical => size.height,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _flipMainAxis =>
@@ -705,15 +727,21 @@ public class RenderFlex
                     null => false,
                     TextDirection.ltr => false,
                     TextDirection.rtl => true,
-                    _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    _ => throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
                 },
                 Axis.vertical => verticalDirection switch
                 {
                     VerticalDirection.down => false,
                     VerticalDirection.up => true,
-                    _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    _ => throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
                 },
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             }
         );
     internal virtual bool _flipCrossAxis =>
@@ -726,15 +754,21 @@ public class RenderFlex
                     null => false,
                     TextDirection.ltr => false,
                     TextDirection.rtl => true,
-                    _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    _ => throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
                 },
                 Axis.horizontal => verticalDirection switch
                 {
                     VerticalDirection.down => false,
                     VerticalDirection.up => true,
-                    _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    _ => throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
                 },
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             }
         );
 
@@ -746,7 +780,9 @@ public class RenderFlex
             CrossAxisAlignment.start or CrossAxisAlignment.center or CrossAxisAlignment.end =>
                 false,
             CrossAxisAlignment.baseline => false,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         return _direction switch
         {
@@ -756,9 +792,11 @@ public class RenderFlex
             Axis.vertical => fillCrossAxis
                 ? BoxConstraints.CreateTightFor(width: constraints.maxWidth)
                 : new BoxConstraints(maxWidth: constraints.maxWidth),
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual BoxConstraints _constraintsForFlexChild(
@@ -773,7 +811,9 @@ public class RenderFlex
         {
             FlexFit.tight => maxChildExtent,
             FlexFit.loose => 0.0,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         bool fillCrossAxis = crossAxisAlignment switch
         {
@@ -781,7 +821,9 @@ public class RenderFlex
             CrossAxisAlignment.start or CrossAxisAlignment.center or CrossAxisAlignment.end =>
                 false,
             CrossAxisAlignment.baseline => false,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         return _direction switch
         {
@@ -797,9 +839,11 @@ public class RenderFlex
                 minHeight: minChildExtent,
                 maxHeight: maxChildExtent
             ),
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
@@ -817,9 +861,11 @@ public class RenderFlex
         {
             Axis.horizontal => _computeDryDistanceToHighestBaseline(constraints, baseline, sizes),
             Axis.vertical => _computeDryDistanceToFirstBaseline(constraints, baseline, sizes),
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual double? _computeDryDistanceToHighestBaseline(
@@ -841,12 +887,14 @@ public class RenderFlex
                         * (
                             spacePerFlexLocal
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                 )
                 : nonFlexConstraints;
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         bool flipMainAxis = _flipMainAxis;
         bool flipCrossAxis = _flipCrossAxis;
@@ -868,9 +916,7 @@ public class RenderFlex
             {
                 double childBaseline__38778__value38854 = (
                     childBaseline
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 double? childBaselineOffset =
                     (_isBaselineAligned && (textBaseline is not null))
@@ -879,7 +925,7 @@ public class RenderFlex
                             (
                                 textBaseline
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             )
                         )
@@ -893,13 +939,13 @@ public class RenderFlex
                         (
                             baselineOffsetLocal
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                         - (
                             childBaselineOffset
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         );
                 }
@@ -932,7 +978,7 @@ public class RenderFlex
             }
         }
         return minBaseline.offset;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual double? _computeDryDistanceToFirstBaseline(
@@ -954,12 +1000,14 @@ public class RenderFlex
                         * (
                             spacePerFlexLocal
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                 )
                 : nonFlexConstraints;
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         double remainingSpace = Math.Max(0.0, sizes.mainAxisFreeSpace);
         bool flipMainAxis = _flipMainAxis;
@@ -997,16 +1045,14 @@ public class RenderFlex
             {
                 double childBaseline__42618__value42680 = (
                     childBaseline
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 double? position = mainPositions.GetValueOrDefault(childAlternate);
                 return (childBaseline__42618__value42680) + (position ?? leadingSpace);
             }
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Size computeDryLayout(BoxConstraints constraints)
@@ -1033,7 +1079,7 @@ public class RenderFlex
             getBaseline: ChildLayoutHelper.getDryBaseline
         )
             .axisSize.toSize(direction);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual FlutterError? _debugCheckConstraints(
@@ -1173,7 +1219,7 @@ public class RenderFlex
             return true;
         });
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual _LayoutSizes__flex _computeSizes(
@@ -1228,7 +1274,7 @@ public class RenderFlex
                             (
                                 textBaselineLocal
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             )
                         );
@@ -1281,7 +1327,7 @@ public class RenderFlex
                         (
                             textBaselineLocal
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     );
@@ -1308,7 +1354,9 @@ public class RenderFlex
             MainAxisSize.max when double.IsFinite(maxMainSize) => maxMainSize,
             MainAxisSize.max => accumulatedSize.mainAxisExtent,
             MainAxisSize.min => accumulatedSize.mainAxisExtent,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         _AxisSize__flex constrainedSize = new _AxisSize__flex(
             mainAxisExtent: idealMainSize,
@@ -1320,7 +1368,7 @@ public class RenderFlex
             baselineOffset: accumulatedAscentDescent.baselineOffset,
             spacePerFlex: (firstFlexChild is null) ? null : spacePerFlexLocal
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void performLayout()
@@ -1378,7 +1426,7 @@ public class RenderFlex
                             (
                                 textBaseline
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             ),
                             onlyReal: true
@@ -1393,13 +1441,13 @@ public class RenderFlex
                     (
                         baselineOffsetLocal
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                     - (
                         childBaselineOffset
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     );
             }
@@ -1428,7 +1476,9 @@ public class RenderFlex
             {
                 Axis.horizontal => new Offset(childMainPosition, childCrossPosition),
                 Axis.vertical => new Offset(childCrossPosition, childMainPosition),
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             };
             childMainPosition += _getMainSize(child.size) + betweenSpace;
         }
@@ -1437,7 +1487,7 @@ public class RenderFlex
     public override bool hitTestChildren(BoxHitTestResult result, Offset position)
     {
         return defaultHitTestChildren(result, position: position);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paint(PaintingContext context, Offset offset)
@@ -1488,7 +1538,9 @@ public class RenderFlex
             {
                 Axis.horizontal => Rect.fromLTWH(0.0, 0.0, size.width + _overflow, 0.0),
                 Axis.vertical => Rect.fromLTWH(0.0, 0.0, 0.0, size.height + _overflow),
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             };
             paintOverflowIndicator(
                 context,
@@ -1526,7 +1578,7 @@ public class RenderFlex
                 return _hasOverflow ? (Offset.zero & size) : null;
             }
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string toStringShort()
@@ -1540,7 +1592,7 @@ public class RenderFlex
             }
         }
         return header;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -1578,7 +1630,7 @@ public class RenderFlex
             childParentData = ((FlexParentData?)(object?)child.parentData!)!;
         }
         return Equals(child, equals);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool _debugUltimateNextSiblingOf(RenderBox child, RenderBox? equals = null)
@@ -1591,7 +1643,7 @@ public class RenderFlex
             childParentData = ((FlexParentData?)(object?)child.parentData!)!;
         }
         return Equals(child, equals);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual long childCount => _childCount;
@@ -1634,7 +1686,7 @@ public class RenderFlex
             return true;
         });
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _insertIntoChildList(RenderBox child, RenderBox? after = null)
@@ -1842,7 +1894,7 @@ public class RenderFlex
         DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         var childParentData = ((FlexParentData?)(object?)child.parentData!)!;
         return childParentData.previousSibling;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual RenderBox? childAfter(RenderBox child)
@@ -1850,7 +1902,7 @@ public class RenderFlex
         DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         var childParentData = ((FlexParentData?)(object?)child.parentData!)!;
         return childParentData.nextSibling;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override List<DiagnosticsNode> debugDescribeChildren()
@@ -1875,7 +1927,7 @@ public class RenderFlex
             }
         }
         return children;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double? defaultComputeDistanceToFirstActualBaseline(TextBaseline baseline)
@@ -1890,16 +1942,14 @@ public class RenderFlex
             {
                 double result__138852__value138916 = (
                     result
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 return (result__138852__value138916) + childParentData.offset.dy;
             }
             child = childParentData.nextSibling;
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double? defaultComputeDistanceToHighestActualBaseline(TextBaseline baseline)
@@ -1917,7 +1967,7 @@ public class RenderFlex
             child = childParentData.nextSibling;
         }
         return minBaseline.offset;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool defaultHitTestChildren(BoxHitTestResult result, Offset position)
@@ -1944,7 +1994,7 @@ public class RenderFlex
             child = childParentData.previousSibling;
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void defaultPaint(PaintingContext context, Offset offset)
@@ -1969,7 +2019,7 @@ public class RenderFlex
             child = childParentData.nextSibling;
         }
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual string _formatPixels(double value)
@@ -1981,7 +2031,7 @@ public class RenderFlex
             > 1.0 => value.toStringAsFixed(1L),
             _ => value.toStringAsPrecision(3L),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual List<_OverflowRegionData__debug_overflow_indicator> _calculateOverflowRegions(
@@ -2077,7 +2127,7 @@ public class RenderFlex
             );
         }
         return regions;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _reportOverflow(RelativeRect overflow, List<DiagnosticsNode>? overflowHints)

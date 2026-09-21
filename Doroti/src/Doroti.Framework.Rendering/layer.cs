@@ -19,7 +19,7 @@ public class AnnotationEntry<T>
     public override string ToString()
     {
         return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "AnnotationEntry")}(annotation: {annotation}, localPosition: {localPosition})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -88,7 +88,7 @@ public abstract class Layer : DiagnosticableTreeMixin
     public virtual bool supportsRasterization()
     {
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Rect? describeClipBounds() => null;
@@ -117,7 +117,7 @@ public abstract class Layer : DiagnosticableTreeMixin
             _callbacks.remove(callbackId);
             _updateSubtreeCompositionObserverCount(-1L);
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool debugDisposed
@@ -295,7 +295,7 @@ public abstract class Layer : DiagnosticableTreeMixin
     )
     {
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual S? find<S>(Offset localPosition)
@@ -303,7 +303,7 @@ public abstract class Layer : DiagnosticableTreeMixin
         var result = new AnnotationResult<S>();
         findAnnotations(result, localPosition, onlyFirst: true);
         return (result.entries.Count() == 0) ? default(S) : result.entries.First().annotation;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual AnnotationResult<S> findAllAnnotations<S>(Offset localPosition)
@@ -311,7 +311,7 @@ public abstract class Layer : DiagnosticableTreeMixin
         var result = new AnnotationResult<S>();
         findAnnotations(result, localPosition, onlyFirst: false);
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public abstract void addToScene(SceneBuilder builder);
@@ -500,7 +500,7 @@ public class PictureLayer : Layer
     )
     {
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -543,7 +543,7 @@ public class TextureLayer : Layer
     )
     {
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -561,7 +561,7 @@ public class PlatformViewLayer : Layer
     public override bool supportsRasterization()
     {
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void addToScene(SceneBuilder builder)
@@ -612,7 +612,7 @@ public class PerformanceOverlayLayer : Layer
     )
     {
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -652,7 +652,7 @@ public class ContainerLayer : Layer
             }
         }
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Scene buildScene(SceneBuilder builder)
@@ -666,7 +666,7 @@ public class ContainerLayer : Layer
         _needsAddToScene = false;
         Scene scene = builder.build();
         return scene;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _debugUltimatePreviousSiblingOf(Layer child, Layer? equals = null)
@@ -679,7 +679,7 @@ public class ContainerLayer : Layer
             DartRuntimePrimitives.Assert(() => child.attached == attached);
         }
         return Equals(child, equals);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _debugUltimateNextSiblingOf(Layer child, Layer? equals = null)
@@ -692,7 +692,7 @@ public class ContainerLayer : Layer
             DartRuntimePrimitives.Assert(() => child.attached == attached);
         }
         return Equals(child, equals);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void dispose()
@@ -733,7 +733,7 @@ public class ContainerLayer : Layer
             }
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void attach(object owner)
@@ -968,7 +968,7 @@ public class ContainerLayer : Layer
             child = child.nextSibling;
         }
         return children;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override List<DiagnosticsNode> debugDescribeChildren()
@@ -991,7 +991,7 @@ public class ContainerLayer : Layer
             child = child.nextSibling;
         }
         return children;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1025,7 +1025,7 @@ public class OffsetLayer : ContainerLayer
     )
     {
         return base.findAnnotations(result, localPosition - offset, onlyFirst: onlyFirst);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void applyTransform(Layer? child, Matrix4 transform)
@@ -1058,7 +1058,7 @@ public class OffsetLayer : ContainerLayer
         transform.translateByDouble(-(bounds.left + offset.dx), -(bounds.top + offset.dy), 0, 1);
         builder.pushTransform(transform.storage);
         return buildScene(builder);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual async Future<Image> toImage(Rect bounds, double pixelRatio = 1.0)
@@ -1075,7 +1075,7 @@ public class OffsetLayer : ContainerLayer
         {
             scene.dispose();
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Image toImageSync(Rect bounds, double pixelRatio = 1.0)
@@ -1092,7 +1092,7 @@ public class OffsetLayer : ContainerLayer
         {
             scene.dispose();
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1148,14 +1148,14 @@ public class ClipRectLayer : ContainerLayer
         if (
             !(
                 clipRect
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ).contains(localPosition)
         )
         {
             return false;
         }
         return base.findAnnotations(result, localPosition, onlyFirst: onlyFirst);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void addToScene(SceneBuilder builder)
@@ -1172,9 +1172,7 @@ public class ClipRectLayer : ContainerLayer
             engineLayer = builder.pushClipRect(
                 (
                     clipRect
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 clipBehavior: clipBehavior,
                 oldLayer: ((ClipRectEngineLayer?)_engineLayer)!
@@ -1253,7 +1251,7 @@ public class ClipRRectLayer : ContainerLayer
             return false;
         }
         return base.findAnnotations(result, localPosition, onlyFirst: onlyFirst);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void addToScene(SceneBuilder builder)
@@ -1349,7 +1347,7 @@ public class ClipRSuperellipseLayer : ContainerLayer
             return false;
         }
         return base.findAnnotations(result, localPosition, onlyFirst: onlyFirst);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void addToScene(SceneBuilder builder)
@@ -1444,7 +1442,7 @@ public class ClipPathLayer : ContainerLayer
             return false;
         }
         return base.findAnnotations(result, localPosition, onlyFirst: onlyFirst);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void addToScene(SceneBuilder builder)
@@ -1692,7 +1690,7 @@ public class TransformLayer : OffsetLayer
             return null;
         }
         return MatrixUtils.transformPoint(_invertedTransform!, localPosition);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool findAnnotations<S>(
@@ -1711,14 +1709,12 @@ public class TransformLayer : OffsetLayer
             (
                 (
                     transformedOffset
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             ),
             onlyFirst: onlyFirst
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void applyTransform(Layer? child, Matrix4 transform)
@@ -1788,7 +1784,7 @@ public class OpacityLayer : OffsetLayer
             return true;
         });
         long realizedAlpha = (
-            alpha ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            alpha ?? throw new global::System.NullReferenceException("A required value was null.")
         );
         if (enabled && (realizedAlpha < 255L))
         {
@@ -1885,11 +1881,11 @@ public class ShaderMaskLayer : ContainerLayer
             shader!,
             (
                 maskRect
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             (
                 blendMode
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             oldLayer: ((ShaderMaskEngineLayer?)_engineLayer)!
         );
@@ -2057,7 +2053,7 @@ public class LayerLink
     public virtual string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
         return $"{DiagnosticsLibrary.describeIdentity(this)}({((_leader is not null) ? "<linked>" : "<dangling>")})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -2127,7 +2123,7 @@ public class LeaderLayer : ContainerLayer
     )
     {
         return base.findAnnotations(result, localPosition - offset, onlyFirst: onlyFirst);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void addToScene(SceneBuilder builder)
@@ -2212,19 +2208,15 @@ public class FollowerLayer : ContainerLayer
             result[(int)0L]
                 - (
                     linkedOffset
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ).dx,
             result[(int)1L]
                 - (
                     linkedOffset
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ).dy
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool findAnnotations<S>(
@@ -2238,9 +2230,7 @@ public class FollowerLayer : ContainerLayer
             if (
                 (
                     showWhenUnlinked
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             )
             {
@@ -2250,7 +2240,7 @@ public class FollowerLayer : ContainerLayer
                         - (
                             unlinkedOffset
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ),
                     onlyFirst: onlyFirst
@@ -2268,14 +2258,12 @@ public class FollowerLayer : ContainerLayer
             (
                 (
                     transformedOffset
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             ),
             onlyFirst: onlyFirst
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Matrix4? getLastTransform()
@@ -2287,17 +2275,17 @@ public class FollowerLayer : ContainerLayer
         var result = Matrix4.translationValues(
             -(
                 _lastOffset
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ).dx,
             -(
                 _lastOffset
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ).dy,
             0.0
         );
         result.multiply(_lastTransform!);
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static Matrix4 _collectTransformForLayerChain(List<ContainerLayer?> layers)
@@ -2308,7 +2296,7 @@ public class FollowerLayer : ContainerLayer
             layers[(int)index]?.applyTransform(layers[(int)(index - 1L)], result);
         }
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static Layer? _pathsToCommonAncestor(
@@ -2342,7 +2330,7 @@ public class FollowerLayer : ContainerLayer
         ancestorsA.Add(a.parent);
         ancestorsB.Add(b.parent);
         return _pathsToCommonAncestor(a.parent, b.parent, ancestorsA, ancestorsB);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _debugCheckLeaderBeforeFollower(
@@ -2374,7 +2362,7 @@ public class FollowerLayer : ContainerLayer
             sibling = sibling.nextSibling;
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _establishTransform()
@@ -2398,11 +2386,11 @@ public class FollowerLayer : ContainerLayer
         forwardTransform.translateByDouble(
             (
                 linkedOffset
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ).dx,
             (
                 linkedOffset
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ).dy,
             0,
             1
@@ -2426,7 +2414,7 @@ public class FollowerLayer : ContainerLayer
             (link.leader is null)
             && !(
                 showWhenUnlinked
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         )
         {
@@ -2453,15 +2441,11 @@ public class FollowerLayer : ContainerLayer
             var matrix = Matrix4.translationValues(
                 (
                     unlinkedOffset
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ).dx,
                 (
                     unlinkedOffset
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ).dy,
                 0.0
             );
@@ -2489,13 +2473,13 @@ public class FollowerLayer : ContainerLayer
                     (
                         unlinkedOffset
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ).dx,
                     (
                         unlinkedOffset
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ).dy,
                     0
@@ -2549,16 +2533,14 @@ public class AnnotatedRegionLayer<T> : ContainerLayer
                 offset
                 & (
                     size
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             ).contains(localPosition)
         )
         {
             Size size__value103949 = (
                 size
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             return isAbsorbed;
         }
@@ -2575,7 +2557,7 @@ public class AnnotatedRegionLayer<T> : ContainerLayer
             );
         }
         return isAbsorbed;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)

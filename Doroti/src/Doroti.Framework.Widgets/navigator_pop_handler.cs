@@ -62,12 +62,14 @@ internal class _NavigatorPopHandlerState__navigator_pop_handler<T> : State<Navig
                         });
                     }
                     return false;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 },
                 child: widget.child
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 

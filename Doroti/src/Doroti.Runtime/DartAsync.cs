@@ -144,7 +144,7 @@ public static class DartAsyncRuntime
     {
         if (future is Future dartFuture)
         {
-            DartRuntimePrimitives.Observe(dartFuture, "Dart unawaited");
+            DartRuntimePrimitives.Observe(dartFuture, "Unawaited operation");
         }
     }
 
@@ -370,7 +370,7 @@ public class Future<T> : Future
             Task.FromException<T>(
                 error as Exception
                     ?? new Exception(
-                        error?.ToString() ?? "Dart Future.error",
+                        error?.ToString() ?? "Future.error",
                         new Exception(stackTrace?.ToString())
                     )
             )

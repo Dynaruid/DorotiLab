@@ -25,7 +25,7 @@ public class BrowserContextMenu
                     _instance._enabled = false;
                 }
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static Future enableContextMenu()
@@ -39,6 +39,6 @@ public class BrowserContextMenu
                     _instance._enabled = true;
                 }
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

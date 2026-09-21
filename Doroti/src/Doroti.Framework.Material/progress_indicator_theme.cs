@@ -99,7 +99,7 @@ public class ProgressIndicatorThemeData : Diagnosticable
             year2023: year2023 ?? this.year2023,
             controller: controller ?? this.controller
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static ProgressIndicatorThemeData? lerp(
@@ -154,7 +154,7 @@ public class ProgressIndicatorThemeData : Diagnosticable
             year2023: (t < 0.5) ? a?.year2023 : b?.year2023,
             controller: (t < 0.5) ? a?.controller : b?.controller
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override int GetHashCode() =>
@@ -279,7 +279,7 @@ public class ProgressIndicatorThemeData : Diagnosticable
             return true;
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -288,7 +288,7 @@ public class ProgressIndicatorThemeData : Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -311,13 +311,13 @@ public class ProgressIndicatorTheme : InheritedTheme
         ProgressIndicatorTheme? progressIndicatorThemeLocal =
             context.dependOnInheritedWidgetOfExactType<ProgressIndicatorTheme>();
         return progressIndicatorThemeLocal?.data ?? Theme.of(context).progressIndicatorTheme;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget wrap(BuildContext context, Widget child)
     {
         return new ProgressIndicatorTheme(data: data, child: child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget) =>

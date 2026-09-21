@@ -93,13 +93,13 @@ internal class _AssetManifestBin : AssetManifest
             _data.remove(key);
         }
         return _typeCastedData.GetValueOrDefault(key)!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual List<string> listAssets()
     {
         return new List<string>();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 

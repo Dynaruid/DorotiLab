@@ -162,7 +162,7 @@ internal class _TwoDimensionalViewportElement__two_dimensional_viewport
             )
         )().ToList();
         return new List<DiagnosticsNode>();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static long _compareChildren(Element a, Element b)
@@ -170,7 +170,7 @@ internal class _TwoDimensionalViewportElement__two_dimensional_viewport
         var aSlot = ((ChildVicinity?)a.slot!)!;
         var bSlot = ((ChildVicinity?)b.slot!)!;
         return aSlot.compareTo(bSlot);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _debugIsDoingLayout =>
@@ -242,7 +242,7 @@ internal class _TwoDimensionalViewportElement__two_dimensional_viewport
             return _vicinityToChild.remove(vicinity);
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _reuseChild(ChildVicinity vicinity)
@@ -311,7 +311,7 @@ internal class _TwoDimensionalViewportElement__two_dimensional_viewport
             ((ViewportNotificationMixin)notification)._depth += 1L;
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -350,14 +350,16 @@ public class TwoDimensionalViewportParentData : ParentData, KeepAliveParentDataM
                     );
                 }
                 return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             });
             return (!Equals(_paintExtent, Size.zero))
                 || (
                     (
                         _paintExtent
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ).height != 0.0
                 )
@@ -365,7 +367,7 @@ public class TwoDimensionalViewportParentData : ParentData, KeepAliveParentDataM
                     (
                         _paintExtent
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ).width != 0.0
                 );
@@ -381,7 +383,7 @@ public class TwoDimensionalViewportParentData : ParentData, KeepAliveParentDataM
             + $"paintOffset={paintOffset}; "
             + $"{((_paintExtent is null) ? "not visible; " : $"{(!isVisible ? "not " : "")}visible - paintExtent={_paintExtent}; ")}"
             + $"{(keepAlive ? "keepAlive; " : "")}";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -449,7 +451,7 @@ public abstract class RenderTwoDimensionalViewport : RenderBox
                                 (
                                     cacheExtent
                                     ?? throw new global::System.NullReferenceException(
-                                        "Dart null assertion failed."
+                                        "A required value was null."
                                     )
                                 )
                             ),
@@ -457,7 +459,7 @@ public abstract class RenderTwoDimensionalViewport : RenderBox
                                 (
                                     cacheExtent
                                     ?? throw new global::System.NullReferenceException(
-                                        "Dart null assertion failed."
+                                        "A required value was null."
                                     )
                                 )
                             ),
@@ -465,12 +467,12 @@ public abstract class RenderTwoDimensionalViewport : RenderBox
                                 (
                                     cacheExtent
                                     ?? throw new global::System.NullReferenceException(
-                                        "Dart null assertion failed."
+                                        "A required value was null."
                                     )
                                 )
                             ),
                             _ => throw new InvalidOperationException(
-                                "Non-exhaustive Dart switch value."
+                                "Switch expression did not handle the supplied value."
                             ),
                         }
                     )
@@ -630,7 +632,7 @@ public abstract class RenderTwoDimensionalViewport : RenderBox
                         (
                             __value
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     ),
@@ -638,11 +640,13 @@ public abstract class RenderTwoDimensionalViewport : RenderBox
                         (
                             __value
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     ),
-                    _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    _ => throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
                 };
             }
             markNeedsLayout();
@@ -666,14 +670,14 @@ public abstract class RenderTwoDimensionalViewport : RenderBox
             {
                 _scrollCacheExtent = (
                     __value
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) switch
                 {
                     CacheExtentStyle.pixel => ScrollCacheExtent.CreatePixels(cacheExtent),
                     CacheExtentStyle.viewport => ScrollCacheExtent.CreateViewport(cacheExtent),
-                    _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    _ => throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
                 };
             }
             markNeedsLayout();
@@ -726,14 +730,14 @@ public abstract class RenderTwoDimensionalViewport : RenderBox
     {
         DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         return parentDataOf(child)._previousSibling;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual RenderBox? childAfter(RenderBox child)
     {
         DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         return parentDataOf(child)._nextSibling;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _handleDelegateNotification()
@@ -759,7 +763,7 @@ public abstract class RenderTwoDimensionalViewport : RenderBox
             || _debugOrphans!.Contains(child)
         );
         return ((TwoDimensionalViewportParentData?)child.parentData!)!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual RenderBox? getChildFor(ChildVicinity vicinity) =>
@@ -839,7 +843,7 @@ public abstract class RenderTwoDimensionalViewport : RenderBox
     {
         var debugChildren = new List<DiagnosticsNode>();
         return debugChildren;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Size computeDryLayout(BoxConstraints constraints)
@@ -851,7 +855,7 @@ public abstract class RenderTwoDimensionalViewport : RenderBox
             Rendering.DebugLibrary.debugCheckHasBoundedAxis(Axis.horizontal, constraints)
         );
         return constraints.biggest;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool hitTestChildren(BoxHitTestResult result, Offset position)
@@ -875,13 +879,15 @@ public abstract class RenderTwoDimensionalViewport : RenderBox
                                 - (
                                     childParentData.paintOffset
                                     ?? throw new global::System.NullReferenceException(
-                                        "Dart null assertion failed."
+                                        "A required value was null."
                                     )
                                 )
                         )
                     );
                     return child.hitTest(result, position: transformed);
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
             if (isHit)
@@ -890,7 +896,7 @@ public abstract class RenderTwoDimensionalViewport : RenderBox
             }
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Size viewportDimension
@@ -923,13 +929,15 @@ public abstract class RenderTwoDimensionalViewport : RenderBox
     {
         axis ??= mainAxis;
         var (offsetLocal, axisDirection) = (
-            axis ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            axis ?? throw new global::System.NullReferenceException("A required value was null.")
         ) switch
         {
             Axis.vertical => (verticalOffset.pixels, verticalAxisDirection),
             Axis.horizontal => ((double, AxisDirection))
                 (horizontalOffset.pixels, horizontalAxisDirection),
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         rect ??= target.paintBounds;
         var child = target;
@@ -944,9 +952,7 @@ public abstract class RenderTwoDimensionalViewport : RenderBox
             (
                 (
                     rect
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             )
         );
@@ -957,11 +963,13 @@ public abstract class RenderTwoDimensionalViewport : RenderBox
             AxisDirection.left => ((RenderBox)child).size.width - rectLocal.right,
             AxisDirection.right => rectLocal.left,
             AxisDirection.down => rectLocal.top,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         Offset paintOffsetLocal = (
             parentDataOf(box).paintOffset
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         );
         leadingScrollOffset += (axisDirection) switch
         {
@@ -969,7 +977,9 @@ public abstract class RenderTwoDimensionalViewport : RenderBox
             AxisDirection.left => viewportDimension.width - paintOffsetLocal.dx - box.size.width,
             AxisDirection.right => paintOffsetLocal.dx,
             AxisDirection.down => paintOffsetLocal.dy,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         Matrix4 transform = target.getTransformTo(this);
         Rect targetRect = MatrixUtils.transformRect(
@@ -977,28 +987,30 @@ public abstract class RenderTwoDimensionalViewport : RenderBox
             (
                 (
                     rect
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             )
         );
         double mainAxisExtentDifference = (
-            axis ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            axis ?? throw new global::System.NullReferenceException("A required value was null.")
         ) switch
         {
             Axis.horizontal => viewportDimension.width - rectLocal.width,
             Axis.vertical => viewportDimension.height - rectLocal.height,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         double targetOffset = leadingScrollOffset - (mainAxisExtentDifference * alignment);
         double offsetDifference = (
-            axis ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            axis ?? throw new global::System.NullReferenceException("A required value was null.")
         ) switch
         {
             Axis.horizontal => horizontalOffset.pixels - targetOffset,
             Axis.vertical => verticalOffset.pixels - targetOffset,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         targetRect = (axisDirection) switch
         {
@@ -1006,11 +1018,13 @@ public abstract class RenderTwoDimensionalViewport : RenderBox
             AxisDirection.down => targetRect.translate(0.0, offsetDifference),
             AxisDirection.left => targetRect.translate(-offsetDifference, 0.0),
             AxisDirection.right => targetRect.translate(offsetDifference, 0.0),
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         var revealedOffset = new RevealedOffset(offset: targetOffset, rect: targetRect);
         return revealedOffset;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void showOnScreen(
@@ -1084,7 +1098,9 @@ public abstract class RenderTwoDimensionalViewport : RenderBox
                 duration: duration,
                 curve: curve
             );
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         Rect? showHorizontal(Rect? rect)
         {
@@ -1096,7 +1112,9 @@ public abstract class RenderTwoDimensionalViewport : RenderBox
                 duration: duration,
                 curve: curve
             );
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         switch (axisDirection)
         {
@@ -1124,15 +1142,15 @@ public abstract class RenderTwoDimensionalViewport : RenderBox
                 }
                 return (
                     rect
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static Rect? _showInViewportForAxisDirection(
@@ -1148,7 +1166,9 @@ public abstract class RenderTwoDimensionalViewport : RenderBox
         {
             Axis.vertical => viewport.verticalOffset,
             Axis.horizontal => viewport.horizontalOffset,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         RevealedOffset leadingEdgeOffsetLocal = viewport.getOffsetToReveal(
             descendant,
@@ -1176,7 +1196,7 @@ public abstract class RenderTwoDimensionalViewport : RenderBox
             offsetLocal.moveTo(targetOffset.offset, duration: duration, curve: curve)
         );
         return targetOffset.rect;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool didResize => _didResize;
@@ -1222,7 +1242,7 @@ public abstract class RenderTwoDimensionalViewport : RenderBox
                             {
                                 return !parentDataOf(child).keepAlive;
                                 throw new InvalidOperationException(
-                                    "Dart closure completed without a value."
+                                    "Callback completed without returning a value."
                                 );
                             }
                         )
@@ -1262,7 +1282,9 @@ public abstract class RenderTwoDimensionalViewport : RenderBox
                     return yComparison;
                 }
                 return a.xIndex.CompareTo(b.xIndex);
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
     }
@@ -1328,7 +1350,7 @@ public abstract class RenderTwoDimensionalViewport : RenderBox
             return child;
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _debugCheckContentDimensions()
@@ -1357,7 +1379,7 @@ public abstract class RenderTwoDimensionalViewport : RenderBox
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         DartRuntimePrimitives.Assert(() =>
         {
@@ -1377,10 +1399,10 @@ public abstract class RenderTwoDimensionalViewport : RenderBox
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual RenderBox? buildOrObtainChildFor(ChildVicinity vicinity)
@@ -1414,7 +1436,7 @@ public abstract class RenderTwoDimensionalViewport : RenderBox
         parentDataOf(child).vicinity = vicinity;
         _currentChildVicinities.Add(vicinity);
         return child;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void updateChildPaintData(RenderBox child)
@@ -1432,7 +1454,7 @@ public abstract class RenderTwoDimensionalViewport : RenderBox
         childParentData._paintExtent = computeChildPaintExtent(
             (
                 childParentData.layoutOffset
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             child.size
         );
@@ -1440,7 +1462,7 @@ public abstract class RenderTwoDimensionalViewport : RenderBox
             child,
             layoutOffset: (
                 childParentData.layoutOffset
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );
         _hasVisualOverflow =
@@ -1522,7 +1544,7 @@ public abstract class RenderTwoDimensionalViewport : RenderBox
             }
         }
         return new Size(widthLocal, heightLocal);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Offset computeAbsolutePaintOffsetFor(RenderBox child, Offset layoutOffset)
@@ -1535,7 +1557,9 @@ public abstract class RenderTwoDimensionalViewport : RenderBox
             AxisDirection.left => viewportDimension.width - (layoutOffset.dx + child.size.width),
             AxisDirection.up => throw new Exception("This should not happen"),
             AxisDirection.down => throw new Exception("This should not happen"),
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         double yOffset = verticalAxisDirection switch
         {
@@ -1543,10 +1567,12 @@ public abstract class RenderTwoDimensionalViewport : RenderBox
             AxisDirection.down => layoutOffset.dy,
             AxisDirection.right => throw new Exception("This should not happen"),
             AxisDirection.left => throw new Exception("This should not happen"),
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         return new Offset(xOffset, yOffset);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paint(PaintingContext context, Offset offset)
@@ -1587,7 +1613,7 @@ public abstract class RenderTwoDimensionalViewport : RenderBox
                         + (
                             childParentData.paintOffset
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                 );
@@ -1632,7 +1658,7 @@ public abstract class RenderTwoDimensionalViewport : RenderBox
         {
             _debugDanglingKeepAlives.Remove(child);
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         DartRuntimePrimitives.Assert(() =>
         {
@@ -1643,7 +1669,7 @@ public abstract class RenderTwoDimensionalViewport : RenderBox
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         _keepAliveBucket[childParentData.vicinity] = child;
     }
@@ -1675,7 +1701,7 @@ public abstract class RenderTwoDimensionalViewport : RenderBox
         {
             _debugDanglingKeepAlives.Remove(child);
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         _keepAliveBucket.remove(childParentData.vicinity);
         dropChild(child);
@@ -1698,10 +1724,10 @@ public abstract class RenderTwoDimensionalViewport : RenderBox
                 _debugOrphans!.Remove(noLongerOrphan);
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool debugThrowIfNotCheckingIntrinsics()
@@ -1726,38 +1752,38 @@ public abstract class RenderTwoDimensionalViewport : RenderBox
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicWidth(double height)
     {
         DartRuntimePrimitives.Assert(() => debugThrowIfNotCheckingIntrinsics());
         return 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicWidth(double height)
     {
         DartRuntimePrimitives.Assert(() => debugThrowIfNotCheckingIntrinsics());
         return 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicHeight(double width)
     {
         DartRuntimePrimitives.Assert(() => debugThrowIfNotCheckingIntrinsics());
         return 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicHeight(double width)
     {
         DartRuntimePrimitives.Assert(() => debugThrowIfNotCheckingIntrinsics());
         return 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void applyPaintTransform(RenderObject child, Matrix4 transform)
@@ -1765,7 +1791,7 @@ public abstract class RenderTwoDimensionalViewport : RenderBox
         var __child = (RenderBox)child;
         Offset paintOffsetLocal = (
             parentDataOf(__child).paintOffset
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         );
         transform.translate(paintOffsetLocal.dx, paintOffsetLocal.dy);
     }
@@ -1822,13 +1848,13 @@ public class ChildVicinity : IComparable<ChildVicinity>
             return yIndex - other.yIndex;
         }
         return xIndex - other.xIndex;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string ToString()
     {
         return $"(xIndex: {xIndex}, yIndex: {yIndex})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public int CompareTo(ChildVicinity? other) => checked((int)compareTo(other!));

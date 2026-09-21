@@ -59,7 +59,7 @@ public class TextSelectionToolbarAnchors
             renderBox.localToGlobal(Offset.zero),
             renderBox.localToGlobal(renderBox.size.bottomRight(Offset.zero))
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static Rect getSelectionRect(
@@ -92,6 +92,6 @@ public class TextSelectionToolbarAnchors
                 : (editingRegion.left + selectionEndpoints.Last().point.dx),
             editingRegion.top + selectionEndpoints.Last().point.dy
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

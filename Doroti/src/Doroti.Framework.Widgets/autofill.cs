@@ -31,7 +31,7 @@ public class AutofillGroup : StatefulWidget
         _AutofillScope__autofill? scope =
             context.dependOnInheritedWidgetOfExactType<_AutofillScope__autofill>();
         return scope?._scope;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static AutofillGroupState of(BuildContext context)
@@ -55,10 +55,10 @@ public class AutofillGroup : StatefulWidget
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return groupState!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override IState createState() =>
@@ -104,7 +104,7 @@ public class AutofillGroupState : State<AutofillGroup>, AutofillScopeMixin
     public override Widget build(BuildContext context)
     {
         return new _AutofillScope__autofill(autofillScopeState: this, child: widget.child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void dispose()
@@ -149,7 +149,7 @@ public class AutofillGroupState : State<AutofillGroup>, AutofillScopeMixin
                 currentClientConfiguration: configuration
             );
         return TextInput.attach(trigger, inputConfiguration);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 

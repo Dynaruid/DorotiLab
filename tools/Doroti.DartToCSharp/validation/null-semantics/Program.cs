@@ -29,7 +29,7 @@ Require(
     "The internal null assertion placeholder escaped generation."
 );
 Require(
-    source.Contains("Dart null assertion failed.", StringComparison.Ordinal),
+    source.Contains("A required value was null.", StringComparison.Ordinal),
     "Generated C# omitted the null assertion contract."
 );
 
@@ -84,7 +84,7 @@ try
     throw new InvalidOperationException("The delayed null assertion accepted null.");
 }
 catch (TargetInvocationException error)
-    when (error.InnerException is NullReferenceException { Message: "Dart null assertion failed." })
+    when (error.InnerException is NullReferenceException { Message: "A required value was null." })
 { }
 ExpectNullAssertion("requiredInt", null);
 ExpectNullAssertion("requiredString", null);
@@ -115,7 +115,7 @@ void ExpectNullAssertion(string name, object? value)
     }
     catch (TargetInvocationException error)
         when (error.InnerException
-                is NullReferenceException { Message: "Dart null assertion failed." }
+                is NullReferenceException { Message: "A required value was null." }
         ) { }
 }
 

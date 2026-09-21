@@ -58,7 +58,7 @@ internal class _ContentSensitivitySetting__sensitive_content
     )
     {
         return $"A negative amount ({count}) of {sensitivity} SensitiveContent widgets have been detected, which is not expected. Please file an issue.";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void removeWidgetWithContentSensitivity(ContentSensitivity sensitivity)
@@ -173,7 +173,7 @@ public class SensitiveContentHost
     public static Future register(ContentSensitivity desiredSensitivity)
     {
         return instance._register(desiredSensitivity);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual async Future _register(ContentSensitivity desiredSensitivity)
@@ -200,7 +200,7 @@ public class SensitiveContentHost
         if (
             !(
                 _contentSensitivityIsSupported
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         )
         {
@@ -245,9 +245,7 @@ public class SensitiveContentHost
             await _sensitiveContentService.setContentSensitivity(
                 (
                     _contentSensitivitySetting.contentSensitivityBasedOnWidgetCounts
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             );
         }
@@ -281,7 +279,7 @@ public class SensitiveContentHost
         }
         ContentSensitivity contentSensitivityBasedOnWidgetCountsBeforeUnregister = (
             _contentSensitivitySetting.contentSensitivityBasedOnWidgetCounts
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         );
         _contentSensitivitySetting.removeWidgetWithContentSensitivity(widgetSensitivity);
         if (!_contentSensitivitySetting.hasWidgets)
@@ -301,7 +299,7 @@ public class SensitiveContentHost
                     (
                         _fallbackContentSensitivitySetting
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 );
@@ -324,7 +322,7 @@ public class SensitiveContentHost
         }
         ContentSensitivity contentSensitivityToRestore = (
             _contentSensitivitySetting.contentSensitivityBasedOnWidgetCounts
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         );
         if (
             !Equals(
@@ -448,9 +446,11 @@ internal class _SensitiveContentState__sensitive_content : State<SensitiveConten
                     return widget.child;
                 }
                 return SizedBox.CreateShrink();
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

@@ -64,7 +64,7 @@ public class RadioThemeData : Diagnosticable
             side: side ?? this.side,
             innerRadius: innerRadius ?? this.innerRadius
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static BorderSide? _lerpSides(BorderSide? a, BorderSide? b, double t)
@@ -84,7 +84,7 @@ public class RadioThemeData : Diagnosticable
         a ??= new BorderSide(width: 0, color: b!.color.withAlpha(0L));
         b ??= new BorderSide(width: 0, color: a.color.withAlpha(0L));
         return (BorderSide?)BorderSide.lerp(a, b, t);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static RadioThemeData lerp(RadioThemeData? a, RadioThemeData? b, double t)
@@ -114,7 +114,7 @@ public class RadioThemeData : Diagnosticable
                 Dart_uiLibrary.lerpDouble
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override int GetHashCode() =>
@@ -230,7 +230,7 @@ public class RadioThemeData : Diagnosticable
             return true;
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -239,7 +239,7 @@ public class RadioThemeData : Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -257,7 +257,7 @@ public class RadioTheme : InheritedWidget
     {
         RadioTheme? radioThemeLocal = context.dependOnInheritedWidgetOfExactType<RadioTheme>();
         return radioThemeLocal?.data ?? Theme.of(context).radioTheme;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget) =>

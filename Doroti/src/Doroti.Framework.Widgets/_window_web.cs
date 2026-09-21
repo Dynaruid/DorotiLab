@@ -17,6 +17,6 @@ public static partial class _window_webLibrary
     public static WindowingOwnerIo? createDefaultOwner()
     {
         return ((WindowingOwnerIo)(object)null);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

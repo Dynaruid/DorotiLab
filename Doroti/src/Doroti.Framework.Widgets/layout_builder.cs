@@ -87,7 +87,9 @@ internal class _LayoutBuilderElement__layout_builder<LayoutInfoType> : RenderObj
             Scheduler.SchedulerPhase.transientCallbacks
             or Scheduler.SchedulerPhase.midFrameMicrotasks => false,
             Scheduler.SchedulerPhase.persistentCallbacks => false,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         if (!deferMarkNeedsLayout)
         {
@@ -294,28 +296,28 @@ internal class _RenderLayoutBuilder__layout_builder
     {
         DartRuntimePrimitives.Assert(() => _debugThrowIfNotCheckingIntrinsics());
         return 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicWidth(double height)
     {
         DartRuntimePrimitives.Assert(() => _debugThrowIfNotCheckingIntrinsics());
         return 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicHeight(double width)
     {
         DartRuntimePrimitives.Assert(() => _debugThrowIfNotCheckingIntrinsics());
         return 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicHeight(double width)
     {
         DartRuntimePrimitives.Assert(() => _debugThrowIfNotCheckingIntrinsics());
         return 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Size computeDryLayout(BoxConstraints constraints)
@@ -327,7 +329,7 @@ internal class _RenderLayoutBuilder__layout_builder
             )
         );
         return Size.zero;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
@@ -339,7 +341,7 @@ internal class _RenderLayoutBuilder__layout_builder
             )
         );
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void performLayout()
@@ -361,13 +363,13 @@ internal class _RenderLayoutBuilder__layout_builder
     {
         return child?.getDistanceToActualBaseline(baseline)
             ?? base.computeDistanceToActualBaseline(baseline);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool hitTestChildren(BoxHitTestResult result, Offset position)
     {
         return child?.hitTest(result, position: position) ?? false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paint(PaintingContext context, Offset offset)
@@ -393,10 +395,10 @@ internal class _RenderLayoutBuilder__layout_builder
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool debugValidateChild(RenderObject child)
@@ -437,10 +439,10 @@ internal class _RenderLayoutBuilder__layout_builder
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual RenderBox? child
@@ -497,7 +499,7 @@ internal class _RenderLayoutBuilder__layout_builder
                 ((Diagnosticable)child!).toDiagnosticsNode(name: "child"),
             }
             : new List<DiagnosticsNode>();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _updateCallback(Action<Constraints> value)
@@ -533,6 +535,6 @@ public static partial class Layout_builderLibrary
         );
         FlutterError.reportError(details);
         return details;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

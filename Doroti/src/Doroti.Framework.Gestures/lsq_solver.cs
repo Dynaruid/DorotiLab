@@ -40,7 +40,7 @@ public class _Vector__lsq_solver
             result += this[i] * a[i];
         }
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double norm() => Dart_mathLibrary.sqrt(op_Multiply(this));
@@ -85,7 +85,7 @@ public class PolynomialFit
             .ToList()
             .ToString();
         return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "PolynomialFit")}({coefficientString}, confidence: {confidence.toStringAsFixed(3L)})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -198,6 +198,6 @@ public class LeastSquaresSolver
                 ? 1.0
                 : (1.0 - (sumSquaredError / sumSquaredTotal));
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

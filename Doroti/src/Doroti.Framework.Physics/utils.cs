@@ -14,46 +14,32 @@ public static partial class UtilsLibrary
             return a == b;
         }
         return (
-                (
-                    a
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
-                )
+                (a ?? throw new global::System.NullReferenceException("A required value was null."))
                     > (
                         b
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) - epsilon
                 && (
                     a
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
                     < (
                         b
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) + epsilon
             )
             || (
-                (
-                    a
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
-                )
+                (a ?? throw new global::System.NullReferenceException("A required value was null."))
                 == (
                     b
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 

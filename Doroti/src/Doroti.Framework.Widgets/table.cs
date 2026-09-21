@@ -45,7 +45,7 @@ public class TableRow
         }
         result.write(")");
         return result.ToString();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -126,7 +126,7 @@ public class Table : RenderObjectWidget
                         }
                         return true;
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 )
@@ -162,7 +162,7 @@ public class Table : RenderObjectWidget
                         }
                         return true;
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 )
@@ -188,7 +188,7 @@ public class Table : RenderObjectWidget
             defaultVerticalAlignment: defaultVerticalAlignment,
             textBaseline: textBaseline
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -259,13 +259,15 @@ internal class _TableElement__table : RenderObjectElement
                                         new _TableSlot__table(columnIndex++, rowIndex)
                                     );
                                     throw new InvalidOperationException(
-                                        "Dart closure completed without a value."
+                                        "Callback completed without returning a value."
                                     );
                                 }
                             )
                             .ToList()
                     );
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
             .ToList();
@@ -405,12 +407,12 @@ internal class _TableElement__table : RenderObjectElement
                                 var box = ((RenderBox?)child.renderObject!)!;
                                 return box;
                                 throw new InvalidOperationException(
-                                    "Dart closure completed without a value."
+                                    "Callback completed without returning a value."
                                 );
                             }
                         );
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 )
@@ -462,7 +464,7 @@ public class TableCell : StatelessWidget
             verticalAlignment: verticalAlignment,
             child: new Semantics(role: SemanticsRole.cell, child: child)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -548,10 +550,10 @@ public class _TableSlot__table : Diagnosticable
                 .toDiagnosticsNode()
                 .toStringDeep(minLevel: minLevel);
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -560,6 +562,6 @@ public class _TableSlot__table : Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

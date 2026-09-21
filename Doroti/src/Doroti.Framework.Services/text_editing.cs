@@ -108,7 +108,7 @@ public class TextSelection : TextRange
         return isCollapsed
             ? $"{typeName}.collapsed(offset: {baseOffset}, affinity: {affinity}, isDirectional: {isDirectional})"
             : $"{typeName}(baseOffset: {baseOffset}, extentOffset: {extentOffset}, isDirectional: {isDirectional})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool Equals(object? other)
@@ -171,7 +171,7 @@ public class TextSelection : TextRange
             affinity: affinity ?? this.affinity,
             isDirectional: isDirectional ?? this.isDirectional
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual TextSelection expandTo(TextPosition position, bool extentAtIndex = false)
@@ -208,7 +208,7 @@ public class TextSelection : TextRange
             baseOffset: normalized ? baseOffset : position.offset,
             extentOffset: normalized ? position.offset : extentOffset
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual TextSelection extendTo(TextPosition position)
@@ -218,6 +218,6 @@ public class TextSelection : TextRange
             return this;
         }
         return copyWith(extentOffset: position.offset, affinity: position.affinity);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

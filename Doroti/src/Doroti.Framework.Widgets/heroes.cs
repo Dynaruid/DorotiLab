@@ -114,7 +114,9 @@ public class Hero : StatefulWidget
                     );
                 }
                 return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             });
             var heroWidget = ((Hero?)hero.widget)!;
             var heroState = ((_HeroState__heroes?)hero.state)!;
@@ -161,7 +163,7 @@ public class Hero : StatefulWidget
         }
         context.visitChildElements(visitor);
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override IState createState() =>
@@ -218,9 +220,7 @@ public class _HeroState__heroes : State<Hero>
                 context,
                 (
                     _placeholderSize
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 widget.child
             );
@@ -230,15 +230,11 @@ public class _HeroState__heroes : State<Hero>
             return new SizedBox(
                 width: (
                     _placeholderSize
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ).width,
                 height: (
                     _placeholderSize
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ).height
             );
         }
@@ -253,7 +249,7 @@ public class _HeroState__heroes : State<Hero>
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -400,7 +396,7 @@ public class _HeroFlightManifest__heroes
         return createRectTweenLocal is null
             ? new RectTween(begin: begin, end: end)
             : createRectTweenLocal.Invoke(begin, end);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static Rect _boundingBoxFor(BuildContext context, BuildContext? ancestorContext)
@@ -412,14 +408,14 @@ public class _HeroFlightManifest__heroes
             box.getTransformTo(ancestorContext?.findRenderObject()),
             Offset.zero & box.size
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string ToString()
     {
         return $"_HeroFlightManifest({type} tag: {tag} from route: {fromRoute.settings} "
             + $"to route: {toRoute.settings} with hero: {fromHero} to {toHero}){(isValid ? "" : ", INVALID")}";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void dispose()
@@ -475,9 +471,7 @@ internal class _HeroFlight__heroes
             {
                 Rect rect = (
                     heroRectTween.evaluate(_proxyAnimation)
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 var offsets = RelativeRect.CreateFromSize(rect, manifest.navigatorSize);
                 return new Positioned(
@@ -489,10 +483,12 @@ internal class _HeroFlight__heroes
                         child: new FadeTransition(opacity: _heroOpacity, child: child)
                     )
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _performAnimationUpdate(AnimationStatus status)
@@ -576,13 +572,13 @@ internal class _HeroFlight__heroes
             (toHeroOrigin is not null)
             && (
                 toHeroOrigin
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ).isFinite
         )
         {
             Offset toHeroOrigin__26130__value26392 = (
                 toHeroOrigin
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             if (
                 !Equals(
@@ -590,7 +586,7 @@ internal class _HeroFlight__heroes
                     (
                         heroRectTween.end
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ).topLeft
                 )
@@ -601,7 +597,7 @@ internal class _HeroFlight__heroes
                     & (
                         heroRectTween.end
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ).size;
                 heroRectTween = manifest.createHeroRectTween(
@@ -625,7 +621,7 @@ internal class _HeroFlight__heroes
             (toHeroOrigin is null)
             || !(
                 toHeroOrigin
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ).isFinite;
     }
 
@@ -649,9 +645,11 @@ internal class _HeroFlight__heroes
                         && Equals(initial.status, AnimationStatus.forward);
                 }
                 default:
-                    throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                    throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    );
             }
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         manifest = initialManifest;
         bool shouldIncludeChildInPlaceholder = default!;
@@ -785,7 +783,7 @@ internal class _HeroFlight__heroes
         RouteSettings to = manifest.toRoute.settings;
         object tagLocal = manifest.tag;
         return $"HeroFlight(for: {tagLocal}, from: {@from}, to: {to} {_proxyAnimation.parent})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -839,7 +837,9 @@ public class HeroController : NavigatorObserver
             return flight.manifest.isUserGestureTransition
                 && Equals(flight.manifest.type, HeroFlightDirection.pop)
                 && flight._proxyAnimation.isDismissed;
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         List<_HeroFlight__heroes> invalidFlights = _flights
             .Values.where(isInvalidFlight)
@@ -891,7 +891,7 @@ public class HeroController : NavigatorObserver
         {
             HeroFlightDirection flightType__36140__value36599 = (
                 flightType
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             switch ((flightType__36140__value36599))
             {
@@ -992,7 +992,7 @@ public class HeroController : NavigatorObserver
                             (
                                 flightType
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             )
                         ),
@@ -1082,10 +1082,12 @@ public class HeroController : NavigatorObserver
                     ),
                     child: toHero.child
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void dispose()

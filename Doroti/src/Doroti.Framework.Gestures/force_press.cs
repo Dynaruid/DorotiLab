@@ -324,7 +324,7 @@ public class ForcePressGestureRecognizer : OneSequenceGestureRecognizer
             value = Dart_uiLibrary.clampDouble(value, 0.0, 1.0);
         }
         return value;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string debugDescription => "force press";

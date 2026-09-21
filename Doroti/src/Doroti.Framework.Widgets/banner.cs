@@ -166,7 +166,7 @@ public class BannerPainter : CustomPainter
             || (!Equals(location, __oldDelegate.location))
             || (!Equals(color, __oldDelegate.color))
             || (!Equals(textStyle, __oldDelegate.textStyle));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool? hitTest(Offset position) => false;
@@ -183,9 +183,11 @@ public class BannerPainter : CustomPainter
             (TextDirection.ltr, BannerLocation.bottomStart) => BannerLibrary._kBottomOffset,
             (TextDirection.rtl, BannerLocation.bottomEnd) => BannerLibrary._kBottomOffset,
             (TextDirection.ltr, BannerLocation.bottomEnd) => width - BannerLibrary._kBottomOffset,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual double _translationY(double height)
@@ -196,9 +198,11 @@ public class BannerPainter : CustomPainter
             BannerLocation.bottomEnd => height - BannerLibrary._kBottomOffset,
             BannerLocation.topStart => 0.0,
             BannerLocation.topEnd => 0.0,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual double _rotation
@@ -219,7 +223,7 @@ public class BannerPainter : CustomPainter
                         (TextDirection.ltr, BannerLocation.bottomStart or BannerLocation.topEnd) =>
                             1L,
                         _ => throw new InvalidOperationException(
-                            "Non-exhaustive Dart switch value."
+                            "Switch expression did not handle the supplied value."
                         ),
                     }
                 );
@@ -295,7 +299,7 @@ internal class _BannerState__banner : State<Banner>
             shadow: widget.shadow
         );
         return new CustomPaint(foregroundPainter: _painter, child: widget.child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -346,10 +350,10 @@ public class CheckedModeBanner : StatelessWidget
                 )
             );
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -360,7 +364,7 @@ public class CheckedModeBanner : StatelessWidget
         {
             message = "\"DEBUG\"";
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         properties.add(DiagnosticsNode.CreateMessage(message));
     }

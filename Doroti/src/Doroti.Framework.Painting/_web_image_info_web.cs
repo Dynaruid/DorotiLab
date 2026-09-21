@@ -30,7 +30,7 @@ public class WebImageInfoIo : ImageInfo
     public override WebImageInfoIo clone()
     {
         return new WebImageInfoIo(this.htmlImage, debugLabel: this.debugLabel);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void dispose() { }
@@ -52,7 +52,7 @@ public class WebImageInfoIo : ImageInfo
             (object.Equals(((WebImageInfoIo)other).htmlImage, this.htmlImage))
             && (((WebImageInfoIo)other).debugLabel == this.debugLabel)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double scale => 1.0;

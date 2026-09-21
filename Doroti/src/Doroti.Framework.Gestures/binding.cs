@@ -255,13 +255,13 @@ public abstract class GestureBinding
         hitTestInView(result, request.offset, checked((long)request.view.viewId));
         bool hasPlatformViewLocal = result.path.any((entry) => entry.target is NativeHitTestTarget);
         return new HitTestResponse(hasPlatformView: hasPlatformViewLocal);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual double? _devicePixelRatioForView(long viewId)
     {
         return platformDispatcher.view(id: viewId)?.devicePixelRatio;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void cancelPointer(long pointer)

@@ -18,7 +18,7 @@ internal class _UbiquitousInheritedElement__basic : InheritedElement
     public override object? getDependencies(Element dependent)
     {
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void notifyClients(ProxyWidget oldWidget)
@@ -78,14 +78,14 @@ public class Directionality : _UbiquitousInheritedWidget__basic
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasDirectionality(context));
         Directionality widget = context.dependOnInheritedWidgetOfExactType<Directionality>()!;
         return widget.textDirection;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static TextDirection? maybeOf(BuildContext context)
     {
         Directionality? widget = context.dependOnInheritedWidgetOfExactType<Directionality>();
         return widget?.textDirection;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget) =>
@@ -121,7 +121,7 @@ public class Opacity : SingleChildRenderObjectWidget
     public override RenderObject createRenderObject(BuildContext context)
     {
         return new RenderOpacity(opacity: opacity, alwaysIncludeSemantics: alwaysIncludeSemantics);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -176,7 +176,7 @@ public class ShaderMask : SingleChildRenderObjectWidget
     public override RenderObject createRenderObject(BuildContext context)
     {
         return new RenderShaderMask(shaderCallback: shaderCallback, blendMode: blendMode);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -212,13 +212,13 @@ public class BackdropGroup : InheritedWidget
     {
         var __oldWidget = (BackdropGroup)oldWidget;
         return !Equals(__oldWidget.backdropKey, backdropKey);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static BackdropGroup? of(BuildContext context)
     {
         return context.dependOnInheritedWidgetOfExactType<BackdropGroup>();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -286,7 +286,7 @@ public class BackdropFilter : SingleChildRenderObjectWidget
             return BackdropGroup.of(context)?.backdropKey;
         }
         return backdropGroupKey;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual ImageFilterConfig _effectiveFilterConfig
@@ -302,7 +302,7 @@ public class BackdropFilter : SingleChildRenderObjectWidget
             enabled: enabled,
             backdropKey: _getBackdropGroupKey(context)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -401,7 +401,7 @@ public class CustomPaint : SingleChildRenderObjectWidget
             isComplex: isComplex,
             willChange: willChange
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -464,7 +464,7 @@ public class ClipRect : SingleChildRenderObjectWidget
     public override RenderObject createRenderObject(BuildContext context)
     {
         return new RenderClipRect(clipper: clipper, clipBehavior: clipBehavior);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -529,7 +529,7 @@ public class ClipRRect : SingleChildRenderObjectWidget
             clipBehavior: clipBehavior,
             textDirection: Directionality.maybeOf(context)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -598,7 +598,7 @@ public class ClipRSuperellipse : SingleChildRenderObjectWidget
             clipper: clipper,
             textDirection: Directionality.maybeOf(context)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -662,7 +662,7 @@ public class ClipOval : SingleChildRenderObjectWidget
     public override RenderObject createRenderObject(BuildContext context)
     {
         return new RenderClipOval(clipper: clipper, clipBehavior: clipBehavior);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -734,16 +734,18 @@ public class ClipPath : SingleChildRenderObjectWidget
                     clipBehavior: clipBehavior,
                     child: child
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override RenderObject createRenderObject(BuildContext context)
     {
         return new RenderClipPath(clipper: clipper, clipBehavior: clipBehavior);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -820,7 +822,7 @@ public class PhysicalModel : SingleChildRenderObjectWidget
             color: color,
             shadowColor: shadowColor
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -893,7 +895,7 @@ public class PhysicalShape : SingleChildRenderObjectWidget
             color: color,
             shadowColor: shadowColor
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -1060,7 +1062,7 @@ public class Transform : SingleChildRenderObjectWidget
             return _createZRotation(0.0, -1.0);
         }
         return _createZRotation(sinLocal, cosLocal);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static Matrix4 _createZRotation(double sin, double cos)
@@ -1073,7 +1075,7 @@ public class Transform : SingleChildRenderObjectWidget
         result.storage[10L] = 1.0;
         result.storage[15L] = 1.0;
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override RenderObject createRenderObject(BuildContext context)
@@ -1086,7 +1088,7 @@ public class Transform : SingleChildRenderObjectWidget
             transformHitTests: transformHitTests,
             filterQuality: filterQuality
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -1129,7 +1131,7 @@ public class CompositedTransformTarget : SingleChildRenderObjectWidget
     public override RenderObject createRenderObject(BuildContext context)
     {
         return new RenderLeaderLayer(link: link);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -1176,7 +1178,7 @@ public class CompositedTransformFollower : SingleChildRenderObjectWidget
             leaderAnchor: targetAnchor,
             followerAnchor: followerAnchor
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -1230,7 +1232,7 @@ public class FittedBox : SingleChildRenderObjectWidget
             textDirection: Directionality.maybeOf(context),
             clipBehavior: clipBehavior
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -1284,7 +1286,7 @@ public class FractionalTranslation : SingleChildRenderObjectWidget
             translation: translation,
             transformHitTests: transformHitTests
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -1341,7 +1343,7 @@ public class Padding : SingleChildRenderObjectWidget
     public override RenderObject createRenderObject(BuildContext context)
     {
         return new RenderPadding(padding: padding, textDirection: Directionality.maybeOf(context));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -1400,7 +1402,7 @@ public class Align : SingleChildRenderObjectWidget
             heightFactor: heightFactor,
             textDirection: Directionality.maybeOf(context)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -1460,7 +1462,7 @@ public class CustomSingleChildLayout : SingleChildRenderObjectWidget
     public override RenderObject createRenderObject(BuildContext context)
     {
         return new RenderCustomSingleChildLayoutBox(@delegate: @delegate);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -1517,7 +1519,7 @@ public class CustomMultiChildLayout : MultiChildRenderObjectWidget
     public override RenderObject createRenderObject(BuildContext context)
     {
         return new RenderCustomMultiChildLayoutBox(@delegate: @delegate);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -1583,7 +1585,7 @@ public class SizedBox : SingleChildRenderObjectWidget
     public override RenderObject createRenderObject(BuildContext context)
     {
         return new RenderConstrainedBox(additionalConstraints: _additionalConstraints);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual BoxConstraints _additionalConstraints
@@ -1610,7 +1612,7 @@ public class SizedBox : SingleChildRenderObjectWidget
             _ => objectRuntimeTypeFunctions.objectRuntimeType(this, "SizedBox"),
         };
         return (key is null) ? @type : $"{@type}-{key}";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -1651,7 +1653,7 @@ public class ConstrainedBox : SingleChildRenderObjectWidget
     public override RenderObject createRenderObject(BuildContext context)
     {
         return new RenderConstrainedBox(additionalConstraints: constraints);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -1735,7 +1737,7 @@ public class ConstraintsTransformBox : SingleChildRenderObjectWidget
             constraintsTransform: constraintsTransform,
             clipBehavior: clipBehavior
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -1811,9 +1813,11 @@ public class UnconstrainedBox : StatelessWidget
             Axis.horizontal => ConstraintsTransformBox.heightUnconstrained,
             Axis.vertical => ConstraintsTransformBox.widthUnconstrained,
             null => ConstraintsTransformBox.unconstrained,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -1825,7 +1829,7 @@ public class UnconstrainedBox : StatelessWidget
             constraintsTransform: _axisToTransform(constrainedAxis),
             child: child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -1872,7 +1876,7 @@ public class FractionallySizedBox : SingleChildRenderObjectWidget
             heightFactor: heightFactor,
             textDirection: Directionality.maybeOf(context)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -1926,7 +1930,7 @@ public class LimitedBox : SingleChildRenderObjectWidget
     public override RenderObject createRenderObject(BuildContext context)
     {
         return new RenderLimitedBox(maxWidth: maxWidth, maxHeight: maxHeight);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -2000,7 +2004,7 @@ public class OverflowBox : SingleChildRenderObjectWidget
             fit: fit,
             textDirection: Directionality.maybeOf(context)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -2063,7 +2067,7 @@ public class SizedOverflowBox : SingleChildRenderObjectWidget
             requestedSize: size,
             textDirection: Directionality.of(context)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -2192,7 +2196,7 @@ public class IntrinsicWidth : SingleChildRenderObjectWidget
     public override RenderObject createRenderObject(BuildContext context)
     {
         return new RenderIntrinsicWidth(stepWidth: _stepWidth, stepHeight: _stepHeight);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -2243,7 +2247,7 @@ public class Baseline : SingleChildRenderObjectWidget
     public override RenderObject createRenderObject(BuildContext context)
     {
         return new RenderBaseline(baseline: baseline, baselineType: baselineType);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -2273,7 +2277,7 @@ public class IgnoreBaseline : SingleChildRenderObjectWidget
     public override RenderObject createRenderObject(BuildContext context)
     {
         return new RenderIgnoreBaseline();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -2303,7 +2307,7 @@ public class SliverPadding : SingleChildRenderObjectWidget
     public override RenderObject createRenderObject(BuildContext context)
     {
         return new RenderSliverPadding(padding: padding, textDirection: Directionality.of(context));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -2562,7 +2566,7 @@ public abstract class _SemanticsBase__basic : SingleChildRenderObjectWidget
             return null;
         }
         return Directionality.maybeOf(context);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -2683,116 +2687,116 @@ public class SliverSemantics : _SemanticsBase__basic
             blockUserActions: blockUserActions,
             enabled: (
                 enabled
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             @checked: (
                 @checked
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             mixed: (
                 mixed
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             selected: (
                 selected
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             toggled: (
                 toggled
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             button: (
                 button
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             slider: (
                 slider
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             keyboardKey: (
                 keyboardKey
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             link: (
                 link
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             linkUrl: linkUrl,
             header: (
                 header
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             headingLevel: (
                 headingLevel
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             textField: (
                 textField
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             readOnly: (
                 readOnly
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             focusable: (
                 focusable
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             focused: (
                 focused
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             accessibilityFocusBlockType: (
                 accessibilityFocusBlockType
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             inMutuallyExclusiveGroup: (
                 inMutuallyExclusiveGroup
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             obscured: (
                 obscured
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             multiline: (
                 multiline
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             scopesRoute: (
                 scopesRoute
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             namesRoute: (
                 namesRoute
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             hidden: (
                 hidden
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             image: (
                 image
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             liveRegion: (
                 liveRegion
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             expanded: (
                 expanded
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             isRequired: (
                 isRequired
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             maxValueLength: (
                 maxValueLength
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             currentValueLength: (
                 currentValueLength
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             identifier: identifier,
             traversalParentIdentifier: traversalParentIdentifier,
@@ -2812,7 +2816,7 @@ public class SliverSemantics : _SemanticsBase__basic
             onLongPressHint: onLongPressHint,
             textDirection: (
                 textDirection
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             sortKey: sortKey,
             tagForChildren: tagForChildren,
@@ -2840,21 +2844,21 @@ public class SliverSemantics : _SemanticsBase__basic
             customSemanticsActions: customSemanticsActions,
             role: (
                 role
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             controlsNodes: controlsNodes,
             validationResult: validationResult,
             hitTestBehavior: (
                 hitTestBehavior
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             inputType: (
                 inputType
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             localeForSubtree: (
                 localeForSubtree
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             minValue: minValue,
             maxValue: maxValue,
@@ -2895,7 +2899,7 @@ public class SliverSemantics : _SemanticsBase__basic
             localeForSubtree: localeForSubtree,
             textDirection: _getTextDirection(context)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -2950,9 +2954,11 @@ public static partial class BasicLibrary
                 return reverse ? AxisDirection.up : AxisDirection.down;
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -2980,13 +2986,13 @@ public class ListBody : MultiChildRenderObjectWidget
             mainAxis,
             reverse
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override RenderObject createRenderObject(BuildContext context)
     {
         return new RenderListBody(axisDirection: _getDirection(context));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -3046,7 +3052,7 @@ public class Stack : MultiChildRenderObjectWidget
             );
         }
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override RenderObject createRenderObject(BuildContext context)
@@ -3058,7 +3064,7 @@ public class Stack : MultiChildRenderObjectWidget
             fit: fit,
             clipBehavior: clipBehavior
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -3212,7 +3218,9 @@ public class Positioned : ParentDataWidget<StackParentData>
         {
             TextDirection.rtl => (end, start),
             TextDirection.ltr => (start, end),
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         return new Positioned(
             key: key,
@@ -3324,7 +3332,7 @@ public class PositionedDirectional : StatelessWidget
             height: height,
             child: child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -3386,7 +3394,9 @@ public class Flex : MultiChildRenderObjectWidget
                         || Equals(crossAxisAlignment, CrossAxisAlignment.end);
                 }
                 default:
-                    throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                    throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    );
             }
         }
     }
@@ -3394,7 +3404,7 @@ public class Flex : MultiChildRenderObjectWidget
     public virtual TextDirection? getEffectiveTextDirection(BuildContext context)
     {
         return textDirection ?? (_needTextDirection ? Directionality.maybeOf(context) : null);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override RenderObject createRenderObject(BuildContext context)
@@ -3410,7 +3420,7 @@ public class Flex : MultiChildRenderObjectWidget
             clipBehavior: clipBehavior,
             spacing: spacing
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -3631,7 +3641,7 @@ public class Wrap : MultiChildRenderObjectWidget
             verticalDirection: verticalDirection,
             clipBehavior: clipBehavior
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -3789,7 +3799,7 @@ public class RichText : MultiChildRenderObjectWidget
                     (
                         maxLines
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) > 0L
                 )
@@ -3819,7 +3829,7 @@ public class RichText : MultiChildRenderObjectWidget
             ),
             (TextScaler scalerLocal, _) => scalerLocal,
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double textScaleFactor => textScaler.textScaleFactor;
@@ -3851,7 +3861,7 @@ public class RichText : MultiChildRenderObjectWidget
             selectionColor: selectionColor,
             devicePixelRatio: _getDevicePixelRatio(context)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -4038,7 +4048,7 @@ public class RawImage : LeafRenderObjectWidget
             filterQuality: filterQuality,
             blendMode: blendMode
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -4148,7 +4158,7 @@ public class DefaultAssetBundle : InheritedWidget
         DefaultAssetBundle? result =
             context.dependOnInheritedWidgetOfExactType<DefaultAssetBundle>();
         return result?.bundle ?? Asset_bundleLibrary.rootBundle;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget) =>
@@ -4246,7 +4256,7 @@ public class Listener : SingleChildRenderObjectWidget
             onPointerSignal: onPointerSignal,
             behavior: behavior
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -4326,7 +4336,7 @@ public class MouseRegion : SingleChildRenderObjectWidget
             opaque: opaque,
             hitTestBehavior: hitTestBehavior
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -4400,7 +4410,7 @@ public class IgnorePointer : SingleChildRenderObjectWidget
     public override RenderObject createRenderObject(BuildContext context)
     {
         return new RenderIgnorePointer(ignoring: ignoring, ignoringSemantics: ignoringSemantics);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -4455,7 +4465,7 @@ public class AbsorbPointer : SingleChildRenderObjectWidget
     public override RenderObject createRenderObject(BuildContext context)
     {
         return new RenderAbsorbPointer(absorbing: absorbing, ignoringSemantics: ignoringSemantics);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -4510,7 +4520,7 @@ public class MetaData : SingleChildRenderObjectWidget
     public override RenderObject createRenderObject(BuildContext context)
     {
         return new RenderMetaData(metaData: metaData, behavior: behavior);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -4769,7 +4779,7 @@ public class Semantics : _SemanticsBase__basic
             localeForSubtree: localeForSubtree,
             textDirection: _getTextDirection(context)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -4923,7 +4933,7 @@ public class KeyedSubtree : StatelessWidget
             !DebugLibrary.debugItemsHaveDuplicateKeys(itemsWithUniqueKeys.Cast<Widget>())
         );
         return itemsWithUniqueKeys;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context) => child;
@@ -4982,7 +4992,7 @@ public class ColoredBox : SingleChildRenderObjectWidget
     public override RenderObject createRenderObject(BuildContext context)
     {
         return new _RenderColoredBox__basic(color: color, isAntiAlias: isAntiAlias);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)

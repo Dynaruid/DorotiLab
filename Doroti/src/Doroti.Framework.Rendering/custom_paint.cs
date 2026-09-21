@@ -190,7 +190,7 @@ public class RenderCustomPaint : RenderProxyBox
                     (
                         __value
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
@@ -200,7 +200,7 @@ public class RenderCustomPaint : RenderProxyBox
             }
             _preferredSize = (
                 __value
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             markNeedsLayout();
         }
@@ -213,7 +213,7 @@ public class RenderCustomPaint : RenderProxyBox
             return double.IsFinite(preferredSize.width) ? preferredSize.width : 0;
         }
         return base.computeMinIntrinsicWidth(height);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicWidth(double height)
@@ -223,7 +223,7 @@ public class RenderCustomPaint : RenderProxyBox
             return double.IsFinite(preferredSize.width) ? preferredSize.width : 0;
         }
         return base.computeMaxIntrinsicWidth(height);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicHeight(double width)
@@ -233,7 +233,7 @@ public class RenderCustomPaint : RenderProxyBox
             return double.IsFinite(preferredSize.height) ? preferredSize.height : 0;
         }
         return base.computeMinIntrinsicHeight(width);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicHeight(double width)
@@ -243,7 +243,7 @@ public class RenderCustomPaint : RenderProxyBox
             return double.IsFinite(preferredSize.height) ? preferredSize.height : 0;
         }
         return base.computeMaxIntrinsicHeight(width);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void attach(PipelineOwner owner)
@@ -267,13 +267,13 @@ public class RenderCustomPaint : RenderProxyBox
             return true;
         }
         return base.hitTestChildren(result, position: position);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool hitTestSelf(Offset position)
     {
         return (_painter is not null) && (_painter!.hitTest(position) ?? true);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void performLayout()
@@ -285,7 +285,7 @@ public class RenderCustomPaint : RenderProxyBox
     public override Size computeSizeForNoChild(BoxConstraints constraints)
     {
         return constraints.constrain(preferredSize);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _paintWithPainter(Canvas canvas, Offset offset, CustomPainter painter)
@@ -595,7 +595,7 @@ public class RenderCustomPaint : RenderProxyBox
             return true;
         });
         return newChildren.cast<SemanticsNode>().ToList();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static bool _canUpdateSemanticsChild(
@@ -604,7 +604,7 @@ public class RenderCustomPaint : RenderProxyBox
     )
     {
         return Equals(oldChild.key, newSemantics.key);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static SemanticsNode _updateSemanticsChild(
@@ -622,7 +622,7 @@ public class RenderCustomPaint : RenderProxyBox
         {
             configLocal.role = (
                 propertiesLocal.role
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
         if (propertiesLocal.sortKey is not null)
@@ -641,14 +641,14 @@ public class RenderCustomPaint : RenderProxyBox
         {
             configLocal.isSelected = (
                 propertiesLocal.selected
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
         if (propertiesLocal.button is not null)
         {
             configLocal.isButton = (
                 propertiesLocal.button
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
         if (propertiesLocal.expanded is not null)
@@ -659,7 +659,7 @@ public class RenderCustomPaint : RenderProxyBox
         {
             configLocal.isLink = (
                 propertiesLocal.link
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
         if (propertiesLocal.linkUrl is not null)
@@ -670,35 +670,35 @@ public class RenderCustomPaint : RenderProxyBox
         {
             configLocal.isTextField = (
                 propertiesLocal.textField
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
         if (propertiesLocal.slider is not null)
         {
             configLocal.isSlider = (
                 propertiesLocal.slider
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
         if (propertiesLocal.keyboardKey is not null)
         {
             configLocal.isKeyboardKey = (
                 propertiesLocal.keyboardKey
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
         if (propertiesLocal.readOnly is not null)
         {
             configLocal.isReadOnly = (
                 propertiesLocal.readOnly
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
         if (propertiesLocal.focusable is not null)
         {
             configLocal.isFocusable = (
                 propertiesLocal.focusable
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
         if (propertiesLocal.focused is not null)
@@ -709,7 +709,7 @@ public class RenderCustomPaint : RenderProxyBox
         {
             configLocal.accessibilityFocusBlockType = (
                 propertiesLocal.accessibilityFocusBlockType
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
         if (propertiesLocal.enabled is not null)
@@ -720,63 +720,63 @@ public class RenderCustomPaint : RenderProxyBox
         {
             configLocal.isInMutuallyExclusiveGroup = (
                 propertiesLocal.inMutuallyExclusiveGroup
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
         if (propertiesLocal.obscured is not null)
         {
             configLocal.isObscured = (
                 propertiesLocal.obscured
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
         if (propertiesLocal.multiline is not null)
         {
             configLocal.isMultiline = (
                 propertiesLocal.multiline
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
         if (propertiesLocal.hidden is not null)
         {
             configLocal.isHidden = (
                 propertiesLocal.hidden
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
         if (propertiesLocal.header is not null)
         {
             configLocal.isHeader = (
                 propertiesLocal.header
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
         if (propertiesLocal.headingLevel is not null)
         {
             configLocal.headingLevel = (
                 propertiesLocal.headingLevel
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
         if (propertiesLocal.scopesRoute is not null)
         {
             configLocal.scopesRoute = (
                 propertiesLocal.scopesRoute
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
         if (propertiesLocal.namesRoute is not null)
         {
             configLocal.namesRoute = (
                 propertiesLocal.namesRoute
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
         if (propertiesLocal.liveRegion is not null)
         {
             configLocal.liveRegion = (
                 propertiesLocal.liveRegion
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
         if (propertiesLocal.isRequired is not null)
@@ -799,7 +799,7 @@ public class RenderCustomPaint : RenderProxyBox
         {
             configLocal.isImage = (
                 propertiesLocal.image
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
         if (propertiesLocal.label is not null)
@@ -866,14 +866,14 @@ public class RenderCustomPaint : RenderProxyBox
         {
             configLocal.hitTestBehavior = (
                 propertiesLocal.hitTestBehavior
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
         if (propertiesLocal.inputType is not null)
         {
             configLocal.inputType = (
                 propertiesLocal.inputType
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
         if (propertiesLocal.minValue is not null)
@@ -995,7 +995,7 @@ public class RenderCustomPaint : RenderProxyBox
             )
         )();
         return newChild;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)

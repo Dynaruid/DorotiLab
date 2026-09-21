@@ -45,6 +45,6 @@ public class FontLoader
     public virtual Future loadFont(Uint8List list, string family)
     {
         return Dart_uiLibrary.loadFontFromList(list, fontFamily: family);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

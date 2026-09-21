@@ -48,7 +48,7 @@ public class RenderRotatedBox : RenderBox, RenderObjectWithChildMixin<RenderBox>
         return _isVertical
             ? child!.getMinIntrinsicHeight(height)
             : child!.getMinIntrinsicWidth(height);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicWidth(double height)
@@ -60,7 +60,7 @@ public class RenderRotatedBox : RenderBox, RenderObjectWithChildMixin<RenderBox>
         return _isVertical
             ? child!.getMaxIntrinsicHeight(height)
             : child!.getMaxIntrinsicWidth(height);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicHeight(double width)
@@ -72,7 +72,7 @@ public class RenderRotatedBox : RenderBox, RenderObjectWithChildMixin<RenderBox>
         return _isVertical
             ? child!.getMinIntrinsicWidth(width)
             : child!.getMinIntrinsicHeight(width);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicHeight(double width)
@@ -84,7 +84,7 @@ public class RenderRotatedBox : RenderBox, RenderObjectWithChildMixin<RenderBox>
         return _isVertical
             ? child!.getMaxIntrinsicWidth(width)
             : child!.getMaxIntrinsicHeight(width);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Size computeDryLayout(BoxConstraints constraints)
@@ -95,7 +95,7 @@ public class RenderRotatedBox : RenderBox, RenderObjectWithChildMixin<RenderBox>
         }
         Size childSize = child!.getDryLayout(_isVertical ? constraints.flipped : constraints);
         return _isVertical ? new Size(childSize.height, childSize.width) : childSize;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void performLayout()
@@ -148,7 +148,7 @@ public class RenderRotatedBox : RenderBox, RenderObjectWithChildMixin<RenderBox>
                 return child!.hitTest(result, position: position);
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _paintChild(PaintingContext context, Offset offset)
@@ -228,7 +228,7 @@ public class RenderRotatedBox : RenderBox, RenderObjectWithChildMixin<RenderBox>
             return true;
         });
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual RenderBox? child
@@ -285,6 +285,6 @@ public class RenderRotatedBox : RenderBox, RenderObjectWithChildMixin<RenderBox>
                 ((Diagnosticable)child!).toDiagnosticsNode(name: "child"),
             }
             : new List<DiagnosticsNode>();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

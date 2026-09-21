@@ -64,7 +64,7 @@ public class DrawerThemeData : Diagnosticable
             width: width ?? this.width,
             clipBehavior: clipBehavior ?? this.clipBehavior
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static DrawerThemeData? lerp(DrawerThemeData? a, DrawerThemeData? b, double t)
@@ -88,7 +88,7 @@ public class DrawerThemeData : Diagnosticable
             width: Dart_uiLibrary.lerpDouble(a?.width, b?.width, t),
             clipBehavior: (t < 0.5) ? a?.clipBehavior : b?.clipBehavior
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override int GetHashCode() =>
@@ -166,7 +166,7 @@ public class DrawerThemeData : Diagnosticable
             return true;
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -175,7 +175,7 @@ public class DrawerThemeData : Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -193,13 +193,13 @@ public class DrawerTheme : InheritedTheme
     {
         DrawerTheme? drawerThemeLocal = context.dependOnInheritedWidgetOfExactType<DrawerTheme>();
         return drawerThemeLocal?.data ?? Theme.of(context).drawerTheme;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget wrap(BuildContext context, Widget child)
     {
         return new DrawerTheme(data: data, child: child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget) =>

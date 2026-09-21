@@ -104,7 +104,7 @@ public class RawAutocomplete<T> : StatefulWidget
     public static string defaultStringForOption(object? option)
     {
         return option!.ToString()!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override IState createState() =>
@@ -475,7 +475,7 @@ internal class _RawAutocompleteState__autocomplete<T> : State<RawAutocomplete<T>
         {
             return Actions.invoke(context, intent);
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _buildOptionsView(
@@ -511,7 +511,9 @@ internal class _RawAutocompleteState__autocomplete<T> : State<RawAutocomplete<T>
             OptionsViewOpenDirection.up => true,
             OptionsViewOpenDirection.down => false,
             OptionsViewOpenDirection.mostSpace => spaceAbove > spaceBelow,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         double optionsViewMaxHeight = opensUp
             ? -overlayRectInField.top
@@ -556,7 +558,7 @@ internal class _RawAutocompleteState__autocomplete<T> : State<RawAutocomplete<T>
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void initState()
@@ -634,7 +636,7 @@ internal class _RawAutocompleteState__autocomplete<T> : State<RawAutocomplete<T>
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -702,6 +704,6 @@ public class AutocompleteHighlightedOption : InheritedNotifier<ValueNotifier<lon
                 .dependOnInheritedWidgetOfExactType<AutocompleteHighlightedOption>()
                 ?.notifier?.value
             ?? 0L;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

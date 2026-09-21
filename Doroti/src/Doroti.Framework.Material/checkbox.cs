@@ -285,7 +285,9 @@ internal class _CheckboxState__checkbox
                         return widget.activeColor;
                     }
                     return null;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
         }
@@ -303,7 +305,7 @@ internal class _CheckboxState__checkbox
             return side;
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -345,7 +347,9 @@ internal class _CheckboxState__checkbox
                         );
                     }
                     default:
-                        throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                        throw new InvalidOperationException(
+                            "Switch expression did not handle the supplied value."
+                        );
                 }
                 break;
             }
@@ -372,7 +376,7 @@ internal class _CheckboxState__checkbox
             widget.materialTapTargetSize
             ?? checkboxTheme.materialTapTargetSize
             ?? defaults.materialTapTargetSize
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         );
         VisualDensity effectiveVisualDensity =
             (widget.visualDensity ?? checkboxTheme.visualDensity) ?? defaults.visualDensity!;
@@ -389,7 +393,9 @@ internal class _CheckboxState__checkbox
                     ConstantsLibrary.kMinInteractiveDimension - 8.0
                 ),
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
         sizeLocal += effectiveVisualDensity.baseSizeAdjustment;
         WidgetStateProperty<MouseCursor> effectiveMouseCursor = WidgetStateProperty.resolveWith(
@@ -399,7 +405,9 @@ internal class _CheckboxState__checkbox
                         WidgetStateProperty.resolveAs(widget.mouseCursor, states)
                         ?? (checkboxTheme.mouseCursor?.resolve(states))
                     ) ?? WidgetStateMouseCursor.adaptiveClickable.resolve(states);
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
         HashSet<WidgetState> activeStates = (
@@ -546,7 +554,7 @@ internal class _CheckboxState__checkbox
             (widget.splashRadius ?? checkboxTheme.splashRadius)
             ?? (
                 defaults.splashRadius
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         return new Widgets.Semantics(
             label: widget.semanticLabel,
@@ -619,7 +627,7 @@ internal class _CheckboxState__checkbox
         )();
         _tickers!.Add(result);
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _removeTicker(_WidgetTicker__ticker_provider ticker)
@@ -850,7 +858,7 @@ internal class _CheckboxState__checkbox
             mouseCursor: mouseCursor,
             child: new CustomPaint(size: size, painter: painter)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Widget buildToggleableWithChild(
@@ -879,7 +887,7 @@ internal class _CheckboxState__checkbox
                 child: new Widgets.Semantics(enabled: isInteractive, child: child)
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -993,7 +1001,7 @@ internal class _CheckboxPainter__checkbox : ToggleablePainter
         double size = CheckboxLibrary._kEdgeSize - (inset * CheckboxLibrary._kStrokeWidth);
         var rect = Rect.fromLTWH(origin.dx + inset, origin.dy + inset, size, size);
         return rect;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Color _colorAt(double t)
@@ -1001,7 +1009,7 @@ internal class _CheckboxPainter__checkbox : ToggleablePainter
         return (t >= 0.25)
             ? activeColor
             : Dart_uiLibrary.Color.lerp(inactiveColor, activeColor, t * 4.0)!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Paint _createStrokePaint()
@@ -1018,7 +1026,7 @@ internal class _CheckboxPainter__checkbox : ToggleablePainter
                 }
             )
         )();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _drawBox(Canvas canvas, Rect outer, Paint paint, BorderSide? side)
@@ -1052,7 +1060,7 @@ internal class _CheckboxPainter__checkbox : ToggleablePainter
             double strokeT = t * 2.0;
             Offset drawMid = (
                 Dart_uiLibrary.Offset.lerp(start, mid, strokeT)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             path.moveTo(origin.dx + start.dx, origin.dy + start.dy);
             path.lineTo(origin.dx + drawMid.dx, origin.dy + drawMid.dy);
@@ -1062,7 +1070,7 @@ internal class _CheckboxPainter__checkbox : ToggleablePainter
             double strokeTLocal = (t - 0.5) * 2.0;
             Offset drawEnd = (
                 Dart_uiLibrary.Offset.lerp(mid, end, strokeTLocal)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             path.moveTo(origin.dx + start.dx, origin.dy + start.dy);
             path.lineTo(origin.dx + mid.dx, origin.dy + mid.dy);
@@ -1079,11 +1087,11 @@ internal class _CheckboxPainter__checkbox : ToggleablePainter
         var end = new Offset(CheckboxLibrary._kEdgeSize * 0.8, CheckboxLibrary._kEdgeSize * 0.5);
         Offset drawStart = (
             Dart_uiLibrary.Offset.lerp(start, mid, 1.0 - t)
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         );
         Offset drawEnd = (
             Dart_uiLibrary.Offset.lerp(mid, end, t)
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         );
         canvas.drawLine(origin + drawStart, origin + drawEnd, paint);
     }
@@ -1100,7 +1108,9 @@ internal class _CheckboxPainter__checkbox : ToggleablePainter
             AnimationStatus.reverse => 1.0 - position.value,
             AnimationStatus.dismissed => 1.0 - position.value,
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
         if ((previousValue == false) || (value == false))
         {
@@ -1227,7 +1237,9 @@ internal class _CheckboxDefaultsM3__checkbox : CheckboxThemeData
                         return new BorderSide(width: 2.0, color: _colors.onSurface);
                     }
                     return new BorderSide(width: 2.0, color: _colors.onSurfaceVariant);
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
         }
@@ -1256,7 +1268,9 @@ internal class _CheckboxDefaultsM3__checkbox : CheckboxThemeData
                         return _colors.primary;
                     }
                     return Colors.transparent;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
         }
@@ -1285,7 +1299,9 @@ internal class _CheckboxDefaultsM3__checkbox : CheckboxThemeData
                         return _colors.onPrimary;
                     }
                     return Colors.transparent;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
         }
@@ -1341,7 +1357,9 @@ internal class _CheckboxDefaultsM3__checkbox : CheckboxThemeData
                         return _colors.onSurface.withOpacity(0.1);
                     }
                     return Colors.transparent;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
         }

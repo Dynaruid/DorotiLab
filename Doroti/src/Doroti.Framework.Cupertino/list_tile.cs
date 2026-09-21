@@ -215,7 +215,9 @@ internal class _CupertinoListTileState__list_tile : State<CupertinoListTile>
         {
             _CupertinoListTileType__list_tile.@base => true,
             _CupertinoListTileType__list_tile.notched => false,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         Widget titleLocal = new DefaultTextStyle(
             style: (baseType || (widget.subtitle is null))
@@ -251,7 +253,9 @@ internal class _CupertinoListTileState__list_tile : State<CupertinoListTile>
                         DartRuntimePrimitives.ConvertValue<EdgeInsetsGeometry>(
                             List_tileLibrary._kNotchedPaddingWithoutLeading
                         ),
-                    _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    _ => throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
                 }
             );
         Color backgroundColorLocal = widget.backgroundColor ?? CupertinoColors.transparent;
@@ -269,7 +273,9 @@ internal class _CupertinoListTileState__list_tile : State<CupertinoListTile>
             _CupertinoListTileType__list_tile.@base => List_tileLibrary._kMinHeight,
             _CupertinoListTileType__list_tile.notched =>
                 List_tileLibrary._kNotchedMinHeightWithoutLeading,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         Widget childLocal = new ConstrainedBox(
             constraints: new BoxConstraints(
@@ -450,7 +456,7 @@ internal class _CupertinoListTileState__list_tile : State<CupertinoListTile>
             behavior: HitTestBehavior.opaque,
             child: childLocal
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -466,6 +472,6 @@ public class CupertinoListTileChevron : StatelessWidget
             size: CupertinoTheme.of(context).textTheme.textStyle.fontSize,
             color: CupertinoColors.systemGrey2.resolveFrom(context)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

@@ -203,7 +203,7 @@ internal class _InputBorderPainter__input_decorator : CustomPainter
             || (!Equals(border, __oldPainter.border))
             || (!Equals(gap, __oldPainter.gap))
             || (!Equals(textDirection, __oldPainter.textDirection));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string ToString() => DiagnosticsLibrary.describeIdentity(this);
@@ -386,7 +386,7 @@ public class _BorderContainerState__input_decorator
                 hoverAnimation: _hoverAnimation
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
@@ -417,7 +417,7 @@ public class _BorderContainerState__input_decorator
         )();
         _tickers!.Add(result);
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _removeTicker(_WidgetTicker__ticker_provider ticker)
@@ -658,7 +658,7 @@ public class _HelperErrorState__input_decorator
                     )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _buildError()
@@ -698,10 +698,12 @@ public class _HelperErrorState__input_decorator
                         )
                     )
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -768,7 +770,7 @@ public class _HelperErrorState__input_decorator
             );
         }
         return empty;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
@@ -807,7 +809,7 @@ public class _HelperErrorState__input_decorator
         _updateTickerModeNotifier();
         _updateTicker();
         return _ticker!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void activate()
@@ -1413,14 +1415,14 @@ public class _RenderDecoration__input_decorator
     {
         return ChildLayoutHelper.getBaseline(box, boxConstraints, TextBaseline.alphabetic)
             ?? box.size.height;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static double _getDryBaseline(RenderBox box, BoxConstraints boxConstraints)
     {
         return ChildLayoutHelper.getDryBaseline(box, boxConstraints, TextBaseline.alphabetic)
             ?? ChildLayoutHelper.dryLayoutChild(box, boxConstraints).height;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static BoxParentData _boxParentData(RenderBox box) =>
@@ -1546,9 +1548,7 @@ public class _RenderDecoration__input_decorator
                         contentPadding.end,
                         decoration.floatingLabelProgress
                     )
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
                 : suffixIconSize.width;
             double labelWidth = Math.Max(
@@ -1566,7 +1566,7 @@ public class _RenderDecoration__input_decorator
                     1.0,
                     1L / Input_decoratorLibrary._kFinalLabelScale,
                     decoration.floatingLabelProgress
-                ) ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ) ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             BoxConstraints labelConstraints = boxConstraints.copyWith(
                 maxWidth: labelWidth * invertedLabelScale
@@ -1637,9 +1637,7 @@ public class _RenderDecoration__input_decorator
             (
                 (
                     decoration.isDense
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
                 || decoration.isCollapsed
                 || expands
@@ -1699,7 +1697,7 @@ public class _RenderDecoration__input_decorator
                 containerHeightLocal + (subtextSizeLocal?.subtextHeight ?? 0.0)
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static double _interpolateThree(
@@ -1712,7 +1710,7 @@ public class _RenderDecoration__input_decorator
         double basis =
             (textAlignVertical.y <= 0L) ? Math.Max(middle - begin, 0) : Math.Max(end - middle, 0);
         return middle + (basis * textAlignVertical.y);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicWidth(double height)
@@ -1740,7 +1738,7 @@ public class _RenderDecoration__input_decorator
                     ? inputToSuffixGap
                     : (contentPadding.end + decoration.inputGap)
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicWidth(double height)
@@ -1768,7 +1766,7 @@ public class _RenderDecoration__input_decorator
                     ? inputToSuffixGap
                     : (contentPadding.end + decoration.inputGap)
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual double _lineHeight(double width, List<RenderBox?> boxes)
@@ -1783,7 +1781,7 @@ public class _RenderDecoration__input_decorator
             height = Math.Max(_minHeight(box, width), height);
         }
         return height;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicHeight(double width)
@@ -1852,21 +1850,19 @@ public class _RenderDecoration__input_decorator
             (
                 (
                     decoration.isDense
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) || expands
             )
                 ? 0.0
                 : ConstantsLibrary.kMinInteractiveDimension;
         return Math.Max(containerHeight, minContainerHeight) + subtextHeight;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicHeight(double width)
     {
         return getMinIntrinsicHeight(width);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? computeDistanceToActualBaseline(TextBaseline baseline)
@@ -1878,7 +1874,7 @@ public class _RenderDecoration__input_decorator
         }
         return _boxParentData(inputLocal).offset.dy
             + (inputLocal.getDistanceToActualBaseline(baseline) ?? inputLocal.size.height);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
@@ -1908,7 +1904,9 @@ public class _RenderDecoration__input_decorator
                             ) ?? inputLocal.getDryLayout(layout.inputConstraints).height
                         ),
                     _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                        throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                        throw new InvalidOperationException(
+                            "Switch expression did not handle the supplied value."
+                        ),
                 }
             ) + layout.baseline;
     }
@@ -1921,7 +1919,7 @@ public class _RenderDecoration__input_decorator
             getBaseline: _getDryBaseline
         );
         return constraints.constrain(layout.size);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void performLayout()
@@ -1954,7 +1952,9 @@ public class _RenderDecoration__input_decorator
                 TextDirection.rtl => 0.0,
                 TextDirection.ltr => _boxSize(icon).width,
                 _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                    throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
             };
             _boxParentData(containerLocal).offset = new Offset(xLocal, 0.0);
         }
@@ -1963,7 +1963,9 @@ public class _RenderDecoration__input_decorator
         {
             _boxParentData(box).offset = new Offset(x, (heightLocal - box.size.height) / 2.0);
             return box.size.width;
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         if (icon is not null)
         {
@@ -1972,7 +1974,9 @@ public class _RenderDecoration__input_decorator
                 TextDirection.rtl => overallWidth - icon!.size.width,
                 TextDirection.ltr => 0.0,
                 _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                    throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
             };
             centerLayout(icon!, xAlternate);
         }
@@ -1981,7 +1985,7 @@ public class _RenderDecoration__input_decorator
         RenderBox? counterLocal = counter;
         double helperErrorBaseline = (
             helperError.getDistanceToBaseline(TextBaseline.alphabetic)
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         );
         double counterBaseline =
             counterLocal?.getDistanceToBaseline(TextBaseline.alphabetic) ?? 0.0;
@@ -2033,12 +2037,14 @@ public class _RenderDecoration__input_decorator
                     - (
                         box.getDistanceToBaseline(TextBaseline.alphabetic)
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
             );
             return box.size.width;
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         switch (textDirection)
         {
@@ -2225,7 +2231,7 @@ public class _RenderDecoration__input_decorator
                 : (contentPadding.top + (_densityOffset.dy / 2L));
             double scale = (
                 Dart_uiLibrary.lerpDouble(1.0, Input_decoratorLibrary._kFinalLabelScale, t)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             double centeredFloatX =
                 _boxParentData(container!).offset.dx
@@ -2266,15 +2272,15 @@ public class _RenderDecoration__input_decorator
             }
             double floatEndX = (
                 Dart_uiLibrary.lerpDouble(floatStartX, centeredFloatX, floatAlign)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             double dxLocal = (
                 Dart_uiLibrary.lerpDouble(startX, floatEndX, t)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             double dyLocal = (
                 Dart_uiLibrary.lerpDouble(0.0, floatingY - labelOffset.dy, t)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             _labelTransform = (
                 (Func<Matrix4>)(
@@ -2349,7 +2355,9 @@ public class _RenderDecoration__input_decorator
                 {
                     DartRuntimePrimitives.Assert(() => Equals(transformed, position - offsetLocal));
                     return child.hitTest(result, position: transformed);
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
             if (isHit)
@@ -2358,7 +2366,7 @@ public class _RenderDecoration__input_decorator
             }
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual ChildSemanticsConfigurationsResult _childSemanticsConfigurationDelegate(
@@ -2395,7 +2403,7 @@ public class _RenderDecoration__input_decorator
                 ((Action<List<SemanticsConfiguration>>)builder.markAsSiblingMergeGroup)(__arg0)
         );
         return builder.build();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void describeSemanticsConfiguration(SemanticsConfiguration config)
@@ -2467,14 +2475,14 @@ public class _RenderDecoration__input_decorator
                             child
                         )
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
             );
         }
         return value;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _addDiagnostics(RenderBox child, List<DiagnosticsNode> value, string name)
@@ -2561,7 +2569,9 @@ internal class _Decorator__input_decorator
             _DecorationSlot__input_decorator.counter => decoration.counter,
             _DecorationSlot__input_decorator.container => decoration.container,
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
     }
 
@@ -2644,7 +2654,7 @@ internal class _AffixText__input_decorator : StatelessWidget
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -2696,7 +2706,7 @@ public class InputDecorator : StatefulWidget
         _RenderDecoration__input_decorator? result =
             context.findAncestorRenderObjectOfType<_RenderDecoration__input_decorator>();
         return result?.container;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -2946,7 +2956,7 @@ internal class _InputDecoratorState__input_decorator
             return WidgetStateProperty.resolveAs(decoration.fillColor!, widgetState);
         }
         return WidgetStateProperty.resolveAs(defaults.fillColor!, widgetState);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Color _getHoverColor(ThemeData themeData)
@@ -2955,7 +2965,7 @@ internal class _InputDecoratorState__input_decorator
             (decoration.filled is null)
             || !(
                 decoration.filled
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
             || !decoration.enabled
         )
@@ -2963,14 +2973,14 @@ internal class _InputDecoratorState__input_decorator
             return Colors.transparent;
         }
         return decoration.hoverColor ?? themeData.hoverColor;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Color _getIconColor(ThemeData themeData, InputDecorationThemeData defaults)
     {
         return WidgetStateProperty.resolveAs(decoration.iconColor, widgetState)
             ?? WidgetStateProperty.resolveAs(defaults.iconColor!, widgetState);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Color _getPrefixIconColor(
@@ -2982,7 +2992,7 @@ internal class _InputDecoratorState__input_decorator
                 WidgetStateProperty.resolveAs(decoration.prefixIconColor, widgetState)
                 ?? (iconButtonTheme.style?.foregroundColor?.resolve(widgetState))
             ) ?? WidgetStateProperty.resolveAs(defaults.prefixIconColor!, widgetState);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Color _getSuffixIconColor(
@@ -2994,7 +3004,7 @@ internal class _InputDecoratorState__input_decorator
                 WidgetStateProperty.resolveAs(decoration.suffixIconColor, widgetState)
                 ?? (iconButtonTheme.style?.foregroundColor?.resolve(widgetState))
             ) ?? WidgetStateProperty.resolveAs(defaults.suffixIconColor!, widgetState);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _hasInlineLabel
@@ -3020,7 +3030,7 @@ internal class _InputDecoratorState__input_decorator
             .merge(defaultStyle)
             .merge(style)
             .copyWith(height: 1);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual TextStyle _getInlineHintStyle(
@@ -3061,7 +3071,7 @@ internal class _InputDecoratorState__input_decorator
             .merge(defaultTextStyle)
             .merge(style)
             .copyWith(height: 1);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual TextStyle _getHelperStyle(
@@ -3072,7 +3082,7 @@ internal class _InputDecoratorState__input_decorator
         return WidgetStateProperty
             .resolveAs(defaults.helperStyle!, widgetState)
             .merge(WidgetStateProperty.resolveAs(decoration.helperStyle, widgetState));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual TextStyle _getErrorStyle(
@@ -3083,7 +3093,7 @@ internal class _InputDecoratorState__input_decorator
         return WidgetStateProperty
             .resolveAs(defaults.errorStyle!, widgetState)
             .merge(decoration.errorStyle);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual HashSet<WidgetState> widgetState =>
@@ -3133,9 +3143,7 @@ internal class _InputDecoratorState__input_decorator
             if (
                 (
                     decoration.filled
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             )
             {
@@ -3154,7 +3162,7 @@ internal class _InputDecoratorState__input_decorator
                 );
             }
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual FadeTransition _buildTransition(Widget child, Animation<double> animation)
@@ -3168,7 +3176,7 @@ internal class _InputDecoratorState__input_decorator
             );
         }
         return new FadeTransition(opacity: _curvedAnimation!, child: child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static Widget _topStartLayout(Widget? currentChild, List<Widget> previousChildren)
@@ -3194,7 +3202,7 @@ internal class _InputDecoratorState__input_decorator
                 )
             )()
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -3206,7 +3214,7 @@ internal class _InputDecoratorState__input_decorator
         TextStyle labelStyle = _getInlineLabelStyle(themeData, defaults);
         TextBaseline textBaselineLocal = (
             labelStyle.textBaseline
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         );
         TextStyle hintStyle = _getInlineHintStyle(themeData, defaults);
         string? hintTextLocal = decoration.hintText;
@@ -3496,7 +3504,9 @@ internal class _InputDecoratorState__input_decorator
             TextDirection.ltr => false,
             TextDirection.rtl => true,
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
         EdgeInsets? resolvedPadding = decoration.contentPadding?.resolve(textDirectionLocal);
         EdgeInsetsDirectional? decorationContentPadding =
@@ -3513,7 +3523,7 @@ internal class _InputDecoratorState__input_decorator
         if (
             (
                 decoration.isCollapsed
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         )
         {
@@ -3533,7 +3543,7 @@ internal class _InputDecoratorState__input_decorator
                                 * (
                                     labelStyle.fontSize
                                     ?? throw new global::System.NullReferenceException(
-                                        "Dart null assertion failed."
+                                        "A required value was null."
                                     )
                                 )
                             )
@@ -3591,9 +3601,7 @@ internal class _InputDecoratorState__input_decorator
                 contentPadding: contentPaddingLocal,
                 isCollapsed: (
                     decoration.isCollapsed
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 inputGap: inputGapLocal,
                 floatingLabelHeight: floatingLabelHeightLocal,
@@ -3663,7 +3671,7 @@ internal class _InputDecoratorState__input_decorator
         )();
         _tickers!.Add(result);
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _removeTicker(_WidgetTicker__ticker_provider ticker)
@@ -4135,7 +4143,7 @@ public class InputDecoration
             constraints: constraints ?? this.constraints,
             visualDensity: visualDensity ?? this.visualDensity
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual InputDecoration applyDefaults(object inputDecorationTheme)
@@ -4192,7 +4200,7 @@ public class InputDecoration
             constraints: constraints ?? theme.constraints,
             visualDensity: visualDensity ?? theme.visualDensity
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool Equals(object? other)
@@ -4566,7 +4574,7 @@ public class InputDecoration
             )
         )();
         return $"InputDecoration({string.Join(", ", description)})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -4920,7 +4928,7 @@ public class InputDecorationTheme : InheritedTheme, Diagnosticable
         InputDecorationTheme? inputDecorationThemeLocal =
             context.dependOnInheritedWidgetOfExactType<InputDecorationTheme>();
         return inputDecorationThemeLocal?.data ?? Theme.of(context).inputDecorationTheme;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual InputDecorationTheme copyWith(
@@ -5002,7 +5010,7 @@ public class InputDecorationTheme : InheritedTheme, Diagnosticable
             constraints: constraints ?? this.constraints,
             visualDensity: visualDensity ?? this.visualDensity
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual InputDecorationTheme merge(InputDecorationTheme? other)
@@ -5044,7 +5052,7 @@ public class InputDecorationTheme : InheritedTheme, Diagnosticable
             constraints: constraints ?? other.constraints,
             visualDensity: visualDensity ?? other.visualDensity
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget) =>
@@ -5055,7 +5063,7 @@ public class InputDecorationTheme : InheritedTheme, Diagnosticable
     public override Widget wrap(BuildContext context, Widget child)
     {
         return new InputDecorationTheme(data: data, child: child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
@@ -5071,7 +5079,7 @@ public class InputDecorationTheme : InheritedTheme, Diagnosticable
             return true;
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override DiagnosticsNode toDiagnosticsNode(
@@ -5080,7 +5088,7 @@ public class InputDecorationTheme : InheritedTheme, Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties) { }
@@ -5286,7 +5294,7 @@ public class InputDecorationThemeData : Diagnosticable
             constraints: constraints ?? this.constraints,
             visualDensity: visualDensity ?? this.visualDensity
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual InputDecorationThemeData merge(InputDecorationThemeData? other)
@@ -5328,7 +5336,7 @@ public class InputDecorationThemeData : Diagnosticable
             constraints: constraints ?? other.constraints,
             visualDensity: visualDensity ?? other.visualDensity
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override int GetHashCode() =>
@@ -5688,7 +5696,7 @@ public class InputDecorationThemeData : Diagnosticable
             return true;
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -5697,7 +5705,7 @@ public class InputDecorationThemeData : Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -5748,7 +5756,9 @@ internal class _InputDecoratorDefaultsM3__input_decorator : InputDecorationTheme
                         return new TextStyle(color: _colors.onSurface.withOpacity(0.38));
                     }
                     return new TextStyle(color: _colors.onSurfaceVariant);
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );
@@ -5762,7 +5772,9 @@ internal class _InputDecoratorDefaultsM3__input_decorator : InputDecorationTheme
                         return _colors.onSurface.withOpacity(0.04);
                     }
                     return _colors.surfaceContainerHighest;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );
@@ -5796,7 +5808,9 @@ internal class _InputDecoratorDefaultsM3__input_decorator : InputDecorationTheme
                         return new BorderSide(color: _colors.onSurface);
                     }
                     return new BorderSide(color: _colors.onSurfaceVariant);
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );
@@ -5830,7 +5844,9 @@ internal class _InputDecoratorDefaultsM3__input_decorator : InputDecorationTheme
                         return new BorderSide(color: _colors.onSurface);
                     }
                     return new BorderSide(color: _colors.outline);
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );
@@ -5845,7 +5861,9 @@ internal class _InputDecoratorDefaultsM3__input_decorator : InputDecorationTheme
                         return _colors.onSurface.withOpacity(0.38);
                     }
                     return _colors.onSurfaceVariant;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );
@@ -5867,7 +5885,9 @@ internal class _InputDecoratorDefaultsM3__input_decorator : InputDecorationTheme
                         return _colors.error;
                     }
                     return _colors.onSurfaceVariant;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );
@@ -5902,7 +5922,9 @@ internal class _InputDecoratorDefaultsM3__input_decorator : InputDecorationTheme
                         return textStyle.copyWith(color: _colors.onSurfaceVariant);
                     }
                     return textStyle.copyWith(color: _colors.onSurfaceVariant);
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );
@@ -5937,7 +5959,9 @@ internal class _InputDecoratorDefaultsM3__input_decorator : InputDecorationTheme
                         return textStyle.copyWith(color: _colors.onSurfaceVariant);
                     }
                     return textStyle.copyWith(color: _colors.onSurfaceVariant);
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );
@@ -5952,7 +5976,9 @@ internal class _InputDecoratorDefaultsM3__input_decorator : InputDecorationTheme
                         return textStyle.copyWith(color: _colors.onSurface.withOpacity(0.38));
                     }
                     return textStyle.copyWith(color: _colors.onSurfaceVariant);
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );
@@ -5963,7 +5989,9 @@ internal class _InputDecoratorDefaultsM3__input_decorator : InputDecorationTheme
                 {
                     TextStyle textStyle = _textTheme.bodySmall ?? new TextStyle();
                     return textStyle.copyWith(color: _colors.error);
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );

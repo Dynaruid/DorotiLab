@@ -38,9 +38,13 @@ public class TextMagnifier : StatefulWidget
                         return null;
                     }
                     default:
-                        throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                        throw new InvalidOperationException(
+                            "Switch expression did not handle the supplied value."
+                        );
                 }
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
     public static Duration jumpBetweenLinesAnimationDuration = Duration.Create(milliseconds: 70L);
@@ -145,9 +149,7 @@ internal class _TextMagnifierState__magnifier : State<TextMagnifier>
                 finalMagnifierPosition.dy
                 != (
                     _magnifierPosition
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ).dy
             )
         )
@@ -187,18 +189,18 @@ internal class _TextMagnifierState__magnifier : State<TextMagnifier>
         return new AnimatedPositioned(
             top: (
                 _magnifierPosition
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ).dy,
             left: (
                 _magnifierPosition
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ).dx,
             duration: _positionShouldBeAnimated
                 ? TextMagnifier.jumpBetweenLinesAnimationDuration
                 : Duration.zero,
             child: new Magnifier(additionalFocalPointOffset: _extraFocalPointOffset)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -265,10 +267,10 @@ public class Magnifier : StatelessWidget
                 ),
             size: (
                 size
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             child: new ColoredBox(color: filmColor)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

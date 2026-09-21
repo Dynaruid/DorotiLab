@@ -205,7 +205,9 @@ public class TextFormField : FormField<string>
                         hintLocales: hintLocales
                     )
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         )
     {
@@ -225,7 +227,7 @@ public class TextFormField : FormField<string>
                     (
                         maxLines
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) > 0L
                 )
@@ -236,7 +238,7 @@ public class TextFormField : FormField<string>
                     (
                         minLines
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) > 0L
                 )
@@ -248,7 +250,7 @@ public class TextFormField : FormField<string>
                     >= (
                         minLines
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
         );
@@ -260,7 +262,7 @@ public class TextFormField : FormField<string>
                     (
                         maxLength
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) == TextField.noMaxLength
                 )
@@ -268,7 +270,7 @@ public class TextFormField : FormField<string>
                     (
                         maxLength
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) > 0L
                 )
@@ -290,7 +292,7 @@ public class TextFormField : FormField<string>
         return AdaptiveTextSelectionToolbar.CreateEditableText(
             editableTextState: editableTextState
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override IState createState() =>

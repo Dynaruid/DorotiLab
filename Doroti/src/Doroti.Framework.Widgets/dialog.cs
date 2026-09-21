@@ -30,6 +30,6 @@ public static partial class DialogLibrary
             )
             : routeBuilder.Invoke(context, builder);
         return navigator.push(route);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

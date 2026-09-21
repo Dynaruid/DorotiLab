@@ -111,7 +111,9 @@ internal class _DualTransitionBuilderState__dual_transition_builder : State<Dual
                         return lastEffective;
                     }
                     default:
-                        throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                        throw new InvalidOperationException(
+                            "Switch expression did not handle the supplied value."
+                        );
                 }
             }
             case AnimationStatus.reverse:
@@ -129,11 +131,13 @@ internal class _DualTransitionBuilderState__dual_transition_builder : State<Dual
                         return lastEffective;
                     }
                     default:
-                        throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                        throw new InvalidOperationException(
+                            "Switch expression did not handle the supplied value."
+                        );
                 }
             }
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _updateAnimations()
@@ -172,6 +176,6 @@ internal class _DualTransitionBuilderState__dual_transition_builder : State<Dual
             _forwardAnimation,
             widget.reverseBuilder(context, _reverseAnimation, widget.child)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

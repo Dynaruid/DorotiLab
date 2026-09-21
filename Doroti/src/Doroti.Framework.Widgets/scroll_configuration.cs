@@ -66,7 +66,7 @@ public class ScrollBehavior
             platform: platform,
             keyboardDismissBehavior: keyboardDismissBehavior
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual TargetPlatform getPlatform(BuildContext context) =>
@@ -94,9 +94,11 @@ public class ScrollBehavior
                 return MultitouchDragStrategy.latestPointer;
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual HashSet<LogicalKeyboardKey> pointerAxisModifiers =>
@@ -128,9 +130,11 @@ public class ScrollBehavior
                 return child;
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Widget buildOverscrollIndicator(
@@ -158,9 +162,11 @@ public class ScrollBehavior
                 );
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Func<PointerEvent, VelocityTracker> velocityTrackerBuilder(BuildContext context)
@@ -183,9 +189,11 @@ public class ScrollBehavior
                 return (@event) => new VelocityTracker(@event.kind);
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual ScrollPhysics getScrollPhysics(BuildContext context)
@@ -208,9 +216,11 @@ public class ScrollBehavior
                 return _clampingPhysics;
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool shouldNotify(ScrollBehavior oldDelegate) => false;
@@ -270,7 +280,7 @@ internal class _WrappedScrollBehavior__scroll_configuration : ScrollBehavior
     public override MultitouchDragStrategy getMultitouchDragStrategy(BuildContext context)
     {
         return multitouchDragStrategy ?? @delegate.getMultitouchDragStrategy(context);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget buildOverscrollIndicator(
@@ -284,7 +294,7 @@ internal class _WrappedScrollBehavior__scroll_configuration : ScrollBehavior
             return @delegate.buildOverscrollIndicator(context, child, details);
         }
         return child;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget buildScrollbar(
@@ -298,7 +308,7 @@ internal class _WrappedScrollBehavior__scroll_configuration : ScrollBehavior
             return @delegate.buildScrollbar(context, child, details);
         }
         return child;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override ScrollBehavior copyWith(
@@ -322,19 +332,19 @@ internal class _WrappedScrollBehavior__scroll_configuration : ScrollBehavior
             platform: platform ?? this.platform,
             keyboardDismissBehavior: keyboardDismissBehavior ?? this.keyboardDismissBehavior
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override TargetPlatform getPlatform(BuildContext context)
     {
         return platform ?? @delegate.getPlatform(context);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override ScrollPhysics getScrollPhysics(BuildContext context)
     {
         return physics ?? @delegate.getScrollPhysics(context);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override ScrollViewKeyboardDismissBehavior getKeyboardDismissBehavior(
@@ -342,7 +352,7 @@ internal class _WrappedScrollBehavior__scroll_configuration : ScrollBehavior
     )
     {
         return keyboardDismissBehavior ?? @delegate.getKeyboardDismissBehavior(context);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool shouldNotify(ScrollBehavior oldDelegate)
@@ -365,13 +375,13 @@ internal class _WrappedScrollBehavior__scroll_configuration : ScrollBehavior
             || (!Equals(__oldDelegate.physics, physics))
             || (!Equals(__oldDelegate.platform, platform))
             || @delegate.shouldNotify(__oldDelegate.@delegate);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Func<PointerEvent, VelocityTracker> velocityTrackerBuilder(BuildContext context)
     {
         return @delegate.velocityTrackerBuilder(context);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string ToString() =>
@@ -397,7 +407,7 @@ public class ScrollConfiguration : InheritedWidget
         ScrollConfiguration? configuration =
             context.dependOnInheritedWidgetOfExactType<ScrollConfiguration>();
         return configuration?.behavior ?? new ScrollBehavior();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget)
@@ -413,7 +423,7 @@ public class ScrollConfiguration : InheritedWidget
                 (!Equals(behavior, __oldWidget.behavior))
                 && behavior.shouldNotify(__oldWidget.behavior)
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)

@@ -140,6 +140,6 @@ internal class _CupertinoDesktopTextSelectionToolbarButtonState__desktop_text_se
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

@@ -44,6 +44,6 @@ public class FlutterLogo : StatelessWidget
             curve: curve,
             decoration: new FlutterLogoDecoration(style: style, textColor: textColor)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

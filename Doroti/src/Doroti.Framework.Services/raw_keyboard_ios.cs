@@ -97,7 +97,7 @@ public class RawKeyEventDataIos : RawKeyEventData
         }
         long codeUnit = label.codeUnitAt(0L);
         return (codeUnit >= 63232L) && (codeUnit <= 63743L);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _isLeftRightModifierPressed(
@@ -125,9 +125,11 @@ public class RawKeyEventDataIos : RawKeyEventData
                 != 0L,
             var __case6364 when Equals(__case6364, KeyboardSide.right) => (modifiers & rightMask)
                 != 0L,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool isModifierPressed(ModifierKey key, KeyboardSide side = KeyboardSide.any)
@@ -192,7 +194,7 @@ public class RawKeyEventDataIos : RawKeyEventData
         }
         DartRuntimePrimitives.Assert(() => !result || (getModifierSide(key) is not null));
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override KeyboardSide? getModifierSide(ModifierKey key)
@@ -223,7 +225,9 @@ public class RawKeyEventDataIos : RawKeyEventData
                 }
             }
             return null;
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         switch (key)
         {
@@ -252,7 +256,7 @@ public class RawKeyEventDataIos : RawKeyEventData
                 return KeyboardSide.all;
             }
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)

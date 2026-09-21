@@ -38,7 +38,7 @@ public class View : StatefulWidget
     public static DorotiView? maybeOf(BuildContext context)
     {
         return LookupBoundary.dependOnInheritedWidgetOfExactType<_ViewScope__view>(context)?.view;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static DorotiView of(BuildContext context)
@@ -62,10 +62,10 @@ public class View : StatefulWidget
                 throw DartRuntimePrimitives.AsException(new FlutterError(information));
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return result!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static PipelineOwner pipelineOwnerOf(BuildContext context)
@@ -74,7 +74,7 @@ public class View : StatefulWidget
                 .dependOnInheritedWidgetOfExactType<_PipelineOwnerScope__view>()
                 ?.pipelineOwner
             ?? RendererBinding.instance.rootPipelineOwner;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override IState createState() =>
@@ -127,7 +127,9 @@ internal class _ViewState__view : State<View>, WidgetsBindingObserver
                 @event.viewId
             ) == checked((long)widget.view.viewId),
             var __constant10448 when Equals(__constant10448, ViewFocusState.unfocused) => false,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         if (checked(@event.viewId) != checked((long)widget.view.viewId))
         {
@@ -191,7 +193,7 @@ internal class _ViewState__view : State<View>, WidgetsBindingObserver
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -237,10 +239,12 @@ public class RawView : StatelessWidget
                     view: view,
                     child: new _PipelineOwnerScope__view(pipelineOwner: owner, child: child)
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -283,7 +287,7 @@ public class _RawViewInternal__view : RenderObjectWidget
     public override RenderObject createRenderObject(BuildContext context)
     {
         return _deprecatedRenderView ?? new RenderView(view: view);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -581,7 +585,7 @@ public class ViewAnchor : StatelessWidget
     public override Widget build(BuildContext context)
     {
         return new _MultiChildComponentWidget__view(views: new List<Widget>(), child: child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -607,7 +611,7 @@ internal class _MultiChildComponentElement__view : Element
             _childElement is null || !_viewElements.Contains(_childElement)
         );
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void attachRenderObject(object? newSlot)
@@ -657,7 +661,9 @@ internal class _MultiChildComponentElement__view : Element
                     return false;
                 }
                 return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
         if (hasAncestorRenderObjectElement && ancestorWantsRenderObject)
@@ -689,7 +695,7 @@ internal class _MultiChildComponentElement__view : Element
             );
         }
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void update(Widget newWidget)
@@ -764,7 +770,7 @@ internal class _MultiChildComponentElement__view : Element
     public override List<DiagnosticsNode> debugDescribeChildren()
     {
         return new List<DiagnosticsNode>();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 

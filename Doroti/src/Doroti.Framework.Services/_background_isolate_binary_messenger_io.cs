@@ -75,7 +75,7 @@ internal class BackgroundIsolateBinaryMessenger : BinaryMessenger
     )
     {
         throw new NotImplementedException("handlePlatformMessage is deprecated.");
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Future<ByteData?> send(string channel, ByteData? message)
@@ -91,7 +91,7 @@ internal class BackgroundIsolateBinaryMessenger : BinaryMessenger
             _receivePort.sendPort
         );
         return completer.future;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void setMessageHandler(

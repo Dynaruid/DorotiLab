@@ -13,7 +13,7 @@ time entry mode round trips, edited values, invalid input, and input-only modes.
 Any framework error or ErrorWidget fails the run. PNGs are written to `snapshots`
 under the executable output directory for visual inspection.
 
-The original regression throws `Dart null assertion failed` while building a
+The original regression threw the former null-assertion error while building a
 TextFormField with an omitted `stylusHandwritingEnabled` argument. Its builder
 must apply the EditableText default while preserving explicit true/false values.
 

@@ -90,7 +90,7 @@ internal class _GestureArena__arena
             buffer.write(" [hasPendingSweep]");
         }
         return buffer.ToString();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -114,7 +114,7 @@ public class GestureArenaManager
         state.add(member);
         DartRuntimePrimitives.Assert(() => _debugLogDiagnostic(pointer, $"Adding: {member}"));
         return new GestureArenaEntry(this, pointer, member);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void close(long pointer)
@@ -318,12 +318,12 @@ public class GestureArenaManager
                 long? count = state?.members?.Count;
                 var s = (count != 1L) ? "s" : "";
                 PrintLibrary.debugPrint(
-                    $"Gesture arena {pointer.ToString().padRight(4L)} ❙ {message}{((count is not null) ? $" with {(count ?? throw new global::System.NullReferenceException("Dart null assertion failed."))} member{s}." : "")}"
+                    $"Gesture arena {pointer.ToString().padRight(4L)} ❙ {message}{((count is not null) ? $" with {(count ?? throw new global::System.NullReferenceException("A required value was null."))} member{s}." : "")}"
                 );
             }
             return true;
         });
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

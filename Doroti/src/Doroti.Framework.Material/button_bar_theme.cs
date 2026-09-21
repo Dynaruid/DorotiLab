@@ -66,7 +66,7 @@ public class ButtonBarThemeData : Diagnosticable
             layoutBehavior: layoutBehavior ?? this.layoutBehavior,
             overflowDirection: overflowDirection ?? this.overflowDirection
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static ButtonBarThemeData? lerp(ButtonBarThemeData? a, ButtonBarThemeData? b, double t)
@@ -86,7 +86,7 @@ public class ButtonBarThemeData : Diagnosticable
             layoutBehavior: (t < 0.5) ? a?.layoutBehavior : b?.layoutBehavior,
             overflowDirection: (t < 0.5) ? a?.overflowDirection : b?.overflowDirection
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override int GetHashCode() =>
@@ -194,7 +194,7 @@ public class ButtonBarThemeData : Diagnosticable
             return true;
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -203,7 +203,7 @@ public class ButtonBarThemeData : Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -226,7 +226,7 @@ public class ButtonBarTheme : InheritedWidget
         ButtonBarTheme? buttonBarThemeLocal =
             context.dependOnInheritedWidgetOfExactType<ButtonBarTheme>();
         return buttonBarThemeLocal?.data ?? Theme.of(context).buttonBarTheme;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget) =>

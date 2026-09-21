@@ -71,6 +71,6 @@ internal class _ValueListenableBuilderState__value_listenable_builder<T>
     public override Widget build(BuildContext context)
     {
         return widget.builder(context, value, widget.child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

@@ -148,7 +148,7 @@ internal class _MenuAnchorScope__menu_anchor : InheritedWidget
             () => (object?)"The state of a MenuAnchor should not change."
         );
         return !Equals(__oldWidget.animationStatus, animationStatus);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -175,9 +175,9 @@ internal class _TweenCurve__menu_anchor : Curve
         t = curve.transform(t);
         return (
             Dart_uiLibrary.lerpDouble(begin, end, t)
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string ToString() => $"_TweenCurve({begin}, {end}, {curve})";
@@ -257,7 +257,7 @@ public class MenuAnchor : StatefulWidget
     public override List<DiagnosticsNode> debugDescribeChildren()
     {
         return menuChildren.map((child) => ((Diagnosticable)child).toDiagnosticsNode()).ToList();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -355,7 +355,9 @@ internal class _MenuAnchorState__menu_anchor
             AnimationStatus.forward => false,
             AnimationStatus.completed => false,
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
     public virtual bool isClosing =>
         _animationController.status switch
@@ -364,7 +366,9 @@ internal class _MenuAnchorState__menu_anchor
             AnimationStatus.dismissed or AnimationStatus.forward => false,
             AnimationStatus.completed => false,
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
 
     public override void initState()
@@ -588,7 +592,7 @@ internal class _MenuAnchorState__menu_anchor
             return childLocal;
         }
         return new CompositedTransformTarget(link: widget.layerLink!, child: childLocal);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _buildOverlay(BuildContext context, RawMenuOverlayInfo position)
@@ -618,7 +622,7 @@ internal class _MenuAnchorState__menu_anchor
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual _MenuAnchorState__menu_anchor _root
@@ -678,7 +682,7 @@ internal class _MenuAnchorState__menu_anchor
     internal static _MenuAnchorState__menu_anchor? _maybeOf(BuildContext context)
     {
         return context.getInheritedWidgetOfExactType<_MenuAnchorScope__menu_anchor>()?.state;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static AnimationStatus? _maybeAnimationStatusOf(BuildContext context)
@@ -686,13 +690,13 @@ internal class _MenuAnchorState__menu_anchor
         return context
             .dependOnInheritedWidgetOfExactType<_MenuAnchorScope__menu_anchor>()
             ?.animationStatus;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string ToString(DiagnosticLevel minLevel = DiagnosticLevel.debug)
     {
         return DiagnosticsLibrary.describeIdentity(this);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
@@ -731,7 +735,7 @@ internal class _MenuAnchorState__menu_anchor
         _updateTickerModeNotifier();
         _updateTicker();
         return _ticker!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void activate()
@@ -817,7 +821,7 @@ public class MenuBar : StatelessWidget
             style: style,
             menuChildren: children
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override List<DiagnosticsNode> debugDescribeChildren()
@@ -834,7 +838,7 @@ public class MenuBar : StatelessWidget
                 }
             )
         )();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -913,13 +917,13 @@ public class MenuItemButton : StatefulWidget
     public virtual ButtonStyle defaultStyleOf(BuildContext context)
     {
         return new _MenuButtonDefaultsM3__menu_anchor(context);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual ButtonStyle? themeStyleOf(BuildContext context)
     {
         return MenuButtonTheme.of(context).style;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static ButtonStyle styleFrom(
@@ -979,7 +983,7 @@ public class MenuItemButton : StatefulWidget
             alignment: alignment,
             splashFactory: splashFactory
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -1101,7 +1105,7 @@ internal class _MenuItemButtonState__menu_anchor : State<MenuItemButton>
             );
         }
         return new MergeSemantics(child: childLocal);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _handleFocusChange()
@@ -1283,7 +1287,7 @@ public class CheckboxMenuButton : StatelessWidget
             closeOnActivate: closeOnActivate,
             child: child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1385,7 +1389,7 @@ public class RadioMenuButton<T> : StatelessWidget
             closeOnActivate: closeOnActivate,
             child: child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1465,13 +1469,13 @@ public class SubmenuButton : StatefulWidget
     public virtual ButtonStyle defaultStyleOf(BuildContext context)
     {
         return new _MenuButtonDefaultsM3__menu_anchor(context);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual ButtonStyle? themeStyleOf(BuildContext context)
     {
         return MenuButtonTheme.of(context).style;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static ButtonStyle styleFrom(
@@ -1531,7 +1535,7 @@ public class SubmenuButton : StatefulWidget
             alignment: alignment,
             splashFactory: splashFactory
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override List<DiagnosticsNode> debugDescribeChildren()
@@ -1547,7 +1551,7 @@ public class SubmenuButton : StatefulWidget
                             {
                                 return ((Diagnosticable)child).toDiagnosticsNode();
                                 throw new InvalidOperationException(
-                                    "Dart closure completed without a value."
+                                    "Callback completed without returning a value."
                                 );
                             }
                         )
@@ -1556,7 +1560,7 @@ public class SubmenuButton : StatefulWidget
                 }
             )
         )();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -1691,7 +1695,9 @@ internal class _SubmenuButtonState__menu_anchor : State<SubmenuButton>
             (Axis.vertical, TextDirection.rtl) => new Offset(0, -menuPadding.top),
             (Axis.vertical, TextDirection.ltr) => new Offset(0, -menuPadding.top),
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
         var states = (
             (Func<HashSet<WidgetState>>)(
@@ -1832,13 +1838,15 @@ internal class _SubmenuButtonState__menu_anchor : State<SubmenuButton>
                         );
                     }
                     return child;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 },
                 menuChildren: widget.menuChildren,
                 child: widget.child
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _handleAnimationStatusChanged(AnimationStatus status)
@@ -1896,7 +1904,7 @@ internal class _SubmenuButtonState__menu_anchor : State<SubmenuButton>
         return insets
             .resolve(widget.statesController?.value ?? new HashSet<WidgetState>())!
             .resolve(Directionality.of(context));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _handleFocusChange()
@@ -1980,7 +1988,7 @@ internal class _SubmenuButtonState__menu_anchor : State<SubmenuButton>
             );
         }
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -2231,7 +2239,7 @@ internal class _LocalizedShortcutLabeler__menu_anchor
                                                 (
                                                     serialized.control
                                                     ?? throw new global::System.NullReferenceException(
-                                                        "Dart null assertion failed."
+                                                        "A required value was null."
                                                     )
                                                 )
                                             )
@@ -2247,7 +2255,7 @@ internal class _LocalizedShortcutLabeler__menu_anchor
                                                 (
                                                     serialized.alt
                                                     ?? throw new global::System.NullReferenceException(
-                                                        "Dart null assertion failed."
+                                                        "A required value was null."
                                                     )
                                                 )
                                             )
@@ -2263,7 +2271,7 @@ internal class _LocalizedShortcutLabeler__menu_anchor
                                                 (
                                                     serialized.shift
                                                     ?? throw new global::System.NullReferenceException(
-                                                        "Dart null assertion failed."
+                                                        "A required value was null."
                                                     )
                                                 )
                                             )
@@ -2279,7 +2287,7 @@ internal class _LocalizedShortcutLabeler__menu_anchor
                                                 (
                                                     serialized.meta
                                                     ?? throw new global::System.NullReferenceException(
-                                                        "Dart null assertion failed."
+                                                        "A required value was null."
                                                     )
                                                 )
                                             )
@@ -2309,7 +2317,7 @@ internal class _LocalizedShortcutLabeler__menu_anchor
                                                 (
                                                     serialized.alt
                                                     ?? throw new global::System.NullReferenceException(
-                                                        "Dart null assertion failed."
+                                                        "A required value was null."
                                                     )
                                                 )
                                             )
@@ -2325,7 +2333,7 @@ internal class _LocalizedShortcutLabeler__menu_anchor
                                                 (
                                                     serialized.control
                                                     ?? throw new global::System.NullReferenceException(
-                                                        "Dart null assertion failed."
+                                                        "A required value was null."
                                                     )
                                                 )
                                             )
@@ -2341,7 +2349,7 @@ internal class _LocalizedShortcutLabeler__menu_anchor
                                                 (
                                                     serialized.meta
                                                     ?? throw new global::System.NullReferenceException(
-                                                        "Dart null assertion failed."
+                                                        "A required value was null."
                                                     )
                                                 )
                                             )
@@ -2357,7 +2365,7 @@ internal class _LocalizedShortcutLabeler__menu_anchor
                                                 (
                                                     serialized.shift
                                                     ?? throw new global::System.NullReferenceException(
-                                                        "Dart null assertion failed."
+                                                        "A required value was null."
                                                     )
                                                 )
                                             )
@@ -2439,7 +2447,7 @@ internal class _LocalizedShortcutLabeler__menu_anchor
                                                     (
                                                         serialized.control
                                                         ?? throw new global::System.NullReferenceException(
-                                                            "Dart null assertion failed."
+                                                            "A required value was null."
                                                         )
                                                     )
                                                 )
@@ -2455,7 +2463,7 @@ internal class _LocalizedShortcutLabeler__menu_anchor
                                                     (
                                                         serialized.alt
                                                         ?? throw new global::System.NullReferenceException(
-                                                            "Dart null assertion failed."
+                                                            "A required value was null."
                                                         )
                                                     )
                                                 )
@@ -2471,7 +2479,7 @@ internal class _LocalizedShortcutLabeler__menu_anchor
                                                     (
                                                         serialized.meta
                                                         ?? throw new global::System.NullReferenceException(
-                                                            "Dart null assertion failed."
+                                                            "A required value was null."
                                                         )
                                                     )
                                                 )
@@ -2501,7 +2509,7 @@ internal class _LocalizedShortcutLabeler__menu_anchor
                                                     (
                                                         serialized.alt
                                                         ?? throw new global::System.NullReferenceException(
-                                                            "Dart null assertion failed."
+                                                            "A required value was null."
                                                         )
                                                     )
                                                 )
@@ -2517,7 +2525,7 @@ internal class _LocalizedShortcutLabeler__menu_anchor
                                                     (
                                                         serialized.control
                                                         ?? throw new global::System.NullReferenceException(
-                                                            "Dart null assertion failed."
+                                                            "A required value was null."
                                                         )
                                                     )
                                                 )
@@ -2533,7 +2541,7 @@ internal class _LocalizedShortcutLabeler__menu_anchor
                                                     (
                                                         serialized.meta
                                                         ?? throw new global::System.NullReferenceException(
-                                                            "Dart null assertion failed."
+                                                            "A required value was null."
                                                         )
                                                     )
                                                 )
@@ -2576,7 +2584,7 @@ internal class _LocalizedShortcutLabeler__menu_anchor
                 + "MenuSerializableShortcut (e.g. ShortcutActivators other than SingleActivator or "
                 + "CharacterActivator) are not supported."
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual string? _getLocalizedName(
@@ -2634,7 +2642,7 @@ internal class _LocalizedShortcutLabeler__menu_anchor
                 }
         );
         return _cachedShortcutKeys.GetValueOrDefault(localizations)!.GetValueOrDefault(key);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual string _getModifierLabel(
@@ -2670,7 +2678,9 @@ internal class _LocalizedShortcutLabeler__menu_anchor
                     return "⌘";
                 }
                 default:
-                    throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                    throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    );
             }
         }
         if (
@@ -2694,7 +2704,9 @@ internal class _LocalizedShortcutLabeler__menu_anchor
                     return "⌥";
                 }
                 default:
-                    throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                    throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    );
             }
         }
         if (
@@ -2718,7 +2730,9 @@ internal class _LocalizedShortcutLabeler__menu_anchor
                     return "⌃";
                 }
                 default:
-                    throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                    throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    );
             }
         }
         if (
@@ -2742,13 +2756,15 @@ internal class _LocalizedShortcutLabeler__menu_anchor
                     return "⇧";
                 }
                 default:
-                    throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                    throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    );
             }
         }
         throw DartRuntimePrimitives.AsException(
             new DartArgumentError($"Keyboard key {modifier.keyLabel} is not a modifier.")
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -2824,13 +2840,13 @@ internal class _MenuBarAnchorState__menu_anchor : _MenuAnchorState__menu_anchor
                             child: new ExcludeFocus(excluding: !isOpen, child: childLocal)
                         );
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -2855,13 +2871,13 @@ public class MenuAcceleratorCallbackBinding : InheritedWidget
     {
         var __oldWidget = (MenuAcceleratorCallbackBinding)oldWidget;
         return (!Equals(onInvoke, __oldWidget.onInvoke)) || (hasSubmenu != __oldWidget.hasSubmenu);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static MenuAcceleratorCallbackBinding? maybeOf(BuildContext context)
     {
         return context.dependOnInheritedWidgetOfExactType<MenuAcceleratorCallbackBinding>();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static MenuAcceleratorCallbackBinding of(BuildContext context)
@@ -2887,7 +2903,7 @@ public class MenuAcceleratorCallbackBinding : InheritedWidget
             return true;
         });
         return result!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -2957,7 +2973,7 @@ public class MenuAcceleratorLabel : StatefulWidget
                         }
                     )
                 )().Cast<InlineSpan>().ToList()));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static string stripAcceleratorMarkers(string label, Action<long>? setIndex = null)
@@ -3000,7 +3016,7 @@ public class MenuAcceleratorLabel : StatefulWidget
         }
         setIndex?.Invoke(acceleratorIndex);
         return displayLabel.ToString();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override IState createState() =>
@@ -3009,7 +3025,7 @@ public class MenuAcceleratorLabel : StatefulWidget
     public override string ToString(DiagnosticLevel minLevel = DiagnosticLevel.info)
     {
         return $"{typeof(MenuAcceleratorLabel)}(\"{label}\")";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -3091,7 +3107,7 @@ internal class _MenuAcceleratorLabelState__menu_anchor : State<MenuAcceleratorLa
                 }
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _listenToKeyEvent(KeyEvent @event)
@@ -3103,7 +3119,7 @@ internal class _MenuAcceleratorLabelState__menu_anchor : State<MenuAcceleratorLa
             _updateAcceleratorShortcut();
         });
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _updateAcceleratorShortcut()
@@ -3146,7 +3162,7 @@ internal class _MenuAcceleratorLabelState__menu_anchor : State<MenuAcceleratorLa
     {
         long index = _showAccelerators ? _acceleratorIndex : -1L;
         return widget.builder(context, _displayLabel, index);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -3367,7 +3383,7 @@ internal class _MenuItemLabel__menu_anchor : StatelessWidget
             );
         }
         return menuItemLabel;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -3432,7 +3448,7 @@ internal class _MenuLayout__menu_anchor : SingleChildLayoutDelegate
     public override BoxConstraints getConstraintsForChild(BoxConstraints constraints)
     {
         return BoxConstraints.CreateLoose(constraints.biggest).deflate(reservedPadding);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Offset getPositionForChild(Size size, Size childSize)
@@ -3448,7 +3464,7 @@ internal class _MenuLayout__menu_anchor : SingleChildLayoutDelegate
         {
             Offset menuPosition__value127155 = (
                 menuPosition
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             return finalPosition;
         }
@@ -3461,9 +3477,9 @@ internal class _MenuLayout__menu_anchor : SingleChildLayoutDelegate
         var initialPosition = new Offset(finalPosition.dx, anchorRect.bottom);
         return (
             Dart_uiLibrary.Offset.lerp(initialPosition, finalPosition, heightFactor)
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Offset _positionChild(Size childSize, Rect overlayRect)
@@ -3482,7 +3498,9 @@ internal class _MenuLayout__menu_anchor : SingleChildLayoutDelegate
                     TextDirection.rtl => new Offset(-alignmentOffset.dx, alignmentOffset.dy),
                     TextDirection.ltr => alignmentOffset,
                     _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                        throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                        throw new InvalidOperationException(
+                            "Switch expression did not handle the supplied value."
+                        ),
                 };
             }
             else
@@ -3510,9 +3528,7 @@ internal class _MenuLayout__menu_anchor : SingleChildLayoutDelegate
             Offset adjustedPosition =
                 (
                     menuPosition
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) + anchorRect.topLeft;
             xLocal = adjustedPosition.dx;
             yLocal = adjustedPosition.dy;
@@ -3525,22 +3541,30 @@ internal class _MenuLayout__menu_anchor : SingleChildLayoutDelegate
         bool offLeftSide(double x)
         {
             return x < allowedRect.left;
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         bool offRightSide(double x)
         {
             return (x + childSize.width) > allowedRect.right;
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         bool offTop(double y)
         {
             return y < allowedRect.top;
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         bool offBottom(double y)
         {
             return (y + childSize.height) > allowedRect.bottom;
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         if (childSize.width >= allowedRect.width)
         {
@@ -3632,7 +3656,7 @@ internal class _MenuLayout__menu_anchor : SingleChildLayoutDelegate
             }
         }
         return new Offset(xLocal, yLocal);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool shouldRelayout(SingleChildLayoutDelegate oldDelegate)
@@ -3649,7 +3673,7 @@ internal class _MenuLayout__menu_anchor : SingleChildLayoutDelegate
             || (!Equals(reservedPadding, __oldDelegate.reservedPadding))
             || (heightFactor != __oldDelegate.heightFactor)
             || !CollectionsLibrary.setEquals(avoidBounds, __oldDelegate.avoidBounds);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Rect _closestScreen(IEnumerable<Rect> screens, Offset point)
@@ -3663,7 +3687,7 @@ internal class _MenuLayout__menu_anchor : SingleChildLayoutDelegate
             }
         }
         return closest;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -3726,7 +3750,9 @@ internal class _MenuPanelState__menu_anchor : State<_MenuPanel__menu_anchor>
         {
             return (getProperty(widgetStyle) ?? getProperty(themeStyle))
                 ?? getProperty(defaultStyle);
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         P? resolve<P>(Func<MenuStyle?, WidgetStateProperty<P>?> getProperty)
         {
@@ -3738,10 +3764,14 @@ internal class _MenuPanelState__menu_anchor : State<_MenuPanel__menu_anchor>
                             new HashSet<global::Doroti.Framework.Widgets.WidgetState>()
                         )
                         : default;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         Color? backgroundColorLocal = resolve((style) => style?.backgroundColor);
         Color? shadowColorLocal = resolve((style) => style?.shadowColor);
@@ -3772,19 +3802,17 @@ internal class _MenuPanelState__menu_anchor : State<_MenuPanel__menu_anchor>
         {
             Size fixedSize__135131__value136698 = (
                 fixedSizeLocal
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             Size size = effectiveConstraintsLocal.constrain(
                 (
                     (
                         fixedSize__135131__value136698
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             );
             if (double.IsFinite(size.width))
@@ -3811,7 +3839,7 @@ internal class _MenuPanelState__menu_anchor : State<_MenuPanel__menu_anchor>
                     {
                         return new IntrinsicWidth(child: child);
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 )
@@ -3826,7 +3854,9 @@ internal class _MenuPanelState__menu_anchor : State<_MenuPanel__menu_anchor>
                 false,
             null => false,
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
         Widget menuPanel = new Padding(
             padding: resolvedPadding,
@@ -3893,7 +3923,7 @@ internal class _MenuPanelState__menu_anchor : State<_MenuPanel__menu_anchor>
             );
         }
         return new ConstrainedBox(constraints: effectiveConstraintsLocal, child: menuPanel);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _intrinsicCrossSize(Widget child)
@@ -3907,9 +3937,11 @@ internal class _MenuPanelState__menu_anchor : State<_MenuPanel__menu_anchor>
                 new IntrinsicWidth(child: child)
             ),
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _buildAnimatedHeight(BuildContext context, Widget? child)
@@ -3920,7 +3952,7 @@ internal class _MenuPanelState__menu_anchor : State<_MenuPanel__menu_anchor>
             widthFactor: 1,
             child: child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -3989,7 +4021,9 @@ internal class _Submenu__menu_anchor : StatelessWidget
         T? effectiveValue<T>(Func<MenuStyle?, T?> getProperty)
         {
             return (getProperty(menuStyle) ?? getProperty(themeStyle)) ?? getProperty(defaultStyle);
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         T? resolve<T>(Func<MenuStyle?, WidgetStateProperty<T>?> getProperty)
         {
@@ -4004,10 +4038,14 @@ internal class _Submenu__menu_anchor : StatelessWidget
                                     new HashSet<global::Doroti.Framework.Widgets.WidgetState>()
                                 )
                         );
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         WidgetStateMouseCursor mouseCursorLocal = new _MouseCursor__menu_anchor(
             (states) => effectiveValue((style) => style?.mouseCursor?.resolve(states))
@@ -4099,7 +4137,7 @@ internal class _Submenu__menu_anchor : StatelessWidget
                             child: menuPanel
                         );
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 )
@@ -4114,7 +4152,7 @@ internal class _Submenu__menu_anchor : StatelessWidget
             targetAnchor: Alignment.bottomLeft,
             child: layout
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -4154,7 +4192,7 @@ public static partial class Menu_anchorLibrary
             return true;
         });
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -4179,7 +4217,9 @@ public static partial class Menu_anchorLibrary
                     return false;
                 }
                 default:
-                    throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                    throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    );
             }
         }
     }
@@ -4345,7 +4385,7 @@ internal class _MenuButtonDefaultsM3__menu_anchor : ButtonStyle
                         }
                         return _colors.onSurface;
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 );
@@ -4377,7 +4417,7 @@ internal class _MenuButtonDefaultsM3__menu_anchor : ButtonStyle
                         }
                         return _colors.onSurfaceVariant;
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 );
@@ -4421,7 +4461,7 @@ internal class _MenuButtonDefaultsM3__menu_anchor : ButtonStyle
                         }
                         return Colors.transparent;
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 );
@@ -4469,7 +4509,7 @@ internal class _MenuButtonDefaultsM3__menu_anchor : ButtonStyle
             EdgeInsets.CreateSymmetric(horizontal: Menu_anchorLibrary._kMenuViewPadding),
             fontSizeRatio
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 

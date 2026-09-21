@@ -29,7 +29,7 @@ public class TweenAnimationBuilder<T> : ImplicitlyAnimatedWidget
     public override ImplicitlyAnimatedWidgetState<TweenAnimationBuilder<T>> createState()
     {
         return new _TweenAnimationBuilderState__tween_animation_builder<T>();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -69,7 +69,9 @@ internal class _TweenAnimationBuilderState__tween_animation_builder<T>
                     throw new InvalidOperationException(
                         "Constructor will never be called because null is never provided as current tween."
                     );
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         )!;
@@ -78,6 +80,6 @@ internal class _TweenAnimationBuilderState__tween_animation_builder<T>
     public override Widget build(BuildContext context)
     {
         return widget.builder(context, _currentTween!.evaluate(animation), widget.child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

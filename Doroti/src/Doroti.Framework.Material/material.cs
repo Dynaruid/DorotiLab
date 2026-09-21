@@ -102,7 +102,7 @@ public class Material : StatefulWidget
     public static MaterialInkController? maybeOf(BuildContext context)
     {
         return LookupBoundary.findAncestorRenderObjectOfType<_RenderInkFeatures__material>(context);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static MaterialInkController of(BuildContext context)
@@ -143,7 +143,7 @@ public class Material : StatefulWidget
             return true;
         });
         return controller!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override IState createState() =>
@@ -197,7 +197,9 @@ internal class _MaterialState__material : State<Material>, TickerProviderStateMi
                         DartRuntimePrimitives.ConvertValue<Color>(null),
                     MaterialType.transparency => DartRuntimePrimitives.ConvertValue<Color>(null),
                     _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                        throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                        throw new InvalidOperationException(
+                            "Switch expression did not handle the supplied value."
+                        ),
                 }
             )
         );
@@ -231,7 +233,9 @@ internal class _MaterialState__material : State<Material>, TickerProviderStateMi
                     )!;
                     renderer._didChangeLayout();
                     return false;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 },
                 child: new _InkFeatures__material(
                     key: _inkFeatureRenderer,
@@ -287,7 +291,9 @@ internal class _MaterialState__material : State<Material>, TickerProviderStateMi
                     )
                 ),
                 _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                    throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
             }
         );
         if (Equals(widget.type, MaterialType.transparency))
@@ -343,7 +349,7 @@ internal class _MaterialState__material : State<Material>, TickerProviderStateMi
         )();
         _tickers!.Add(result);
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _removeTicker(_WidgetTicker__ticker_provider ticker)
@@ -553,7 +559,7 @@ internal class _InkFeatures__material : SingleChildRenderObjectWidget
             absorbHitTest: absorbHitTest,
             vsync: vsync
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -700,7 +706,7 @@ public class ShapeBorderTween : Tween<ShapeBorder?>
     public override ShapeBorder? lerp(double t)
     {
         return ShapeBorder.lerp(begin, end, t);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -854,7 +860,7 @@ internal class _ShapeBorderPaint__material : StatelessWidget
                 : null,
             child: child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -878,6 +884,6 @@ internal class _ShapeBorderPainter__material : CustomPainter
     {
         var __oldDelegate = (_ShapeBorderPainter__material)oldDelegate;
         return !Equals(__oldDelegate.border, border);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

@@ -145,7 +145,7 @@ public class KeySet<T>
         }
         sortedHashes.sort();
         return FoundationRuntimePorts.ObjectHashAll(sortedHashes);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -167,7 +167,7 @@ public abstract class ShortcutActivator
     public static bool isActivatedBy(ShortcutActivator activator, KeyEvent @event)
     {
         return activator.accepts(@event, HardwareKeyboard.instance);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public abstract string debugDescribeKeys();
@@ -251,7 +251,7 @@ public class LogicalKeySet : KeySet<LogicalKeyboardKey>, Diagnosticable
         HashSet<LogicalKeyboardKey> collapsedPressed = LogicalKeyboardKey.collapseSynonyms(pressed);
         return (checked(collapsedRequired.Count) == checked((long)collapsedPressed.Count))
             && !Enumerable.Any(collapsedRequired.difference(collapsedPressed));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool accepts(KeyEvent @event, HardwareKeyboard state)
@@ -262,7 +262,7 @@ public class LogicalKeySet : KeySet<LogicalKeyboardKey>, Diagnosticable
         }
         return triggers.contains(@event.logicalKey)
             && _checkKeyRequirements(state.logicalKeysPressed);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual string debugDescribeKeys()
@@ -290,7 +290,7 @@ public class LogicalKeySet : KeySet<LogicalKeyboardKey>, Diagnosticable
                             }
                             return a.debugName!.CompareTo(b.debugName!);
                             throw new InvalidOperationException(
-                                "Dart closure completed without a value."
+                                "Callback completed without returning a value."
                             );
                         }
                     );
@@ -299,7 +299,7 @@ public class LogicalKeySet : KeySet<LogicalKeyboardKey>, Diagnosticable
             )
         )().ToList();
         return string.Join(" + ", sortedKeys.map((key) => $"{key.debugName}"));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -326,10 +326,10 @@ public class LogicalKeySet : KeySet<LogicalKeyboardKey>, Diagnosticable
                 .toDiagnosticsNode()
                 .toStringDeep(minLevel: minLevel);
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -338,7 +338,7 @@ public class LogicalKeySet : KeySet<LogicalKeyboardKey>, Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -367,7 +367,7 @@ public class ShortcutMapProperty : DiagnosticsProperty<DartMap<ShortcutActivator
     public virtual string valueToString(TextTreeConfiguration? parentConfiguration = null)
     {
         return $"{{{string.Join(", ", value.Keys.map((keySet) => $"{{{keySet.debugDescribeKeys()}}}: {value.GetValueOrDefault(keySet)}"))}}}";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -425,7 +425,7 @@ public class SingleActivator : ShortcutActivator, Diagnosticable, MenuSerializab
             && (shift == Enumerable.Any(pressed.intersection(ShortcutsLibrary._shiftSynonyms)))
             && (alt == Enumerable.Any(pressed.intersection(ShortcutsLibrary._altSynonyms)))
             && (meta == Enumerable.Any(pressed.intersection(ShortcutsLibrary._metaSynonyms)));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _shouldAcceptNumLock(HardwareKeyboard state)
@@ -435,9 +435,11 @@ public class SingleActivator : ShortcutActivator, Diagnosticable, MenuSerializab
             LockState.ignored => true,
             LockState.locked => state.lockModesEnabled.Contains(KeyboardLockMode.numLock),
             LockState.unlocked => !state.lockModesEnabled.Contains(KeyboardLockMode.numLock),
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool accepts(KeyEvent @event, HardwareKeyboard state)
@@ -446,7 +448,7 @@ public class SingleActivator : ShortcutActivator, Diagnosticable, MenuSerializab
             && triggers.contains(@event.logicalKey)
             && _shouldAcceptModifiers(state.logicalKeysPressed)
             && _shouldAcceptNumLock(state);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual ShortcutSerialization serializeForMenu()
@@ -458,7 +460,7 @@ public class SingleActivator : ShortcutActivator, Diagnosticable, MenuSerializab
             meta: meta,
             control: control
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string debugDescribeKeys()
@@ -472,10 +474,10 @@ public class SingleActivator : ShortcutActivator, Diagnosticable, MenuSerializab
             };
             result = string.Join(" + ", keys);
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -499,10 +501,10 @@ public class SingleActivator : ShortcutActivator, Diagnosticable, MenuSerializab
                 .toDiagnosticsNode()
                 .toStringDeep(minLevel: minLevel);
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -511,7 +513,7 @@ public class SingleActivator : ShortcutActivator, Diagnosticable, MenuSerializab
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -545,7 +547,7 @@ public class CharacterActivator : ShortcutActivator, Diagnosticable, MenuSeriali
         return (control == Enumerable.Any(pressed.intersection(ShortcutsLibrary._controlSynonyms)))
             && (alt == Enumerable.Any(pressed.intersection(ShortcutsLibrary._altSynonyms)))
             && (meta == Enumerable.Any(pressed.intersection(ShortcutsLibrary._metaSynonyms)));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool accepts(KeyEvent @event, HardwareKeyboard state)
@@ -553,7 +555,7 @@ public class CharacterActivator : ShortcutActivator, Diagnosticable, MenuSeriali
         return (@event.character == character)
             && ((@event is KeyDownEvent) || (includeRepeats && (@event is KeyRepeatEvent)))
             && _shouldAcceptModifiers(state.logicalKeysPressed);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string debugDescribeKeys()
@@ -564,16 +566,16 @@ public class CharacterActivator : ShortcutActivator, Diagnosticable, MenuSeriali
             var keys = new List<string> { $"'{character}'" };
             result = string.Join(" + ", keys);
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual ShortcutSerialization serializeForMenu()
     {
         return new ShortcutSerialization(character, alt: alt, control: control, meta: meta);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -597,10 +599,10 @@ public class CharacterActivator : ShortcutActivator, Diagnosticable, MenuSeriali
                 .toDiagnosticsNode()
                 .toStringDeep(minLevel: minLevel);
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -609,7 +611,7 @@ public class CharacterActivator : ShortcutActivator, Diagnosticable, MenuSeriali
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -643,10 +645,10 @@ internal class _ActivatorIntentPair__shortcuts : Diagnosticable
                 .toDiagnosticsNode()
                 .toStringDeep(minLevel: minLevel);
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -655,7 +657,7 @@ internal class _ActivatorIntentPair__shortcuts : Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -718,7 +720,7 @@ public class ShortcutManager : ChangeNotifier, Diagnosticable
             }
         );
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual DartMap<
@@ -764,7 +766,7 @@ public class ShortcutManager : ChangeNotifier, Diagnosticable
             }
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual KeyEventResult handleKeypress(BuildContext context, KeyEvent @event)
@@ -792,7 +794,7 @@ public class ShortcutManager : ChangeNotifier, Diagnosticable
             }
         }
         return modal ? KeyEventResult.skipRemainingHandlers : KeyEventResult.ignored;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -818,10 +820,10 @@ public class ShortcutManager : ChangeNotifier, Diagnosticable
                 .toDiagnosticsNode()
                 .toStringDeep(minLevel: minLevel);
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -830,7 +832,7 @@ public class ShortcutManager : ChangeNotifier, Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -949,7 +951,7 @@ internal class _ShortcutsState__shortcuts : State<Shortcuts>
             return KeyEventResult.ignored;
         }
         return manager.handleKeypress(node.context!, @event);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -963,7 +965,7 @@ internal class _ShortcutsState__shortcuts : State<Shortcuts>
             includeSemantics: widget.includeSemantics,
             child: widget.child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -991,7 +993,7 @@ public class CallbackShortcuts : StatelessWidget
             return true;
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -1009,11 +1011,13 @@ public class CallbackShortcuts : StatelessWidget
                         : result;
                 }
                 return result;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             child: child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1076,7 +1080,7 @@ public class ShortcutRegistry : ChangeNotifier
         DartRuntimePrimitives.Assert(() => _debugCheckForDuplicates());
         _notifyListenersNextFrame();
         return entry;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _notifyListenersNextFrame()
@@ -1119,10 +1123,10 @@ public class ShortcutRegistry : ChangeNotifier
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return inherited!.registry;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static ShortcutRegistry? maybeOf(BuildContext context)
@@ -1130,7 +1134,7 @@ public class ShortcutRegistry : ChangeNotifier
         _ShortcutRegistrarScope__shortcuts? inherited =
             context.dependOnInheritedWidgetOfExactType<_ShortcutRegistrarScope__shortcuts>();
         return inherited?.registry;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _replaceAll(
@@ -1181,7 +1185,7 @@ public class ShortcutRegistry : ChangeNotifier
             }
         }
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _debugCheckForDuplicates()
@@ -1209,7 +1213,7 @@ public class ShortcutRegistry : ChangeNotifier
             }
         }
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1261,7 +1265,7 @@ internal class _ShortcutRegistrarState__shortcuts : State<ShortcutRegistrar>
                 child: widget.child
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1279,6 +1283,6 @@ internal class _ShortcutRegistrarScope__shortcuts : InheritedWidget
     {
         var __oldWidget = (_ShortcutRegistrarScope__shortcuts)oldWidget;
         return !Equals(registry, __oldWidget.registry);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

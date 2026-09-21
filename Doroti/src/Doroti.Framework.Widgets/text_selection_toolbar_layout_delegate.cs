@@ -33,13 +33,13 @@ public class TextSelectionToolbarLayoutDelegate : SingleChildLayoutDelegate
             return max - width;
         }
         return position - (width / 2.0);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override BoxConstraints getConstraintsForChild(BoxConstraints constraints)
     {
         return constraints.loosen();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Offset getPositionForChild(Size size, Size childSize)
@@ -50,7 +50,7 @@ public class TextSelectionToolbarLayoutDelegate : SingleChildLayoutDelegate
             centerOn(anchor.dx, childSize.width, size.width),
             (fitsAboveLocal) ? Math.Max(0.0, anchor.dy - childSize.height) : anchor.dy
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool shouldRelayout(SingleChildLayoutDelegate oldDelegate)
@@ -59,6 +59,6 @@ public class TextSelectionToolbarLayoutDelegate : SingleChildLayoutDelegate
         return (!Equals(anchorAbove, __oldDelegate.anchorAbove))
             || (!Equals(anchorBelow, __oldDelegate.anchorBelow))
             || (fitsAbove != __oldDelegate.fitsAbove);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

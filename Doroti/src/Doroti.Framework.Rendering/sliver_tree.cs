@@ -29,7 +29,7 @@ public class TreeSliverIndentationType
     {
         DartRuntimePrimitives.Assert(() => value >= 0.0);
         return new TreeSliverIndentationType(value);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -146,13 +146,13 @@ public class RenderTreeSliver : RenderSliverVariedExtentList
     public override long getMinChildIndexForScrollOffset(double scrollOffset, double itemExtent)
     {
         return _getChildIndexForScrollOffset(scrollOffset);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override long getMaxChildIndexForScrollOffset(double scrollOffset, double itemExtent)
     {
         return _getChildIndexForScrollOffset(scrollOffset);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual long _getChildIndexForScrollOffset(double scrollOffset)
@@ -176,7 +176,7 @@ public class RenderTreeSliver : RenderSliverVariedExtentList
                         (
                             childCount
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ) - 1L
                     )
@@ -185,9 +185,7 @@ public class RenderTreeSliver : RenderSliverVariedExtentList
             {
                 long childCount__8482__value8577 = (
                     childCount
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 break;
             }
@@ -210,14 +208,12 @@ public class RenderTreeSliver : RenderSliverVariedExtentList
             position +=
                 (
                     itemExtent
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) - totalAnimationOffset;
             ++index;
         }
         return index - 1L;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _computeAnimationOffsetFor(UniqueKey key, double position)
@@ -233,7 +229,7 @@ public class RenderTreeSliver : RenderSliverVariedExtentList
         {
             double itemExtent = (
                 itemExtentBuilder(currentIndex, layoutDimensions)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             totalAnimatingOffset += itemExtent;
             currentPosition += itemExtent;
@@ -246,7 +242,7 @@ public class RenderTreeSliver : RenderSliverVariedExtentList
     {
         var parentDataLocal = ((TreeSliverNodeParentData?)child.parentData!)!;
         return parentDataLocal.depth * indentation;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double indexToLayoutOffset(double itemExtent, long index)
@@ -266,7 +262,7 @@ public class RenderTreeSliver : RenderSliverVariedExtentList
                         (
                             childCount
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ) - 1L
                     )
@@ -275,9 +271,7 @@ public class RenderTreeSliver : RenderSliverVariedExtentList
             {
                 long childCount__11234__value11326 = (
                     childCount
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 break;
             }
@@ -296,12 +290,12 @@ public class RenderTreeSliver : RenderSliverVariedExtentList
             }
             position += (
                 itemExtentLocal
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             currentIndex++;
         }
         return position - totalAnimationOffset;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paint(PaintingContext context, Offset offset)
@@ -324,7 +318,7 @@ public class RenderTreeSliver : RenderSliverVariedExtentList
                         (
                             parentDataLocal.layoutOffset
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ) - constraints.scrollOffset
                     ) + offset;
@@ -372,17 +366,13 @@ public class RenderTreeSliver : RenderSliverVariedExtentList
                 indexToLayoutOffset(0.0, parentIndex)
                 + (
                     itemExtentBuilder(parentIndex, layoutDimensions)
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
             double trailingOffset =
                 indexToLayoutOffset(0.0, segment.trailingIndex)
                 + (
                     itemExtentBuilder(segment.trailingIndex, layoutDimensions)
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
             var rect = Rect.fromPoints(
                 new Offset(0.0, leadingOffset),

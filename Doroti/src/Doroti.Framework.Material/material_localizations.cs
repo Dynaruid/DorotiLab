@@ -179,7 +179,7 @@ public abstract class MaterialLocalizations
             DebugLibrary.debugCheckHasMaterialLocalizations(context)
         );
         return Localizations.of<MaterialLocalizations>(context, typeof(MaterialLocalizations))!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -293,7 +293,7 @@ public class DefaultMaterialLocalizations : MaterialLocalizations
             31L,
         };
         return daysInMonth[(int)(month - 1L)];
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string formatHour(TimeOfDay timeOfDay, bool alwaysUse24HourFormat = false)
@@ -321,9 +321,11 @@ public class DefaultMaterialLocalizations : MaterialLocalizations
                 );
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual string _formatTwoDigitZeroPad(long number)
@@ -334,14 +336,14 @@ public class DefaultMaterialLocalizations : MaterialLocalizations
             return $"0{number}";
         }
         return $"{number}";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string formatMinute(TimeOfDay timeOfDay)
     {
         long minuteLocal = timeOfDay.minute;
         return (minuteLocal < 10L) ? $"0{minuteLocal}" : minuteLocal.ToString();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string formatYear(DateTime date) => date.Year.ToString();
@@ -352,14 +354,14 @@ public class DefaultMaterialLocalizations : MaterialLocalizations
         string day = _formatTwoDigitZeroPad(date.Day);
         string year = date.Year.ToString().padLeft(4L, "0");
         return $"{month}/{day}/{year}";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string formatShortDate(DateTime date)
     {
         string month = _shortMonths[(int)(date.Month - 1L)];
         return $"{month} {date.Day}, {date.Year}";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string formatMediumDate(DateTime date)
@@ -367,14 +369,14 @@ public class DefaultMaterialLocalizations : MaterialLocalizations
         string day = _shortWeekdays[(int)(date.DayOfWeek.ToDartWeekday() - 1L)];
         string month = _shortMonths[(int)(date.Month - 1L)];
         return $"{day}, {month} {date.Day}";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string formatFullDate(DateTime date)
     {
         string month = _months[(int)(date.Month - 1L)];
         return $"{_weekdays[(int)(date.DayOfWeek.ToDartWeekday() - 1L)]}, {month} {date.Day}, {date.Year}";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string formatMonthYear(DateTime date)
@@ -382,14 +384,14 @@ public class DefaultMaterialLocalizations : MaterialLocalizations
         string year = formatYear(date);
         string month = _months[(int)(date.Month - 1L)];
         return $"{month} {year}";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string formatShortMonthDay(DateTime date)
     {
         string month = _shortMonths[(int)(date.Month - 1L)];
         return $"{month} {date.Day}";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override DateTime? parseCompactDate(string? inputString)
@@ -409,9 +411,7 @@ public class DefaultMaterialLocalizations : MaterialLocalizations
             || (
                 (
                     year
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) < 1L
             )
         )
@@ -424,17 +424,13 @@ public class DefaultMaterialLocalizations : MaterialLocalizations
             || (
                 (
                     month
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) < 1L
             )
             || (
                 (
                     month
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) > 12L
             )
         )
@@ -447,24 +443,20 @@ public class DefaultMaterialLocalizations : MaterialLocalizations
             || (
                 (
                     day
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) < 1L
             )
             || (
                 (
                     day
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
                 > _getDaysInMonth(
                     (
                         (
                             year
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     ),
@@ -472,7 +464,7 @@ public class DefaultMaterialLocalizations : MaterialLocalizations
                         (
                             month
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     )
@@ -487,21 +479,15 @@ public class DefaultMaterialLocalizations : MaterialLocalizations
             return DartRuntimePrimitives.CreateDateTime(
                 (
                     year
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 (
                     month
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 (
                     day
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             );
         }
@@ -509,7 +495,7 @@ public class DefaultMaterialLocalizations : MaterialLocalizations
         {
             return null;
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override List<string> narrowWeekdays => _narrowWeekdays;
@@ -554,9 +540,11 @@ public class DefaultMaterialLocalizations : MaterialLocalizations
             var __constant34864 when Equals(__constant34864, DayPeriod.pm) =>
                 postMeridiemAbbreviation,
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string formatDecimal(long number)
@@ -577,7 +565,7 @@ public class DefaultMaterialLocalizations : MaterialLocalizations
             }
         }
         return result.ToString();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string formatTimeOfDay(TimeOfDay timeOfDay, bool alwaysUse24HourFormat = false)
@@ -617,7 +605,7 @@ public class DefaultMaterialLocalizations : MaterialLocalizations
             )()
         );
         return $"{buffer}";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string openAppDrawerTooltip => "Open navigation menu";
@@ -660,7 +648,7 @@ public class DefaultMaterialLocalizations : MaterialLocalizations
             1L => "1 license.",
             _ => $"{licenseCount} licenses.",
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string pageRowsInfoTitle(
@@ -673,7 +661,7 @@ public class DefaultMaterialLocalizations : MaterialLocalizations
         return rowCountIsApproximate
             ? $"{firstRow}–{lastRow} of about {rowCount}"
             : $"{firstRow}–{lastRow} of {rowCount}";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string rowsPerPageTitle => "Rows per page:";
@@ -683,7 +671,7 @@ public class DefaultMaterialLocalizations : MaterialLocalizations
         DartRuntimePrimitives.Assert(() => tabIndex >= 1L);
         DartRuntimePrimitives.Assert(() => tabCount >= 1L);
         return $"Tab {tabIndex} of {tabCount}";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string selectedRowCountTitle(long selectedRowCount)
@@ -694,7 +682,7 @@ public class DefaultMaterialLocalizations : MaterialLocalizations
             1L => "1 item selected",
             _ => $"{selectedRowCount} items selected",
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string cancelButtonLabel => "Cancel";
@@ -723,7 +711,7 @@ public class DefaultMaterialLocalizations : MaterialLocalizations
         return alwaysUse24HourFormat
             ? TimeOfDayFormat.HH_colon_mm
             : TimeOfDayFormat.h_colon_mm_space_a;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string signedInLabel => "Signed in";
@@ -748,7 +736,7 @@ public class DefaultMaterialLocalizations : MaterialLocalizations
     public static Future<MaterialLocalizations> load(Locale locale)
     {
         return new SynchronousFuture<MaterialLocalizations>(new DefaultMaterialLocalizations());
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string remainingTextFieldCharacterCount(long remaining)
@@ -759,7 +747,7 @@ public class DefaultMaterialLocalizations : MaterialLocalizations
             1L => "1 character remaining",
             _ => $"{remaining} characters remaining",
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string keyboardKeyAlt => "Alt";

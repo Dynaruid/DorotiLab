@@ -138,7 +138,7 @@ public abstract class RenderSliverMultiBoxAdaptor
             }
         }
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void insert(RenderBox child, RenderBox? after = null)
@@ -197,7 +197,7 @@ public abstract class RenderSliverMultiBoxAdaptor
                         (
                             childParentData.index
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     ),
@@ -209,7 +209,7 @@ public abstract class RenderSliverMultiBoxAdaptor
                     (
                         childParentData.index
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 );
@@ -227,7 +227,7 @@ public abstract class RenderSliverMultiBoxAdaptor
                         (
                             childParentData.index
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     )
@@ -238,7 +238,7 @@ public abstract class RenderSliverMultiBoxAdaptor
                             (
                                 childParentData.index
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             )
                         )!
@@ -249,9 +249,7 @@ public abstract class RenderSliverMultiBoxAdaptor
             _keepAliveBucket[
                 (
                     childParentData.index
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             ] = child;
         }
@@ -272,7 +270,7 @@ public abstract class RenderSliverMultiBoxAdaptor
                     (
                         childParentData.index
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 ),
@@ -287,7 +285,7 @@ public abstract class RenderSliverMultiBoxAdaptor
         _keepAliveBucket.remove(
             (
                 childParentData.index
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );
         dropChild(child);
@@ -346,9 +344,7 @@ public abstract class RenderSliverMultiBoxAdaptor
             _keepAliveBucket[
                 (
                     childParentData.index
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             ] = child;
             child.parentData = childParentData;
@@ -462,7 +458,7 @@ public abstract class RenderSliverMultiBoxAdaptor
         }
         childManager.setDidUnderflow(true);
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual RenderBox? insertAndLayoutLeadingChild(
@@ -480,7 +476,7 @@ public abstract class RenderSliverMultiBoxAdaptor
         }
         childManager.setDidUnderflow(true);
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual RenderBox? insertAndLayoutChild(
@@ -502,7 +498,7 @@ public abstract class RenderSliverMultiBoxAdaptor
         }
         childManager.setDidUnderflow(true);
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual long calculateLeadingGarbage(long firstIndex)
@@ -515,7 +511,7 @@ public abstract class RenderSliverMultiBoxAdaptor
             walker = childAfter(walker);
         }
         return leadingGarbage;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual long calculateTrailingGarbage(long lastIndex)
@@ -528,7 +524,7 @@ public abstract class RenderSliverMultiBoxAdaptor
             walker = childBefore(walker);
         }
         return trailingGarbage;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void collectGarbage(long leadingGarbage, long trailingGarbage)
@@ -583,9 +579,9 @@ public abstract class RenderSliverMultiBoxAdaptor
         DartRuntimePrimitives.Assert(() => childParentData.index is not null);
         return (
             childParentData.index
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double paintExtentOf(RenderBox child)
@@ -595,9 +591,11 @@ public abstract class RenderSliverMultiBoxAdaptor
         {
             Axis.horizontal => child.size.width,
             Axis.vertical => child.size.height,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool hitTestChildren(
@@ -624,7 +622,7 @@ public abstract class RenderSliverMultiBoxAdaptor
             child = childBefore(child);
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double childMainAxisPosition(RenderObject child)
@@ -632,9 +630,9 @@ public abstract class RenderSliverMultiBoxAdaptor
         var __child = (RenderBox)child;
         return (
                 childScrollOffset(__child)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ) - constraints.scrollOffset;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? childScrollOffset(RenderObject child)
@@ -642,7 +640,7 @@ public abstract class RenderSliverMultiBoxAdaptor
         DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         var childParentData = ((SliverMultiBoxAdaptorParentData?)child.parentData!)!;
         return childParentData.layoutOffset;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool paintsChild(RenderObject child)
@@ -653,12 +651,10 @@ public abstract class RenderSliverMultiBoxAdaptor
             && !_keepAliveBucket.ContainsKey(
                 (
                     childParentData.index
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void applyPaintTransform(RenderObject child, Matrix4 transform)
@@ -780,7 +776,7 @@ public abstract class RenderSliverMultiBoxAdaptor
             return true;
         });
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override List<DiagnosticsNode> debugDescribeChildren()
@@ -829,7 +825,7 @@ public abstract class RenderSliverMultiBoxAdaptor
             }
         }
         return children;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool _debugUltimatePreviousSiblingOf(RenderBox child, RenderBox? equals = null)
@@ -842,7 +838,7 @@ public abstract class RenderSliverMultiBoxAdaptor
             childParentData = ((SliverMultiBoxAdaptorParentData?)child.parentData!)!;
         }
         return Equals(child, equals);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool _debugUltimateNextSiblingOf(RenderBox child, RenderBox? equals = null)
@@ -855,7 +851,7 @@ public abstract class RenderSliverMultiBoxAdaptor
             childParentData = ((SliverMultiBoxAdaptorParentData?)child.parentData!)!;
         }
         return Equals(child, equals);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual long childCount => _childCount;
@@ -898,7 +894,7 @@ public abstract class RenderSliverMultiBoxAdaptor
             return true;
         });
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _insertIntoChildList(RenderBox child, RenderBox? after = null)
@@ -1011,7 +1007,7 @@ public abstract class RenderSliverMultiBoxAdaptor
         DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         var childParentData = ((SliverMultiBoxAdaptorParentData?)child.parentData!)!;
         return childParentData.previousSibling;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual RenderBox? childAfter(RenderBox child)
@@ -1019,7 +1015,7 @@ public abstract class RenderSliverMultiBoxAdaptor
         DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         var childParentData = ((SliverMultiBoxAdaptorParentData?)child.parentData!)!;
         return childParentData.nextSibling;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool _getRightWayUp(SliverConstraints constraints)
@@ -1029,9 +1025,11 @@ public abstract class RenderSliverMultiBoxAdaptor
         {
             GrowthDirection.forward => !reversed,
             GrowthDirection.reverse => reversed,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool hitTestBoxChild(
@@ -1080,7 +1078,7 @@ public abstract class RenderSliverMultiBoxAdaptor
                 return child.hitTest(result, position: transformedPosition);
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void applyPaintTransformForBoxChild(RenderBox child, Matrix4 transform)

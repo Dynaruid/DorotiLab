@@ -92,7 +92,7 @@ public class RenderAnimatedSize : RenderAligningShiftedBox
         get =>
             (
                 _controller.duration
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         set
         {
@@ -245,7 +245,7 @@ public class RenderAnimatedSize : RenderAligningShiftedBox
         size = _currentSize = constraintsLocal.constrain(
             (
                 _animatedSize
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );
         alignChild();
@@ -254,18 +254,14 @@ public class RenderAnimatedSize : RenderAligningShiftedBox
                 size.width
                 < (
                     _sizeTween.end
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ).width
             )
             || (
                 size.height
                 < (
                     _sizeTween.end
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ).height
             )
         )
@@ -315,10 +311,10 @@ public class RenderAnimatedSize : RenderAligningShiftedBox
         return constraints.constrain(
             (
                 _animatedSize
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _restartAnimation()
@@ -436,9 +432,9 @@ public class RenderAnimatedSize : RenderAligningShiftedBox
         Offset offset = resolvedAlignment.alongOffset(mySize - childSize);
         return (
                 result
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ) + offset.dy;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void dispose()

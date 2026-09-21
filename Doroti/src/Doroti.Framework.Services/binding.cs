@@ -66,7 +66,7 @@ public abstract class ServicesBinding : SchedulerBinding
     public virtual BinaryMessenger createBinaryMessenger()
     {
         return new _DefaultBinaryMessenger();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void handleMemoryPressure()
@@ -132,14 +132,14 @@ public abstract class ServicesBinding : SchedulerBinding
             await controller.close();
         });
         return controller.stream;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static List<LicenseEntry> _parseLicenses(string rawLicenses)
     {
         var licenseSeparator = $"\n{DartCoreExtensions.repeat("-", 80L)}\n";
         return new List<LicenseEntry>();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     protected override void initServiceExtensions()
@@ -193,10 +193,7 @@ public abstract class ServicesBinding : SchedulerBinding
         AppLifecycleState? state = _parseAppLifecycleMessage(message!);
         List<AppLifecycleState> generated = _generateStateTransitions(
             lifecycleState,
-            (
-                state
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
-            )
+            (state ?? throw new global::System.NullReferenceException("A required value was null."))
         );
         foreach (var stateChange in generated)
         {
@@ -204,7 +201,7 @@ public abstract class ServicesBinding : SchedulerBinding
             SystemChrome.handleAppLifecycleStateChanged(stateChange);
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual List<AppLifecycleState> _generateStateTransitions(
@@ -229,7 +226,7 @@ public abstract class ServicesBinding : SchedulerBinding
                     (
                         previousState
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 );
@@ -283,7 +280,7 @@ public abstract class ServicesBinding : SchedulerBinding
             return true;
         });
         return stateChanges;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static bool _debugVerifyLifecycleChange(
@@ -321,9 +318,11 @@ public abstract class ServicesBinding : SchedulerBinding
                 ending,
                 AppLifecycleState.hidden
             ) || Equals(ending, AppLifecycleState.detached),
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual async Future _handleAccessibilityMessage(object accessibilityMessage)
@@ -397,7 +396,7 @@ public abstract class ServicesBinding : SchedulerBinding
                 throw new AssertionError($"Method \"{method}\" not handled.");
             }
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static AppLifecycleState? _parseAppLifecycleMessage(string message)
@@ -416,13 +415,13 @@ public abstract class ServicesBinding : SchedulerBinding
                 AppLifecycleState.detached,
             _ => null,
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual async Future<AppExitResponse> handleRequestAppExit()
     {
         return Dart_uiLibrary.AppExitResponse.exit;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual async Future<AppExitResponse> exitApplication(
@@ -452,7 +451,7 @@ public abstract class ServicesBinding : SchedulerBinding
                 return Dart_uiLibrary.AppExitResponse.exit;
             }
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual RestorationManager restorationManager => _restorationManager;
@@ -460,7 +459,7 @@ public abstract class ServicesBinding : SchedulerBinding
     public virtual RestorationManager createRestorationManager()
     {
         return new RestorationManager();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void setSystemUiChangeCallback(Func<bool, Future>? callback)
@@ -530,7 +529,7 @@ internal class _DefaultBinaryMessenger : BinaryMessenger
             }
         );
         return completer.future;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void setMessageHandler(

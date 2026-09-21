@@ -106,7 +106,7 @@ public class SlideTransition : AnimatedWidget
             transformHitTests: transformHitTests,
             child: child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -146,7 +146,7 @@ public class MatrixTransition : AnimatedWidget
             filterQuality: animation.isAnimating ? filterQuality : null,
             child: child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -241,7 +241,7 @@ public class SizeTransition : AnimatedWidget
                             Axis.horizontal => new AlignmentDirectional(axisAlignment ?? 0.0, -1.0),
                             Axis.vertical => new AlignmentDirectional(-1.0, axisAlignment ?? 0.0),
                             _ => throw new InvalidOperationException(
-                                "Non-exhaustive Dart switch value."
+                                "Switch expression did not handle the supplied value."
                             ),
                         }
                     ),
@@ -254,7 +254,7 @@ public class SizeTransition : AnimatedWidget
                 child: child
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -281,7 +281,7 @@ public class FadeTransition : SingleChildRenderObjectWidget
             opacity: opacity,
             alwaysIncludeSemantics: alwaysIncludeSemantics
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -339,7 +339,7 @@ public class SliverFadeTransition : SingleChildRenderObjectWidget
             opacity: opacity,
             alwaysIncludeSemantics: alwaysIncludeSemantics
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -402,7 +402,7 @@ public class PositionedTransition : AnimatedWidget
     public override Widget build(BuildContext context)
     {
         return Positioned.CreateFromRelativeRect(rect: rect.value, child: child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -436,7 +436,7 @@ public class RelativePositionedTransition : AnimatedWidget
             left: offsets.left,
             child: child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -462,7 +462,7 @@ public class DecoratedBoxTransition : AnimatedWidget
     public override Widget build(BuildContext context)
     {
         return new DecoratedBox(decoration: decoration.value, position: position, child: child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -497,7 +497,7 @@ public class AlignTransition : AnimatedWidget
             heightFactor: heightFactor,
             child: child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -539,7 +539,7 @@ public class DefaultTextStyleTransition : AnimatedWidget
             maxLines: maxLines,
             child: child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 

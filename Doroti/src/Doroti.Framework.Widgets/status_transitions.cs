@@ -54,6 +54,6 @@ internal class _StatusTransitionState__status_transitions : State<StatusTransiti
     public override Widget build(BuildContext context)
     {
         return widget.build(context);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

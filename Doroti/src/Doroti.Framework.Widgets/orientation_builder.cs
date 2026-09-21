@@ -24,13 +24,13 @@ public class OrientationBuilder : StatelessWidget
                 ? Orientation.landscape
                 : Orientation.portrait;
         return builder(context, orientation);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
     {
         return new LayoutBuilder(builder: _buildWithConstraints);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -51,6 +51,6 @@ public class DeviceOrientationBuilder : StatelessWidget
     {
         Orientation orientation = MediaQuery.orientationOf(context);
         return builder(context, orientation);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

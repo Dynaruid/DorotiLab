@@ -84,7 +84,7 @@ public class ScrollableDetails
             physics: physics ?? this.physics,
             decorationClipBehavior: decorationClipBehavior ?? this.decorationClipBehavior
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string ToString()
@@ -102,7 +102,7 @@ public class ScrollableDetails
         addIfNonNull("scroll physics: ", physics);
         addIfNonNull("decorationClipBehavior: ", decorationClipBehavior);
         return $"{DiagnosticsLibrary.describeIdentity(this)}({string.Join(", ", description)})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override int GetHashCode() =>
@@ -166,9 +166,11 @@ public class EdgeDraggingAutoScroller
         {
             Axis.horizontal => offset.dx,
             Axis.vertical => offset.dy,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual double _sizeExtent(Size size, Axis scrollDirection)
@@ -177,9 +179,11 @@ public class EdgeDraggingAutoScroller
         {
             Axis.horizontal => size.width,
             Axis.vertical => size.height,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual AxisDirection _axisDirection => scrollable.axisDirection;
@@ -319,7 +323,7 @@ public class EdgeDraggingAutoScroller
                     (
                         newOffset
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) - scrollable.position.pixels
                 ).abs() < 1.0
@@ -334,9 +338,7 @@ public class EdgeDraggingAutoScroller
             (
                 (
                     newOffset
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             ),
             duration: durationLocal,
@@ -399,7 +401,7 @@ public class ScrollAction : ContextAction<ScrollIntent>
         }
         ScrollController? primaryScrollController = PrimaryScrollController.maybeOf(context);
         return primaryScrollController is not null && primaryScrollController.hasClients;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static double _calculateScrollIncrement(
@@ -422,9 +424,11 @@ public class ScrollAction : ContextAction<ScrollIntent>
         {
             ScrollIncrementType.line => 50.0,
             ScrollIncrementType.page => 0.8 * state.position.viewportDimension,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static double getDirectionalIncrement(ScrollableState state, ScrollIntent intent)
@@ -440,7 +444,7 @@ public class ScrollAction : ContextAction<ScrollIntent>
             return Equals(intent.direction, state.axisDirection) ? increment : -increment;
         }
         return 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override object? invoke(ScrollIntent intent, BuildContext? context = null)
@@ -482,7 +486,9 @@ public class ScrollAction : ContextAction<ScrollIntent>
                     );
                 }
                 return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             });
             BuildContext? notificationContextLocal = primaryScrollController
                 .position
@@ -521,6 +527,6 @@ public class ScrollAction : ContextAction<ScrollIntent>
                 curve: Curves.easeInOut
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

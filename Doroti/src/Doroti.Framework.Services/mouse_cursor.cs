@@ -26,7 +26,7 @@ public class MouseCursorManager
             return true;
         });
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void handleDeviceCursorUpdate(
@@ -93,7 +93,7 @@ public abstract class MouseCursor : Diagnosticable
             return debugDescription;
         }
         return GetType().ToString();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -105,7 +105,7 @@ internal class _DeferringMouseCursor : MouseCursor
     {
         DartRuntimePrimitives.Assert(() => false);
         throw new NotImplementedException();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string debugDescription => "defer";
@@ -120,7 +120,7 @@ internal class _DeferringMouseCursor : MouseCursor
             }
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -182,7 +182,7 @@ internal class _SystemMouseCursorSession : MouseCursorSession
             )
             .SetCursor(cursorKind);
         return Future.value();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void dispose() { }

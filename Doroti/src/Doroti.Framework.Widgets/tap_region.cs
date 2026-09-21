@@ -26,7 +26,7 @@ public static partial class Tap_regionLibrary
             }
         }
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -56,7 +56,7 @@ public interface TapRegionRegistry
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return registry!;
     }
@@ -74,7 +74,7 @@ public class TapRegionSurface : SingleChildRenderObjectWidget
     public override RenderObject createRenderObject(BuildContext context)
     {
         return new RenderTapRegionSurface();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -137,7 +137,7 @@ public class RenderTapRegionSurface : RenderProxyBoxWithHitTestBehavior, TapRegi
         }
         Offset globalCenter = (
             globalRect
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         ).center;
         Offset localPosition = globalToLocal(globalCenter);
         var hitResult = new BoxHitTestResult();
@@ -226,7 +226,7 @@ public class RenderTapRegionSurface : RenderProxyBoxWithHitTestBehavior, TapRegi
             result.add(entry);
         }
         return hitTarget;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual (
@@ -262,7 +262,7 @@ public class RenderTapRegionSurface : RenderProxyBoxWithHitTestBehavior, TapRegi
             inside: insideRegions,
             outside: _registeredRegions.where((r) => !insideRegions.Contains(r)).ToList()
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void handleEvent(PointerEvent @event, HitTestEntry<HitTestTarget> entry)
@@ -279,7 +279,9 @@ public class RenderTapRegionSurface : RenderProxyBoxWithHitTestBehavior, TapRegi
                     }
                 }
                 return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             () => (object?)"A RenderTapRegion was registered when it was disabled."
         );
@@ -391,7 +393,7 @@ public class RenderTapRegionSurface : RenderProxyBoxWithHitTestBehavior, TapRegi
             }
         }
         return regions;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -455,7 +457,7 @@ public class TapRegion : SingleChildRenderObjectWidget
             groupId: groupId,
             debugLabel: debugLabel
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)

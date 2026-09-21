@@ -742,7 +742,9 @@ public class DefaultTextEditingShortcuts : StatelessWidget
                 TargetPlatform.linux => _linuxShortcuts,
                 TargetPlatform.macOS => _macShortcuts,
                 TargetPlatform.windows => _windowsShortcuts,
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             };
         }
     }
@@ -766,7 +768,9 @@ public class DefaultTextEditingShortcuts : StatelessWidget
                     return _webDisablingTextShortcuts;
                 }
                 default:
-                    throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                    throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    );
             }
         }
         switch (PlatformLibrary.defaultTargetPlatform)
@@ -787,9 +791,11 @@ public class DefaultTextEditingShortcuts : StatelessWidget
                 return _macDisablingTextShortcuts;
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -811,7 +817,7 @@ public class DefaultTextEditingShortcuts : StatelessWidget
             shortcuts: _shortcuts,
             child: result
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -941,6 +947,6 @@ public static partial class Default_text_editing_shortcutsLibrary
             ["insertBacktab:"] = new PreviousFocusIntent(),
         };
         return selectorToIntent.GetValueOrDefault(selectorName);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

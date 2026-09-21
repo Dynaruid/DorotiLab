@@ -16,7 +16,7 @@ public static partial class Text_editing_deltaLibrary
             var __case634 when Equals(__case634, "TextAffinity.upstream") => TextAffinity.upstream,
             _ => null,
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -34,7 +34,7 @@ public static partial class Text_editing_deltaLibrary
             replacementRange.end,
             replacementText
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -50,7 +50,7 @@ public static partial class Text_editing_deltaLibrary
             && (range.start <= text.Length)
             && (range.end >= 0L)
             && (range.end <= text.Length);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -306,7 +306,7 @@ public class TextEditingDeltaInsertion : TextEditingDelta
             Text_editing_deltaLibrary._debugTextRangeIsValid(composing, newText)
         );
         return value.copyWith(text: newText, selection: selection, composing: composing);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -351,7 +351,7 @@ public class TextEditingDeltaDeletion : TextEditingDelta
             Text_editing_deltaLibrary._debugTextRangeIsValid(composing, newText)
         );
         return value.copyWith(text: newText, selection: selection, composing: composing);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -399,7 +399,7 @@ public class TextEditingDeltaReplacement : TextEditingDelta
             Text_editing_deltaLibrary._debugTextRangeIsValid(composing, newText)
         );
         return value.copyWith(text: newText, selection: selection, composing: composing);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -432,7 +432,7 @@ public class TextEditingDeltaNonTextUpdate : TextEditingDelta
             Text_editing_deltaLibrary._debugTextRangeIsValid(composing, oldText)
         );
         return new TextEditingValue(text: oldText, selection: selection, composing: composing);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)

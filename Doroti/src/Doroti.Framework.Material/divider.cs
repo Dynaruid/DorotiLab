@@ -65,25 +65,25 @@ public class Divider : StatelessWidget
             (height ?? dividerTheme.space)
             ?? (
                 defaults.space
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         double thicknessLocal =
             (thickness ?? dividerTheme.thickness)
             ?? (
                 defaults.thickness
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         double indentLocal =
             (indent ?? dividerTheme.indent)
             ?? (
                 defaults.indent
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         double endIndentLocal =
             (endIndent ?? dividerTheme.endIndent)
             ?? (
                 defaults.endIndent
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         return new SizedBox(
             height: (heightLocal),
@@ -147,25 +147,25 @@ public class VerticalDivider : StatelessWidget
             (width ?? dividerTheme.space)
             ?? (
                 defaults.space
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         double thicknessLocal =
             (thickness ?? dividerTheme.thickness)
             ?? (
                 defaults.thickness
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         double indentLocal =
             (indent ?? dividerTheme.indent)
             ?? (
                 defaults.indent
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         double endIndentLocal =
             (endIndent ?? dividerTheme.endIndent)
             ?? (
                 defaults.endIndent
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         return new SizedBox(
             width: (widthLocal),

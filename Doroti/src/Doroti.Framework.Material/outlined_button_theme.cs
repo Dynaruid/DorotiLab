@@ -25,7 +25,7 @@ public class OutlinedButtonThemeData : Diagnosticable
             return a;
         }
         return new OutlinedButtonThemeData(style: ButtonStyle.lerp(a?.style, b?.style, t));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override int GetHashCode() => style?.GetHashCode() ?? 0;
@@ -69,7 +69,7 @@ public class OutlinedButtonThemeData : Diagnosticable
             return true;
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -78,7 +78,7 @@ public class OutlinedButtonThemeData : Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -101,13 +101,13 @@ public class OutlinedButtonTheme : InheritedTheme
         OutlinedButtonTheme? buttonTheme =
             context.dependOnInheritedWidgetOfExactType<OutlinedButtonTheme>();
         return buttonTheme?.data ?? Theme.of(context).outlinedButtonTheme;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget wrap(BuildContext context, Widget child)
     {
         return new OutlinedButtonTheme(data: data, child: child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget) =>

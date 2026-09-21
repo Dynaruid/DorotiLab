@@ -36,7 +36,7 @@ public abstract class MatrixUtils
             return new Offset(dx, dy);
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static double? getAsScale(Matrix4 transform)
@@ -67,7 +67,7 @@ public abstract class MatrixUtils
             return diagonal1;
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static void multiplyInPlace(Matrix4 a, Matrix4 b)
@@ -155,7 +155,7 @@ public abstract class MatrixUtils
             && (a.storage[13L] == b.storage[13L])
             && (a.storage[14L] == b.storage[14L])
             && (a.storage[15L] == b.storage[15L]);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static bool isIdentity(Matrix4 a)
@@ -176,7 +176,7 @@ public abstract class MatrixUtils
             && (a.storage[13L] == 0.0)
             && (a.storage[14L] == 0.0)
             && (a.storage[15L] == 1.0);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static Offset transformPoint(Matrix4 transform, Offset point)
@@ -195,7 +195,7 @@ public abstract class MatrixUtils
         {
             return new Offset(rx / rw, ry / rw);
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static Rect _safeTransformRect(Matrix4 transform, Rect rect)
@@ -208,7 +208,7 @@ public abstract class MatrixUtils
         _accumulate(storageLocal, rect.left, rect.bottom, false, isAffine);
         _accumulate(storageLocal, rect.right, rect.bottom, false, isAffine);
         return Rect.fromLTRB(_minMax[0L], _minMax[1L], _minMax[2L], _minMax[3L]);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static void _accumulate(Float64List m, double x, double y, bool first, bool isAffine)
@@ -319,7 +319,7 @@ public abstract class MatrixUtils
                 _max4(uly, ury, lly, lry)
             );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static double _min4(double a, double b, double c, double d)
@@ -327,7 +327,7 @@ public abstract class MatrixUtils
         var e = ((a) < (b)) ? (a) : (b);
         var f = (c < d) ? c : d;
         return (e < f) ? e : f;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static double _max4(double a, double b, double c, double d)
@@ -335,7 +335,7 @@ public abstract class MatrixUtils
         var e = ((a) > (b)) ? (a) : (b);
         var f = (c > d) ? c : d;
         return (e > f) ? e : f;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static Rect inverseTransformRect(Matrix4 transform, Rect rect)
@@ -355,7 +355,7 @@ public abstract class MatrixUtils
             )
         )();
         return transformRect(transform, rect);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static Matrix4 createCylindricalProjectionTransform(
@@ -389,7 +389,7 @@ public abstract class MatrixUtils
                                 Axis.horizontal => Matrix4.rotationY(angle),
                                 Axis.vertical => Matrix4.rotationX(angle),
                                 _ => throw new InvalidOperationException(
-                                    "Non-exhaustive Dart switch value."
+                                    "Switch expression did not handle the supplied value."
                                 ),
                             }
                         ) * Matrix4.translationValues(0.0, 0.0, radius)
@@ -397,7 +397,7 @@ public abstract class MatrixUtils
                 )
         )!;
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static Matrix4 forceToPoint(Offset offset)
@@ -409,7 +409,7 @@ public abstract class MatrixUtils
         storageLocal[13L] = offset.dy;
         storageLocal[15L] = 1;
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -428,7 +428,7 @@ public static partial class Matrix_utilsLibrary
             $"[2] {Foundation.DebugLibrary.debugFormatDouble(transform.entry(2L, 0L))},{Foundation.DebugLibrary.debugFormatDouble(transform.entry(2L, 1L))},{Foundation.DebugLibrary.debugFormatDouble(transform.entry(2L, 2L))},{Foundation.DebugLibrary.debugFormatDouble(transform.entry(2L, 3L))}",
             $"[3] {Foundation.DebugLibrary.debugFormatDouble(transform.entry(3L, 0L))},{Foundation.DebugLibrary.debugFormatDouble(transform.entry(3L, 1L))},{Foundation.DebugLibrary.debugFormatDouble(transform.entry(3L, 2L))},{Foundation.DebugLibrary.debugFormatDouble(transform.entry(3L, 3L))}",
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -463,6 +463,6 @@ public class TransformProperty : DiagnosticsProperty<Matrix4>
             return $"[{string.Join("; ", values)}]";
         }
         return string.Join("\n", Matrix_utilsLibrary.debugDescribeTransform(value));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

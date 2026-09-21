@@ -17,7 +17,7 @@ public abstract class ElevationOverlay
             );
         }
         return color;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static double _surfaceTintOpacityForElevation(double elevation)
@@ -53,7 +53,7 @@ public abstract class ElevationOverlay
             Elevation_overlayLibrary._surfaceTintElevationOpacities[(int)index];
         double t = (elevation - lower.elevation) / (upper.elevation - lower.elevation);
         return lower.opacity + (t * (upper.opacity - lower.opacity));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static Color applyOverlay(BuildContext context, Color color, double elevation)
@@ -69,27 +69,27 @@ public abstract class ElevationOverlay
             return colorWithOverlay(color, theme.colorScheme.onSurface, elevation);
         }
         return color;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static Color overlayColor(BuildContext context, double elevation)
     {
         ThemeData theme = Theme.of(context);
         return _overlayColor(theme.colorScheme.onSurface, elevation);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static Color colorWithOverlay(Color surface, Color overlay, double elevation)
     {
         return Dart_uiLibrary.Color.alphaBlend(_overlayColor(overlay, elevation), surface);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static Color _overlayColor(Color color, double elevation)
     {
         double opacity = ((4.5 * Runtime.Dart_mathLibrary.log(elevation + 1L)) + 2L) / 100.0;
         return color.withOpacity(opacity);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 

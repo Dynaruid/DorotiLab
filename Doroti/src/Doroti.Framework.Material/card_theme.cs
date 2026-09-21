@@ -111,14 +111,14 @@ public class CardTheme : InheritedWidget, Diagnosticable
             margin: margin ?? this.margin,
             shape: shape ?? this.shape
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static CardThemeData of(BuildContext context)
     {
         CardTheme? cardThemeLocal = context.dependOnInheritedWidgetOfExactType<CardTheme>();
         return cardThemeLocal?.data ?? Theme.of(context).cardTheme;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget) =>
@@ -143,7 +143,7 @@ public class CardTheme : InheritedWidget, Diagnosticable
             margin: EdgeInsetsGeometry.lerp(a?.margin, b?.margin, t),
             shape: ShapeBorder.lerp(a?.shape, b?.shape, t)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -174,7 +174,7 @@ public class CardTheme : InheritedWidget, Diagnosticable
             return true;
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override DiagnosticsNode toDiagnosticsNode(
@@ -183,7 +183,7 @@ public class CardTheme : InheritedWidget, Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -236,7 +236,7 @@ public class CardThemeData : Diagnosticable
             margin: margin ?? this.margin,
             shape: shape ?? this.shape
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static CardThemeData lerp(CardThemeData? a, CardThemeData? b, double t)
@@ -258,7 +258,7 @@ public class CardThemeData : Diagnosticable
             margin: EdgeInsetsGeometry.lerp(a?.margin, b?.margin, t),
             shape: ShapeBorder.lerp(a?.shape, b?.shape, t)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override int GetHashCode() =>
@@ -330,7 +330,7 @@ public class CardThemeData : Diagnosticable
             return true;
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -339,6 +339,6 @@ public class CardThemeData : Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

@@ -78,9 +78,7 @@ public class TooltipPositionContext
                 tooltipSize,
                 (
                     overlaySize
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 verticalOffset,
                 preferBelow
@@ -109,7 +107,7 @@ internal class _ExclusiveMouseRegion__raw_tooltip : MouseRegion
     public override RenderObject createRenderObject(BuildContext context)
     {
         return new _RenderExclusiveMouseRegion__raw_tooltip(onEnter: onEnter, onExit: onExit);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -147,7 +145,7 @@ public class _RenderExclusiveMouseRegion__raw_tooltip : RenderMouseRegion
             foundInnermostMouseRegion = false;
         }
         return isHit;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -222,7 +220,7 @@ public class RawTooltip : StatefulWidget
             state._scheduleDismissTooltip();
         }
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override IState createState() =>
@@ -370,7 +368,7 @@ public class RawTooltipState : State<RawTooltip>, SingleTickerProviderStateMixin
                         (
                             touchDelay
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ),
                         () =>
@@ -603,7 +601,7 @@ public class RawTooltipState : State<RawTooltip>, SingleTickerProviderStateMixin
         }
         _scheduleShowTooltip(withDelay: Duration.zero);
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void initState()
@@ -647,7 +645,7 @@ public class RawTooltipState : State<RawTooltip>, SingleTickerProviderStateMixin
         return (SelectionContainer.maybeOf(context) is null)
             ? overlayChild
             : SelectionContainer.CreateDisabled(child: overlayChild);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void dispose()
@@ -686,7 +684,7 @@ public class RawTooltipState : State<RawTooltip>, SingleTickerProviderStateMixin
                     }
                 )
             );
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         _tickerModeNotifier?.removeListener(_updateTicker);
         _tickerModeNotifier = null;
@@ -725,7 +723,7 @@ public class RawTooltipState : State<RawTooltip>, SingleTickerProviderStateMixin
             overlayChildBuilder: _buildTooltipOverlay,
             child: result
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
@@ -754,7 +752,7 @@ public class RawTooltipState : State<RawTooltip>, SingleTickerProviderStateMixin
                     }
                 )
             );
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         _ticker = new Scheduler.Ticker(
             onTick,
@@ -765,7 +763,7 @@ public class RawTooltipState : State<RawTooltip>, SingleTickerProviderStateMixin
         _updateTickerModeNotifier();
         _updateTicker();
         return _ticker!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void activate()
@@ -860,7 +858,7 @@ internal class _TooltipPositionDelegate__raw_tooltip : SingleChildLayoutDelegate
             target: target,
             preferBelow: true
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool shouldRelayout(SingleChildLayoutDelegate oldDelegate)
@@ -869,6 +867,6 @@ internal class _TooltipPositionDelegate__raw_tooltip : SingleChildLayoutDelegate
         return (!Equals(target, __oldDelegate.target))
             || (!Equals(targetSize, __oldDelegate.targetSize))
             || (!Equals(positionDelegate, __oldDelegate.positionDelegate));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

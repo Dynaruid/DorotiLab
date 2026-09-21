@@ -187,7 +187,7 @@ public static partial class BindingLibrary
             buffer.writeln("<no tree currently mounted>");
         }
         return buffer.ToString();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -237,7 +237,7 @@ public class RootWidget : Widget
             element.markNeedsBuild();
         }
         return element!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string toStringShort() =>
@@ -460,7 +460,7 @@ public class WidgetsFlutterBinding
             new WidgetsFlutterBinding();
         }
         return WidgetsBinding.instance;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     protected override void initInstances()
@@ -529,7 +529,7 @@ public class WidgetsFlutterBinding
             targetHeight: cacheHeight,
             allowUpscaling: allowUpscaling
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Future<Codec> instantiateImageCodecWithSize(
@@ -538,7 +538,7 @@ public class WidgetsFlutterBinding
     )
     {
         return Dart_uiLibrary.instantiateImageCodecWithSize(buffer, getTargetSize: getTargetSize);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void evict(string asset)
@@ -618,7 +618,7 @@ public class WidgetsFlutterBinding
         DartRuntimePrimitives.Assert(() => _outstandingHandles > 0L);
         _semanticsEnabled.value = true;
         return new SemanticsHandle(() => _didDisposeSemanticsHandle());
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _didDisposeSemanticsHandle()
@@ -699,7 +699,7 @@ public class WidgetsFlutterBinding
     public virtual SemanticsUpdateBuilder createSemanticsUpdateBuilder()
     {
         return new SemanticsUpdateBuilder();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool disableAnimations
@@ -714,12 +714,14 @@ public class WidgetsFlutterBinding
                     value = (
                         Framework.Semantics.DebugLibrary.debugSemanticsDisableAnimations
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     );
                 }
                 return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             });
             return value;
         }
@@ -742,7 +744,7 @@ public class WidgetsFlutterBinding
                             DartAsyncRuntime.unawaited(_forceRepaint());
                         }
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 )
@@ -760,7 +762,7 @@ public class WidgetsFlutterBinding
                         Rendering.DebugLibrary.debugPaintSizeEnabled = value;
                         DartAsyncRuntime.unawaited(_forceRepaint());
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 )
@@ -778,7 +780,7 @@ public class WidgetsFlutterBinding
                         Rendering.DebugLibrary.debugPaintBaselinesEnabled = value;
                         DartAsyncRuntime.unawaited(_forceRepaint());
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 )
@@ -796,7 +798,7 @@ public class WidgetsFlutterBinding
                             DartAsyncRuntime.unawaited(_forceRepaint());
                         }
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 )
@@ -809,7 +811,9 @@ public class WidgetsFlutterBinding
                     {
                         ["data"] = Rendering.BindingLibrary._debugCollectLayerTrees(),
                     };
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
             registerBoolServiceExtension(
@@ -825,7 +829,7 @@ public class WidgetsFlutterBinding
                         Rendering.DebugLibrary.debugDisableClipLayers = value;
                         DartAsyncRuntime.unawaited(_forceRepaint());
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 )
@@ -843,7 +847,7 @@ public class WidgetsFlutterBinding
                         Rendering.DebugLibrary.debugDisablePhysicalShapeLayers = value;
                         DartAsyncRuntime.unawaited(_forceRepaint());
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 )
@@ -861,13 +865,13 @@ public class WidgetsFlutterBinding
                         Rendering.DebugLibrary.debugDisableOpacityLayers = value;
                         DartAsyncRuntime.unawaited(_forceRepaint());
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 )
             );
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         if (!Foundation.ConstantsLibrary.kReleaseMode)
         {
@@ -879,7 +883,9 @@ public class WidgetsFlutterBinding
                     {
                         ["data"] = Rendering.BindingLibrary._debugCollectRenderTrees(),
                     };
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
             registerServiceExtension(
@@ -892,7 +898,9 @@ public class WidgetsFlutterBinding
                             DebugSemanticsDumpOrder.traversalOrder
                         ),
                     };
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
             registerServiceExtension(
@@ -905,7 +913,9 @@ public class WidgetsFlutterBinding
                             DebugSemanticsDumpOrder.inverseHitTest
                         ),
                     };
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
             registerBoolServiceExtension(
@@ -919,7 +929,7 @@ public class WidgetsFlutterBinding
                             Rendering.DebugLibrary.debugProfilePaintsEnabled = value;
                         }
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 )
@@ -935,7 +945,7 @@ public class WidgetsFlutterBinding
                             Rendering.DebugLibrary.debugProfileLayoutsEnabled = value;
                         }
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 )
@@ -949,7 +959,7 @@ public class WidgetsFlutterBinding
     public virtual PipelineOwner createRootPipelineOwner()
     {
         return new _DefaultRootPipelineOwner__binding();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual PipelineOwner rootPipelineOwner => _rootPipelineOwner;
@@ -976,7 +986,7 @@ public class WidgetsFlutterBinding
     public virtual Rendering.ViewConfiguration createViewConfigurationFor(RenderView renderView)
     {
         return Rendering.ViewConfiguration.CreateFromView(renderView.flutterView);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual SceneBuilder createSceneBuilder() =>
@@ -1089,7 +1099,9 @@ public class WidgetsFlutterBinding
                     var result = new HitTestResult();
                     hitTestInView(result, position, viewId);
                     return result;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
     }
@@ -1147,7 +1159,7 @@ public class WidgetsFlutterBinding
         {
             _debugMouseTrackerUpdateScheduled = true;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         Scheduler.SchedulerBinding.instance.addPostFrameCallback(
             (duration) =>
@@ -1157,7 +1169,9 @@ public class WidgetsFlutterBinding
                 {
                     _debugMouseTrackerUpdateScheduled = false;
                     return true;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 });
                 _mouseTracker!.updateAllDevices();
             },
@@ -1403,7 +1417,7 @@ public class WidgetsFlutterBinding
         }
         scheduleWarmUpFrame();
         await endOfFrame;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void hitTestInView(HitTestResult result, Offset position, long viewId)
@@ -1425,7 +1439,7 @@ public class WidgetsFlutterBinding
             renderView.visitChildren(visitor);
         }
         return endOfFrame;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool debugShowWidgetInspectorOverride
@@ -1601,13 +1615,13 @@ public class WidgetsFlutterBinding
                             ["message"] = violation.reason,
                         };
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 )
                 .ToList(),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Future _forceRebuild()
@@ -1618,7 +1632,7 @@ public class WidgetsFlutterBinding
             return endOfFrame;
         }
         return Future.value();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual BuildOwner? buildOwner => _buildOwner;
@@ -1630,7 +1644,7 @@ public class WidgetsFlutterBinding
     {
         _backGestureObservers.Remove(observer);
         return _observers.Remove(observer);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override async Future<AppExitResponse> handleRequestAppExit()
@@ -1665,7 +1679,7 @@ public class WidgetsFlutterBinding
             }
         }
         return didCancel ? AppExitResponse.cancel : AppExitResponse.exit;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void handleLocaleChanged()
@@ -1789,7 +1803,7 @@ public class WidgetsFlutterBinding
                 )
         );
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool _handleStartBackGesture(DartMap<string, object?> arguments)
@@ -1825,7 +1839,7 @@ public class WidgetsFlutterBinding
             }
         }
         return Enumerable.Any(_backGestureObservers);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _handleUpdateBackGestureProgress(DartMap<string, object?> arguments)
@@ -1945,7 +1959,7 @@ public class WidgetsFlutterBinding
             }
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual async Future<bool> _handlePushRouteInformation(
@@ -1985,7 +1999,7 @@ public class WidgetsFlutterBinding
             }
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Future<bool> _handleNavigationInvocation(MethodCall methodCall)
@@ -2136,7 +2150,7 @@ public class WidgetsFlutterBinding
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         ensureVisualUpdate();
     }
@@ -2169,7 +2183,7 @@ public class WidgetsFlutterBinding
             deprecatedDoNotUseWillBeRemovedWithoutNoticeRenderView: renderView,
             child: rootWidget
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void scheduleAttachRootWidget(Widget rootWidget)
@@ -2204,7 +2218,7 @@ public class WidgetsFlutterBinding
     public virtual Locale? computePlatformResolvedLocale(List<Locale> supportedLocales)
     {
         return platformDispatcher.computePlatformResolvedLocale(supportedLocales);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual WindowingOwnerIo windowingOwner

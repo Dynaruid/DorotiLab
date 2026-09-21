@@ -248,13 +248,13 @@ public class Stepper : StatefulWidget
                     (
                         stepIconHeight
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                     == (
                         stepIconWidth
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
@@ -314,37 +314,37 @@ internal class _StepperState__stepper : State<Stepper>, TickerProviderStateMixin
     internal virtual bool _isFirst(long index)
     {
         return index == 0L;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _isLast(long index)
     {
         return (checked(widget.steps.Count) - 1L) == index;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _isCurrent(long index)
     {
         return widget.currentStep == index;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _isDark()
     {
         return Equals(Theme.brightnessOf(context), Brightness.dark);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _isLabel()
     {
         return widget.steps.any((step) => step.label is not null);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual StepStyle? _stepStyle(long index)
     {
         return widget.steps[(int)index].stepStyle;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Color _connectorColor(bool isActive)
@@ -370,7 +370,7 @@ internal class _StepperState__stepper : State<Stepper>, TickerProviderStateMixin
         Color? resolvedConnectorColor = widget.connectorColor?.resolve(states);
         return resolvedConnectorColor
             ?? (isActive ? colorSchemeLocal.primary : Colors.grey.shade400);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _buildLine(bool visible, bool isActive)
@@ -382,7 +382,7 @@ internal class _StepperState__stepper : State<Stepper>, TickerProviderStateMixin
                 height: 16.0
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _buildCircleChild(long index, bool oldState)
@@ -390,7 +390,7 @@ internal class _StepperState__stepper : State<Stepper>, TickerProviderStateMixin
         StepState stateLocal = oldState
             ? (
                 DartCollectionRuntime.NullableMapValue<StepState>(_oldStates, index)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
             : widget.steps[(int)index].state;
         if (widget.stepIconBuilder?.Invoke(index, stateLocal) is Widget icon)
@@ -425,9 +425,11 @@ internal class _StepperState__stepper : State<Stepper>, TickerProviderStateMixin
                 new Center(child: new Text("!", style: StepperLibrary._kStepStyle))
             ),
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Color _circleColor(long index)
@@ -466,7 +468,7 @@ internal class _StepperState__stepper : State<Stepper>, TickerProviderStateMixin
         {
             return isActiveLocal ? colorSchemeLocal.secondary : colorSchemeLocal.background;
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _buildCircle(long index, bool oldState)
@@ -497,7 +499,7 @@ internal class _StepperState__stepper : State<Stepper>, TickerProviderStateMixin
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _buildTriangle(long index, bool oldState)
@@ -517,7 +519,7 @@ internal class _StepperState__stepper : State<Stepper>, TickerProviderStateMixin
                                 (
                                     _stepIconHeight
                                     ?? throw new global::System.NullReferenceException(
-                                        "Dart null assertion failed."
+                                        "A required value was null."
                                     )
                                 ) * StepperLibrary._kTriangleSqrt
                             )
@@ -539,7 +541,7 @@ internal class _StepperState__stepper : State<Stepper>, TickerProviderStateMixin
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _buildIcon(long index)
@@ -574,7 +576,7 @@ internal class _StepperState__stepper : State<Stepper>, TickerProviderStateMixin
                 return _buildTriangle(index, false);
             }
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _buildVerticalControls(long stepIndex)
@@ -596,7 +598,9 @@ internal class _StepperState__stepper : State<Stepper>, TickerProviderStateMixin
             Brightness.light => Colors.black54,
             Brightness.dark => Colors.white70,
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
         ThemeData themeData = Theme.of(context);
         ColorScheme colorSchemeLocal = themeData.colorScheme;
@@ -627,7 +631,7 @@ internal class _StepperState__stepper : State<Stepper>, TickerProviderStateMixin
                                                         : colorSchemeLocal.onPrimary
                                                 );
                                             throw new InvalidOperationException(
-                                                "Dart closure completed without a value."
+                                                "Callback completed without returning a value."
                                             );
                                         }
                                     ),
@@ -640,7 +644,7 @@ internal class _StepperState__stepper : State<Stepper>, TickerProviderStateMixin
                                                 ? null
                                                 : colorSchemeLocal.primary;
                                             throw new InvalidOperationException(
-                                                "Dart closure completed without a value."
+                                                "Callback completed without returning a value."
                                             );
                                         }
                                     ),
@@ -699,9 +703,11 @@ internal class _StepperState__stepper : State<Stepper>, TickerProviderStateMixin
                 );
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual TextStyle _subtitleStyle(long index)
@@ -731,9 +737,11 @@ internal class _StepperState__stepper : State<Stepper>, TickerProviderStateMixin
                 );
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual TextStyle _labelStyle(long index)
@@ -763,9 +771,11 @@ internal class _StepperState__stepper : State<Stepper>, TickerProviderStateMixin
                 );
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _buildHeaderText(long index)
@@ -809,7 +819,7 @@ internal class _StepperState__stepper : State<Stepper>, TickerProviderStateMixin
                 )
             )()
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _buildLabelText(long index)
@@ -823,7 +833,7 @@ internal class _StepperState__stepper : State<Stepper>, TickerProviderStateMixin
             );
         }
         return SizedBox.CreateShrink();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _buildVerticalHeader(long index)
@@ -860,7 +870,7 @@ internal class _StepperState__stepper : State<Stepper>, TickerProviderStateMixin
                 }
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _buildVerticalBody(long index)
@@ -873,7 +883,7 @@ internal class _StepperState__stepper : State<Stepper>, TickerProviderStateMixin
                     (
                         marginLeft
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) / 2.0
                 )
@@ -884,7 +894,7 @@ internal class _StepperState__stepper : State<Stepper>, TickerProviderStateMixin
                     (
                         marginRight
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) / 2.0
                 )
@@ -945,7 +955,7 @@ internal class _StepperState__stepper : State<Stepper>, TickerProviderStateMixin
                 ),
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _buildVertical()
@@ -1011,7 +1021,7 @@ internal class _StepperState__stepper : State<Stepper>, TickerProviderStateMixin
                 )
             )()
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _buildHorizontal()
@@ -1207,7 +1217,7 @@ internal class _StepperState__stepper : State<Stepper>, TickerProviderStateMixin
                                         (
                                             _stepIconHeight
                                             ?? throw new global::System.NullReferenceException(
-                                                "Dart null assertion failed."
+                                                "A required value was null."
                                             )
                                         ) * _heightFactor
                                     )
@@ -1244,7 +1254,7 @@ internal class _StepperState__stepper : State<Stepper>, TickerProviderStateMixin
                 ),
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -1273,9 +1283,11 @@ internal class _StepperState__stepper : State<Stepper>, TickerProviderStateMixin
             StepperType.vertical => _buildVertical(),
             StepperType.horizontal => _buildHorizontal(),
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
@@ -1306,7 +1318,7 @@ internal class _StepperState__stepper : State<Stepper>, TickerProviderStateMixin
         )();
         _tickers!.Add(result);
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _removeTicker(_WidgetTicker__ticker_provider ticker)
@@ -1419,7 +1431,7 @@ internal class _TrianglePainter__stepper : CustomPainter
     {
         var __oldPainter = (_TrianglePainter__stepper)oldDelegate;
         return !Equals(__oldPainter.color, color);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paint(Canvas canvas, Size size)
@@ -1511,7 +1523,7 @@ public class StepStyle : Diagnosticable
             gradient: gradient ?? this.gradient,
             indexStyle: indexStyle ?? this.indexStyle
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual StepStyle merge(StepStyle? stepStyle)
@@ -1530,7 +1542,7 @@ public class StepStyle : Diagnosticable
             gradient: stepStyle.gradient,
             indexStyle: stepStyle.indexStyle
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override int GetHashCode()
@@ -1615,7 +1627,7 @@ public class StepStyle : Diagnosticable
             return true;
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -1624,6 +1636,6 @@ public class StepStyle : Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

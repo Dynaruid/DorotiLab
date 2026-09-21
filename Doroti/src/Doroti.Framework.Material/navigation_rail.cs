@@ -104,7 +104,7 @@ public class NavigationRail : StatefulWidget
                         <= (
                             selectedIndex
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     )
@@ -112,7 +112,7 @@ public class NavigationRail : StatefulWidget
                         (
                             selectedIndex
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ) < checked(destinations.Count)
                     )
@@ -124,7 +124,7 @@ public class NavigationRail : StatefulWidget
                     (
                         elevation
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) > 0L
                 )
@@ -135,7 +135,7 @@ public class NavigationRail : StatefulWidget
                     (
                         minWidth
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) > 0L
                 )
@@ -146,7 +146,7 @@ public class NavigationRail : StatefulWidget
                     (
                         minExtendedWidth
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) > 0L
                 )
@@ -159,7 +159,7 @@ public class NavigationRail : StatefulWidget
                     >= (
                         minWidth
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
@@ -171,7 +171,7 @@ public class NavigationRail : StatefulWidget
                     (
                         labelType
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ),
                     NavigationRailLabelType.none
@@ -184,7 +184,7 @@ public class NavigationRail : StatefulWidget
         return context
             .dependOnInheritedWidgetOfExactType<_ExtendedNavigationRailAnimation__navigation_rail>()!
             .animation;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override IState createState() =>
@@ -275,7 +275,7 @@ internal class _NavigationRailState__navigation_rail
                     (int)(
                         oldWidget.selectedIndex
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 ]
@@ -287,7 +287,7 @@ internal class _NavigationRailState__navigation_rail
                     (int)(
                         widget.selectedIndex
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 ]
@@ -309,19 +309,19 @@ internal class _NavigationRailState__navigation_rail
             (widget.elevation ?? navigationRailTheme.elevation)
             ?? (
                 defaults.elevation
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         double minWidthLocal =
             (widget.minWidth ?? navigationRailTheme.minWidth)
             ?? (
                 defaults.minWidth
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         double minExtendedWidthLocal =
             (widget.minExtendedWidth ?? navigationRailTheme.minExtendedWidth)
             ?? (
                 defaults.minExtendedWidth
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         TextStyle unselectedLabelTextStyleLocal =
             (widget.unselectedLabelTextStyle ?? navigationRailTheme.unselectedLabelTextStyle)
@@ -339,19 +339,19 @@ internal class _NavigationRailState__navigation_rail
             (widget.groupAlignment ?? navigationRailTheme.groupAlignment)
             ?? (
                 defaults.groupAlignment
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         NavigationRailLabelType labelTypeLocal =
             (widget.labelType ?? navigationRailTheme.labelType)
             ?? (
                 defaults.labelType
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         bool useIndicatorLocal =
             (widget.useIndicator ?? navigationRailTheme.useIndicator)
             ?? (
                 defaults.useIndicator
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         Color? indicatorColorLocal =
             (widget.indicatorColor ?? navigationRailTheme.indicatorColor)
@@ -549,7 +549,9 @@ internal class _NavigationRailState__navigation_rail
                             }
                         )
                     )();
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );
@@ -561,9 +563,7 @@ internal class _NavigationRailState__navigation_rail
             _destinationControllers[
                 (int)(
                     widget.selectedIndex
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             ].value = 1.0;
         }
@@ -621,7 +621,7 @@ internal class _NavigationRailState__navigation_rail
         )();
         _tickers!.Add(result);
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _removeTicker(_WidgetTicker__ticker_provider ticker)
@@ -813,9 +813,7 @@ internal class _RailDestinationState__navigation_rail : State<_RailDestination__
             && (
                 (
                     widget.iconTheme.size
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) > Navigation_barLibrary._kIndicatorHeight
             );
         double indicatorVerticalOffset = isLargeIconSize
@@ -824,7 +822,7 @@ internal class _RailDestinationState__navigation_rail : State<_RailDestination__
                     (
                         widget.iconTheme.size
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) - Navigation_barLibrary._kIndicatorHeight
                 ) / 2L
@@ -929,7 +927,7 @@ internal class _RailDestinationState__navigation_rail : State<_RailDestination__
                                             widget.extendedTransitionAnimation.value
                                         )
                                         ?? throw new global::System.NullReferenceException(
-                                            "Dart null assertion failed."
+                                            "A required value was null."
                                         )
                                     )
                                 ),
@@ -979,9 +977,7 @@ internal class _RailDestinationState__navigation_rail : State<_RailDestination__
                         Navigation_railLibrary._verticalDestinationPaddingWithLabel,
                         appearingAnimationValue
                     )
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 var interval = widget.selected ? new Interval(0.25, 0.75) : new Interval(0.75, 1.0);
                 Animation<double> labelFadeAnimationLocal = widget.destinationAnimation.drive(
@@ -997,7 +993,7 @@ internal class _RailDestinationState__navigation_rail : State<_RailDestination__
                             appearingAnimationValue
                         )
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 );
@@ -1225,7 +1221,7 @@ internal class _IndicatorInkWell__navigation_rail : InkResponse
                             Navigation_barLibrary._kIndicatorHeight
                         );
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 );
@@ -1299,7 +1295,7 @@ internal class _AddIndicator__navigation_rail : StatelessWidget
                 DartRuntimePrimitives.ConvertValue<Widget>(child),
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 

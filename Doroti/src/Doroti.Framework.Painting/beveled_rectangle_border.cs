@@ -25,7 +25,7 @@ public class BeveledRectangleBorder : OutlinedBorder
             side: side.scale(t),
             borderRadius: borderRadius.op_Multiply(t)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override ShapeBorder? lerpFrom(ShapeBorder? a, double t)
@@ -39,7 +39,7 @@ public class BeveledRectangleBorder : OutlinedBorder
             );
         }
         return base.lerpFrom(a, t);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override ShapeBorder? lerpTo(ShapeBorder? b, double t)
@@ -53,7 +53,7 @@ public class BeveledRectangleBorder : OutlinedBorder
             );
         }
         return base.lerpTo(b, t);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override BeveledRectangleBorder copyWith(
@@ -78,7 +78,7 @@ public class BeveledRectangleBorder : OutlinedBorder
             side: side ?? this.side,
             borderRadius: borderRadius ?? this.borderRadius
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Path _getPath(RRect rrect)
@@ -116,7 +116,7 @@ public class BeveledRectangleBorder : OutlinedBorder
                 }
             )
         )();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Path getInnerPath(Rect rect, TextDirection? textDirection = null)
@@ -124,13 +124,13 @@ public class BeveledRectangleBorder : OutlinedBorder
         return _getPath(
             borderRadius.resolve(textDirection).toRRect(rect).deflate(side.strokeInset)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Path getOuterPath(Rect rect, TextDirection? textDirection = null)
     {
         return _getPath(borderRadius.resolve(textDirection).toRRect(rect));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paint(
@@ -196,6 +196,6 @@ public class BeveledRectangleBorder : OutlinedBorder
     public override string ToString()
     {
         return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "BeveledRectangleBorder")}({side}, {borderRadius})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

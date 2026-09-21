@@ -162,17 +162,13 @@ public static partial class DebugLibrary
                 (innerRect is not null)
                 && !(
                     innerRect
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ).isEmpty
             )
             {
                 Rect innerRect__value12483 = (
                     innerRect
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 _debugDrawDoubleRect(
                     canvas,
@@ -241,7 +237,7 @@ public static partial class DebugLibrary
             return true;
         });
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -338,6 +334,6 @@ public static partial class DebugLibrary
             return true;
         });
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

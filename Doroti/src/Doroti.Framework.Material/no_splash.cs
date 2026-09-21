@@ -29,7 +29,7 @@ internal class _NoSplashFactory__no_splash : InteractiveInkFeatureFactory
             color: color,
             onRemoved: onRemoved
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 

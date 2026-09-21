@@ -394,7 +394,7 @@ internal sealed partial class FrameworkCSharpLowerer
             }
 
             builder.Append(
-                "_ => throw new InvalidOperationException(\"Non-exhaustive Dart switch value.\")"
+                "_ => throw new InvalidOperationException(\"Switch expression did not handle the supplied value.\")"
             );
         }
         builder.Append(" })");

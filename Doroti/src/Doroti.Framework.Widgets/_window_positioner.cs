@@ -33,9 +33,11 @@ public static class WindowPositionerAnchorIoMembers
             WindowPositionerAnchorIo.bottomLeft => WindowPositionerAnchorIo.bottomRight,
             WindowPositionerAnchorIo.topRight => WindowPositionerAnchorIo.topLeft,
             WindowPositionerAnchorIo.bottomRight => WindowPositionerAnchorIo.bottomLeft,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static WindowPositionerAnchorIo _flipY(this WindowPositionerAnchorIo value)
@@ -51,9 +53,11 @@ public static class WindowPositionerAnchorIoMembers
             WindowPositionerAnchorIo.bottomLeft => WindowPositionerAnchorIo.topLeft,
             WindowPositionerAnchorIo.topRight => WindowPositionerAnchorIo.bottomRight,
             WindowPositionerAnchorIo.bottomRight => WindowPositionerAnchorIo.topRight,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static Offset _offsetFor(this WindowPositionerAnchorIo value, Size size)
@@ -69,9 +73,11 @@ public static class WindowPositionerAnchorIoMembers
             WindowPositionerAnchorIo.bottomLeft => new Offset(0.0, -size.height),
             WindowPositionerAnchorIo.topRight => new Offset(-size.width, 0.0),
             WindowPositionerAnchorIo.bottomRight => new Offset(-size.width, -size.height),
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static Offset _anchorPositionFor(this WindowPositionerAnchorIo value, Rect rect)
@@ -87,9 +93,11 @@ public static class WindowPositionerAnchorIoMembers
             WindowPositionerAnchorIo.bottomLeft => rect.bottomLeft,
             WindowPositionerAnchorIo.topRight => rect.topRight,
             WindowPositionerAnchorIo.bottomRight => rect.bottomRight,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -162,7 +170,7 @@ public class WindowPositionerIo
             offset: offset ?? this.offset,
             constraintAdjustment: constraintAdjustment ?? this.constraintAdjustment
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Rect placeWindow(
@@ -303,13 +311,13 @@ public class WindowPositionerIo
             return resultNext & childSize;
         }
         return defaultResult;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string ToString()
     {
         return $"WindowPositioner(parentAnchor: {parentAnchor}, childAnchor: {childAnchor}, offset: {offset}, constraintAdjustment: {constraintAdjustment})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -321,7 +329,7 @@ public static partial class _window_positionerLibrary
             && (r1.right >= r2.right)
             && (r1.top <= r2.top)
             && (r1.bottom >= r2.bottom);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -333,7 +341,7 @@ public static partial class _window_positionerLibrary
             Dart_uiLibrary.clampDouble(p.dx, r.left, r.right),
             Dart_uiLibrary.clampDouble(p.dy, r.top, r.bottom)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -342,7 +350,7 @@ public static partial class _window_positionerLibrary
     internal static Offset _flipX(Offset offset)
     {
         return new Offset(-offset.dx, offset.dy);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -351,6 +359,6 @@ public static partial class _window_positionerLibrary
     internal static Offset _flipY(Offset offset)
     {
         return new Offset(offset.dx, -offset.dy);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

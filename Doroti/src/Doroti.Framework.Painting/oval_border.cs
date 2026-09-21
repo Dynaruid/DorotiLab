@@ -35,7 +35,7 @@ public class OvalBorder : CircleBorder
             side: side ?? this.side,
             eccentricity: eccentricity ?? this.eccentricity
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override ShapeBorder? lerpFrom(ShapeBorder? a, double t)
@@ -49,7 +49,7 @@ public class OvalBorder : CircleBorder
                     (
                         Dart_uiLibrary.lerpDouble(a__as1519.eccentricity, (eccentricity), t)
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ),
                     0.0,
@@ -58,7 +58,7 @@ public class OvalBorder : CircleBorder
             );
         }
         return base.lerpFrom(a, t);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override ShapeBorder? lerpTo(ShapeBorder? b, double t)
@@ -72,7 +72,7 @@ public class OvalBorder : CircleBorder
                     (
                         Dart_uiLibrary.lerpDouble((eccentricity), b__as1828.eccentricity, t)
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ),
                     0.0,
@@ -81,7 +81,7 @@ public class OvalBorder : CircleBorder
             );
         }
         return base.lerpTo(b, t);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string ToString()
@@ -91,6 +91,6 @@ public class OvalBorder : CircleBorder
             return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "OvalBorder")}({side}, eccentricity: {(eccentricity)})";
         }
         return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "OvalBorder")}({side})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

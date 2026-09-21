@@ -85,7 +85,9 @@ public abstract class TwoDimensionalScrollView : StatelessWidget
         {
             Axis.vertical => verticalDetails,
             Axis.horizontal => horizontalDetails,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         bool effectivePrimary =
             primary
@@ -111,13 +113,17 @@ public abstract class TwoDimensionalScrollView : StatelessWidget
             {
                 Axis.horizontal => mainAxisDetails,
                 Axis.vertical => horizontalDetails,
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             },
             verticalDetails: mainAxis switch
             {
                 Axis.vertical => mainAxisDetails,
                 Axis.horizontal => verticalDetails,
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             },
             diagonalDragBehavior: diagonalDragBehavior,
             viewportBuilder: buildViewport,
@@ -146,12 +152,14 @@ public abstract class TwoDimensionalScrollView : StatelessWidget
                         FocusManager.instance.primaryFocus?.unfocus();
                     }
                     return false;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
         }
         return scrollableResult;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)

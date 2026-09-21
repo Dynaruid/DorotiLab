@@ -167,13 +167,17 @@ public class AdaptiveTextSelectionToolbar : StatelessWidget
                     ContextMenuButtonType.liveTextInput => localizations.scanTextButtonLabel,
                     ContextMenuButtonType.custom => "",
                     _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                        throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                        throw new InvalidOperationException(
+                            "Switch expression did not handle the supplied value."
+                        ),
                 };
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static IEnumerable<Widget> getAdaptiveButtons(
@@ -192,7 +196,7 @@ public class AdaptiveTextSelectionToolbar : StatelessWidget
                             buttonItem: buttonItem
                         );
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 );
@@ -230,7 +234,7 @@ public class AdaptiveTextSelectionToolbar : StatelessWidget
                             text: getButtonLabel(context, buttonItem)
                         );
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 );
@@ -245,15 +249,17 @@ public class AdaptiveTextSelectionToolbar : StatelessWidget
                             text: getButtonLabel(context, buttonItem)
                         );
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 );
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -276,7 +282,7 @@ public class AdaptiveTextSelectionToolbar : StatelessWidget
                         : (
                             anchors.secondaryAnchor
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ),
                     children: resultChildren
@@ -291,7 +297,7 @@ public class AdaptiveTextSelectionToolbar : StatelessWidget
                         : (
                             anchors.secondaryAnchor
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ),
                     children: resultChildren
@@ -314,8 +320,10 @@ public class AdaptiveTextSelectionToolbar : StatelessWidget
                 );
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

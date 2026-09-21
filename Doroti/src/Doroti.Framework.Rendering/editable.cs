@@ -72,9 +72,11 @@ public class TextSelectionPoint
             TextDirection.ltr => $"{point}-ltr",
             TextDirection.rtl => $"{point}-rtl",
             null => $"{point}",
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override int GetHashCode() => FoundationRuntimePorts.ObjectHash(point, direction);
@@ -137,7 +139,7 @@ public class VerticalCaretMovementRun : IEnumerator<TextPosition>
         {
             MapEntry<Offset, TextPosition> cachedPosition__6901__value6954 = (
                 cachedPosition
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             return (cachedPosition__6901__value6954);
         }
@@ -147,7 +149,7 @@ public class VerticalCaretMovementRun : IEnumerator<TextPosition>
         var position = new MapEntry<Offset, TextPosition>(newOffset, closestPosition);
         _positionCache[lineNumber] = position;
         return position;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual TextPosition current
@@ -171,7 +173,7 @@ public class VerticalCaretMovementRun : IEnumerator<TextPosition>
         _currentOffset = position.key;
         _currentTextPosition = position.value;
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool movePrevious()
@@ -186,7 +188,7 @@ public class VerticalCaretMovementRun : IEnumerator<TextPosition>
         _currentOffset = position.key;
         _currentTextPosition = position.value;
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool moveByOffset(double offset)
@@ -213,7 +215,7 @@ public class VerticalCaretMovementRun : IEnumerator<TextPosition>
             }
         }
         return !Equals(initialOffset, _currentOffset);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     TextPosition IEnumerator<TextPosition>.Current => current;
@@ -416,7 +418,7 @@ public class RenderEditable
                     (
                         maxLines
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) > 0L
                 )
@@ -427,7 +429,7 @@ public class RenderEditable
                     (
                         minLines
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) > 0L
                 )
@@ -439,7 +441,7 @@ public class RenderEditable
                     >= (
                         minLines
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
         );
@@ -580,7 +582,7 @@ public class RenderEditable
             painters.Add(_caretPainter);
         }
         return new _CompositeRenderEditablePainter__editable(painters: painters);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual _CompositeRenderEditablePainter__editable _builtInPainters =>
@@ -598,7 +600,7 @@ public class RenderEditable
             painters.Add(_caretPainter);
         }
         return new _CompositeRenderEditablePainter__editable(painters: painters);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual TextHeightBehavior? textHeightBehavior
@@ -702,7 +704,7 @@ public class RenderEditable
         Offset caretOffset = _textPainter.getOffsetForCaret(position, _caretPrototype);
         Offset caretOffsetTranslated = caretOffset.translate(0.0, verticalOffset);
         return _textPainter.getPositionForOffset(caretOffsetTranslated);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual TextSelection getLineAtOffset(TextPosition position)
@@ -713,13 +715,13 @@ public class RenderEditable
             return new TextSelection(baseOffset: 0L, extentOffset: plainText.Length);
         }
         return new TextSelection(baseOffset: line.start, extentOffset: line.end);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual TextRange getWordBoundary(TextPosition position)
     {
         return _textPainter.getWordBoundary(position);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual TextPosition getTextPositionAbove(TextPosition position)
@@ -727,7 +729,7 @@ public class RenderEditable
         double preferredLineHeightLocal = _textPainter.preferredLineHeight;
         double verticalOffset = -0.5 * preferredLineHeightLocal;
         return _getTextPositionVertical(position, verticalOffset);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual TextPosition getTextPositionBelow(TextPosition position)
@@ -735,7 +737,7 @@ public class RenderEditable
         double preferredLineHeightLocal = _textPainter.preferredLineHeight;
         double verticalOffset = 1.5 * preferredLineHeightLocal;
         return _getTextPositionVertical(position, verticalOffset);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _updateSelectionExtentsVisibility(Offset effectiveOffset)
@@ -865,7 +867,7 @@ public class RenderEditable
         get =>
             (
                 _textPainter.textDirection
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         set
         {
@@ -1012,7 +1014,7 @@ public class RenderEditable
                     (
                         __value
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) > 0L
                 )
@@ -1038,7 +1040,7 @@ public class RenderEditable
                     (
                         __value
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) > 0L
                 )
@@ -1300,7 +1302,7 @@ public class RenderEditable
                     )
             )
             .ToList();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void describeSemanticsConfiguration(SemanticsConfiguration config)
@@ -1571,7 +1573,7 @@ public class RenderEditable
                     Rect paintRect = (
                         node.parentPaintClipRect
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ).intersect(currentRect);
                     configuration.isHidden = paintRect.isEmpty && !currentRect.isEmpty;
@@ -1621,7 +1623,7 @@ public class RenderEditable
             SemanticsNode node = _cachedChildNodes!.GetValueOrDefault(key)!;
             showOnScreen(descendant: this, rect: node.rect);
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _handleSetSelection(TextSelection selection)
@@ -1640,7 +1642,7 @@ public class RenderEditable
         long baseOffsetLocal = !extendSelection
             ? (
                 extentOffsetLocal
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
             : selection!.baseOffset;
         _setSelection(
@@ -1648,9 +1650,7 @@ public class RenderEditable
                 baseOffset: baseOffsetLocal,
                 extentOffset: (
                     extentOffsetLocal
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             ),
             SelectionChangedCause.keyboard
@@ -1668,7 +1668,7 @@ public class RenderEditable
         long baseOffsetLocal = !extendSelection
             ? (
                 extentOffsetLocal
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
             : selection!.baseOffset;
         _setSelection(
@@ -1676,9 +1676,7 @@ public class RenderEditable
                 baseOffset: baseOffsetLocal,
                 extentOffset: (
                     extentOffsetLocal
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             ),
             SelectionChangedCause.keyboard
@@ -1732,7 +1730,7 @@ public class RenderEditable
             }
             offset = range.end;
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual TextRange? _getPreviousWord(long offset)
@@ -1751,7 +1749,7 @@ public class RenderEditable
             offset = range.start - 1L;
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _onlyWhitespace(TextRange range)
@@ -1760,7 +1758,7 @@ public class RenderEditable
         {
             long codeUnit = (
                 text!.codeUnitAt(i)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             if (!TextLayoutMetrics.isWhitespace(codeUnit))
             {
@@ -1768,7 +1766,7 @@ public class RenderEditable
             }
         }
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void attach(PipelineOwner owner)
@@ -1876,7 +1874,9 @@ public class RenderEditable
         {
             Axis.horizontal => new Offset(-offset.pixels, 0.0),
             Axis.vertical => new Offset(0.0, -offset.pixels),
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
     internal virtual double _viewportExtent
     {
@@ -1887,7 +1887,9 @@ public class RenderEditable
             {
                 Axis.horizontal => size.width,
                 Axis.vertical => size.height,
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             };
         }
     }
@@ -1899,9 +1901,11 @@ public class RenderEditable
         {
             Axis.horizontal => Math.Max(0.0, contentSize.width - size.width),
             Axis.vertical => Math.Max(0.0, contentSize.height - size.height),
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _hasVisualOverflow =>
@@ -1955,7 +1959,7 @@ public class RenderEditable
                 new TextSelectionPoint(endLocal, boxes.Last().direction),
             };
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Rect? getRectForComposingRange(TextRange range)
@@ -1977,14 +1981,14 @@ public class RenderEditable
                 (accum, incoming) => accum?.expandToInclude(incoming.toRect()) ?? incoming.toRect()
             )
             ?.shift(_paintOffset);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual TextPosition getPositionForPoint(Offset globalPosition)
     {
         _computeTextMetricsIfNeeded();
         return _textPainter.getPositionForOffset(globalToLocal(globalPosition) - _paintOffset);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Rect getLocalRectForCaret(TextPosition caretPosition)
@@ -2033,7 +2037,7 @@ public class RenderEditable
         }
         caretRect = caretRect.shift(_paintOffset);
         return caretRect.shift(_snapToPhysicalPixel(caretRect.topLeft));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicWidth(double height)
@@ -2056,7 +2060,7 @@ public class RenderEditable
                 }
             )
         )().minIntrinsicWidth;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicWidth(double height)
@@ -2079,7 +2083,7 @@ public class RenderEditable
                     }
                 )
             )().maxIntrinsicWidth + _caretMargin;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double preferredLineHeight => _textPainter.preferredLineHeight;
@@ -2091,7 +2095,7 @@ public class RenderEditable
         {
             long cachedValue__70677__value70722 = (
                 cachedValue
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             return (cachedValue__70677__value70722);
         }
@@ -2114,7 +2118,7 @@ public class RenderEditable
         }
         _cachedLineBreakCount = count;
         return count;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual double _preferredHeight(double width)
@@ -2151,7 +2155,7 @@ public class RenderEditable
         if (
             (
                 maxLinesLocal
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ) == 1L
         )
         {
@@ -2171,7 +2175,7 @@ public class RenderEditable
             minLinesLocal
             == (
                 maxLinesLocal
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         )
         {
@@ -2181,7 +2185,7 @@ public class RenderEditable
             preferredLineHeight
             * (
                 maxLinesLocal
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         var (minWidthNested, maxWidthNested) = _adjustConstraints(maxWidth: width);
         return Dart_uiLibrary.clampDouble(
@@ -2198,7 +2202,7 @@ public class RenderEditable
             minHeight,
             maxHeight
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicHeight(double width) => getMaxIntrinsicHeight(width);
@@ -2213,14 +2217,14 @@ public class RenderEditable
             )
         );
         return _preferredHeight(width);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? computeDistanceToActualBaseline(TextBaseline baseline)
     {
         _computeTextMetricsIfNeeded();
         return _textPainter.computeDistanceToActualBaseline(baseline);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool hitTestSelf(Offset position) => true;
@@ -2247,7 +2251,7 @@ public class RenderEditable
                 return hitTestInlineChildren(result, effectivePosition);
             }
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void handleEvent(PointerEvent @event, HitTestEntry<HitTestTarget> entry)
@@ -2316,7 +2320,7 @@ public class RenderEditable
         selectPositionAt(
             from: (
                 _lastTapDownPosition
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             cause: cause
         );
@@ -2341,7 +2345,7 @@ public class RenderEditable
                             (
                                 to
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             )
                         )
@@ -2364,7 +2368,7 @@ public class RenderEditable
         selectWordsInRange(
             from: (
                 _lastTapDownPosition
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             cause: cause
         );
@@ -2390,7 +2394,7 @@ public class RenderEditable
                             (
                                 to
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             )
                         )
@@ -2418,9 +2422,7 @@ public class RenderEditable
             globalToLocal(
                 (
                     _lastTapDownPosition
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             ) - _paintOffset
         );
@@ -2523,7 +2525,7 @@ public class RenderEditable
             }
         }
         return new TextSelection(baseOffset: word.start, extentOffset: word.end);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual (double, double) _adjustConstraints(
@@ -2537,7 +2539,7 @@ public class RenderEditable
             forceLine ? availableMaxWidth : availableMinWidth,
             _isMultiline ? availableMaxWidth : double.PositiveInfinity
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _computeTextMetricsIfNeeded()
@@ -2587,7 +2589,7 @@ public class RenderEditable
                 ? (((globalOffset.dy / pixelMultiple).round() * pixelMultiple) - globalOffset.dy)
                 : 0
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Size computeDryLayout(BoxConstraints constraints)
@@ -2620,7 +2622,7 @@ public class RenderEditable
             widthLocal,
             constraints.constrainHeight(_preferredHeight(constraints.maxWidth))
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
@@ -2647,7 +2649,7 @@ public class RenderEditable
             )
         )();
         return _textIntrinsics.computeDistanceToActualBaseline(baseline);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void performLayout()
@@ -2712,7 +2714,7 @@ public class RenderEditable
             boundingRects.bottom
         );
         return new Offset(adjustedX, adjustedY);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Offset calculateBoundedFloatingCursorOffset(
@@ -2734,7 +2736,7 @@ public class RenderEditable
         {
             bool shouldResetOrigin__value92495 = (
                 shouldResetOrigin
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             _shouldResetOrigin = (shouldResetOrigin__value92495);
         }
@@ -2748,9 +2750,7 @@ public class RenderEditable
                 rawCursorOffset
                 - (
                     _previousOffset
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
         }
         if (_resetOriginOnLeft && (deltaPosition.dx > 0L))
@@ -2821,7 +2821,7 @@ public class RenderEditable
         }
         _previousOffset = rawCursorOffset;
         return adjustedOffset;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void setFloatingCursor(
@@ -2856,7 +2856,7 @@ public class RenderEditable
                             (
                                 animationValue
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             )
                         )
@@ -2899,7 +2899,7 @@ public class RenderEditable
                     : 0.0
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual VerticalCaretMovementRun startVerticalCaretMovement(TextPosition startPosition)
@@ -2913,7 +2913,7 @@ public class RenderEditable
             currentLine.key,
             currentLine.value
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _paintContents(PaintingContext context, Offset offset)
@@ -3030,7 +3030,7 @@ public class RenderEditable
                 return _hasVisualOverflow ? (Offset.zero & size) : null;
             }
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -3057,7 +3057,7 @@ public class RenderEditable
     public override List<DiagnosticsNode> debugDescribeChildren()
     {
         return new List<DiagnosticsNode>();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _scheduleSystemFontsUpdate()
@@ -3091,7 +3091,7 @@ public class RenderEditable
             childParentData = ((TextParentData?)child.parentData!)!;
         }
         return Equals(child, equals);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool _debugUltimateNextSiblingOf(RenderBox child, RenderBox? equals = null)
@@ -3104,7 +3104,7 @@ public class RenderEditable
             childParentData = ((TextParentData?)child.parentData!)!;
         }
         return Equals(child, equals);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual long childCount => _childCount;
@@ -3147,7 +3147,7 @@ public class RenderEditable
             return true;
         });
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _insertIntoChildList(RenderBox child, RenderBox? after = null)
@@ -3309,7 +3309,7 @@ public class RenderEditable
         DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         var childParentData = ((TextParentData?)child.parentData!)!;
         return childParentData.previousSibling;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual RenderBox? childAfter(RenderBox child)
@@ -3317,7 +3317,7 @@ public class RenderEditable
         DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         var childParentData = ((TextParentData?)child.parentData!)!;
         return childParentData.nextSibling;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void setupParentData(RenderObject child)
@@ -3337,7 +3337,7 @@ public class RenderEditable
     {
         var constraints = new BoxConstraints(maxWidth: maxWidth);
         return new List<PlaceholderDimensions>();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void positionInlineChildren(List<TextBox> boxes)
@@ -3399,15 +3399,11 @@ public class RenderEditable
             transform.translateByDouble(
                 (
                     offsetLocal
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ).dx,
                 (
                     offsetLocal
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ).dy,
                 0,
                 1
@@ -3430,9 +3426,7 @@ public class RenderEditable
                 child,
                 (
                     childOffset
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) + offset
             );
             child = childAfter(child);
@@ -3453,9 +3447,7 @@ public class RenderEditable
             bool isHit = result.addWithPaintOffset(
                 offset: (
                     childOffset
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 position: position,
                 hitTest: (result, transformed) => child!.hitTest(result, position: transformed)
@@ -3467,7 +3459,7 @@ public class RenderEditable
             child = childAfter(child);
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -3679,7 +3671,7 @@ internal class _TextHighlightPainter__editable : RenderEditablePainter
                     selectionWidthStyle
                 )
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -3814,7 +3806,7 @@ internal class _CaretPainter__editable : RenderEditablePainter
                     (
                         floatingCursorRect
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ).center - integralRect.center
                 ).distanceSquared;
@@ -3839,7 +3831,7 @@ internal class _CaretPainter__editable : RenderEditablePainter
                     (
                         radius
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 );
@@ -3877,9 +3869,7 @@ internal class _CaretPainter__editable : RenderEditablePainter
             RRect.fromRectAndRadius(
                 (
                     floatingCursorRectLocal
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 EditableLibrary._kFloatingCursorRadius
             ),
@@ -3924,7 +3914,7 @@ internal class _CaretPainter__editable : RenderEditablePainter
                     floatingCursorRect
                 )
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -3989,6 +3979,6 @@ internal class _CompositeRenderEditablePainter__editable : RenderEditablePainter
             }
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

@@ -205,14 +205,14 @@ public class TabBarTheme : InheritedTheme, Diagnosticable
             textScaler: textScaler ?? this.textScaler,
             indicatorAnimation: indicatorAnimation ?? this.indicatorAnimation
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static TabBarThemeData of(BuildContext context)
     {
         TabBarTheme? tabBarThemeLocal = context.dependOnInheritedWidgetOfExactType<TabBarTheme>();
         return tabBarThemeLocal?.data ?? Theme.of(context).tabBarTheme;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static TabBarTheme lerp(TabBarTheme a, TabBarTheme b, double t)
@@ -243,7 +243,7 @@ public class TabBarTheme : InheritedTheme, Diagnosticable
             textScaler: (t < 0.5) ? a.textScaler : b.textScaler,
             indicatorAnimation: (t < 0.5) ? a.indicatorAnimation : b.indicatorAnimation
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget) =>
@@ -252,7 +252,7 @@ public class TabBarTheme : InheritedTheme, Diagnosticable
     public override Widget wrap(BuildContext context, Widget child)
     {
         return new TabBarTheme(data: data, child: child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
@@ -268,7 +268,7 @@ public class TabBarTheme : InheritedTheme, Diagnosticable
             return true;
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override DiagnosticsNode toDiagnosticsNode(
@@ -277,7 +277,7 @@ public class TabBarTheme : InheritedTheme, Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties) { }
@@ -381,7 +381,7 @@ public class TabBarThemeData : Diagnosticable
             indicatorAnimation: indicatorAnimation ?? this.indicatorAnimation,
             splashBorderRadius: splashBorderRadius ?? this.splashBorderRadius
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static TabBarThemeData lerp(TabBarThemeData a, TabBarThemeData b, double t)
@@ -413,7 +413,7 @@ public class TabBarThemeData : Diagnosticable
             indicatorAnimation: (t < 0.5) ? a.indicatorAnimation : b.indicatorAnimation,
             splashBorderRadius: BorderRadius.lerp(a.splashBorderRadius, a.splashBorderRadius, t)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override int GetHashCode() =>
@@ -581,7 +581,7 @@ public class TabBarThemeData : Diagnosticable
             return true;
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -590,6 +590,6 @@ public class TabBarThemeData : Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

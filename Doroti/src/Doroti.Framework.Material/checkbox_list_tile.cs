@@ -385,7 +385,9 @@ public class CheckboxListTile : StatelessWidget
                 Widget?
             )>((secondary, control)),
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
         ThemeData theme = Theme.of(context);
         CheckboxThemeData checkboxTheme = CheckboxTheme.of(context);
@@ -435,6 +437,6 @@ public class CheckboxListTile : StatelessWidget
                 internalAddSemanticForOnTap: internalAddSemanticForOnTap
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

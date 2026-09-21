@@ -12,7 +12,7 @@ public static partial class Tap_and_dragLibrary
         DartRuntimePrimitives.Assert(() => originPosition is not null);
         Offset offset = @event.position - originPosition!.global;
         return offset.distance;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -197,7 +197,7 @@ public class TapDragUpdateDetails : PositionedGestureDetails, Diagnosticable
                         (
                             primaryDelta
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ) == delta.dx
                     ) && (delta.dy == 0.0)
@@ -207,7 +207,7 @@ public class TapDragUpdateDetails : PositionedGestureDetails, Diagnosticable
                         (
                             primaryDelta
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ) == delta.dy
                     ) && (delta.dx == 0.0)
@@ -270,7 +270,7 @@ public class TapDragEndDetails : PositionedGestureDetails, Diagnosticable
                     (
                         primaryVelocity
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) == __velocity.pixelsPerSecond.dx
                 )
@@ -278,7 +278,7 @@ public class TapDragEndDetails : PositionedGestureDetails, Diagnosticable
                     (
                         primaryVelocity
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) == __velocity.pixelsPerSecond.dy
                 )
@@ -445,7 +445,7 @@ public abstract class BaseTapAndDragGestureRecognizer
             }
         }
         return base.isPointerAllowed(((PointerDownEvent?)(object?)@event)!);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void addAllowedPointer(PointerDownEvent @event)
@@ -889,9 +889,7 @@ public abstract class BaseTapAndDragGestureRecognizer
             _dragUpdateThrottleTimer ??= new Timer(
                 (
                     dragUpdateThrottleFrequency
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 _handleDragUpdateThrottled
             );
@@ -1039,7 +1037,7 @@ public abstract class BaseTapAndDragGestureRecognizer
             buttons
             == (
                 _previousButtons
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         )
         {
@@ -1049,7 +1047,7 @@ public abstract class BaseTapAndDragGestureRecognizer
         {
             return false;
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool _isWithinConsecutiveTapTolerance(Offset secondTapOffset)
@@ -1062,10 +1060,10 @@ public abstract class BaseTapAndDragGestureRecognizer
             secondTapOffset
             - (
                 _lastTapOffset
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         return difference.distance <= ConstantsLibrary.kDoubleTapSlop;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool _representsSameSeries(PointerDownEvent @event)
@@ -1073,7 +1071,7 @@ public abstract class BaseTapAndDragGestureRecognizer
         return (_consecutiveTapTimer is not null)
             && _isWithinConsecutiveTapTolerance(@event.position)
             && _hasSameButton(@event.buttons);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _consecutiveTapTimerStart()
@@ -1120,7 +1118,7 @@ public class TapAndHorizontalDragGestureRecognizer : BaseTapAndDragGestureRecogn
     {
         return _globalDistanceMoved.abs()
             > EventsLibrary.computeHitSlop(pointerDeviceKind, gestureSettings);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal override Offset _getDeltaForDetails(Offset delta) => new Offset(delta.dx, 0.0);
@@ -1142,7 +1140,7 @@ public class TapAndPanGestureRecognizer : BaseTapAndDragGestureRecognizer
     {
         return _globalDistanceMoved.abs()
             > EventsLibrary.computePanSlop(pointerDeviceKind, gestureSettings);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal override Offset _getDeltaForDetails(Offset delta) => delta;
@@ -1164,7 +1162,7 @@ public class TapAndDragGestureRecognizer : BaseTapAndDragGestureRecognizer
     {
         return _globalDistanceMoved.abs()
             > EventsLibrary.computePanSlop(pointerDeviceKind, gestureSettings);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal override Offset _getDeltaForDetails(Offset delta) => delta;

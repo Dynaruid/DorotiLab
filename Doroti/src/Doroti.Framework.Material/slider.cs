@@ -110,7 +110,7 @@ public class Slider : StatefulWidget
                     (
                         divisions
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) > 0L
                 )
@@ -381,7 +381,7 @@ public class _SliderState__slider : State<Slider>, TickerProviderStateMixin<Slid
                     (
                         _currentChangedValue
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 );
@@ -418,7 +418,9 @@ public class _SliderState__slider : State<Slider>, TickerProviderStateMixin<Slid
             _SliderAdjustmentType__slider.left => Equals(directionality, TextDirection.rtl),
             _SliderAdjustmentType__slider.right => Equals(directionality, TextDirection.ltr),
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
         var slider = (
             (_RenderSlider__slider?)_renderObjectKey.currentContext!.findRenderObject()!
@@ -461,7 +463,7 @@ public class _SliderState__slider : State<Slider>, TickerProviderStateMixin<Slid
         DartRuntimePrimitives.Assert(() => value >= 0.0);
         DartRuntimePrimitives.Assert(() => value <= 1.0);
         return (value * (widget.max - widget.min)) + widget.min;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual double _discretize(double value)
@@ -470,10 +472,10 @@ public class _SliderState__slider : State<Slider>, TickerProviderStateMixin<Slid
         DartRuntimePrimitives.Assert(() => (value >= 0.0) && (value <= 1.0));
         long divisionsLocal = (
             widget.divisions
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         );
         return (value * divisionsLocal).round() / (double)divisionsLocal;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual double _convert(double value)
@@ -484,7 +486,7 @@ public class _SliderState__slider : State<Slider>, TickerProviderStateMixin<Slid
             ret = _discretize(ret);
         }
         return ret;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual double _unlerp(double value)
@@ -492,7 +494,7 @@ public class _SliderState__slider : State<Slider>, TickerProviderStateMixin<Slid
         DartRuntimePrimitives.Assert(() => value <= widget.max);
         DartRuntimePrimitives.Assert(() => value >= widget.min);
         return (widget.max > widget.min) ? ((value - widget.min) / (widget.max - widget.min)) : 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -523,11 +525,13 @@ public class _SliderState__slider : State<Slider>, TickerProviderStateMixin<Slid
                         return _buildCupertinoSlider(context);
                     }
                     default:
-                        throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                        throw new InvalidOperationException(
+                            "Switch expression did not handle the supplied value."
+                        );
                 }
             }
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _buildMaterialSlider(BuildContext context)
@@ -591,7 +595,9 @@ public class _SliderState__slider : State<Slider>, TickerProviderStateMixin<Slid
                     (widget.overlayColor?.resolve(states) ?? widget.activeColor?.withOpacity(0.12))
                     ?? WidgetStateProperty.resolveAs(sliderThemeLocal.overlayColor, states)
                 ) ?? WidgetStateProperty.resolveAs(defaults.overlayColor, states);
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         TextStyle valueIndicatorTextStyleLocal =
             sliderThemeLocal.valueIndicatorTextStyle ?? defaults.valueIndicatorTextStyle!;
@@ -652,7 +658,9 @@ public class _SliderState__slider : State<Slider>, TickerProviderStateMixin<Slid
         Size screenSize()
         {
             return MediaQuery.sizeOf(context);
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         Action? handleDidGainAccessibilityFocus = default!;
         switch (theme.platform)
@@ -682,7 +690,9 @@ public class _SliderState__slider : State<Slider>, TickerProviderStateMixin<Slid
             NavigationMode.directional => _directionalNavShortcutMap,
             NavigationMode.traditional => _traditionalNavShortcutMap,
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
         double fontSizeLocal =
             sliderThemeLocal.valueIndicatorTextStyle?.fontSize
@@ -701,7 +711,7 @@ public class _SliderState__slider : State<Slider>, TickerProviderStateMixin<Slid
                         (
                             widget.secondaryTrackValue
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     )
@@ -740,11 +750,13 @@ public class _SliderState__slider : State<Slider>, TickerProviderStateMixin<Slid
                         (
                             sliderThemeLocal.showValueIndicator
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     );
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 },
                 child: result
             )
@@ -779,7 +791,7 @@ public class _SliderState__slider : State<Slider>, TickerProviderStateMixin<Slid
                 thumbColor: widget.thumbColor ?? CupertinoColors.white
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _buildValueIndicator(ShowValueIndicator showValueIndicator)
@@ -806,7 +818,9 @@ public class _SliderState__slider : State<Slider>, TickerProviderStateMixin<Slid
             var __constant40744 when Equals(__constant40744, ShowValueIndicator.onDrag) =>
                 valueIndicator,
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
     }
 
@@ -838,7 +852,7 @@ public class _SliderState__slider : State<Slider>, TickerProviderStateMixin<Slid
         )();
         _tickers!.Add(result);
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _removeTicker(_WidgetTicker__ticker_provider ticker)
@@ -978,7 +992,7 @@ internal class _SliderRenderObjectWidget__slider : LeafRenderObjectWidget
             gestureSettings: MediaQuery.gestureSettingsOf(context),
             allowedInteraction: allowedInteraction
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -1167,7 +1181,7 @@ public class _RenderSlider__slider : RenderBox, RelayoutWhenSystemFontsChangeMix
         DartRuntimePrimitives.ConvertValue<double>(
             (
                 _sliderTheme.trackHeight
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );
     internal virtual Rect _trackRect =>
@@ -1187,7 +1201,7 @@ public class _RenderSlider__slider : RenderBox, RelayoutWhenSystemFontsChangeMix
                     (
                         divisions
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) > 0L
                 )
@@ -1344,7 +1358,7 @@ public class _RenderSlider__slider : RenderBox, RelayoutWhenSystemFontsChangeMix
                     (
                         __value
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ),
                     _screenSize
@@ -1355,7 +1369,7 @@ public class _RenderSlider__slider : RenderBox, RelayoutWhenSystemFontsChangeMix
             }
             _screenSize = (
                 __value
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             markNeedsPaint();
         }
@@ -1511,7 +1525,9 @@ public class _RenderSlider__slider : RenderBox, RelayoutWhenSystemFontsChangeMix
             var __constant54896 when Equals(__constant54896, ShowValueIndicator.alwaysVisible) =>
                 false,
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
     internal virtual double _adjustmentUnit
     {
@@ -1532,7 +1548,9 @@ public class _RenderSlider__slider : RenderBox, RelayoutWhenSystemFontsChangeMix
                     return 0.05;
                 }
                 default:
-                    throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                    throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    );
             }
         }
     }
@@ -1614,7 +1632,9 @@ public class _RenderSlider__slider : RenderBox, RelayoutWhenSystemFontsChangeMix
             TextDirection.rtl => 1.0 - visualPosition,
             TextDirection.ltr => visualPosition,
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
     }
 
@@ -1623,7 +1643,7 @@ public class _RenderSlider__slider : RenderBox, RelayoutWhenSystemFontsChangeMix
         double visualPosition =
             (globalToLocal(globalPosition).dx - _trackRect.left) / _trackRect.width;
         return _getValueFromVisualPosition(visualPosition);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual double _discretize(double value)
@@ -1637,19 +1657,17 @@ public class _RenderSlider__slider : RenderBox, RelayoutWhenSystemFontsChangeMix
                     * (
                         divisions
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 ).round()
                 / (double)(
                     divisions
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
         }
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _startInteraction(Offset globalPosition)
@@ -1752,7 +1770,7 @@ public class _RenderSlider__slider : RenderBox, RelayoutWhenSystemFontsChangeMix
                         (
                             details.primaryDelta
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ) / _trackRect.width;
                     _currentDragValue += textDirection switch
@@ -1761,7 +1779,7 @@ public class _RenderSlider__slider : RenderBox, RelayoutWhenSystemFontsChangeMix
                         TextDirection.ltr => valueDelta,
                         _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
                             throw new InvalidOperationException(
-                                "Non-exhaustive Dart switch value."
+                                "Switch expression did not handle the supplied value."
                             ),
                     };
                     onChanged!(_discretize(_currentDragValue));
@@ -1794,9 +1812,9 @@ public class _RenderSlider__slider : RenderBox, RelayoutWhenSystemFontsChangeMix
     {
         return (
             overlayRect
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         ).contains(globalToLocal(globalPosition));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool hitTestSelf(Offset position) => true;
@@ -1821,7 +1839,7 @@ public class _RenderSlider__slider : RenderBox, RelayoutWhenSystemFontsChangeMix
         {
             hoveringThumb = (
                 overlayRect
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ).contains(@event.localPosition);
         }
     }
@@ -1850,7 +1868,7 @@ public class _RenderSlider__slider : RenderBox, RelayoutWhenSystemFontsChangeMix
                 ? constraints.maxHeight
                 : Math.Max(_minPreferredTrackHeight, _maxSliderPartHeight)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paint(PaintingContext context, Offset offset)
@@ -1866,14 +1884,16 @@ public class _RenderSlider__slider : RenderBox, RelayoutWhenSystemFontsChangeMix
                         - (
                             _secondaryTrackValue
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                 )
             ),
             TextDirection.ltr => (controllerValue, _secondaryTrackValue),
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
         Rect trackRectLocal = _sliderTheme.trackShape!.getPreferredRect(
             parentBox: this,
@@ -1902,7 +1922,7 @@ public class _RenderSlider__slider : RenderBox, RelayoutWhenSystemFontsChangeMix
                                 (
                                     secondaryVisualPosition
                                     ?? throw new global::System.NullReferenceException(
-                                        "Dart null assertion failed."
+                                        "A required value was null."
                                     )
                                 ) * trackRectLocal.width
                             ),
@@ -1926,15 +1946,15 @@ public class _RenderSlider__slider : RenderBox, RelayoutWhenSystemFontsChangeMix
         {
             double thumbWidth__63660__value64036 = (
                 thumbWidth
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             double pressedThumbWidth__63884__value64058 = (
                 pressedThumbWidth
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             double trackGap__63832__value64087 = (
                 trackGapLocal
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             delta = (thumbWidth__63660__value64036) - (pressedThumbWidth__63884__value64058);
             if ((thumbWidth__63660__value64036) > 0.0)
@@ -1991,7 +2011,7 @@ public class _RenderSlider__slider : RenderBox, RelayoutWhenSystemFontsChangeMix
                     / (
                         divisions
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 ) >= (3.0 * tickMarkWidth)
@@ -2004,7 +2024,7 @@ public class _RenderSlider__slider : RenderBox, RelayoutWhenSystemFontsChangeMix
                         <= (
                             divisions
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         );
                     i++
@@ -2015,7 +2035,7 @@ public class _RenderSlider__slider : RenderBox, RelayoutWhenSystemFontsChangeMix
                         / (double)(
                             divisions
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         );
                     double dx =
@@ -2093,13 +2113,13 @@ public class _RenderSlider__slider : RenderBox, RelayoutWhenSystemFontsChangeMix
                             (
                                 thumbWidth
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             ),
                             (
                                 thumbHeight
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             )
                         )
@@ -2132,7 +2152,7 @@ public class _RenderSlider__slider : RenderBox, RelayoutWhenSystemFontsChangeMix
             ),
             trackRect.center.dy
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Offset _semanticThumbCenter
@@ -2144,7 +2164,9 @@ public class _RenderSlider__slider : RenderBox, RelayoutWhenSystemFontsChangeMix
                 TextDirection.rtl => 1.0 - _value,
                 TextDirection.ltr => _value,
                 _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                    throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
             };
             return _calcThumbCenter(trackRect: _trackRect, visualPosition: visualPositionLocal);
         }
@@ -2213,9 +2235,7 @@ public class _RenderSlider__slider : RenderBox, RelayoutWhenSystemFontsChangeMix
                 1.0
                 / (
                     divisions
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             )
             : _adjustmentUnit;
@@ -2273,13 +2293,13 @@ public class _RenderSlider__slider : RenderBox, RelayoutWhenSystemFontsChangeMix
     public virtual double increaseValue()
     {
         return Dart_uiLibrary.clampDouble(value + _semanticActionUnit, 0.0, 1.0);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double decreaseValue()
     {
         return Dart_uiLibrary.clampDouble(value - _semanticActionUnit, 0.0, 1.0);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _scheduleSystemFontsUpdate()
@@ -2367,7 +2387,7 @@ internal class _ValueIndicatorRenderObjectWidget__slider : LeafRenderObjectWidge
     public override RenderObject createRenderObject(BuildContext context)
     {
         return new _RenderValueIndicator__slider(state: state);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -2420,7 +2440,7 @@ public class _RenderValueIndicator__slider : RenderBox, RelayoutWhenSystemFontsC
     public override Size computeDryLayout(BoxConstraints constraints)
     {
         return constraints.smallest;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void dispose()
@@ -2528,7 +2548,9 @@ internal class _SliderDefaultsM3Year2023__slider : SliderThemeData
                         return _colors.primary.withOpacity(0.1);
                     }
                     return Colors.transparent;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );
@@ -2615,7 +2637,9 @@ internal class _SliderDefaultsM3__slider : SliderThemeData
                         return _colors.primary.withOpacity(0.1);
                     }
                     return Colors.transparent;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );
@@ -2663,7 +2687,7 @@ internal class _SliderDefaultsM3__slider : SliderThemeData
                         }
                         return new Size(4.0, 44.0);
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 );

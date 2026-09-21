@@ -87,7 +87,7 @@ public class ButtonBar : StatelessWidget
                                 child: child
                             );
                             throw new InvalidOperationException(
-                                "Dart closure completed without a value."
+                                "Callback completed without returning a value."
                             );
                         }
                     )
@@ -118,9 +118,11 @@ public class ButtonBar : StatelessWidget
                 );
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -155,13 +157,13 @@ internal class _ButtonBarRow__button_bar : Flex
             crossAxisAlignment: crossAxisAlignment,
             textDirection: (
                 getEffectiveTextDirection(context)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             verticalDirection: verticalDirection,
             textBaseline: textBaseline,
             overflowButtonSpacing: overflowButtonSpacing
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -251,20 +253,16 @@ public class _RenderButtonBarRow__button_bar : RenderFlex
             {
                 double overflowButtonSpacing__value15257 = (
                     overflowButtonSpacing
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 currentHeight += (
                     overflowButtonSpacing
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
             }
         }
         return constraints.constrain(new Size(constraints.maxWidth, currentHeight));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void performLayout()
@@ -285,7 +283,9 @@ public class _RenderButtonBarRow__button_bar : RenderFlex
                 VerticalDirection.down => firstChild,
                 VerticalDirection.up => lastChild,
                 _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                    throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
             };
             while (child is not null)
             {
@@ -295,7 +295,7 @@ public class _RenderButtonBarRow__button_bar : RenderFlex
                     (
                         textDirection
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
@@ -366,20 +366,22 @@ public class _RenderButtonBarRow__button_bar : RenderFlex
                     VerticalDirection.down => childParentData.nextSibling,
                     VerticalDirection.up => childParentData.previousSibling,
                     _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                        throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                        throw new InvalidOperationException(
+                            "Switch expression did not handle the supplied value."
+                        ),
                 };
                 if ((overflowButtonSpacing is not null) && (child is not null))
                 {
                     double overflowButtonSpacing__value18856 = (
                         overflowButtonSpacing
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     );
                     currentHeight += (
                         overflowButtonSpacing
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     );
                 }

@@ -23,13 +23,13 @@ public class Velocity
     public virtual Velocity op_Subtract(Velocity other)
     {
         return new Velocity(pixelsPerSecond: pixelsPerSecond - other.pixelsPerSecond);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Velocity op_Add(Velocity other)
     {
         return new Velocity(pixelsPerSecond: pixelsPerSecond + other.pixelsPerSecond);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Velocity clampMagnitude(double minValue, double maxValue)
@@ -50,7 +50,7 @@ public class Velocity
             );
         }
         return this;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool Equals(object? other)
@@ -219,7 +219,7 @@ public class VelocityTracker
             duration: newestSample.time - oldestSample.time,
             offset: newestSample.point - oldestSample.point
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Velocity getVelocity()
@@ -230,7 +230,7 @@ public class VelocityTracker
             return Velocity.zero;
         }
         return new Velocity(pixelsPerSecond: estimate.pixelsPerSecond);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -280,7 +280,7 @@ public class IOSScrollViewFlingVelocityTracker : VelocityTracker
         return (dt > 0L)
             ? ((end.point - start.point) * 1000 / (dt.toDouble() / 1000L))
             : Offset.zero;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override VelocityEstimate? getVelocityEstimate()
@@ -327,7 +327,7 @@ public class IOSScrollViewFlingVelocityTracker : VelocityTracker
                 offset: newestSample.point - oldestNonNullSample.point
             );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -380,6 +380,6 @@ public class MacOSScrollViewFlingVelocityTracker : IOSScrollViewFlingVelocityTra
                 offset: newestSample.point - oldestNonNullSample.point
             );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

@@ -94,13 +94,13 @@ public class ButtonTheme : InheritedTheme
             }
         }
         return buttonThemeLocal!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget wrap(BuildContext context, Widget child)
     {
         return CreateFromButtonThemeData(data: data, child: child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget) =>
@@ -177,7 +177,7 @@ public class ButtonThemeData : Diagnosticable
                         ButtonTextTheme.primary => EdgeInsets.CreateSymmetric(horizontal: 24.0),
                         _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
                             throw new InvalidOperationException(
-                                "Non-exhaustive Dart switch value."
+                                "Switch expression did not handle the supplied value."
                             ),
                     }
                 )
@@ -199,7 +199,7 @@ public class ButtonThemeData : Diagnosticable
                         ),
                         _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
                             throw new InvalidOperationException(
-                                "Non-exhaustive Dart switch value."
+                                "Switch expression did not handle the supplied value."
                             ),
                     }
                 )
@@ -208,7 +208,7 @@ public class ButtonThemeData : Diagnosticable
     public virtual Brightness getBrightness(MaterialButton button)
     {
         return button.colorBrightness ?? colorScheme!.brightness;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual ButtonTextTheme getTextTheme(MaterialButton button) =>
@@ -218,13 +218,13 @@ public class ButtonThemeData : Diagnosticable
     {
         return (button.textColor ?? button.disabledTextColor)
             ?? colorScheme!.onSurface.withOpacity(0.38);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Color getDisabledFillColor(MaterialButton button)
     {
         return (button.disabledColor ?? _disabledColor) ?? colorScheme!.onSurface.withOpacity(0.38);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Color? getFillColor(MaterialButton button)
@@ -260,9 +260,11 @@ public class ButtonThemeData : Diagnosticable
                 );
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Color getTextColor(MaterialButton button)
@@ -297,9 +299,11 @@ public class ButtonThemeData : Diagnosticable
                 return fillIsDark ? Colors.white : Colors.black;
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Color getSplashColor(MaterialButton button)
@@ -322,23 +326,25 @@ public class ButtonThemeData : Diagnosticable
                     break;
                 }
                 default:
-                    throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                    throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    );
             }
         }
         return getTextColor(button).withOpacity(0.12);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Color getFocusColor(MaterialButton button)
     {
         return (button.focusColor ?? _focusColor) ?? getTextColor(button).withOpacity(0.12);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Color getHoverColor(MaterialButton button)
     {
         return (button.hoverColor ?? _hoverColor) ?? getTextColor(button).withOpacity(0.04);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Color getHighlightColor(MaterialButton button)
@@ -359,9 +365,11 @@ public class ButtonThemeData : Diagnosticable
                 return Colors.transparent;
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double getElevation(MaterialButton button) =>
@@ -389,10 +397,12 @@ public class ButtonThemeData : Diagnosticable
                     ButtonTextTheme.accent => EdgeInsets.CreateSymmetric(horizontal: 16.0),
                     ButtonTextTheme.primary => EdgeInsets.CreateSymmetric(horizontal: 24.0),
                     _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                        throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                        throw new InvalidOperationException(
+                            "Switch expression did not handle the supplied value."
+                        ),
                 }
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual ShapeBorder getShape(MaterialButton button) =>
@@ -401,7 +411,7 @@ public class ButtonThemeData : Diagnosticable
     public virtual Duration getAnimationDuration(MaterialButton button)
     {
         return button.animationDuration ?? ConstantsLibrary.kThemeChangeDuration;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual BoxConstraints getConstraints(MaterialButton button) => constraints;
@@ -410,7 +420,7 @@ public class ButtonThemeData : Diagnosticable
     {
         return (button.materialTapTargetSize ?? _materialTapTargetSize)
             ?? MaterialTapTargetSize.padded;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual ButtonThemeData copyWith(
@@ -448,7 +458,7 @@ public class ButtonThemeData : Diagnosticable
             colorScheme: colorScheme ?? this.colorScheme,
             materialTapTargetSize: materialTapTargetSize ?? _materialTapTargetSize
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool Equals(object? other)
@@ -569,7 +579,7 @@ public class ButtonThemeData : Diagnosticable
             return true;
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -578,6 +588,6 @@ public class ButtonThemeData : Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

@@ -99,7 +99,7 @@ public abstract class StandardFabLocation : FloatingActionButtonLocation
             getOffsetX(scaffoldGeometry, adjustment),
             getOffsetY(scaffoldGeometry, adjustment)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static double _leftOffsetX(
@@ -110,7 +110,7 @@ public abstract class StandardFabLocation : FloatingActionButtonLocation
         return Floating_action_button_locationLibrary.kFloatingActionButtonMargin
             + scaffoldGeometry.minInsets.left
             - adjustment;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static double _rightOffsetX(
@@ -123,7 +123,7 @@ public abstract class StandardFabLocation : FloatingActionButtonLocation
             - scaffoldGeometry.minInsets.right
             - scaffoldGeometry.floatingActionButtonSize.width
             + adjustment;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -183,9 +183,11 @@ internal class _StartTopFabLocation__floating_action_button_location
             TextDirection.rtl => _rightOffsetX(scaffoldGeometry, adjustment),
             TextDirection.ltr => _leftOffsetX(scaffoldGeometry, adjustment),
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double getOffsetY(ScaffoldPrelayoutGeometry scaffoldGeometry, double adjustment)
@@ -196,7 +198,7 @@ internal class _StartTopFabLocation__floating_action_button_location
             return scaffoldGeometry.contentTop - fabHalfHeight;
         }
         return scaffoldGeometry.minViewPadding.top;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -219,9 +221,11 @@ internal class _MiniStartTopFabLocation__floating_action_button_location
             TextDirection.rtl => _rightOffsetX(scaffoldGeometry, adjustment),
             TextDirection.ltr => _leftOffsetX(scaffoldGeometry, adjustment),
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double getOffsetY(ScaffoldPrelayoutGeometry scaffoldGeometry, double adjustment)
@@ -232,7 +236,7 @@ internal class _MiniStartTopFabLocation__floating_action_button_location
             return scaffoldGeometry.contentTop - fabHalfHeight;
         }
         return scaffoldGeometry.minViewPadding.top;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -251,7 +255,7 @@ internal class _CenterTopFabLocation__floating_action_button_location
                 scaffoldGeometry.scaffoldSize.width
                 - scaffoldGeometry.floatingActionButtonSize.width
             ) / 2.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double getOffsetY(ScaffoldPrelayoutGeometry scaffoldGeometry, double adjustment)
@@ -262,7 +266,7 @@ internal class _CenterTopFabLocation__floating_action_button_location
             return scaffoldGeometry.contentTop - fabHalfHeight;
         }
         return scaffoldGeometry.minViewPadding.top;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -284,7 +288,7 @@ internal class _MiniCenterTopFabLocation__floating_action_button_location
                 scaffoldGeometry.scaffoldSize.width
                 - scaffoldGeometry.floatingActionButtonSize.width
             ) / 2.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double getOffsetY(ScaffoldPrelayoutGeometry scaffoldGeometry, double adjustment)
@@ -295,7 +299,7 @@ internal class _MiniCenterTopFabLocation__floating_action_button_location
             return scaffoldGeometry.contentTop - fabHalfHeight;
         }
         return scaffoldGeometry.minViewPadding.top;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -315,9 +319,11 @@ internal class _EndTopFabLocation__floating_action_button_location
             TextDirection.rtl => _leftOffsetX(scaffoldGeometry, adjustment),
             TextDirection.ltr => _rightOffsetX(scaffoldGeometry, adjustment),
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double getOffsetY(ScaffoldPrelayoutGeometry scaffoldGeometry, double adjustment)
@@ -328,7 +334,7 @@ internal class _EndTopFabLocation__floating_action_button_location
             return scaffoldGeometry.contentTop - fabHalfHeight;
         }
         return scaffoldGeometry.minViewPadding.top;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -351,9 +357,11 @@ internal class _MiniEndTopFabLocation__floating_action_button_location
             TextDirection.rtl => _leftOffsetX(scaffoldGeometry, adjustment),
             TextDirection.ltr => _rightOffsetX(scaffoldGeometry, adjustment),
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double getOffsetY(ScaffoldPrelayoutGeometry scaffoldGeometry, double adjustment)
@@ -364,7 +372,7 @@ internal class _MiniEndTopFabLocation__floating_action_button_location
             return scaffoldGeometry.contentTop - fabHalfHeight;
         }
         return scaffoldGeometry.minViewPadding.top;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -384,9 +392,11 @@ internal class _StartFloatFabLocation__floating_action_button_location
             TextDirection.rtl => _rightOffsetX(scaffoldGeometry, adjustment),
             TextDirection.ltr => _leftOffsetX(scaffoldGeometry, adjustment),
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double getOffsetY(ScaffoldPrelayoutGeometry scaffoldGeometry, double adjustment)
@@ -418,7 +428,7 @@ internal class _StartFloatFabLocation__floating_action_button_location
             fabY = Math.Min(fabY, contentBottomLocal - bottomSheetHeight - (fabHeight / 2.0));
         }
         return fabY + adjustment;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -441,9 +451,11 @@ internal class _MiniStartFloatFabLocation__floating_action_button_location
             TextDirection.rtl => _rightOffsetX(scaffoldGeometry, adjustment),
             TextDirection.ltr => _leftOffsetX(scaffoldGeometry, adjustment),
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double getOffsetY(ScaffoldPrelayoutGeometry scaffoldGeometry, double adjustment)
@@ -475,7 +487,7 @@ internal class _MiniStartFloatFabLocation__floating_action_button_location
             fabY = Math.Min(fabY, contentBottomLocal - bottomSheetHeight - (fabHeight / 2.0));
         }
         return fabY + adjustment;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -494,7 +506,7 @@ internal class _CenterFloatFabLocation__floating_action_button_location
                 scaffoldGeometry.scaffoldSize.width
                 - scaffoldGeometry.floatingActionButtonSize.width
             ) / 2.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double getOffsetY(ScaffoldPrelayoutGeometry scaffoldGeometry, double adjustment)
@@ -526,7 +538,7 @@ internal class _CenterFloatFabLocation__floating_action_button_location
             fabY = Math.Min(fabY, contentBottomLocal - bottomSheetHeight - (fabHeight / 2.0));
         }
         return fabY + adjustment;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -548,7 +560,7 @@ internal class _MiniCenterFloatFabLocation__floating_action_button_location
                 scaffoldGeometry.scaffoldSize.width
                 - scaffoldGeometry.floatingActionButtonSize.width
             ) / 2.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double getOffsetY(ScaffoldPrelayoutGeometry scaffoldGeometry, double adjustment)
@@ -580,7 +592,7 @@ internal class _MiniCenterFloatFabLocation__floating_action_button_location
             fabY = Math.Min(fabY, contentBottomLocal - bottomSheetHeight - (fabHeight / 2.0));
         }
         return fabY + adjustment;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -600,9 +612,11 @@ internal class _EndFloatFabLocation__floating_action_button_location
             TextDirection.rtl => _leftOffsetX(scaffoldGeometry, adjustment),
             TextDirection.ltr => _rightOffsetX(scaffoldGeometry, adjustment),
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double getOffsetY(ScaffoldPrelayoutGeometry scaffoldGeometry, double adjustment)
@@ -634,7 +648,7 @@ internal class _EndFloatFabLocation__floating_action_button_location
             fabY = Math.Min(fabY, contentBottomLocal - bottomSheetHeight - (fabHeight / 2.0));
         }
         return fabY + adjustment;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -657,9 +671,11 @@ internal class _MiniEndFloatFabLocation__floating_action_button_location
             TextDirection.rtl => _leftOffsetX(scaffoldGeometry, adjustment),
             TextDirection.ltr => _rightOffsetX(scaffoldGeometry, adjustment),
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double getOffsetY(ScaffoldPrelayoutGeometry scaffoldGeometry, double adjustment)
@@ -691,7 +707,7 @@ internal class _MiniEndFloatFabLocation__floating_action_button_location
             fabY = Math.Min(fabY, contentBottomLocal - bottomSheetHeight - (fabHeight / 2.0));
         }
         return fabY + adjustment;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -711,9 +727,11 @@ internal class _StartDockedFabLocation__floating_action_button_location
             TextDirection.rtl => _rightOffsetX(scaffoldGeometry, adjustment),
             TextDirection.ltr => _leftOffsetX(scaffoldGeometry, adjustment),
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double getOffsetY(ScaffoldPrelayoutGeometry scaffoldGeometry, double adjustment)
@@ -760,7 +778,7 @@ internal class _StartDockedFabLocation__floating_action_button_location
         }
         double maxFabY = scaffoldGeometry.scaffoldSize.height - fabHeight - safeMargin;
         return Math.Min(maxFabY, fabY);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -783,9 +801,11 @@ internal class _MiniStartDockedFabLocation__floating_action_button_location
             TextDirection.rtl => _rightOffsetX(scaffoldGeometry, adjustment),
             TextDirection.ltr => _leftOffsetX(scaffoldGeometry, adjustment),
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double getOffsetY(ScaffoldPrelayoutGeometry scaffoldGeometry, double adjustment)
@@ -832,7 +852,7 @@ internal class _MiniStartDockedFabLocation__floating_action_button_location
         }
         double maxFabY = scaffoldGeometry.scaffoldSize.height - fabHeight - safeMargin;
         return Math.Min(maxFabY, fabY);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -851,7 +871,7 @@ internal class _CenterDockedFabLocation__floating_action_button_location
                 scaffoldGeometry.scaffoldSize.width
                 - scaffoldGeometry.floatingActionButtonSize.width
             ) / 2.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double getOffsetY(ScaffoldPrelayoutGeometry scaffoldGeometry, double adjustment)
@@ -898,7 +918,7 @@ internal class _CenterDockedFabLocation__floating_action_button_location
         }
         double maxFabY = scaffoldGeometry.scaffoldSize.height - fabHeight - safeMargin;
         return Math.Min(maxFabY, fabY);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -920,7 +940,7 @@ internal class _MiniCenterDockedFabLocation__floating_action_button_location
                 scaffoldGeometry.scaffoldSize.width
                 - scaffoldGeometry.floatingActionButtonSize.width
             ) / 2.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double getOffsetY(ScaffoldPrelayoutGeometry scaffoldGeometry, double adjustment)
@@ -967,7 +987,7 @@ internal class _MiniCenterDockedFabLocation__floating_action_button_location
         }
         double maxFabY = scaffoldGeometry.scaffoldSize.height - fabHeight - safeMargin;
         return Math.Min(maxFabY, fabY);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -987,9 +1007,11 @@ internal class _EndDockedFabLocation__floating_action_button_location
             TextDirection.rtl => _leftOffsetX(scaffoldGeometry, adjustment),
             TextDirection.ltr => _rightOffsetX(scaffoldGeometry, adjustment),
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double getOffsetY(ScaffoldPrelayoutGeometry scaffoldGeometry, double adjustment)
@@ -1036,7 +1058,7 @@ internal class _EndDockedFabLocation__floating_action_button_location
         }
         double maxFabY = scaffoldGeometry.scaffoldSize.height - fabHeight - safeMargin;
         return Math.Min(maxFabY, fabY);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1059,9 +1081,11 @@ internal class _MiniEndDockedFabLocation__floating_action_button_location
             TextDirection.rtl => _leftOffsetX(scaffoldGeometry, adjustment),
             TextDirection.ltr => _rightOffsetX(scaffoldGeometry, adjustment),
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double getOffsetY(ScaffoldPrelayoutGeometry scaffoldGeometry, double adjustment)
@@ -1108,7 +1132,7 @@ internal class _MiniEndDockedFabLocation__floating_action_button_location
         }
         double maxFabY = scaffoldGeometry.scaffoldSize.height - fabHeight - safeMargin;
         return Math.Min(maxFabY, fabY);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1128,9 +1152,11 @@ internal class _EndContainedFabLocation__floating_action_button_location
             TextDirection.rtl => _leftOffsetX(scaffoldGeometry, adjustment),
             TextDirection.ltr => _rightOffsetX(scaffoldGeometry, adjustment),
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double getOffsetY(ScaffoldPrelayoutGeometry scaffoldGeometry, double adjustment)
@@ -1152,7 +1178,7 @@ internal class _EndContainedFabLocation__floating_action_button_location
         double fabY = contentBottomLocal + contentBottomToFabTop;
         double maxFabY = scaffoldGeometry.scaffoldSize.height - fabHeight - safeMargin;
         return Math.Min(maxFabY, fabY);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1199,7 +1225,7 @@ internal class _ScalingFabMotionAnimator__floating_action_button_location
         {
             return end;
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Animation<double> getScaleAnimation(Animation<double> parent)
@@ -1211,7 +1237,7 @@ internal class _ScalingFabMotionAnimator__floating_action_button_location
             parent,
             0.5
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Animation<double> getRotationAnimation(Animation<double> parent)
@@ -1222,7 +1248,7 @@ internal class _ScalingFabMotionAnimator__floating_action_button_location
             parent,
             0.5
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double getAnimationRestart(double previousValue) =>
@@ -1237,19 +1263,19 @@ internal class _NoAnimationFabMotionAnimator__floating_action_button_location
     public override Offset getOffset(Offset begin, Offset end, double progress)
     {
         return end;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Animation<double> getRotationAnimation(Animation<double> parent)
     {
         return new AlwaysStoppedAnimation<double>(1.0);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Animation<double> getScaleAnimation(Animation<double> parent)
     {
         return new AlwaysStoppedAnimation<double>(1.0);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 

@@ -113,7 +113,7 @@ public class SnackBarThemeData : Diagnosticable
                 ?? this.disabledActionBackgroundColor,
             dismissDirection: dismissDirection ?? this.dismissDirection
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static SnackBarThemeData lerp(SnackBarThemeData? a, SnackBarThemeData? b, double t)
@@ -154,7 +154,7 @@ public class SnackBarThemeData : Diagnosticable
             ),
             dismissDirection: (t < 0.5) ? a?.dismissDirection : b?.dismissDirection
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override int GetHashCode() =>
@@ -284,7 +284,7 @@ public class SnackBarThemeData : Diagnosticable
             return true;
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -293,7 +293,7 @@ public class SnackBarThemeData : Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -316,13 +316,13 @@ public class SnackBarTheme : InheritedTheme
         SnackBarTheme? snackBarThemeLocal =
             context.dependOnInheritedWidgetOfExactType<SnackBarTheme>();
         return snackBarThemeLocal?.data ?? Theme.of(context).snackBarTheme;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget wrap(BuildContext context, Widget child)
     {
         return new SnackBarTheme(data: data, child: child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget) =>

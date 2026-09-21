@@ -223,14 +223,14 @@ public class AppBarTheme : InheritedTheme, Diagnosticable
             systemOverlayStyle: systemOverlayStyle ?? this.systemOverlayStyle,
             actionsPadding: actionsPadding ?? this.actionsPadding
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static AppBarThemeData of(BuildContext context)
     {
         AppBarTheme? appBarThemeLocal = context.dependOnInheritedWidgetOfExactType<AppBarTheme>();
         return appBarThemeLocal?.data ?? Theme.of(context).appBarTheme;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static AppBarTheme lerp(AppBarTheme? a, AppBarTheme? b, double t)
@@ -266,7 +266,7 @@ public class AppBarTheme : InheritedTheme, Diagnosticable
             systemOverlayStyle: (t < 0.5) ? a?.systemOverlayStyle : b?.systemOverlayStyle,
             actionsPadding: EdgeInsetsGeometry.lerp(a?.actionsPadding, b?.actionsPadding, t)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget) =>
@@ -275,7 +275,7 @@ public class AppBarTheme : InheritedTheme, Diagnosticable
     public override Widget wrap(BuildContext context, Widget child)
     {
         return new AppBarTheme(data: data, child: child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
@@ -291,7 +291,7 @@ public class AppBarTheme : InheritedTheme, Diagnosticable
             return true;
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override DiagnosticsNode toDiagnosticsNode(
@@ -300,7 +300,7 @@ public class AppBarTheme : InheritedTheme, Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties) { }
@@ -407,7 +407,7 @@ public class AppBarThemeData : Diagnosticable
             systemOverlayStyle: systemOverlayStyle ?? this.systemOverlayStyle,
             actionsPadding: actionsPadding ?? this.actionsPadding
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static AppBarThemeData lerp(AppBarThemeData a, AppBarThemeData b, double t)
@@ -439,7 +439,7 @@ public class AppBarThemeData : Diagnosticable
             systemOverlayStyle: (t < 0.5) ? a.systemOverlayStyle : b.systemOverlayStyle,
             actionsPadding: EdgeInsetsGeometry.lerp(a.actionsPadding, b.actionsPadding, t)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override int GetHashCode() =>
@@ -572,7 +572,7 @@ public class AppBarThemeData : Diagnosticable
             return true;
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -581,6 +581,6 @@ public class AppBarThemeData : Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

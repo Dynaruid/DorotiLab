@@ -99,7 +99,7 @@ public class RestorationManager : ChangeNotifier
     public virtual Future sendToEngine(Uint8List encodedData)
     {
         return SystemChannels.restoration.invokeMethod<object?>("put", encodedData);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual async Future _methodHandler(MethodCall call)
@@ -146,14 +146,14 @@ public class RestorationManager : ChangeNotifier
         }
 
         return DartRuntimePrimitives.ConvertMap<object?, object?>(entries);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Uint8List _encodeRestorationData(DartMap<object?, object?> data)
     {
         ByteData encoded = new StandardMessageCodec().encodeMessage(data)!;
         return encoded.buffer.asUint8List(encoded.offsetInBytes, encoded.lengthInBytes);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void scheduleSerializationFor(RestorationBucket bucket)
@@ -303,7 +303,7 @@ public class RestorationBucket
     {
         DartRuntimePrimitives.Assert(() => _debugAssertNotDisposed());
         return ((P?)_rawValues.GetValueOrDefault(restorationId))!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void write<P>(string restorationId, P value)
@@ -336,14 +336,14 @@ public class RestorationBucket
             _markNeedsSerialization();
         }
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool contains(string restorationId)
     {
         DartRuntimePrimitives.Assert(() => _debugAssertNotDisposed());
         return _rawValues.ContainsKey(restorationId);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual RestorationBucket claimChild(string restorationId, object? debugOwner)
@@ -364,7 +364,7 @@ public class RestorationBucket
         var child = CreateChild(restorationId: restorationId, parent: this, debugOwner: debugOwner);
         _claimedChildren[restorationId] = child;
         return child;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void adoptChild(RestorationBucket child)
@@ -473,7 +473,7 @@ public class RestorationBucket
             throw new FlutterError(error);
         });
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _removeChildData(RestorationBucket child)
@@ -594,7 +594,7 @@ public class RestorationBucket
             return true;
         });
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -617,6 +617,6 @@ public static partial class RestorationLibrary
             return true;
         });
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

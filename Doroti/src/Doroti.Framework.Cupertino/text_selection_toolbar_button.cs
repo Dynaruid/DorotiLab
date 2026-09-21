@@ -112,9 +112,11 @@ public class CupertinoTextSelectionToolbarButton : StatefulWidget
             ContextMenuButtonType.share => localizations.shareButtonLabel,
             ContextMenuButtonType.liveTextInput or ContextMenuButtonType.delete => "",
             ContextMenuButtonType.custom => "",
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override IState createState() =>
@@ -179,7 +181,7 @@ internal class _CupertinoTextSelectionToolbarButtonState__text_selection_toolbar
         {
             return childLocal;
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _getContentWidget(BuildContext context)
@@ -227,9 +229,11 @@ internal class _CupertinoTextSelectionToolbarButtonState__text_selection_toolbar
                 );
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -303,6 +307,6 @@ internal class _LiveTextIconPainter__text_selection_toolbar_button : CustomPaint
     {
         var __oldDelegate = (_LiveTextIconPainter__text_selection_toolbar_button)oldDelegate;
         return !Equals(__oldDelegate.color, color);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

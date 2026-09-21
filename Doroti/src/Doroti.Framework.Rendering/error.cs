@@ -36,13 +36,13 @@ public class RenderErrorBox : RenderBox
     public override double computeMaxIntrinsicWidth(double height)
     {
         return ErrorLibrary._kMaxWidth;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicHeight(double width)
     {
         return ErrorLibrary._kMaxHeight;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool sizedByParent => true;
@@ -52,7 +52,7 @@ public class RenderErrorBox : RenderBox
     public override Size computeDryLayout(BoxConstraints constraints)
     {
         return constraints.constrain(new Size(ErrorLibrary._kMaxWidth, ErrorLibrary._kMaxHeight));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static Color _initBackgroundColor()
@@ -64,7 +64,7 @@ public class RenderErrorBox : RenderBox
             return true;
         });
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static Ui.TextStyle _initTextStyle()
@@ -85,7 +85,7 @@ public class RenderErrorBox : RenderBox
             return true;
         });
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paint(PaintingContext context, Offset offset)

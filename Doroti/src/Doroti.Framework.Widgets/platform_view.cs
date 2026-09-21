@@ -114,7 +114,7 @@ public class UiKitView : _DarwinView__platform_view
             hitTestBehavior: hitTestBehavior,
             layoutDirection: (
                 layoutDirection
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             creationParams: creationParams,
             creationParamsCodec: creationParamsCodec,
@@ -150,7 +150,7 @@ public class AppKitView : _DarwinView__platform_view
             hitTestBehavior: hitTestBehavior,
             layoutDirection: (
                 layoutDirection
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             creationParams: creationParams,
             creationParamsCodec: creationParamsCodec,
@@ -218,7 +218,7 @@ internal class _AndroidViewState__platform_view : State<AndroidView>
                 clipBehavior: widget.clipBehavior
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _initializeOnce()
@@ -246,7 +246,7 @@ internal class _AndroidViewState__platform_view : State<AndroidView>
                     (
                         _layoutDirection
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
@@ -273,7 +273,7 @@ internal class _AndroidViewState__platform_view : State<AndroidView>
                     (
                         _layoutDirection
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
@@ -288,7 +288,7 @@ internal class _AndroidViewState__platform_view : State<AndroidView>
             || DebugLibrary.debugCheckHasDirectionality(context)
         );
         return widget.layoutDirection ?? Directionality.of(context);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void dispose()
@@ -304,13 +304,12 @@ internal class _AndroidViewState__platform_view : State<AndroidView>
         _id = Platform_viewsLibrary.platformViewsRegistry.getNextPlatformViewId();
         _controller = PlatformViewsService.initAndroidView(
             id: (
-                _id
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                _id ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             viewType: widget.viewType,
             layoutDirection: (
                 _layoutDirection
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             creationParams: widget.creationParams,
             creationParamsCodec: widget.creationParamsCodec,
@@ -422,7 +421,7 @@ internal abstract class _DarwinViewState__platform_view<PlatformViewT, Controlle
             },
             child: childPlatformView()
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public abstract ViewT childPlatformView();
@@ -451,7 +450,7 @@ internal abstract class _DarwinViewState__platform_view<PlatformViewT, Controlle
                     (
                         _layoutDirection
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
@@ -481,7 +480,7 @@ internal abstract class _DarwinViewState__platform_view<PlatformViewT, Controlle
                     (
                         _layoutDirection
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
@@ -496,7 +495,7 @@ internal abstract class _DarwinViewState__platform_view<PlatformViewT, Controlle
             || DebugLibrary.debugCheckHasDirectionality(context)
         );
         return widget.layoutDirection ?? Directionality.of(context);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void dispose()
@@ -590,7 +589,7 @@ internal class _UiKitViewState__platform_view
             gestureBlockingPolicy: widget.gestureBlockingPolicy,
             layoutDirection: (
                 _layoutDirection
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             creationParams: widget.creationParams,
             creationParamsCodec: widget.creationParamsCodec,
@@ -599,7 +598,7 @@ internal class _UiKitViewState__platform_view
                 focusNode?.requestFocus();
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override _UiKitPlatformView__platform_view childPlatformView()
@@ -609,7 +608,7 @@ internal class _UiKitViewState__platform_view
             hitTestBehavior: widget.hitTestBehavior,
             gestureRecognizers: widget.gestureRecognizers ?? _emptyRecognizersSet
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -628,7 +627,7 @@ internal class _AppKitViewState__platform_view
             viewType: widget.viewType,
             layoutDirection: (
                 _layoutDirection
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             creationParams: widget.creationParams,
             creationParamsCodec: widget.creationParamsCodec,
@@ -637,7 +636,7 @@ internal class _AppKitViewState__platform_view
                 focusNode?.requestFocus();
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override _AppKitPlatformView__platform_view childPlatformView()
@@ -647,7 +646,7 @@ internal class _AppKitViewState__platform_view
             hitTestBehavior: widget.hitTestBehavior,
             gestureRecognizers: widget.gestureRecognizers ?? _emptyRecognizersSet
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -760,7 +759,7 @@ internal class _UiKitPlatformView__platform_view
             hitTestBehavior: hitTestBehavior,
             gestureRecognizers: gestureRecognizers
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -785,7 +784,7 @@ internal class _AppKitPlatformView__platform_view
             hitTestBehavior: hitTestBehavior,
             gestureRecognizers: gestureRecognizers
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -885,7 +884,7 @@ internal class _PlatformViewLinkState__platform_view : State<PlatformViewLink>
             onFocusChange: _handleFrameworkFocusChanged,
             child: _surface!
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void initState()
@@ -917,9 +916,7 @@ internal class _PlatformViewLinkState__platform_view : State<PlatformViewLink>
             new PlatformViewCreationParams(
                 id: (
                     _id
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 viewType: widget.viewType,
                 onPlatformViewCreated: _onPlatformViewCreated,
@@ -1017,7 +1014,7 @@ public class PlatformViewSurface : LeafRenderObjectWidget
             gestureRecognizers: gestureRecognizers,
             hitTestBehavior: hitTestBehavior
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -1066,7 +1063,7 @@ public class AndroidViewSurface : StatefulWidget
     public override IState createState()
     {
         return new _AndroidViewSurfaceState__platform_view();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1105,7 +1102,7 @@ internal class _AndroidViewSurfaceState__platform_view : State<AndroidViewSurfac
                 gestureRecognizers: widget.gestureRecognizers
             );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _onPlatformViewCreated(long __unused0)
@@ -1137,7 +1134,7 @@ internal class _TextureBasedAndroidViewSurface__platform_view : PlatformViewSurf
         );
         viewControllerLocal.pointTransformer = (position) => renderBox.globalToLocal(position);
         return renderBox;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1160,7 +1157,7 @@ internal class _PlatformLayerBasedAndroidViewSurface__platform_view : PlatformVi
         var renderBox = ((PlatformViewRenderBox?)base.createRenderObject(context))!;
         viewController.pointTransformer = (position) => renderBox.globalToLocal(position);
         return renderBox;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1210,7 +1207,7 @@ internal class _PlatformViewPlaceHolder__platform_view : SingleChildRenderObject
     public override RenderObject createRenderObject(BuildContext context)
     {
         return new _PlatformViewPlaceholderBox__platform_view(onLayout: onLayout);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)

@@ -53,7 +53,7 @@ public class DesktopTextSelectionControls : TextSelectionControls
     public override Size getHandleSize(double textLineHeight)
     {
         return Size.zero;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget buildToolbar(
@@ -107,7 +107,7 @@ public class DesktopTextSelectionControls : TextSelectionControls
             lastSecondaryTapDownPosition: lastSecondaryTapDownPosition,
             textLineHeight: textLineHeight
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget buildHandle(
@@ -118,13 +118,13 @@ public class DesktopTextSelectionControls : TextSelectionControls
     )
     {
         return SizedBox.CreateShrink();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Offset getHandleAnchor(TextSelectionHandleType type, double textLineHeight)
     {
         return Offset.zero;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool canSelectAll(TextSelectionDelegate @delegate)
@@ -133,7 +133,7 @@ public class DesktopTextSelectionControls : TextSelectionControls
         return @delegate.selectAllEnabled
             && (value.text.Length != 0)
             && !((value.selection.start == 0L) && (value.selection.end == value.text.Length));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void handleSelectAll(TextSelectionDelegate @delegate)
@@ -292,6 +292,6 @@ public class _DesktopTextSelectionControlsToolbarState__desktop_text_selection
             anchor: widget.lastSecondaryTapDownPosition ?? midpointAnchor,
             children: items
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

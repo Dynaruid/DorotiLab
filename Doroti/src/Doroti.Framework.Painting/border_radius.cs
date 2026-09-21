@@ -79,7 +79,7 @@ public abstract class BorderRadiusGeometry
             _bottomStart - other._bottomStart,
             _bottomEnd - other._bottomEnd
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual BorderRadiusGeometry add(BorderRadiusGeometry other)
@@ -94,7 +94,7 @@ public abstract class BorderRadiusGeometry
             _bottomStart + other._bottomStart,
             _bottomEnd + other._bottomEnd
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public abstract BorderRadiusGeometry op_Subtract();
@@ -116,7 +116,7 @@ public abstract class BorderRadiusGeometry
         a ??= BorderRadius.zero;
         b ??= BorderRadius.zero;
         return a.add(b.subtract(a).op_Multiply(t));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public abstract BorderRadius resolve(TextDirection? direction);
@@ -245,7 +245,7 @@ public abstract class BorderRadiusGeometry
             return $"{visual} + {logical}";
         }
         return (visual ?? logical) ?? "BorderRadius.zero";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool Equals(object? other)
@@ -357,7 +357,7 @@ public class BorderRadius : BorderRadiusGeometry
             bottomLeft: bottomLeft ?? this.bottomLeft,
             bottomRight: bottomRight ?? this.bottomRight
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal override Radius _topLeft => topLeft;
@@ -378,7 +378,7 @@ public class BorderRadius : BorderRadiusGeometry
             bottomLeft: bottomLeft.clamp(minimum: Radius.zero),
             bottomRight: bottomRight.clamp(minimum: Radius.zero)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual RSuperellipse toRSuperellipse(Rect rect)
@@ -390,7 +390,7 @@ public class BorderRadius : BorderRadiusGeometry
             bottomLeft: bottomLeft.clamp(minimum: Radius.zero),
             bottomRight: bottomRight.clamp(minimum: Radius.zero)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override BorderRadiusGeometry subtract(BorderRadiusGeometry other)
@@ -401,7 +401,7 @@ public class BorderRadius : BorderRadiusGeometry
             return op_Subtract(other__as16879);
         }
         return base.subtract(other);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override BorderRadiusGeometry add(BorderRadiusGeometry other)
@@ -412,7 +412,7 @@ public class BorderRadius : BorderRadiusGeometry
             return op_Add(other__as17053);
         }
         return base.add(other);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual BorderRadius op_Subtract(BorderRadius other)
@@ -423,7 +423,7 @@ public class BorderRadius : BorderRadiusGeometry
             bottomLeft: bottomLeft - other.bottomLeft,
             bottomRight: bottomRight - other.bottomRight
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual BorderRadius op_Add(BorderRadius other)
@@ -434,7 +434,7 @@ public class BorderRadius : BorderRadiusGeometry
             bottomLeft: bottomLeft + other.bottomLeft,
             bottomRight: bottomRight + other.bottomRight
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override BorderRadius op_Subtract()
@@ -445,7 +445,7 @@ public class BorderRadius : BorderRadiusGeometry
             bottomLeft: -bottomLeft,
             bottomRight: -bottomRight
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override BorderRadius op_Multiply(double other)
@@ -456,7 +456,7 @@ public class BorderRadius : BorderRadiusGeometry
             bottomLeft: bottomLeft * other,
             bottomRight: bottomRight * other
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override BorderRadius op_Divide(double other)
@@ -467,7 +467,7 @@ public class BorderRadius : BorderRadiusGeometry
             bottomLeft: bottomLeft / other,
             bottomRight: bottomRight / other
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override BorderRadius ___(double other)
@@ -478,7 +478,7 @@ public class BorderRadius : BorderRadiusGeometry
             bottomLeft: bottomLeft.___(other),
             bottomRight: bottomRight.___(other)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override BorderRadius __(double other)
@@ -489,7 +489,7 @@ public class BorderRadius : BorderRadiusGeometry
             bottomLeft: bottomLeft % other,
             bottomRight: bottomRight % other
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static BorderRadius? lerp(BorderRadius? a, BorderRadius? b, double t)
@@ -509,22 +509,22 @@ public class BorderRadius : BorderRadiusGeometry
         return new BorderRadius(
             topLeft: (
                 Dart_uiLibrary.Radius.lerp(a.topLeft, b.topLeft, t)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             topRight: (
                 Dart_uiLibrary.Radius.lerp(a.topRight, b.topRight, t)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             bottomLeft: (
                 Dart_uiLibrary.Radius.lerp(a.bottomLeft, b.bottomLeft, t)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             bottomRight: (
                 Dart_uiLibrary.Radius.lerp(a.bottomRight, b.bottomRight, t)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override BorderRadius resolve(TextDirection? direction) => this;
@@ -609,7 +609,7 @@ public class BorderRadiusDirectional : BorderRadiusGeometry
             return op_Subtract(other__as23144);
         }
         return base.subtract(other);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override BorderRadiusGeometry add(BorderRadiusGeometry other)
@@ -620,7 +620,7 @@ public class BorderRadiusDirectional : BorderRadiusGeometry
             return op_Add(other__as23329);
         }
         return base.add(other);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual BorderRadiusDirectional op_Subtract(BorderRadiusDirectional other)
@@ -631,7 +631,7 @@ public class BorderRadiusDirectional : BorderRadiusGeometry
             bottomStart: bottomStart - other.bottomStart,
             bottomEnd: bottomEnd - other.bottomEnd
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual BorderRadiusDirectional op_Add(BorderRadiusDirectional other)
@@ -642,7 +642,7 @@ public class BorderRadiusDirectional : BorderRadiusGeometry
             bottomStart: bottomStart + other.bottomStart,
             bottomEnd: bottomEnd + other.bottomEnd
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override BorderRadiusDirectional op_Subtract()
@@ -653,7 +653,7 @@ public class BorderRadiusDirectional : BorderRadiusGeometry
             bottomStart: -bottomStart,
             bottomEnd: -bottomEnd
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override BorderRadiusDirectional op_Multiply(double other)
@@ -664,7 +664,7 @@ public class BorderRadiusDirectional : BorderRadiusGeometry
             bottomStart: bottomStart * other,
             bottomEnd: bottomEnd * other
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override BorderRadiusDirectional op_Divide(double other)
@@ -675,7 +675,7 @@ public class BorderRadiusDirectional : BorderRadiusGeometry
             bottomStart: bottomStart / other,
             bottomEnd: bottomEnd / other
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override BorderRadiusDirectional ___(double other)
@@ -686,7 +686,7 @@ public class BorderRadiusDirectional : BorderRadiusGeometry
             bottomStart: bottomStart.___(other),
             bottomEnd: bottomEnd.___(other)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override BorderRadiusDirectional __(double other)
@@ -697,7 +697,7 @@ public class BorderRadiusDirectional : BorderRadiusGeometry
             bottomStart: bottomStart % other,
             bottomEnd: bottomEnd % other
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static BorderRadiusDirectional? lerp(
@@ -721,22 +721,22 @@ public class BorderRadiusDirectional : BorderRadiusGeometry
         return new BorderRadiusDirectional(
             topStart: (
                 Dart_uiLibrary.Radius.lerp(a.topStart, b.topStart, t)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             topEnd: (
                 Dart_uiLibrary.Radius.lerp(a.topEnd, b.topEnd, t)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             bottomStart: (
                 Dart_uiLibrary.Radius.lerp(a.bottomStart, b.bottomStart, t)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             bottomEnd: (
                 Dart_uiLibrary.Radius.lerp(a.bottomEnd, b.bottomEnd, t)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override BorderRadius resolve(TextDirection? direction)
@@ -750,7 +750,7 @@ public class BorderRadiusDirectional : BorderRadiusGeometry
         switch (
             (
                 direction
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         )
         {
@@ -773,7 +773,7 @@ public class BorderRadiusDirectional : BorderRadiusGeometry
                 );
             }
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -853,7 +853,7 @@ internal class _MixedBorderRadius__border_radius : BorderRadiusGeometry
             -_bottomStart,
             -_bottomEnd
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override _MixedBorderRadius__border_radius op_Multiply(double other)
@@ -868,7 +868,7 @@ internal class _MixedBorderRadius__border_radius : BorderRadiusGeometry
             _bottomStart * other,
             _bottomEnd * other
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override _MixedBorderRadius__border_radius op_Divide(double other)
@@ -883,7 +883,7 @@ internal class _MixedBorderRadius__border_radius : BorderRadiusGeometry
             _bottomStart / other,
             _bottomEnd / other
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override _MixedBorderRadius__border_radius ___(double other)
@@ -898,7 +898,7 @@ internal class _MixedBorderRadius__border_radius : BorderRadiusGeometry
             _bottomStart.___(other),
             _bottomEnd.___(other)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override _MixedBorderRadius__border_radius __(double other)
@@ -913,7 +913,7 @@ internal class _MixedBorderRadius__border_radius : BorderRadiusGeometry
             _bottomStart % other,
             _bottomEnd % other
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override BorderRadius resolve(TextDirection? direction)
@@ -927,7 +927,7 @@ internal class _MixedBorderRadius__border_radius : BorderRadiusGeometry
         switch (
             (
                 direction
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         )
         {
@@ -950,6 +950,6 @@ internal class _MixedBorderRadius__border_radius : BorderRadiusGeometry
                 );
             }
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

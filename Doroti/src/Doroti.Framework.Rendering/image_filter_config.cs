@@ -59,7 +59,7 @@ internal class _DirectImageFilterConfig__image_filter_config : ImageFilterConfig
     public override ImageFilter resolve(ImageFilterContext context)
     {
         return filter;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool Equals(object? other)
@@ -117,7 +117,7 @@ internal class _BlurImageFilterConfig__image_filter_config : ImageFilterConfig
             tileMode: tileMode,
             bounds: bounded ? context.bounds : null
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool Equals(object? other)
@@ -194,7 +194,7 @@ internal class _ComposeImageFilterConfig__image_filter_config : ImageFilterConfi
     public override ImageFilter resolve(ImageFilterContext context)
     {
         return new ImageFilter(outer: outer.resolve(context), inner: inner.resolve(context));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool Equals(object? other)

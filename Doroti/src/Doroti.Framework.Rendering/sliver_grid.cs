@@ -33,7 +33,7 @@ public class SliverGridGeometry
             maxExtent: mainAxisExtent,
             crossAxisExtent: crossAxisExtent
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string ToString()
@@ -46,7 +46,7 @@ public class SliverGridGeometry
             $"crossAxisExtent: {crossAxisExtent}",
         };
         return $"SliverGridGeometry({string.Join(", ", properties)})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -94,7 +94,7 @@ public class SliverGridRegularTileLayout : SliverGridLayout
         return (mainAxisStride > Foundation.ConstantsLibrary.precisionErrorTolerance)
             ? (crossAxisCount * checked((long)(scrollOffset / mainAxisStride)))
             : 0L;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual long getMaxChildIndexForScrollOffset(double scrollOffset)
@@ -105,7 +105,7 @@ public class SliverGridRegularTileLayout : SliverGridLayout
             return Math.Max(0L, (crossAxisCount * mainAxisCount) - 1L);
         }
         return 0L;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual double _getOffsetFromStartInCrossAxis(double crossAxisStart)
@@ -118,7 +118,7 @@ public class SliverGridRegularTileLayout : SliverGridLayout
                 - (crossAxisStride - childCrossAxisExtent);
         }
         return crossAxisStart;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual SliverGridGeometry getGeometryForChildIndex(long index)
@@ -130,7 +130,7 @@ public class SliverGridRegularTileLayout : SliverGridLayout
             mainAxisExtent: childMainAxisExtent,
             crossAxisExtent: childCrossAxisExtent
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double computeMaxScrollOffset(long childCount)
@@ -142,7 +142,7 @@ public class SliverGridRegularTileLayout : SliverGridLayout
         long mainAxisCount = checked((childCount - 1L) / crossAxisCount) + 1L;
         double mainAxisSpacing = mainAxisStride - childMainAxisExtent;
         return (mainAxisStride * mainAxisCount) - mainAxisSpacing;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -187,7 +187,7 @@ public class SliverGridDelegateWithFixedCrossAxisCount : SliverGridDelegate
         DartRuntimePrimitives.Assert(() => crossAxisSpacing >= 0.0);
         DartRuntimePrimitives.Assert(() => childAspectRatio > 0.0);
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual SliverGridLayout getLayout(SliverConstraints constraints)
@@ -210,7 +210,7 @@ public class SliverGridDelegateWithFixedCrossAxisCount : SliverGridDelegate
                 constraints.crossAxisDirection
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool shouldRelayout(SliverGridDelegate oldDelegate)
@@ -221,7 +221,7 @@ public class SliverGridDelegateWithFixedCrossAxisCount : SliverGridDelegate
             || (__oldDelegate.crossAxisSpacing != crossAxisSpacing)
             || (__oldDelegate.childAspectRatio != childAspectRatio)
             || (__oldDelegate.mainAxisExtent != mainAxisExtent);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -261,7 +261,7 @@ public class SliverGridDelegateWithMaxCrossAxisExtent : SliverGridDelegate
         DartRuntimePrimitives.Assert(() => crossAxisSpacing >= 0.0);
         DartRuntimePrimitives.Assert(() => childAspectRatio > 0.0);
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual SliverGridLayout getLayout(SliverConstraints constraints)
@@ -288,7 +288,7 @@ public class SliverGridDelegateWithMaxCrossAxisExtent : SliverGridDelegate
                 constraints.crossAxisDirection
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool shouldRelayout(SliverGridDelegate oldDelegate)
@@ -299,7 +299,7 @@ public class SliverGridDelegateWithMaxCrossAxisExtent : SliverGridDelegate
             || (__oldDelegate.crossAxisSpacing != crossAxisSpacing)
             || (__oldDelegate.childAspectRatio != childAspectRatio)
             || (__oldDelegate.mainAxisExtent != mainAxisExtent);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -362,9 +362,9 @@ public class RenderSliverGrid : RenderSliverMultiBoxAdaptor
         var childParentData = ((SliverGridParentData?)(object?)__child.parentData!)!;
         return (
             childParentData.crossAxisOffset
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void performLayout()
@@ -392,7 +392,7 @@ public class RenderSliverGrid : RenderSliverMultiBoxAdaptor
                             (
                                 targetLastIndex
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             )
                         )
@@ -462,7 +462,7 @@ public class RenderSliverGrid : RenderSliverMultiBoxAdaptor
                     <= (
                         targetLastIndex
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 );
@@ -508,9 +508,7 @@ public class RenderSliverGrid : RenderSliverMultiBoxAdaptor
                 lastIndexLocal
                 <= (
                     targetLastIndex
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             )
         );

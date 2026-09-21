@@ -350,7 +350,9 @@ public class ScrollbarPainter : ChangeNotifier
             ScrollbarOrientation.right => _resolvedPadding!.top,
             ScrollbarOrientation.top => _resolvedPadding!.left,
             ScrollbarOrientation.bottom => _resolvedPadding!.left,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
     internal virtual double _leadingThumbMainAxisOffset =>
         DartRuntimePrimitives.ConvertValue<double>(_leadingTrackMainAxisOffset + mainAxisMargin);
@@ -427,7 +429,7 @@ public class ScrollbarPainter : ChangeNotifier
             }
             return (
                 scrollbarOrientation
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
     }
@@ -442,12 +444,14 @@ public class ScrollbarPainter : ChangeNotifier
                     return Equals(orientation, ScrollbarOrientation.left)
                         || Equals(orientation, ScrollbarOrientation.right);
                     throw new InvalidOperationException(
-                        "Dart control flow completed without a value."
+                        "Control flow completed without returning a value."
                     );
                 }
                 return (_isVertical && isVerticalOrientation(orientation))
                     || (!_isVertical && !isVerticalOrientation(orientation));
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             () =>
                 (object?)$"The given ScrollbarOrientation: {orientation} is incompatible with the "
@@ -509,7 +513,7 @@ public class ScrollbarPainter : ChangeNotifier
                 (metrics.maxScrollExtent - metrics.minScrollExtent)
                 > Foundation.ConstantsLibrary.precisionErrorTolerance
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Paint _paintTrack(bool isBorder = false)
@@ -543,7 +547,7 @@ public class ScrollbarPainter : ChangeNotifier
                 }
             )
         )();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _paintScrollbar(Canvas canvas, Size size)
@@ -623,7 +627,7 @@ public class ScrollbarPainter : ChangeNotifier
                     (
                         _trackRect
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ),
                     _paintTrack()
@@ -636,13 +640,13 @@ public class ScrollbarPainter : ChangeNotifier
                         (
                             _trackRect
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ),
                         (
                             trackRadius
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     ),
@@ -654,22 +658,20 @@ public class ScrollbarPainter : ChangeNotifier
             {
                 Radius radius__value22874 = (
                     radius
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 canvas.drawRRect(
                     RRect.fromRectAndRadius(
                         (
                             _thumbRect
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ),
                         (
                             radius
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     ),
@@ -683,7 +685,7 @@ public class ScrollbarPainter : ChangeNotifier
                     (
                         _thumbRect
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ),
                     _paintThumb
@@ -697,7 +699,7 @@ public class ScrollbarPainter : ChangeNotifier
                     (
                         _thumbRect
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ),
                     _paintThumb
@@ -709,7 +711,7 @@ public class ScrollbarPainter : ChangeNotifier
                     (
                         _thumbRect
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 );
@@ -719,9 +721,7 @@ public class ScrollbarPainter : ChangeNotifier
                 canvas,
                 (
                     _thumbRect
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             );
         }
@@ -753,7 +753,7 @@ public class ScrollbarPainter : ChangeNotifier
         double scrollableExtent = _lastMetrics!.maxScrollExtent - _lastMetrics!.minScrollExtent;
         double thumbMovableExtent = _traversableTrackExtent - _thumbExtent;
         return scrollableExtent * thumbOffsetLocal / thumbMovableExtent;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double getThumbScrollOffset()
@@ -774,7 +774,7 @@ public class ScrollbarPainter : ChangeNotifier
                 )
                 : 0;
         return fractionPast * (_traversableTrackExtent - _thumbExtent);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual double _getScrollToTrack(ScrollMetrics metrics, double thumbExtent)
@@ -790,7 +790,7 @@ public class ScrollbarPainter : ChangeNotifier
                 : 0;
         return (_isReversed ? (1L - fractionPast) : fractionPast)
             * (_traversableTrackExtent - thumbExtent);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool? hitTest(Offset? position)
@@ -805,14 +805,14 @@ public class ScrollbarPainter : ChangeNotifier
         }
         return (
             _trackRect
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         ).contains(
             (
                 position
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool hitTestInteractive(
@@ -835,15 +835,13 @@ public class ScrollbarPainter : ChangeNotifier
         }
         Rect interactiveRect = (
             _trackRect
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         );
         Rect paddedRect = interactiveRect.expandToInclude(
             Rect.fromCircle(
                 center: (
                     _thumbRect
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ).center,
                 radius: ScrollbarLibrary._kMinInteractiveSize / 2L
             )
@@ -871,9 +869,11 @@ public class ScrollbarPainter : ChangeNotifier
                 return interactiveRect.contains(((position)));
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool hitTestOnlyThumbInteractive(Offset position, PointerDeviceKind kind)
@@ -901,15 +901,13 @@ public class ScrollbarPainter : ChangeNotifier
             {
                 Rect touchThumbRect = (
                     _thumbRect
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ).expandToInclude(
                     Rect.fromCircle(
                         center: (
                             _thumbRect
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ).center,
                         radius: ScrollbarLibrary._kMinInteractiveSize / 2L
@@ -924,15 +922,15 @@ public class ScrollbarPainter : ChangeNotifier
             {
                 return (
                     _thumbRect
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ).contains(((position)));
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool shouldRepaint(ScrollbarPainter oldDelegate)
@@ -953,7 +951,7 @@ public class ScrollbarPainter : ChangeNotifier
             || (minOverscrollLength != oldDelegate.minOverscrollLength)
             || (!Equals(scrollbarOrientation, oldDelegate.scrollbarOrientation))
             || (ignorePointer != oldDelegate.ignorePointer);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool shouldRebuildSemantics(CustomPainter oldDelegate) => false;
@@ -1159,7 +1157,7 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T>
             debugLabel: "RawScrollbar.checkScrollPosition"
         );
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _validateInteractions(AnimationStatus status)
@@ -1241,7 +1239,7 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T>
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         DartRuntimePrimitives.Assert(() =>
         {
@@ -1274,10 +1272,10 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T>
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void updateScrollbarPainter()
@@ -1392,14 +1390,14 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T>
                     (
                         _startDragScrollbarAxisOffset
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ).dy - localPosition.dy;
                 primaryDeltaFromLastDragUpdate =
                     (
                         _lastDragUpdateOffset
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ).dy - localPosition.dy;
                 break;
@@ -1411,7 +1409,7 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T>
                     - (
                         _startDragScrollbarAxisOffset
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ).dx;
                 primaryDeltaFromLastDragUpdate =
@@ -1419,7 +1417,7 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T>
                     - (
                         _lastDragUpdateOffset
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ).dx;
                 break;
@@ -1431,7 +1429,7 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T>
                     - (
                         _startDragScrollbarAxisOffset
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ).dy;
                 primaryDeltaFromLastDragUpdate =
@@ -1439,7 +1437,7 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T>
                     - (
                         _lastDragUpdateOffset
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ).dy;
                 break;
@@ -1450,14 +1448,14 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T>
                     (
                         _startDragScrollbarAxisOffset
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ).dx - localPosition.dx;
                 primaryDeltaFromLastDragUpdate =
                     (
                         _lastDragUpdateOffset
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ).dx - localPosition.dx;
                 break;
@@ -1466,7 +1464,7 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T>
         double scrollOffsetGlobal = scrollbarPainter.getTrackToScroll(
             (
                 _startDragThumbOffset
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ) + primaryDeltaFromDragStart
         );
         if (
@@ -1511,7 +1509,7 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T>
                 : (positionLocal.pixels - newPosition);
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void handleThumbPress()
@@ -1580,15 +1578,13 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T>
         }
         Offset deltaLocal = (
             direction
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         ) switch
         {
             Axis.horizontal => new Offset(
                 (
                     primaryDeltaLocal
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 0
             ),
@@ -1596,19 +1592,19 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T>
                 0,
                 (
                     primaryDeltaLocal
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             ),
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         var renderBox = ((RenderBox?)_scrollbarPainterKey.currentContext!.findRenderObject()!)!;
         var scrollDetails = new DragUpdateDetails(
             delta: deltaLocal,
             primaryDelta: (
                 primaryDeltaLocal
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             globalPosition: renderBox.localToGlobal(localPosition),
             localPosition: localPosition
@@ -1647,12 +1643,14 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T>
             velocity: adjustedVelocity,
             primaryVelocity: (
                 direction
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ) switch
             {
                 Axis.horizontal => adjustedVelocity.pixelsPerSecond.dx,
                 Axis.vertical => adjustedVelocity.pixelsPerSecond.dy,
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             }
         );
         _thumbDrag?.end(details);
@@ -1706,7 +1704,7 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T>
         double scrollIncrement = ScrollAction.getDirectionalIncrement(
             (
                 state
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             intent
         );
@@ -1732,7 +1730,7 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T>
         }
         return !scrollController.hasClients
             || Equals(scrollController.position.axis, notificationAxis);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _handleScrollMetricsNotification(ScrollMetricsNotification notification)
@@ -1765,7 +1763,7 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T>
             });
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _handleScrollNotification(ScrollNotification notification)
@@ -1811,7 +1809,7 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T>
             }
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _handleThumbDragDown(DragDownDetails details)
@@ -1823,7 +1821,7 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T>
     {
         var renderBox = ((RenderBox?)_scrollbarPainterKey.currentContext!.findRenderObject()!)!;
         return renderBox.globalToLocal(offset);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _handleThumbDragStart(DragStartDetails details)
@@ -1877,7 +1875,7 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T>
                     - _effectiveScrollController!.position.minScrollExtent
                 ) > Foundation.ConstantsLibrary.precisionErrorTolerance
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual DartMap<Type, dynamic> _gestures
@@ -1953,7 +1951,7 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T>
         Offset localOffset = ScrollbarLibrary._getLocalOffset(_scrollbarPainterKey, position);
         return scrollbarPainter.hitTestInteractive(localOffset, kind)
             && !scrollbarPainter.hitTestOnlyThumbInteractive(localOffset, kind);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool isPointerOverThumb(Offset position, PointerDeviceKind kind)
@@ -1964,7 +1962,7 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T>
         }
         Offset localOffset = ScrollbarLibrary._getLocalOffset(_scrollbarPainterKey, position);
         return scrollbarPainter.hitTestOnlyThumbInteractive(localOffset, kind);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool isPointerOverScrollbar(
@@ -1979,7 +1977,7 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T>
         }
         Offset localOffset = ScrollbarLibrary._getLocalOffset(_scrollbarPainterKey, position);
         return scrollbarPainter.hitTestInteractive(localOffset, kind, forHover: true);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void handleHover(Gestures.PointerHoverEvent @event)
@@ -2017,7 +2015,7 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T>
             delta *= -1L;
         }
         return delta;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual double _targetScrollOffsetForPointerScroll(double delta)
@@ -2030,7 +2028,7 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T>
             ),
             _cachedController!.position.maxScrollExtent
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _handlePointerScroll(PointerEvent @event)
@@ -2127,7 +2125,7 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T>
                 }
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         _tickerModeNotifier?.removeListener(_updateTickers);
         _tickerModeNotifier = null;
@@ -2205,7 +2203,7 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T>
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
@@ -2236,7 +2234,7 @@ public class RawScrollbarState<T> : State<T>, TickerProviderStateMixin<T>
         )();
         _tickers!.Add(result);
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _removeTicker(_WidgetTicker__ticker_provider ticker)
@@ -2301,7 +2299,7 @@ public static partial class ScrollbarLibrary
     {
         var renderBox = ((RenderBox?)scrollbarPainterKey.currentContext!.findRenderObject()!)!;
         return renderBox.globalToLocal(position);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -2317,7 +2315,7 @@ public static partial class ScrollbarLibrary
         var painter = _ScrollbarCustomPainterAdapter.Unwrap(customPaint.foregroundPainter!);
         Offset localOffset = _getLocalOffset(customPaintKey, @event.position);
         return painter.hitTestOnlyThumbInteractive(localOffset, @event.kind);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -2335,7 +2333,7 @@ public static partial class ScrollbarLibrary
         PointerDeviceKind kindLocal = @event.kind;
         return painter.hitTestInteractive(localOffset, kindLocal)
             && !painter.hitTestOnlyThumbInteractive(localOffset, kindLocal);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -2356,7 +2354,7 @@ internal class _TrackTapGestureRecognizer__scrollbar : TapGestureRecognizer
     {
         return ScrollbarLibrary._isTrackEvent(_customPaintKey, @event)
             && base.isPointerAllowed(@event);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -2376,14 +2374,14 @@ internal class _VerticalThumbDragGestureRecognizer__scrollbar : VerticalDragGest
     public override bool isPointerPanZoomAllowed(PointerPanZoomStartEvent @event)
     {
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool isPointerAllowed(Gestures.PointerDownEvent @event)
     {
         return ScrollbarLibrary._isThumbEvent(_customPaintKey, @event)
             && base.isPointerAllowed(@event);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -2403,14 +2401,14 @@ internal class _HorizontalThumbDragGestureRecognizer__scrollbar : HorizontalDrag
     public override bool isPointerPanZoomAllowed(PointerPanZoomStartEvent @event)
     {
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool isPointerAllowed(Gestures.PointerDownEvent @event)
     {
         return ScrollbarLibrary._isThumbEvent(_customPaintKey, @event)
             && base.isPointerAllowed(@event);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 

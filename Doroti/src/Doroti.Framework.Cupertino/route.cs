@@ -243,13 +243,13 @@ public class CupertinoPageRoute<T> : PageRoute<T>, CupertinoRouteTransitionMixin
             && (((IModalRoute)(object)nextRoute).delegatedTransition is not null);
         return nextRouteIsNotFullscreen
             && (nextRoute is ICupertinoRouteTitle || nextRouteHasDelegatedTransition);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool canTransitionFrom(dynamic previousRoute)
     {
         return (previousRoute is IPageRoute) && !fullscreenDialog;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget buildPage(
@@ -264,7 +264,7 @@ public class CupertinoPageRoute<T> : PageRoute<T>, CupertinoRouteTransitionMixin
             explicitChildNodes: true,
             child: childLocal
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget buildTransitions(
@@ -281,7 +281,7 @@ public class CupertinoPageRoute<T> : PageRoute<T>, CupertinoRouteTransitionMixin
             secondaryAnimation,
             child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -368,13 +368,13 @@ internal class _PageBasedCupertinoPageRoute__route<T>
             && (((IModalRoute)(object)nextRoute).delegatedTransition is not null);
         return nextRouteIsNotFullscreen
             && (nextRoute is ICupertinoRouteTitle || nextRouteHasDelegatedTransition);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool canTransitionFrom(dynamic previousRoute)
     {
         return (previousRoute is IPageRoute) && !fullscreenDialog;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget buildPage(
@@ -389,7 +389,7 @@ internal class _PageBasedCupertinoPageRoute__route<T>
             explicitChildNodes: true,
             child: childLocal
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget buildTransitions(
@@ -406,7 +406,7 @@ internal class _PageBasedCupertinoPageRoute__route<T>
             secondaryAnimation,
             child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -454,7 +454,7 @@ public class CupertinoPage<T> : Page<T>
             page: this,
             allowSnapshotting: allowSnapshotting
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -508,7 +508,7 @@ public class CupertinoPageTransition : StatefulWidget
                 transformHitTests: false,
                 child: child
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override IState createState() =>
@@ -609,7 +609,7 @@ internal class _CupertinoPageTransitionState__route : State<CupertinoPageTransit
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -715,7 +715,7 @@ internal class _CupertinoFullscreenDialogTransitionState__route
             transformHitTests: false,
             child: new SlideTransition(position: _primaryPositionAnimation, child: widget.child)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -807,14 +807,12 @@ internal class _CupertinoBackGestureDetectorState__route<T>
             _convertToLogical(
                 (
                     details.primaryDelta
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
                     / (
                         context.size
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ).width
             )
@@ -831,7 +829,7 @@ internal class _CupertinoBackGestureDetectorState__route<T>
                     / (
                         context.size
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ).width
             )
@@ -860,9 +858,11 @@ internal class _CupertinoBackGestureDetectorState__route<T>
         {
             TextDirection.rtl => -value,
             TextDirection.ltr => value,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -874,7 +874,9 @@ internal class _CupertinoBackGestureDetectorState__route<T>
         {
             TextDirection.rtl => MediaQuery.paddingOf(context).right,
             TextDirection.ltr => MediaQuery.paddingOf(context).left,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         return new Stack(
             fit: StackFit.passthrough,
@@ -895,7 +897,7 @@ internal class _CupertinoBackGestureDetectorState__route<T>
                 ),
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1041,7 +1043,7 @@ public class _CupertinoEdgeShadowDecoration__route : Decoration
         }
 
         return new _CupertinoEdgeShadowDecoration__route(colors);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override _CupertinoEdgeShadowDecoration__route lerpFrom(Decoration? a, double t)
@@ -1053,7 +1055,7 @@ public class _CupertinoEdgeShadowDecoration__route : Decoration
             return lerp(a__as34106, this, t)!;
         }
         return lerp(null, this, t)!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override _CupertinoEdgeShadowDecoration__route lerpTo(Decoration? b, double t)
@@ -1065,13 +1067,13 @@ public class _CupertinoEdgeShadowDecoration__route : Decoration
             return lerp(this, b__as34370, t)!;
         }
         return lerp(this, null, t)!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override _CupertinoEdgeShadowPainter__route createBoxPainter(Action onChanged = default!)
     {
         return new _CupertinoEdgeShadowPainter__route(this, () => onChanged());
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool Equals(object? other)
@@ -1128,18 +1130,18 @@ public class _CupertinoEdgeShadowPainter__route : BoxPainter
             0.05
             * (
                 configuration.size
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ).width;
         double shadowHeight = (
             configuration.size
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         ).height;
         double bandWidth = shadowWidth / (checked(colors.Count) - 1L);
         TextDirection? textDirectionLocal = configuration.textDirection;
         DartRuntimePrimitives.Assert(() => textDirectionLocal is not null);
         var (shadowDirection, start) = (
             textDirectionLocal
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         ) switch
         {
             TextDirection.rtl => (
@@ -1148,12 +1150,14 @@ public class _CupertinoEdgeShadowPainter__route : BoxPainter
                     + (
                         configuration.size
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ).width
             ),
             TextDirection.ltr => ((double, double))(-1, offset.dx),
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         var bandColorIndex = 0L;
         for (var dxLocal = 0L; dxLocal < shadowWidth; dxLocal += 1L)
@@ -1269,7 +1273,7 @@ public class CupertinoModalPopupRoute<T> : PopupRoute<T>
                 tolerance: RouteLibrary._kStandardTolerance,
                 snapToEnd: true
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget buildPage(
@@ -1285,7 +1289,7 @@ public class CupertinoModalPopupRoute<T> : PopupRoute<T>
                 child: new Builder(builder: builder)
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget buildTransitions(
@@ -1302,7 +1306,7 @@ public class CupertinoModalPopupRoute<T> : PopupRoute<T>
                 child: child
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1335,7 +1339,7 @@ public static partial class RouteLibrary
                     requestFocus: requestFocus
                 )
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1349,7 +1353,7 @@ public static partial class RouteLibrary
     )
     {
         return child;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1381,7 +1385,7 @@ public static partial class RouteLibrary
                     requestFocus: requestFocus
                 )
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1424,7 +1428,9 @@ public class CupertinoDialogRoute<T> : RawDialogRoute<T>
             pageBuilder: (context, animation, secondaryAnimation) =>
             {
                 return builder(context);
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             transitionBuilder: transitionBuilder ?? RouteLibrary._buildCupertinoDialogTransitions,
             barrierLabel: barrierLabel
@@ -1452,7 +1458,7 @@ public class CupertinoDialogRoute<T> : RawDialogRoute<T>
                 tolerance: RouteLibrary._kStandardTolerance,
                 snapToEnd: true
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget buildTransitions(
@@ -1474,7 +1480,7 @@ public class CupertinoDialogRoute<T> : RawDialogRoute<T>
             opacity: animation,
             child: new ScaleTransition(scale: animation.drive(_dialogScaleTween), child: child)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void dispose()
@@ -1514,6 +1520,6 @@ public class CupertinoPageTransitionsBuilder : PageTransitionsBuilder
             secondaryAnimation,
             child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

@@ -371,7 +371,7 @@ internal class _CarouselViewState__carousel : State<CarouselView>
             return Math.Max(_controller.initialItem - firstMaxWeightIndex, 0L);
         }
         return _controller.initialItem;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _buildCarouselItem(long index)
@@ -412,7 +412,9 @@ internal class _CarouselViewState__carousel : State<CarouselView>
                         return (Color?)colorScheme.onSurface.withOpacity(0.1);
                     }
                     return null;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
         Widget contents = widget.children[(int)index];
@@ -465,7 +467,7 @@ internal class _CarouselViewState__carousel : State<CarouselView>
                 child: contents
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _buildSliverCarousel(ThemeData theme)
@@ -485,7 +487,7 @@ internal class _CarouselViewState__carousel : State<CarouselView>
                     (
                         widget.itemCount
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) > 0L
                 )
@@ -493,14 +495,14 @@ internal class _CarouselViewState__carousel : State<CarouselView>
             {
                 long itemCountLocal = (
                     widget.itemCount
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 effectiveBuilder = (context, index) =>
                 {
                     return widget.itemBuilder!(context, index % itemCountLocal);
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 };
             }
             else
@@ -517,9 +519,7 @@ internal class _CarouselViewState__carousel : State<CarouselView>
             return new _SliverFixedExtentCarousel__carousel(
                 itemExtent: (
                     _itemExtent
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 minExtent: widget.shrinkExtent,
                 infinite: widget.infinite,
@@ -540,7 +540,7 @@ internal class _CarouselViewState__carousel : State<CarouselView>
             infinite: widget.infinite,
             @delegate: new SliverChildBuilderDelegate(effectiveBuilder, childCount: childCountLocal)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -557,7 +557,9 @@ internal class _CarouselViewState__carousel : State<CarouselView>
                     Axis.horizontal => constraints.maxWidth,
                     Axis.vertical => constraints.maxHeight,
                     _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                        throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                        throw new InvalidOperationException(
+                            "Switch expression did not handle the supplied value."
+                        ),
                 };
                 _itemExtent =
                     (widget.itemExtent is null)
@@ -566,7 +568,7 @@ internal class _CarouselViewState__carousel : State<CarouselView>
                             (
                                 widget.itemExtent
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             ),
                             0,
@@ -584,10 +586,12 @@ internal class _CarouselViewState__carousel : State<CarouselView>
                         DartRuntimePrimitives.ConvertValue<Widget>(_buildSliverCarousel(theme)),
                     }
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -619,7 +623,7 @@ internal class _SliverFixedExtentCarousel__carousel : SliverMultiBoxAdaptorWidge
             maxExtent: itemExtent,
             infinite: infinite
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -725,7 +729,7 @@ public class _RenderSliverFixedExtentCarousel__carousel : RenderSliverFixedExten
             );
         }
         return maxExtent;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double indexToLayoutOffset(double itemExtent, long index)
@@ -749,7 +753,7 @@ public class _RenderSliverFixedExtentCarousel__carousel : RenderSliverFixedExten
             return constraints.scrollOffset;
         }
         return maxExtent * index;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override long getMinChildIndexForScrollOffset(double scrollOffset, double itemExtent)
@@ -760,7 +764,7 @@ public class _RenderSliverFixedExtentCarousel__carousel : RenderSliverFixedExten
         }
         long firstVisibleIndex = (scrollOffset / maxExtent).floor();
         return Math.Max(firstVisibleIndex, 0L);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override long getMaxChildIndexForScrollOffset(double scrollOffset, double itemExtent)
@@ -779,7 +783,7 @@ public class _RenderSliverFixedExtentCarousel__carousel : RenderSliverFixedExten
             return Math.Max(0L, actual.ceil());
         }
         return 0L;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? itemExtent => null;
@@ -819,7 +823,7 @@ internal class _SliverWeightedCarousel__carousel : SliverMultiBoxAdaptorWidget
             weights: weights,
             infinite: infinite
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -978,7 +982,7 @@ public class _RenderSliverWeightedCarousel__carousel : RenderSliverFixedExtentBo
             }
         }
         return extent;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double extentUnit =>
@@ -1067,13 +1071,13 @@ public class _RenderSliverWeightedCarousel__carousel : RenderSliverFixedExtentBo
             visibleItemsTotalExtent += _buildItemExtent(i, layoutDimensions);
         }
         return constraints.scrollOffset + visibleItemsTotalExtent;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override long getMinChildIndexForScrollOffset(double scrollOffset, double itemExtent)
     {
         return Math.Max(_firstVisibleItemIndex, 0L);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override long getMaxChildIndexForScrollOffset(double scrollOffset, double itemExtent)
@@ -1105,7 +1109,7 @@ public class _RenderSliverWeightedCarousel__carousel : RenderSliverFixedExtentBo
         {
             long childCount__46235__value47249 = (
                 childCount
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             double visibleItemsTotalExtentLocal = _distanceToLeadingEdge;
             for (long i = _firstVisibleItemIndex + 1L; i < (childCount__46235__value47249); i++)
@@ -1118,7 +1122,7 @@ public class _RenderSliverWeightedCarousel__carousel : RenderSliverFixedExtentBo
             }
         }
         return childCount ?? 0L;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxScrollOffset(SliverConstraints constraints, double itemExtent)
@@ -1128,7 +1132,7 @@ public class _RenderSliverWeightedCarousel__carousel : RenderSliverFixedExtentBo
             return double.PositiveInfinity;
         }
         return childManager.childCount * maxChildExtent;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     // Dart library-private member: distinct from the same name in the base library.
@@ -1136,10 +1140,10 @@ public class _RenderSliverWeightedCarousel__carousel : RenderSliverFixedExtentBo
     {
         double extent = (
             itemExtentBuilder!(index, layoutDimensions)
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         );
         return constraints.asBoxConstraints(minExtent: extent, maxExtent: extent);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void performLayout()
@@ -1155,7 +1159,7 @@ public class _RenderSliverWeightedCarousel__carousel : RenderSliverFixedExtentBo
                     (
                         itemExtent
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
@@ -1163,7 +1167,7 @@ public class _RenderSliverWeightedCarousel__carousel : RenderSliverFixedExtentBo
                     (
                         itemExtent
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) >= 0L
                 )
@@ -1195,7 +1199,7 @@ public class _RenderSliverWeightedCarousel__carousel : RenderSliverFixedExtentBo
                             (
                                 targetLastIndex
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             )
                         )
@@ -1286,7 +1290,7 @@ public class _RenderSliverWeightedCarousel__carousel : RenderSliverFixedExtentBo
                     <= (
                         targetLastIndex
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 );
@@ -1321,9 +1325,7 @@ public class _RenderSliverWeightedCarousel__carousel : RenderSliverFixedExtentBo
                 deprecatedExtraItemExtent,
                 (
                     childParentDataAlternate.index
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             );
         }
@@ -1360,9 +1362,7 @@ public class _RenderSliverWeightedCarousel__carousel : RenderSliverFixedExtentBo
                 lastIndexLocal
                 <= (
                     targetLastIndex
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             )
         );
@@ -1406,7 +1406,7 @@ public class _RenderSliverWeightedCarousel__carousel : RenderSliverFixedExtentBo
                     >= (
                         targetLastIndexForPaint
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
@@ -1432,7 +1432,7 @@ public class CarouselScrollPhysics : ScrollPhysics
     public override CarouselScrollPhysics applyTo(ScrollPhysics? ancestor)
     {
         return new CarouselScrollPhysics(parent: buildParent(ancestor));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual double _getTargetPixels(
@@ -1447,9 +1447,7 @@ public class CarouselScrollPhysics : ScrollPhysics
             fraction =
                 (
                     position.itemExtent
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) / position.viewportDimension;
         }
         else
@@ -1481,7 +1479,7 @@ public class CarouselScrollPhysics : ScrollPhysics
             }
         }
         return item.roundToDouble() * itemWidth;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Physics.Simulation? createBallisticSimulation(
@@ -1517,7 +1515,7 @@ public class CarouselScrollPhysics : ScrollPhysics
                 );
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool allowImplicitScrolling => true;
@@ -1610,7 +1608,7 @@ public class _CarouselMetrics__carousel : FixedScrollMetrics
             consumeMaxWeight: consumeMaxWeight ?? this.consumeMaxWeight,
             devicePixelRatio: devicePixelRatio ?? this.devicePixelRatio
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1749,7 +1747,7 @@ internal class _CarouselPosition__carousel : ScrollPositionWithSingleContext
                     (
                         itemCount
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) > 0L
                 )
@@ -1757,16 +1755,14 @@ internal class _CarouselPosition__carousel : ScrollPositionWithSingleContext
             {
                 long itemCount__value64303 = (
                     itemCount
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 leadingItem =
                     leadingItem
                     % (
                         itemCount
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     );
             }
@@ -1806,7 +1802,7 @@ internal class _CarouselPosition__carousel : ScrollPositionWithSingleContext
             return maxItem - smallerWeights;
         }
         return maxItem;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double getItemFromPixels(double pixels, double viewportDimension)
@@ -1817,14 +1813,12 @@ internal class _CarouselPosition__carousel : ScrollPositionWithSingleContext
         {
             double itemExtent__value65364 = (
                 itemExtent
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             fraction =
                 (
                     itemExtent
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) / (viewportDimension);
         }
         else
@@ -1839,7 +1833,7 @@ internal class _CarouselPosition__carousel : ScrollPositionWithSingleContext
             return round;
         }
         return actual;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double getPixelsFromItem(
@@ -1857,7 +1851,7 @@ internal class _CarouselPosition__carousel : ScrollPositionWithSingleContext
         {
             double itemExtent__value66023 = (
                 itemExtent
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             fraction = (itemExtent__value66023) / viewportDimension;
         }
@@ -1872,7 +1866,7 @@ internal class _CarouselPosition__carousel : ScrollPositionWithSingleContext
             fraction = weights.First() / weights.sum();
         }
         return item * viewportDimension * fraction;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool applyViewportDimension(double viewportDimension)
@@ -1895,9 +1889,7 @@ internal class _CarouselPosition__carousel : ScrollPositionWithSingleContext
             {
                 item = (
                     _cachedItem
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
             }
             else
@@ -1907,7 +1899,7 @@ internal class _CarouselPosition__carousel : ScrollPositionWithSingleContext
                         (
                             oldPixels
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     ),
@@ -1923,7 +1915,7 @@ internal class _CarouselPosition__carousel : ScrollPositionWithSingleContext
             return false;
         }
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void absorb(ScrollPosition other)
@@ -1944,9 +1936,7 @@ internal class _CarouselPosition__carousel : ScrollPositionWithSingleContext
             || (
                 (
                     itemCount
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) <= 0L
             )
             || !hasViewportDimension
@@ -1960,14 +1950,12 @@ internal class _CarouselPosition__carousel : ScrollPositionWithSingleContext
         {
             double itemExtent__value67978 = (
                 itemExtent
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             fraction =
                 (
                     itemExtent
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) / viewportDimension;
         }
         else
@@ -1983,11 +1971,11 @@ internal class _CarouselPosition__carousel : ScrollPositionWithSingleContext
         }
         return (
                 itemCount
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
             * viewportDimension
             * fraction;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool applyContentDimensions(double minScrollExtent, double maxScrollExtent)
@@ -2003,7 +1991,7 @@ internal class _CarouselPosition__carousel : ScrollPositionWithSingleContext
             }
         }
         return base.applyContentDimensions(infinite ? 0.0 : (minScrollExtent), ((maxScrollExtent)));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override _CarouselMetrics__carousel copyWith(
@@ -2059,7 +2047,7 @@ internal class _CarouselPosition__carousel : ScrollPositionWithSingleContext
             consumeMaxWeight: consumeMaxWeight ?? this.consumeMaxWeight,
             devicePixelRatio: devicePixelRatio ?? this.devicePixelRatio
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -2133,7 +2121,7 @@ public class CarouselController : ScrollController
                         (
                             itemCountLocal
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ) - 1L
                     )
@@ -2158,7 +2146,7 @@ public class CarouselController : ScrollController
                                         (
                                             duration
                                             ?? throw new global::System.NullReferenceException(
-                                                "Dart null assertion failed."
+                                                "A required value was null."
                                             )
                                         )
                                     ),
@@ -2185,9 +2173,7 @@ public class CarouselController : ScrollController
                 index
                 * (
                     _carouselState!._itemExtent
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
             if (!_carouselState!.widget.infinite)
             {
@@ -2211,7 +2197,7 @@ public class CarouselController : ScrollController
                         (
                             itemCountLocal
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ) - 1L
                     )
@@ -2228,7 +2214,7 @@ public class CarouselController : ScrollController
             return targetInFirstCycleLocal;
         }
         return _adjustForInfiniteCycle(position, targetInFirstCycleLocal);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual double _adjustForInfiniteCycle(
@@ -2249,7 +2235,7 @@ public class CarouselController : ScrollController
             return sameCycleTarget;
         }
         return sameCycleTarget + cycleLength;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual long? _getItemCount()
@@ -2263,7 +2249,7 @@ public class CarouselController : ScrollController
             return _carouselState!.widget.itemCount;
         }
         return checked(_carouselState!.widget.children.Count);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override ScrollPosition createScrollPosition(
@@ -2284,7 +2270,7 @@ public class CarouselController : ScrollController
             itemCount: _getItemCount(),
             oldPosition: oldPosition
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void attach(ScrollPosition position)

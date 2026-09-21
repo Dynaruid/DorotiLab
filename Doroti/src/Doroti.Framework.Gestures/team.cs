@@ -85,7 +85,7 @@ public class _CombiningGestureArenaMember__team : GestureArenaMember
         _members.Add(member);
         _entry ??= GestureBinding.instance.gestureArena.add(pointer, this);
         return new _CombiningGestureArenaEntry__team(this, member);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _resolve(GestureArenaMember member, GestureDisposition disposition)
@@ -132,6 +132,6 @@ public class GestureArenaTeam
             () => new _CombiningGestureArenaMember__team(this, pointer)
         );
         return combiner._add(pointer, member);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

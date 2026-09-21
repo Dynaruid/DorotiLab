@@ -77,7 +77,9 @@ public class SelectableRegion : StatefulWidget
                     TargetPlatform.macOS or TargetPlatform.fuchsia or TargetPlatform.linux => false,
                     TargetPlatform.windows => false,
                     TargetPlatform.iOS => false,
-                    _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    _ => throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
                 }
             );
         bool canShare = (onShare is not null) && platformCanShare;
@@ -86,7 +88,7 @@ public class SelectableRegion : StatefulWidget
             TargetPlatform.android
         );
         return new List<ContextMenuButtonItem>();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override IState createState() =>
@@ -268,7 +270,9 @@ public class SelectableRegionState
                 return;
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
         Orientation orientation = MediaQuery.orientationOf(context);
         if (_lastOrientation is null)
@@ -313,7 +317,7 @@ public class SelectableRegionState
         where T : Intent
     {
         return IntentAction<T>.CreateOverridable(context: context, defaultAction: defaultAction);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _handleFocusChanged()
@@ -353,7 +357,9 @@ public class SelectableRegionState
             SelectionStatus.uncollapsed => new TextSelection(baseOffset: 0L, extentOffset: 1L),
             SelectionStatus.collapsed => new TextSelection(baseOffset: 0L, extentOffset: 1L),
             SelectionStatus.none => TextSelection.CreateCollapsed(offset: 1L),
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         textEditingValue = new TextEditingValue(text: "__", selection: selectionLocal);
         if (_hasSelectionOverlayGeometry)
@@ -384,9 +390,11 @@ public class SelectableRegionState
                 return false;
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _finalizeSelectableRegionStatus()
@@ -438,9 +446,11 @@ public class SelectableRegionState
                 return Math.Min(rawCount, maxConsecutiveTap);
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _initMouseGestureRecognizer()
@@ -510,7 +520,7 @@ public class SelectableRegionState
                                 {
                                     return !Equals(device, PointerDeviceKind.mouse);
                                     throw new InvalidOperationException(
-                                        "Dart closure completed without a value."
+                                        "Callback completed without returning a value."
                                     );
                                 }
                             )
@@ -622,7 +632,7 @@ public class SelectableRegionState
                                 (
                                     details.kind
                                     ?? throw new global::System.NullReferenceException(
-                                        "Dart null assertion failed."
+                                        "A required value was null."
                                     )
                                 )
                             )
@@ -639,7 +649,7 @@ public class SelectableRegionState
                                 (
                                     details.kind
                                     ?? throw new global::System.NullReferenceException(
-                                        "Dart null assertion failed."
+                                        "A required value was null."
                                     )
                                 )
                             )
@@ -676,7 +686,7 @@ public class SelectableRegionState
                                 (
                                     details.kind
                                     ?? throw new global::System.NullReferenceException(
-                                        "Dart null assertion failed."
+                                        "A required value was null."
                                     )
                                 )
                             )
@@ -715,7 +725,7 @@ public class SelectableRegionState
                         (
                             details.kind
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     )
@@ -743,7 +753,7 @@ public class SelectableRegionState
                         (
                             details.kind
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     )
@@ -770,7 +780,7 @@ public class SelectableRegionState
                                     (
                                         details.kind
                                         ?? throw new global::System.NullReferenceException(
-                                            "Dart null assertion failed."
+                                            "A required value was null."
                                         )
                                     )
                                 )
@@ -796,7 +806,7 @@ public class SelectableRegionState
                                 (
                                     details.kind
                                     ?? throw new global::System.NullReferenceException(
-                                        "Dart null assertion failed."
+                                        "A required value was null."
                                     )
                                 )
                             )
@@ -807,7 +817,7 @@ public class SelectableRegionState
                                 offset: (
                                     _doubleTapOffset
                                     ?? throw new global::System.NullReferenceException(
-                                        "Dart null assertion failed."
+                                        "A required value was null."
                                     )
                                 )
                             );
@@ -825,7 +835,7 @@ public class SelectableRegionState
                                 (
                                     details.kind
                                     ?? throw new global::System.NullReferenceException(
-                                        "Dart null assertion failed."
+                                        "A required value was null."
                                     )
                                 )
                             )
@@ -864,7 +874,7 @@ public class SelectableRegionState
                                 (
                                     details.kind
                                     ?? throw new global::System.NullReferenceException(
-                                        "Dart null assertion failed."
+                                        "A required value was null."
                                     )
                                 )
                             )
@@ -905,7 +915,7 @@ public class SelectableRegionState
         bool isPointerPrecise = _isPrecisePointerDevice(
             (
                 _lastPointerDeviceKind
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );
         bool shouldShowSelectionOverlayOnMobile = !isPointerPrecise;
@@ -1080,7 +1090,7 @@ public class SelectableRegionState
             }
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _handleRightClickDown(TapDownDetails details)
@@ -1109,7 +1119,7 @@ public class SelectableRegionState
                     offset: (
                         _lastSecondaryTapDownPosition
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 );
@@ -1121,7 +1131,7 @@ public class SelectableRegionState
                     offset: (
                         _lastSecondaryTapDownPosition
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 );
@@ -1141,7 +1151,7 @@ public class SelectableRegionState
                     offset: (
                         _lastSecondaryTapDownPosition
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 );
@@ -1162,7 +1172,7 @@ public class SelectableRegionState
                         offset: (
                             _lastSecondaryTapDownPosition
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     );
@@ -1194,7 +1204,7 @@ public class SelectableRegionState
                         globalPosition: (
                             _selectionEndPosition
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ),
                         granularity: textGranularity
@@ -1258,7 +1268,7 @@ public class SelectableRegionState
                         globalPosition: (
                             _selectionStartPosition
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ),
                         granularity: textGranularity
@@ -1384,7 +1394,7 @@ public class SelectableRegionState
             fieldBounds: globalTransformAsOffset & _selectable!.size,
             currentLineBoundaries: globalTransformAsOffset & _selectable!.size
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _createSelectionOverlay()
@@ -1462,7 +1472,7 @@ public class SelectableRegionState
         _createSelectionOverlay();
         _selectionOverlay!.showHandles();
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _showToolbar(Offset? location = null)
@@ -1491,11 +1501,13 @@ public class SelectableRegionState
             contextMenuBuilder: (context) =>
             {
                 return widget.contextMenuBuilder!(context, this);
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _selectEndTo(
@@ -1607,7 +1619,7 @@ public class SelectableRegionState
                     primaryAnchor: (
                         _lastSecondaryTapDownPosition
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 );
@@ -1630,7 +1642,7 @@ public class SelectableRegionState
         {
             return (
                 _adjustingSelectionEnd
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
         bool isReversed = default!;
@@ -1654,7 +1666,7 @@ public class SelectableRegionState
         var result = forward != isReversed;
         _adjustingSelectionEnd = result;
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _granularlyExtendSelection(TextGranularity granularity, bool forward)
@@ -1692,9 +1704,7 @@ public class SelectableRegionState
             new Offset(
                 (
                     _directionalHorizontalBaseline
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 0
             )
@@ -1703,9 +1713,7 @@ public class SelectableRegionState
             new DirectionallyExtendSelectionEvent(
                 isEnd: (
                     _adjustingSelectionEnd
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 direction: forward
                     ? SelectionExtendDirection.nextLine
@@ -1905,7 +1913,7 @@ public class SelectableRegionState
             return null;
         }
         return Actions.invoke(context, intent);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void selectAll(SelectionChangedCause cause = default!)
@@ -2025,7 +2033,7 @@ public class SelectableRegionState
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool copyEnabled => true;
@@ -2048,7 +2056,7 @@ internal abstract class _NonOverrideAction__selectable_region<T> : ContextAction
             return callingActionLocal.invoke(intent);
         }
         return invokeAction(intent, context);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -2065,7 +2073,7 @@ internal class _SelectAllAction__selectable_region
     public override object? invokeAction(SelectAllTextIntent intent, BuildContext? context = null)
     {
         state.selectAll(SelectionChangedCause.keyboard);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -2085,7 +2093,7 @@ internal class _CopySelectionAction__selectable_region
     )
     {
         DartRuntimePrimitives.Ignore(state._copy());
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -2108,7 +2116,7 @@ internal class _GranularlyExtendSelectionAction__selectable_region<T>
     public override object? invokeAction(T intent, BuildContext? context = null)
     {
         state._granularlyExtendSelection(granularity, intent.forward);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -2135,7 +2143,7 @@ internal class _GranularlyExtendCaretSelectionAction__selectable_region<T>
             return default!;
         }
         state._granularlyExtendSelection(granularity, intent.forward);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -2159,7 +2167,7 @@ internal class _DirectionallyExtendCaretSelectionAction__selectable_region<T>
             return default!;
         }
         state._directionallyExtendSelection(intent.forward);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -2289,7 +2297,7 @@ public class StaticSelectionContainerDelegate : MultiSelectableSelectionContaine
         SelectionResult result = base.handleSelectAll(@event);
         didReceiveSelectionBoundaryEvents();
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override SelectionResult handleSelectWord(SelectWordSelectionEvent @event)
@@ -2297,7 +2305,7 @@ public class StaticSelectionContainerDelegate : MultiSelectableSelectionContaine
         SelectionResult result = base.handleSelectWord(@event);
         didReceiveSelectionBoundaryEvents();
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override SelectionResult handleSelectParagraph(SelectParagraphSelectionEvent @event)
@@ -2305,7 +2313,7 @@ public class StaticSelectionContainerDelegate : MultiSelectableSelectionContaine
         SelectionResult result = base.handleSelectParagraph(@event);
         didReceiveSelectionBoundaryEvents();
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override SelectionResult handleClearSelection(ClearSelectionEvent @event)
@@ -2313,7 +2321,7 @@ public class StaticSelectionContainerDelegate : MultiSelectableSelectionContaine
         SelectionResult result = base.handleClearSelection(@event);
         clearInternalSelectionState();
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override SelectionResult handleSelectionEdgeUpdate(SelectionEdgeUpdateEvent @event)
@@ -2323,7 +2331,7 @@ public class StaticSelectionContainerDelegate : MultiSelectableSelectionContaine
             forEnd: Equals(@event.type, SelectionEventType.endEdgeUpdate)
         );
         return base.handleSelectionEdgeUpdate(@event);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void dispose()
@@ -2371,7 +2379,7 @@ public class StaticSelectionContainerDelegate : MultiSelectableSelectionContaine
             }
         }
         return base.dispatchSelectionEventToChild(selectable, @event);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void ensureChildUpdated(Selectable selectable)
@@ -2381,9 +2389,7 @@ public class StaticSelectionContainerDelegate : MultiSelectableSelectionContaine
             var synthesizedEvent = SelectionEdgeUpdateEvent.CreateForEnd(
                 globalPosition: (
                     _lastEndEdgeUpdateGlobalPosition
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             );
             if (currentSelectionEndIndex == -1L)
@@ -2400,9 +2406,7 @@ public class StaticSelectionContainerDelegate : MultiSelectableSelectionContaine
             var synthesizedEventLocal = new SelectionEdgeUpdateEvent(
                 globalPosition: (
                     _lastStartEdgeUpdateGlobalPosition
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             );
             if (currentSelectionStartIndex == -1L)
@@ -2422,7 +2426,7 @@ public class StaticSelectionContainerDelegate : MultiSelectableSelectionContaine
                     globalPosition: (
                         _lastEndEdgeUpdateGlobalPosition
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
@@ -2435,7 +2439,7 @@ public class StaticSelectionContainerDelegate : MultiSelectableSelectionContaine
                     globalPosition: (
                         _lastStartEdgeUpdateGlobalPosition
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
@@ -2662,7 +2666,7 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
             result = result.expandToInclude(selectable.boundingBoxes[(int)index]);
         }
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Comparison<Selectable> compareOrder =>
@@ -2678,7 +2682,7 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
             return result;
         }
         return _compareHorizontally(rectA, rectB);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static long _compareVertically(Rect a, Rect b)
@@ -2707,7 +2711,7 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
             return (a.top > b.top) ? 1L : -1L;
         }
         return (a.bottom > b.bottom) ? 1L : -1L;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static long _compareHorizontally(Rect a, Rect b)
@@ -2731,7 +2735,7 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
             return (a.left > b.left) ? 1L : -1L;
         }
         return (a.right > b.right) ? 1L : -1L;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _handleSelectableGeometryChange()
@@ -2840,7 +2844,7 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
                         Rect localRect = MatrixUtils.transformRect(transform, selectionRect);
                         return drawableArea?.intersect(localRect) ?? localRect;
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 )
@@ -2849,7 +2853,7 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
                     {
                         return selectionRect.isFinite && !selectionRect.isEmpty;
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 )
@@ -2867,7 +2871,7 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
                 : startGeometry.status,
             hasContent: true
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual long _adjustSelectionIndexBasedOnSelectionGeometry(
@@ -2884,7 +2888,7 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
             currentIndex += forward ? 1L : -1L;
         }
         return currentIndex;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void pushHandleLayers(LayerLink? startHandle, LayerLink? endHandle)
@@ -2916,18 +2920,14 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
                 || (drawableArea is null)
                 || !(
                     drawableArea
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ).contains(value.startSelectionPoint!.localPosition);
             bool hideEndHandle =
                 (value.endSelectionPoint is null)
                 || (drawableArea is null)
                 || !(
                     drawableArea
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ).contains(value.endSelectionPoint!.localPosition);
             effectiveStartHandle = hideStartHandle ? null : _startHandleLayer;
             effectiveEndHandle = hideEndHandle ? null : _endHandleLayer;
@@ -2979,7 +2979,7 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
             buffer.write(selection.plainText);
         }
         return new SelectedContent(plainText: buffer.ToString());
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override long contentLength =>
@@ -3052,14 +3052,14 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
             startOffset: forwardSelection ? startOffsetLocal : endOffsetLocal,
             endOffset: forwardSelection ? endOffsetLocal : startOffsetLocal
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override SelectedContentRange? getSelection()
     {
         var selections = new List<(long contentLength, SelectedContentRange? range)>();
         return _calculateLocalRange(selections);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _flushInactiveSelections()
@@ -3098,7 +3098,7 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
         currentSelectionStartIndex = 0L;
         currentSelectionEndIndex = checked(selectables.Count) - 1L;
         return SelectionResult.none;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _clearSelectables(long? skipIndex = null)
@@ -3184,7 +3184,7 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
                         (
                             lastSelectionResult
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ),
                         SelectionResult.next
@@ -3198,7 +3198,7 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
                         (
                             lastSelectionResult
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ),
                         SelectionResult.next
@@ -3213,7 +3213,7 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
                         (
                             lastSelectionResult
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ),
                         SelectionResult.previous
@@ -3250,19 +3250,19 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
             }
         }
         return SelectionResult.end;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual SelectionResult handleSelectWord(SelectWordSelectionEvent @event)
     {
         return _handleSelectBoundary(@event);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual SelectionResult handleSelectParagraph(SelectParagraphSelectionEvent @event)
     {
         return _handleSelectBoundary(@event);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual SelectionResult handleClearSelection(ClearSelectionEvent @event)
@@ -3274,7 +3274,7 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
         currentSelectionEndIndex = -1L;
         currentSelectionStartIndex = -1L;
         return SelectionResult.none;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual SelectionResult handleGranularlyExtendSelection(
@@ -3333,7 +3333,7 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
             currentSelectionStartIndex = targetIndex;
         }
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual SelectionResult handleDirectionallyExtendSelection(
@@ -3351,7 +3351,9 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
                 SelectionExtendDirection.backward => checked(selectables.Count) - 1L,
                 SelectionExtendDirection.nextLine => 0L,
                 SelectionExtendDirection.forward => 0L,
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             };
         }
         long targetIndex = @event.isEnd ? currentSelectionEndIndex : currentSelectionStartIndex;
@@ -3415,7 +3417,7 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
             currentSelectionStartIndex = targetIndex;
         }
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual SelectionResult handleSelectionEdgeUpdate(SelectionEdgeUpdateEvent @event)
@@ -3429,7 +3431,7 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
         return (currentSelectionStartIndex == -1L)
             ? _initSelection(@event, isEnd: false)
             : _adjustSelection(@event, isEnd: false);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override SelectionResult dispatchSelectionEvent(SelectionEvent @event)
@@ -3495,7 +3497,7 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
         _isHandlingSelectionEvent = false;
         _updateSelectionGeometry();
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void dispose()
@@ -3517,7 +3519,7 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
     )
     {
         return selectable.dispatchSelectionEvent(@event);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual SelectionResult _initSelection(SelectionEdgeUpdateEvent @event, bool isEnd)
@@ -3614,7 +3616,7 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
         }
         _flushInactiveSelections();
         return result ?? SelectionResult.next;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual SelectionResult _adjustSelection(SelectionEdgeUpdateEvent @event, bool isEnd)
@@ -3634,7 +3636,7 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
                 && (currentSelectionStartIndex >= 0L)
             );
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         SelectionResult? finalResult = default!;
         var isCurrentEdgeWithinViewport = isEnd
@@ -3726,9 +3728,9 @@ public abstract class MultiSelectableSelectionContainerDelegate : SelectionConta
         _flushInactiveSelections();
         return (
             finalResult
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -3796,14 +3798,14 @@ public class SelectableRegionSelectionStatusScope : InheritedWidget
         return context
             .dependOnInheritedWidgetOfExactType<SelectableRegionSelectionStatusScope>()
             ?.selectionStatusNotifier;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget)
     {
         var __oldWidget = (SelectableRegionSelectionStatusScope)oldWidget;
         return !Equals(selectionStatusNotifier, __oldWidget.selectionStatusNotifier);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -3866,7 +3868,7 @@ internal class _SelectionListenerState__selectable_region : State<SelectionListe
     public override Widget build(BuildContext context)
     {
         return new SelectionContainer(@delegate: _selectionDelegate, child: widget.child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 

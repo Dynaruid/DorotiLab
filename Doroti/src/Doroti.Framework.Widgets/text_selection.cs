@@ -38,19 +38,19 @@ public abstract class TextSelectionControls
     public virtual bool canCut(TextSelectionDelegate @delegate)
     {
         return @delegate.cutEnabled && !@delegate.textEditingValue.selection.isCollapsed;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool canCopy(TextSelectionDelegate @delegate)
     {
         return @delegate.copyEnabled && !@delegate.textEditingValue.selection.isCollapsed;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool canPaste(TextSelectionDelegate @delegate)
     {
         return @delegate.pasteEnabled;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool canSelectAll(TextSelectionDelegate @delegate)
@@ -58,7 +58,7 @@ public abstract class TextSelectionControls
         return @delegate.selectAllEnabled
             && (@delegate.textEditingValue.text.Length != 0)
             && @delegate.textEditingValue.selection.isCollapsed;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void handleCut(TextSelectionDelegate @delegate)
@@ -105,13 +105,13 @@ public class EmptyTextSelectionControls : TextSelectionControls
     )
     {
         return SizedBox.CreateShrink();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Offset getHandleAnchor(TextSelectionHandleType type, double textLineHeight)
     {
         return Offset.zero;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -370,13 +370,17 @@ public class TextSelectionOverlay
             {
                 TextDirection.ltr => TextSelectionHandleType.left,
                 TextDirection.rtl => TextSelectionHandleType.right,
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             };
             endHandleTypeLocal = endHandleDirection switch
             {
                 TextDirection.ltr => TextSelectionHandleType.right,
                 TextDirection.rtl => TextSelectionHandleType.left,
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             };
         }
         DartRuntimePrimitives.Ignore(
@@ -456,7 +460,7 @@ public class TextSelectionOverlay
             );
         }
         return startHandleRect?.height ?? (double)renderObject.preferredLineHeight;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual double _getEndGlyphHeight()
@@ -476,7 +480,7 @@ public class TextSelectionOverlay
             );
         }
         return endHandleRect?.height ?? (double)renderObject.preferredLineHeight;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual MagnifierInfo _buildMagnifier(
@@ -513,7 +517,7 @@ public class TextSelectionOverlay
             caretRect: overlayCaretRect,
             currentLineBoundaries: overlayLineBoundaries
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _handleSelectionEndHandleDragStart(DragStartDetails details)
@@ -574,7 +578,7 @@ public class TextSelectionOverlay
         long linesDragged =
             dragDirection * (distanceDragged.abs() / preferredLineHeightLocal).floor();
         return handleDy + (linesDragged * preferredLineHeightLocal);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _handleSelectionEndHandleDragUpdate(DragUpdateDetails details)
@@ -603,7 +607,7 @@ public class TextSelectionOverlay
                     (
                         nextEndHandleDragPositionLocal
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
@@ -747,7 +751,7 @@ public class TextSelectionOverlay
                     (
                         nextStartHandleDragPositionLocal
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
@@ -1293,14 +1297,18 @@ public class SelectionOverlay
                 builder: (context) =>
                 {
                     return capturedThemes.wrap(_buildEndHandle(context));
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             ),
             start: new OverlayEntry(
                 builder: (context) =>
                 {
                     return capturedThemes.wrap(_buildStartHandle(context));
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );
@@ -1309,15 +1317,11 @@ public class SelectionOverlay
             {
                 (
                     _handles
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ).start,
                 (
                     _handles
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ).end,
             }.Cast<OverlayEntry>()
         );
@@ -1329,19 +1333,19 @@ public class SelectionOverlay
         {
             (
                 _handles
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ).start.remove();
             (
                 _handles
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ).start.dispose();
             (
                 _handles
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ).end.remove();
             (
                 _handles
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ).end.dispose();
             _handles = null;
         }
@@ -1379,7 +1383,9 @@ public class SelectionOverlay
                     offset: -renderBox.localToGlobal(Offset.zero),
                     child: contextMenuBuilder(context)
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
     }
@@ -1403,7 +1409,9 @@ public class SelectionOverlay
                     offset: -renderBox.localToGlobal(Offset.zero),
                     child: builder(context)
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
     }
@@ -1459,15 +1467,11 @@ public class SelectionOverlay
             {
                 (
                     _handles
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ).start.markNeedsBuild();
                 (
                     _handles
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ).end.markNeedsBuild();
             }
             _toolbar?.markNeedsBuild();
@@ -1553,7 +1557,7 @@ public class SelectionOverlay
             groupId: typeof(SelectableRegion),
             child: new TextFieldTapRegion(child: new ExcludeSemantics(child: handle))
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _buildEndHandle(BuildContext context)
@@ -1593,7 +1597,7 @@ public class SelectionOverlay
             groupId: typeof(SelectableRegion),
             child: new TextFieldTapRegion(child: new ExcludeSemantics(child: handle))
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _buildToolbar(BuildContext context)
@@ -1635,11 +1639,13 @@ public class SelectionOverlay
                         clipboardStatus,
                         toolbarLocation
                     );
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void updateMagnifier(MagnifierInfo magnifierInfo)
@@ -1737,7 +1743,7 @@ internal class _SelectionToolbarWrapperState__text_selection
                     }
                 )
             );
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         _tickerModeNotifier?.removeListener(_updateTicker);
         _tickerModeNotifier = null;
@@ -1775,7 +1781,7 @@ internal class _SelectionToolbarWrapperState__text_selection
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
@@ -1804,7 +1810,7 @@ internal class _SelectionToolbarWrapperState__text_selection
                     }
                 )
             );
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         _ticker = new Scheduler.Ticker(
             onTick,
@@ -1815,7 +1821,7 @@ internal class _SelectionToolbarWrapperState__text_selection
         _updateTickerModeNotifier();
         _updateTicker();
         return _ticker!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void activate()
@@ -1948,7 +1954,7 @@ internal class _SelectionHandleOverlayState__text_selection
     {
         Size handleSize = widget.selectionControls.getHandleSize(preferredLineHeight);
         return Rect.fromLTWH(0.0, 0.0, handleSize.width, handleSize.height);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void didUpdateWidget(_SelectionHandleOverlay__text_selection oldWidget)
@@ -1988,7 +1994,7 @@ internal class _SelectionHandleOverlayState__text_selection
                     }
                 )
             );
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         _tickerModeNotifier?.removeListener(_updateTicker);
         _tickerModeNotifier = null;
@@ -2097,7 +2103,7 @@ internal class _SelectionHandleOverlayState__text_selection
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
@@ -2126,7 +2132,7 @@ internal class _SelectionHandleOverlayState__text_selection
                     }
                 )
             );
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         _ticker = new Scheduler.Ticker(
             onTick,
@@ -2137,7 +2143,7 @@ internal class _SelectionHandleOverlayState__text_selection
         _updateTickerModeNotifier();
         _updateTicker();
         return _ticker!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void activate()
@@ -2272,9 +2278,7 @@ public class TextSelectionGestureDetectorBuilder
             TextPosition textPosition = renderEditable.getPositionForPoint(
                 (
                     renderEditable.lastSecondaryTapDownPosition
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             );
             return (renderEditable.selection!.start <= textPosition.offset)
@@ -2291,7 +2295,7 @@ public class TextSelectionGestureDetectorBuilder
         }
         return (selectionLocal.start < textPosition.offset)
             && (selectionLocal.end > textPosition.offset);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _positionWasOnSelectionInclusive(TextPosition textPosition)
@@ -2303,7 +2307,7 @@ public class TextSelectionGestureDetectorBuilder
         }
         return (selectionLocal.start <= textPosition.offset)
             && (selectionLocal.end >= textPosition.offset);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _expandSelection(
@@ -2405,18 +2409,14 @@ public class TextSelectionGestureDetectorBuilder
             || Equals(
                 (
                     kindLocal
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 PointerDeviceKind.touch
             )
             || Equals(
                 (
                     kindLocal
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 PointerDeviceKind.stylus
             );
@@ -2757,7 +2757,9 @@ public class TextSelectionGestureDetectorBuilder
         {
             Axis.horizontal => new Offset(_scrollPosition - _dragStartScrollOffset, 0.0),
             Axis.vertical => new Offset(0.0, _scrollPosition - _dragStartScrollOffset),
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         switch (PlatformLibrary.defaultTargetPlatform)
         {
@@ -2934,7 +2936,7 @@ public class TextSelectionGestureDetectorBuilder
             textBoundary.getTrailingTextBoundaryAt(extent.offset)
             ?? editableText.textEditingValue.text.Length;
         return new TextRange(start: startLocal, end: endLocal);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _selectTextBoundariesInRange(
@@ -2954,7 +2956,7 @@ public class TextSelectionGestureDetectorBuilder
                         (
                             to
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     )
@@ -2968,10 +2970,7 @@ public class TextSelectionGestureDetectorBuilder
             : new TextSelection(baseOffset: fromRange.end, extentOffset: toRange.start);
         editableText.userUpdateTextEditingValue(
             editableText.textEditingValue.copyWith(selection: newSelection),
-            (
-                cause
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
-            )
+            (cause ?? throw new global::System.NullReferenceException("A required value was null."))
         );
     }
 
@@ -3029,18 +3028,14 @@ public class TextSelectionGestureDetectorBuilder
             || Equals(
                 (
                     kindLocal
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 PointerDeviceKind.touch
             )
             || Equals(
                 (
                     kindLocal
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 PointerDeviceKind.stylus
             );
@@ -3172,7 +3167,9 @@ public class TextSelectionGestureDetectorBuilder
             {
                 Axis.horizontal => new Offset(_scrollPosition - _dragStartScrollOffset, 0.0),
                 Axis.vertical => new Offset(0.0, _scrollPosition - _dragStartScrollOffset),
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             };
             Offset dragStartGlobalPosition = details.globalPosition - details.offsetFromOrigin;
             if (
@@ -3203,7 +3200,9 @@ public class TextSelectionGestureDetectorBuilder
                         return;
                     }
                     default:
-                        throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                        throw new InvalidOperationException(
+                            "Switch expression did not handle the supplied value."
+                        );
                 }
             }
             if (
@@ -3242,7 +3241,7 @@ public class TextSelectionGestureDetectorBuilder
                             }
                             default:
                                 throw new InvalidOperationException(
-                                    "Non-exhaustive Dart switch value."
+                                    "Switch expression did not handle the supplied value."
                                 );
                         }
                         return;
@@ -3267,7 +3266,9 @@ public class TextSelectionGestureDetectorBuilder
                         return;
                     }
                     default:
-                        throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                        throw new InvalidOperationException(
+                            "Switch expression did not handle the supplied value."
+                        );
                 }
             }
             switch (PlatformLibrary.defaultTargetPlatform)
@@ -3296,7 +3297,7 @@ public class TextSelectionGestureDetectorBuilder
                         }
                         default:
                             throw new InvalidOperationException(
-                                "Non-exhaustive Dart switch value."
+                                "Switch expression did not handle the supplied value."
                             );
                     }
                     return;
@@ -3351,7 +3352,9 @@ public class TextSelectionGestureDetectorBuilder
                     return;
                 }
                 default:
-                    throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                    throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    );
             }
         }
         if (
@@ -3460,7 +3463,7 @@ public class TextSelectionGestureDetectorBuilder
             behavior: behavior,
             child: child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -3575,9 +3578,11 @@ internal class _TextSelectionGestureDetectorState__text_selection
                 return (rawCount < 2L) ? rawCount : (2L + (rawCount % 2L));
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _handleTapTrackStart()
@@ -3849,7 +3854,7 @@ internal class _TextSelectionGestureDetectorState__text_selection
             behavior: widget.behavior,
             child: widget.child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 

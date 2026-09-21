@@ -28,13 +28,13 @@ internal class _DragBoundaryDelegateForRect__drag_boundary : DragBoundaryDelegat
         }
         return (
                 boundary
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ).contains(draggedObject.topLeft)
             && (
                 boundary
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ).contains(draggedObject.bottomRight);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Rect nearestPositionWithinBoundary(Rect draggedObject)
@@ -49,15 +49,13 @@ internal class _DragBoundaryDelegateForRect__drag_boundary : DragBoundaryDelegat
                     (
                         boundary
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ).right - draggedObject.width
                 )
                 < (
                     boundary
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ).left
             )
             || (
@@ -65,15 +63,13 @@ internal class _DragBoundaryDelegateForRect__drag_boundary : DragBoundaryDelegat
                     (
                         boundary
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ).bottom - draggedObject.height
                 )
                 < (
                     boundary
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ).top
             )
         )
@@ -89,26 +85,26 @@ internal class _DragBoundaryDelegateForRect__drag_boundary : DragBoundaryDelegat
             draggedObject.left,
             (
                 boundary
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ).left,
             (
                 boundary
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ).right - draggedObject.width
         );
         double topLocal = Dart_uiLibrary.clampDouble(
             draggedObject.top,
             (
                 boundary
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ).top,
             (
                 boundary
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ).bottom - draggedObject.height
         );
         return Rect.fromLTWH(leftLocal, topLocal, draggedObject.width, draggedObject.height);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -124,7 +120,7 @@ public class DragBoundary : InheritedWidget
     {
         return forRectMaybeOf(context, useGlobalPosition: useGlobalPosition)
             ?? new _DragBoundaryDelegateForRect__drag_boundary(null);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static DragBoundaryDelegate<Rect>? forRectMaybeOf(
@@ -150,12 +146,12 @@ public class DragBoundary : InheritedWidget
             : (Offset.zero & rb!.size);
         return (DragBoundaryDelegate<Rect>?)
             new _DragBoundaryDelegateForRect__drag_boundary(boundary);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget)
     {
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

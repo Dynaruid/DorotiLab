@@ -41,13 +41,13 @@ public abstract class SystemNavigator
     public static Future selectSingleEntryHistory()
     {
         return SystemChannels.navigation.invokeMethod<object?>("selectSingleEntryHistory");
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static Future selectMultiEntryHistory()
     {
         return SystemChannels.navigation.invokeMethod<object?>("selectMultiEntryHistory");
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static Future routeInformationUpdated(
@@ -68,6 +68,6 @@ public abstract class SystemNavigator
                 ["replace"] = replace,
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

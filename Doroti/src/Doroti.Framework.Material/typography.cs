@@ -1066,7 +1066,9 @@ public class Typography : Diagnosticable
                 (black ?? blackHelsinki, white ?? whiteHelsinki),
             null => ((TextTheme, TextTheme))(black!, white!),
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
         return new Typography(blackResolved, whiteResolved, englishLike, dense, tall);
     }
@@ -1094,9 +1096,11 @@ public class Typography : Diagnosticable
             ScriptCategory.dense => dense,
             ScriptCategory.tall => tall,
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Typography copyWith(
@@ -1114,7 +1118,7 @@ public class Typography : Diagnosticable
             dense ?? this.dense,
             tall ?? this.tall
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static Typography lerp(Typography a, Typography b, double t)
@@ -1130,7 +1134,7 @@ public class Typography : Diagnosticable
             TextTheme.lerp(a.dense, b.dense, t),
             TextTheme.lerp(a.tall, b.tall, t)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool Equals(object? other)
@@ -1213,7 +1217,7 @@ public class Typography : Diagnosticable
             return true;
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -1222,7 +1226,7 @@ public class Typography : Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 

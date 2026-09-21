@@ -29,7 +29,7 @@ public class DecoratedBox : SingleChildRenderObjectWidget
             position: position,
             configuration: ImageLibrary.createLocalImageConfiguration(context)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -60,7 +60,9 @@ public class DecoratedBox : SingleChildRenderObjectWidget
         {
             DecorationPosition.background => "bg",
             DecorationPosition.foreground => "fg",
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         properties.add(
             new EnumProperty<DecorationPosition>(
@@ -234,7 +236,7 @@ public class Container : StatelessWidget
             );
         }
         return current!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -294,7 +296,7 @@ internal class _DecorationClipper__container : CustomClipper<Path>
     public override Path getClip(Size size)
     {
         return decoration.getClipPath(Offset.zero & size, (textDirection));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool shouldReclip(CustomClipper<Path> oldClipper)
@@ -302,6 +304,6 @@ internal class _DecorationClipper__container : CustomClipper<Path>
         var __oldClipper = (_DecorationClipper__container)oldClipper;
         return (!Equals(__oldClipper.decoration, decoration))
             || (!Equals(__oldClipper.textDirection, textDirection));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

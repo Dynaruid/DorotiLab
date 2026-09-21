@@ -124,7 +124,7 @@ public class FloatingActionButtonThemeData : Diagnosticable
             extendedTextStyle: extendedTextStyle ?? this.extendedTextStyle,
             mouseCursor: mouseCursor ?? this.mouseCursor
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static FloatingActionButtonThemeData? lerp(
@@ -184,7 +184,7 @@ public class FloatingActionButtonThemeData : Diagnosticable
             extendedTextStyle: TextStyle.lerp(a?.extendedTextStyle, b?.extendedTextStyle, t),
             mouseCursor: (t < 0.5) ? a?.mouseCursor : b?.mouseCursor
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override int GetHashCode() =>
@@ -347,7 +347,7 @@ public class FloatingActionButtonThemeData : Diagnosticable
             return true;
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -356,7 +356,7 @@ public class FloatingActionButtonThemeData : Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -379,13 +379,13 @@ public class FloatingActionButtonTheme : InheritedTheme
         FloatingActionButtonTheme? fabTheme =
             context.dependOnInheritedWidgetOfExactType<FloatingActionButtonTheme>();
         return fabTheme?.data ?? Theme.of(context).floatingActionButtonTheme;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget wrap(BuildContext context, Widget child)
     {
         return new FloatingActionButtonTheme(data: data, child: child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget) =>

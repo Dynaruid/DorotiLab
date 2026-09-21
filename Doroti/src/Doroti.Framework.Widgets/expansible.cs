@@ -99,16 +99,16 @@ public class ExpansibleController : ChangeNotifier
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return result!.widget.controller;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static ExpansibleController? maybeOf(BuildContext context)
     {
         return context.findAncestorStateOfType<_ExpansibleState__expansible>()?.widget.controller;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -173,7 +173,7 @@ public class Expansible : StatefulWidget
             mainAxisSize: MainAxisSize.min,
             children: new List<Widget> { header, body }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override IState createState() =>
@@ -286,7 +286,7 @@ internal class _ExpansibleState__expansible
                     }
                 )
             );
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         _tickerModeNotifier?.removeListener(_updateTicker);
         _tickerModeNotifier = null;
@@ -315,7 +315,7 @@ internal class _ExpansibleState__expansible
                                 }
                                 setState(() => { });
                                 throw new InvalidOperationException(
-                                    "Dart closure completed without a value."
+                                    "Callback completed without returning a value."
                                 );
                             }
                         )
@@ -348,11 +348,13 @@ internal class _ExpansibleState__expansible
                     child: new Align(heightFactor: _heightFactor.value, child: child)
                 );
                 return widget.expansibleBuilder(context, header, body, _animationController);
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             child: shouldRemoveBody ? null : result
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
@@ -381,7 +383,7 @@ internal class _ExpansibleState__expansible
                     }
                 )
             );
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         _ticker = new Scheduler.Ticker(
             onTick,
@@ -392,7 +394,7 @@ internal class _ExpansibleState__expansible
         _updateTickerModeNotifier();
         _updateTicker();
         return _ticker!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void activate()

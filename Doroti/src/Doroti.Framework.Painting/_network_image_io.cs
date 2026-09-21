@@ -44,7 +44,7 @@ public class NetworkImageIo : ImageProvider<NetworkImageIo>, NetworkImage
     public override Future<NetworkImageIo> obtainKey(ImageConfiguration configuration)
     {
         return new SynchronousFuture<NetworkImageIo>(this);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override ImageStreamCompleter loadBuffer(
@@ -69,7 +69,7 @@ public class NetworkImageIo : ImageProvider<NetworkImageIo>, NetworkImage
                     new DiagnosticsProperty<NetworkImageIo>("Image key", key),
                 }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override ImageStreamCompleter loadImage(
@@ -94,7 +94,7 @@ public class NetworkImageIo : ImageProvider<NetworkImageIo>, NetworkImage
                     new DiagnosticsProperty<NetworkImageIo>("Image key", key),
                 }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static Runtime.HttpClient _httpClient
@@ -163,7 +163,7 @@ public class NetworkImageIo : ImageProvider<NetworkImageIo>, NetworkImage
             });
             throw;
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool Equals(object? other)

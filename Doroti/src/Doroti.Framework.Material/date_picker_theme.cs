@@ -253,7 +253,7 @@ public class DatePickerThemeData : Diagnosticable
             toggleButtonTextStyle: toggleButtonTextStyle ?? this.toggleButtonTextStyle,
             subHeaderForegroundColor: subHeaderForegroundColor ?? this.subHeaderForegroundColor
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static DatePickerThemeData lerp(DatePickerThemeData? a, DatePickerThemeData? b, double t)
@@ -406,7 +406,7 @@ public class DatePickerThemeData : Diagnosticable
                 t
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static BorderSide? _lerpBorderSide(BorderSide? a, BorderSide? b, double t)
@@ -422,7 +422,7 @@ public class DatePickerThemeData : Diagnosticable
         }
         return (BorderSide?)
             BorderSide.lerp(a, new BorderSide(width: 0, color: a.color.withAlpha(0L)), t);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override int GetHashCode() =>
@@ -763,7 +763,7 @@ public class DatePickerThemeData : Diagnosticable
             return true;
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -772,7 +772,7 @@ public class DatePickerThemeData : Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -793,13 +793,13 @@ public class DatePickerTheme : InheritedTheme
     public static DatePickerThemeData of(BuildContext context)
     {
         return maybeOf(context) ?? Theme.of(context).datePickerTheme;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static DatePickerThemeData? maybeOf(BuildContext context)
     {
         return context.dependOnInheritedWidgetOfExactType<DatePickerTheme>()?.data;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static DatePickerThemeData defaults(BuildContext context)
@@ -810,7 +810,7 @@ public class DatePickerTheme : InheritedTheme
     public override Widget wrap(BuildContext context, Widget child)
     {
         return new DatePickerTheme(data: data, child: child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget) =>
@@ -915,7 +915,9 @@ internal class _DatePickerDefaultsM3__date_picker_theme : DatePickerThemeData
                     }
                 }
                 return _colors.onSurface;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
     public override WidgetStateProperty<Color?>? dayBackgroundColor =>
@@ -927,7 +929,9 @@ internal class _DatePickerDefaultsM3__date_picker_theme : DatePickerThemeData
                     return _colors.primary;
                 }
                 return null;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
     public override WidgetStateProperty<Color?>? dayOverlayColor =>
@@ -965,7 +969,9 @@ internal class _DatePickerDefaultsM3__date_picker_theme : DatePickerThemeData
                     }
                 }
                 return null;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
     public override WidgetStateProperty<Color?>? todayForegroundColor =>
@@ -984,7 +990,9 @@ internal class _DatePickerDefaultsM3__date_picker_theme : DatePickerThemeData
                     }
                 }
                 return _colors.primary;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
     public override WidgetStateProperty<Color?>? todayBackgroundColor => dayBackgroundColor;
@@ -1006,7 +1014,9 @@ internal class _DatePickerDefaultsM3__date_picker_theme : DatePickerThemeData
                     }
                 }
                 return _colors.onSurfaceVariant;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
     public override WidgetStateProperty<Color?>? yearBackgroundColor =>
@@ -1018,7 +1028,9 @@ internal class _DatePickerDefaultsM3__date_picker_theme : DatePickerThemeData
                     return _colors.primary;
                 }
                 return null;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
     public override WidgetStateProperty<Color?>? yearOverlayColor =>
@@ -1056,7 +1068,9 @@ internal class _DatePickerDefaultsM3__date_picker_theme : DatePickerThemeData
                     }
                 }
                 return null;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
     public override Color? rangePickerShadowColor => Colors.transparent;
@@ -1079,7 +1093,9 @@ internal class _DatePickerDefaultsM3__date_picker_theme : DatePickerThemeData
                     return _colors.onPrimaryContainer.withOpacity(0.1);
                 }
                 return null;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
     public override Color? rangePickerHeaderBackgroundColor => Colors.transparent;

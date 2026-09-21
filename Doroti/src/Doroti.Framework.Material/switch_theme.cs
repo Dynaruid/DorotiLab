@@ -69,7 +69,7 @@ public class SwitchThemeData : Diagnosticable
             thumbIcon: thumbIcon ?? this.thumbIcon,
             padding: padding ?? this.padding
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static SwitchThemeData lerp(SwitchThemeData? a, SwitchThemeData? b, double t)
@@ -100,7 +100,7 @@ public class SwitchThemeData : Diagnosticable
             thumbIcon: (t < 0.5) ? a?.thumbIcon : b?.thumbIcon,
             padding: EdgeInsetsGeometry.lerp(a?.padding, b?.padding, t)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override int GetHashCode() =>
@@ -227,7 +227,7 @@ public class SwitchThemeData : Diagnosticable
             return true;
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -236,7 +236,7 @@ public class SwitchThemeData : Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -254,7 +254,7 @@ public class SwitchTheme : InheritedWidget
     {
         SwitchTheme? switchThemeLocal = context.dependOnInheritedWidgetOfExactType<SwitchTheme>();
         return switchThemeLocal?.data ?? Theme.of(context).switchTheme;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget) =>

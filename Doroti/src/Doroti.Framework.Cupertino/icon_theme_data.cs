@@ -35,7 +35,7 @@ public class CupertinoIconThemeData : IconThemeData, Diagnosticable
     {
         Color? resolvedColor = CupertinoDynamicColor.maybeResolve(color, context);
         return Equals(resolvedColor, color) ? this : copyWith(color: resolvedColor);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override CupertinoIconThemeData copyWith(
@@ -61,7 +61,7 @@ public class CupertinoIconThemeData : IconThemeData, Diagnosticable
             shadows: shadows ?? this.shadows,
             applyTextScaling: applyTextScaling ?? this.applyTextScaling
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -84,7 +84,7 @@ public class CupertinoIconThemeData : IconThemeData, Diagnosticable
             return true;
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override DiagnosticsNode toDiagnosticsNode(
@@ -93,6 +93,6 @@ public class CupertinoIconThemeData : IconThemeData, Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

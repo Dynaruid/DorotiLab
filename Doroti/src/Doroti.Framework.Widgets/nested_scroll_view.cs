@@ -71,7 +71,7 @@ public class NestedScrollView : StatefulWidget
                     "NestedScrollView.sliverOverlapAbsorberHandleFor must be called with a context that contains a NestedScrollView."
         );
         return target!.state._absorberHandle;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual List<Widget> _buildSlivers(
@@ -92,7 +92,7 @@ public class NestedScrollView : StatefulWidget
                 )
             ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override IState createState() =>
@@ -190,7 +190,7 @@ public class NestedScrollViewState : State<NestedScrollView>
                             (
                                 _lastHasScrolledBody
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             )
                         ),
@@ -199,11 +199,13 @@ public class NestedScrollViewState : State<NestedScrollView>
                         restorationId: widget.restorationId,
                         hitTestBehavior: widget.hitTestBehavior
                     );
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -255,7 +257,7 @@ internal class _NestedScrollViewCustomScrollView__nested_scroll_view : CustomScr
             handle: handle,
             clipBehavior: clipBehavior
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -296,19 +298,19 @@ public class _NestedScrollMetrics__nested_scroll_view : FixedScrollMetrics
         : base(
             minScrollExtent: (
                 minScrollExtent
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             maxScrollExtent: (
                 maxScrollExtent
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             pixels: (
                 pixels
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             viewportDimension: (
                 viewportDimension
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             axisDirection: axisDirection,
             devicePixelRatio: devicePixelRatio
@@ -347,7 +349,7 @@ public class _NestedScrollMetrics__nested_scroll_view : FixedScrollMetrics
             maxRange: maxRange ?? this.maxRange,
             correctionOffset: correctionOffset ?? this.correctionOffset
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -489,7 +491,7 @@ public class _NestedScrollCoordinator__nested_scroll_view
     )
     {
         return new IdleScrollActivity(position);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void goIdle()
@@ -508,7 +510,9 @@ public class _NestedScrollCoordinator__nested_scroll_view
             (position) =>
             {
                 return createInnerBallisticScrollActivity(position, velocity);
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
     }
@@ -557,7 +561,7 @@ public class _NestedScrollCoordinator__nested_scroll_view
             mode: _NestedBallisticScrollActivityMode__nested_scroll_view.outer,
             metrics: metricsLocal
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual ScrollActivity createInnerBallisticScrollActivity(
@@ -569,7 +573,7 @@ public class _NestedScrollCoordinator__nested_scroll_view
             position.physics.createBallisticSimulation(_getMetrics(position, velocity), velocity),
             mode: _NestedBallisticScrollActivityMode__nested_scroll_view.inner
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual _NestedScrollMetrics__nested_scroll_view _getMetrics(
@@ -676,7 +680,7 @@ public class _NestedScrollCoordinator__nested_scroll_view
             correctionOffset: correctionOffsetLocal,
             devicePixelRatio: _outerPosition!.devicePixelRatio
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double unnestOffset(
@@ -697,7 +701,7 @@ public class _NestedScrollCoordinator__nested_scroll_view
             return (value) - source.minScrollExtent + _outerPosition!.minScrollExtent;
         }
         return (value) - source.minScrollExtent + _outerPosition!.maxScrollExtent;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double nestOffset(double value, _NestedScrollPosition__nested_scroll_view target)
@@ -719,7 +723,7 @@ public class _NestedScrollCoordinator__nested_scroll_view
             return (value) - _outerPosition!.maxScrollExtent + target.minScrollExtent;
         }
         return target.minScrollExtent;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void updateCanDrag()
@@ -759,7 +763,9 @@ public class _NestedScrollCoordinator__nested_scroll_view
                 );
                 resultFutures.Add(innerActivity.done);
                 return innerActivity;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
         await DartAsyncRuntime.wait<object?>(resultFutures);
@@ -865,7 +871,7 @@ public class _NestedScrollCoordinator__nested_scroll_view
     {
         DartRuntimePrimitives.Assert(() => false);
         return 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual ScrollHoldController hold(Action holdCancelCallback)
@@ -878,7 +884,7 @@ public class _NestedScrollCoordinator__nested_scroll_view
             (position) => new HoldScrollActivity(@delegate: position)
         );
         return this;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void cancel()
@@ -900,7 +906,7 @@ public class _NestedScrollCoordinator__nested_scroll_view
         DartRuntimePrimitives.Assert(() => _currentDrag is null);
         _currentDrag = dragLocal;
         return dragLocal;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void applyUserOffset(double delta)
@@ -1034,7 +1040,7 @@ internal class _NestedScrollController__nested_scroll_view : ScrollController
             oldPosition: oldPosition,
             debugLabel: debugLabel
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void attach(ScrollPosition position)
@@ -1146,7 +1152,7 @@ public class _NestedScrollPosition__nested_scroll_view : ScrollPosition, ScrollA
             return 0.0;
         }
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double applyFullDragUpdate(double delta)
@@ -1171,7 +1177,7 @@ public class _NestedScrollPosition__nested_scroll_view : ScrollPosition, ScrollA
             return overscroll;
         }
         return 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double applyClampedPointerSignalUpdate(double delta)
@@ -1188,7 +1194,7 @@ public class _NestedScrollPosition__nested_scroll_view : ScrollPosition, ScrollA
         forcePixels(newPixels);
         didUpdateScrollPositionBy(clampedDelta);
         return delta - clampedDelta;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override ScrollDirection userScrollDirection => coordinator.userScrollDirection;
@@ -1207,7 +1213,7 @@ public class _NestedScrollPosition__nested_scroll_view : ScrollPosition, ScrollA
             curve: curve,
             vsync: vsync
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void applyUserOffset(double delta)
@@ -1286,9 +1292,11 @@ public class _NestedScrollPosition__nested_scroll_view : ScrollPosition, ScrollA
                 );
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Future animateTo(double to, Duration duration, Curve curve)
@@ -1298,7 +1306,7 @@ public class _NestedScrollPosition__nested_scroll_view : ScrollPosition, ScrollA
             duration: duration,
             curve: curve
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void jumpTo(double pixels)
@@ -1345,13 +1353,13 @@ public class _NestedScrollPosition__nested_scroll_view : ScrollPosition, ScrollA
     public override ScrollHoldController hold(Action holdCancelCallback)
     {
         return coordinator.hold(() => holdCancelCallback());
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Drag drag(DragStartDetails details, Action dragCancelCallback)
     {
         return coordinator.drag(details, () => dragCancelCallback());
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1418,7 +1426,7 @@ internal class _NestedInnerBallisticScrollActivity__nested_scroll_view : Ballist
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1502,13 +1510,13 @@ internal class _NestedOuterBallisticScrollActivity__nested_scroll_view : Ballist
         bool result = base.applyMoveTo(value + metrics.correctionOffset);
         DartRuntimePrimitives.Assert(() => result);
         return !done;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string ToString()
     {
         return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "_NestedOuterBallisticScrollActivity")}({metrics.minRange} .. {metrics.maxRange}; correcting by {metrics.correctionOffset})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1546,7 +1554,7 @@ public class SliverOverlapAbsorberHandle : ChangeNotifier
             _ => $", {_writers} WRITERS ASSIGNED",
         };
         return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "SliverOverlapAbsorberHandle")}({layoutExtent}{extra})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1567,7 +1575,7 @@ public class SliverOverlapAbsorber : SingleChildRenderObjectWidget
     public override RenderObject createRenderObject(BuildContext context)
     {
         return new RenderSliverOverlapAbsorber(handle: handle);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -1676,7 +1684,7 @@ public class RenderSliverOverlapAbsorber : RenderSliver, RenderObjectWithChildMi
             );
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paint(PaintingContext context, Offset offset)
@@ -1731,10 +1739,10 @@ public class RenderSliverOverlapAbsorber : RenderSliver, RenderObjectWithChildMi
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual RenderSliver? child
@@ -1779,7 +1787,7 @@ public class RenderSliverOverlapAbsorber : RenderSliver, RenderObjectWithChildMi
                 ((Diagnosticable)child!).toDiagnosticsNode(name: "child"),
             }
             : new List<DiagnosticsNode>();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1800,7 +1808,7 @@ public class SliverOverlapInjector : SingleChildRenderObjectWidget
     public override RenderObject createRenderObject(BuildContext context)
     {
         return new RenderSliverOverlapInjector(handle: handle);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -1892,27 +1900,27 @@ public class RenderSliverOverlapInjector : RenderSliver
         double clampedPaintExtent = Math.Min(
             (
                 _currentLayoutExtent
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             constraints.remainingPaintExtent
         );
         double clampedLayoutExtent = Math.Min(
             (
                 _currentLayoutExtent
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ) - constraints.scrollOffset,
             constraints.remainingPaintExtent
         );
         geometry = new SliverGeometry(
             scrollExtent: (
                 _currentLayoutExtent
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             paintExtent: Math.Max(0.0, clampedPaintExtent),
             layoutExtent: Math.Max(0.0, clampedLayoutExtent),
             maxPaintExtent: (
                 _currentMaxExtent
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );
     }
@@ -1970,7 +1978,7 @@ public class RenderSliverOverlapInjector : RenderSliver
                 }
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
     }
 
@@ -2001,7 +2009,7 @@ public class NestedScrollViewViewport : Viewport
             axisDirection: axisDirection,
             crossAxisDirection: (
                 crossAxisDirection
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             anchor: anchor,
             offset: offset,
@@ -2024,7 +2032,7 @@ public class NestedScrollViewViewport : Viewport
             handle: handle,
             clipBehavior: clipBehavior
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)

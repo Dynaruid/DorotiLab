@@ -52,7 +52,7 @@ internal class _ProxyLayer__widget_inspector : Layer
     )
     {
         return _layer.findAnnotations(result, localPosition, onlyFirst: onlyFirst);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -241,7 +241,7 @@ internal class _MulticastCanvas__widget_inspector : Canvas
     public new virtual long getSaveCount()
     {
         return _main.getSaveCount();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public new virtual void restore()
@@ -295,7 +295,7 @@ internal class _MulticastCanvas__widget_inspector : Canvas
     public override dynamic noSuchMethod(Invocation invocation)
     {
         base.noSuchMethod(invocation);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -316,7 +316,7 @@ public static partial class Widget_inspectorLibrary
                     Rect paintClip__9652__value9716 = (
                         paintClip
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     );
                     Rect transformedPaintClip = MatrixUtils.transformRect(
@@ -332,7 +332,7 @@ public static partial class Widget_inspectorLibrary
             }
         );
         return bounds;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -341,7 +341,7 @@ public static partial class Widget_inspectorLibrary
     internal static Rect _calculateSubtreeBounds(RenderObject @object)
     {
         return _calculateSubtreeBoundsHelper(@object, Matrix4.identity());
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -448,7 +448,9 @@ internal class _ScreenshotPaintingContext__widget_inspector : PaintingContext
                     DartRuntimePrimitives.Assert(() => _screenshotCanvas is null);
                 }
                 return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             });
             return hasScreenshotCanvas;
         }
@@ -529,7 +531,7 @@ internal class _ScreenshotPaintingContext__widget_inspector : PaintingContext
                 screenshotData: _data
             );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paintChild(RenderObject child, Offset offset)
@@ -610,7 +612,7 @@ internal class _ScreenshotPaintingContext__widget_inspector : PaintingContext
             data.dispose();
         }
         return image;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -675,7 +677,7 @@ public static partial class Widget_inspectorLibrary
             )
         );
         return path;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -767,7 +769,9 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
                 {
                     ["result"] = await DartAsyncRuntime.AwaitFutureOrValue<object>(callback()),
                 };
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             registerExtension: registerExtension
         );
@@ -789,7 +793,9 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
                         callback(parameters.GetValueOrDefault("objectGroup")!)
                     ),
                 };
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             registerExtension: registerExtension
         );
@@ -816,7 +822,9 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
                 {
                     ["enabled"] = await getter() ? "true" : "false",
                 };
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             registerExtension: registerExtension
         );
@@ -854,7 +862,9 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
                         )
                     ),
                 };
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             registerExtension: registerExtension
         );
@@ -883,7 +893,9 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
                 {
                     ["result"] = await DartAsyncRuntime.AwaitFutureOrValue<object>(callback(args)),
                 };
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             registerExtension: registerExtension
         );
@@ -898,7 +910,7 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
             return binding.endOfFrame;
         }
         return Future.value();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _reportStructuredError(FlutterErrorDetails details)
@@ -946,10 +958,10 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
         {
             enabled = false;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return enabled;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void initServiceExtensions(RegisterServiceExtensionCallback registerExtension)
@@ -966,7 +978,7 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
         {
             WidgetInspectorService._debugServiceExtensionsRegistered = true;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         Scheduler.SchedulerBinding.instance.addPersistentFrameCallback(_onFrameStart);
         _registerBoolServiceExtension(
@@ -979,7 +991,9 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
                     ? _reportStructuredError
                     : defaultExceptionHandler;
                 return Future.value();
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             registerExtension: registerExtension
         );
@@ -993,7 +1007,9 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
                     _changeWidgetSelectionMode((value), notifyStateChange: false);
                 }
                 return Future.value();
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             registerExtension: registerExtension
         );
@@ -1024,7 +1040,9 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
                         DebugLibrary.debugOnRebuildDirtyWidget = null;
                         return;
                     }
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 },
                 registerExtension: registerExtension
             );
@@ -1035,7 +1053,7 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
                     {
                         return Widget_inspectorLibrary._locationIdMapToJson();
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 ),
@@ -1074,7 +1092,9 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
                     {
                         Rendering.DebugLibrary.debugOnProfilePaint = null;
                     }
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 },
                 registerExtension: registerExtension
             );
@@ -1086,7 +1106,9 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
                 {
                     disposeAllGroups();
                     return null;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             ),
             registerExtension: registerExtension
@@ -1098,7 +1120,9 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
                 {
                     disposeGroup(name);
                     return null;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             ),
             registerExtension: registerExtension
@@ -1115,7 +1139,9 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
                 {
                     disposeId(objectId, objectGroup);
                     return null;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             ),
             registerExtension: registerExtension
@@ -1126,7 +1152,9 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
             {
                 setPubRootDirectories(args);
                 return null;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             registerExtension: registerExtension
         );
@@ -1136,7 +1164,9 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
             {
                 addPubRootDirectories(args);
                 return null;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             registerExtension: registerExtension
         );
@@ -1146,7 +1176,9 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
             {
                 removePubRootDirectories(args);
                 return null;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             registerExtension: registerExtension
         );
@@ -1224,7 +1256,9 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
                             : 2L
                     ),
                 };
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             registerExtension: registerExtension
         );
@@ -1286,7 +1320,9 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
                         new Uint8List(byteData!.buffer)
                     ),
                 };
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             registerExtension: registerExtension
         );
@@ -1390,13 +1426,13 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
             }
         }
         return id;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool isWidgetTreeReady(string? groupName = null)
     {
         return WidgetsBinding.instance.debugDidSendFirstFrameEvent;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual object? toObject(string? id, string? groupName = null)
@@ -1415,7 +1451,7 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
             );
         }
         return data.value;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual object? toObjectForSourceLocation(string id, string? groupName = null)
@@ -1427,7 +1463,7 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
             return @object__51282__as51313.widget;
         }
         return @object;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void disposeId(string? id, string groupName)
@@ -1503,13 +1539,13 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
         return Future<DartMap<string, object?>>.value(
             new DartMap<string, object?> { ["result"] = _pubRootDirectories ?? new List<string>() }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool setSelectionById(string? id, string? groupName = null)
     {
         return setSelection(toObject(id), groupName);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool setSelection(object? @object, string? groupName = null)
@@ -1531,9 +1567,11 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
                 return true;
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _notifyToolsOfSelection(
@@ -1591,7 +1629,7 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
             }
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual string devToolsInspectorUri(string inspectorRef)
@@ -1619,13 +1657,13 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
         return $"{devToolsInspectorUriLocal.substring(0L, startQueryParamIndex)}"
             + "/#/inspector"
             + $"{devToolsInspectorUriLocal.substring(startQueryParamIndex)}";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual string getParentChain(string id, string groupName)
     {
         return _safeJsonEncode(_getParentChain(id, groupName));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual List<object?> _getParentChain(string? id, string groupName)
@@ -1654,7 +1692,9 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
         InspectorSerializationDelegate createDelegate()
         {
             return new InspectorSerializationDelegate(groupName: groupName, service: this);
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         return path.Select(pathNode =>
             {
@@ -1672,7 +1712,7 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
                     };
             })
             .ToList();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual List<Element> _getRawElementParentChain(Element element, long? numLocalParents)
@@ -1688,7 +1728,7 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
                         (
                             numLocalParents
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ) - 1L;
                     if (numLocalParents <= 0L)
@@ -1700,7 +1740,7 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
             }
         }
         return Enumerable.Reverse(elements).ToList();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual List<_DiagnosticsPathNode__widget_inspector> _getElementParentChain(
@@ -1714,7 +1754,7 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
                     .Cast<Diagnosticable>()
                     .ToList()
             ) ?? new List<_DiagnosticsPathNode__widget_inspector>();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual List<_DiagnosticsPathNode__widget_inspector>? _getRenderObjectParentChain(
@@ -1731,7 +1771,7 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
         return Widget_inspectorLibrary._followDiagnosticableChain(
             Enumerable.Reverse(chain).ToList().Cast<Diagnosticable>().ToList()
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DartMap<string, object?>? _nodeToJson(
@@ -1748,7 +1788,7 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
         {
             return node?.toJsonMapIterative(@delegate);
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool _isValueCreatedByLocalProject(object? value)
@@ -1759,7 +1799,7 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
             return false;
         }
         return _isLocalCreationLocation(creationLocation.file);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool _isLocalCreationLocationImpl(string locationUri)
@@ -1777,7 +1817,7 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
             }
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool _isLocalCreationLocation(string locationUri)
@@ -1790,14 +1830,14 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
         {
             bool cachedValue__63933__value63991 = (
                 cachedValue
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             return ((cachedValue__63933__value63991));
         }
         bool result = _isLocalCreationLocationImpl(locationUri);
         _isLocalCreationCache[locationUri] = result;
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual string _safeJsonEncode(object? @object)
@@ -1806,7 +1846,7 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
         _serializeRing[(int)_serializeRingIndex] = jsonString;
         _serializeRingIndex = (_serializeRingIndex + 1L) % checked(_serializeRing.Count);
         return jsonString;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual List<DiagnosticsNode> _truncateNodes(
@@ -1826,7 +1866,7 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
             }
         }
         return nodes.take(maxDescendentsTruncatableNode).ToList();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual List<DartMap<string, object?>> _nodesToJson(
@@ -1836,13 +1876,13 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
     )
     {
         return DiagnosticsNode.toJsonList(nodes, parent, @delegate);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual string getProperties(string diagnosticsNodeId, string groupName)
     {
         return _safeJsonEncode(_getProperties(diagnosticsNodeId, groupName));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual List<object> _getProperties(string? diagnosticableId, string groupName)
@@ -1859,13 +1899,13 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
             )
             .Cast<object>()
             .ToList();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual string getChildren(string diagnosticsNodeId, string groupName)
     {
         return _safeJsonEncode(_getChildren(diagnosticsNodeId, groupName));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual List<object> _getChildren(string? diagnosticsNodeId, string groupName)
@@ -1881,20 +1921,20 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
             )
             .Cast<object>()
             .ToList();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual string getChildrenSummaryTree(string diagnosticsNodeId, string groupName)
     {
         return _safeJsonEncode(_getChildrenSummaryTree(diagnosticsNodeId, groupName));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode? _idToDiagnosticsNode(string? diagnosticableId)
     {
         object? @object = toObject(diagnosticableId);
         return WidgetInspectorService.objectToDiagnosticsNode(@object);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual List<object> _getChildrenSummaryTree(string? diagnosticableId, string groupName)
@@ -1912,13 +1952,13 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
         return _nodesToJson(_getChildrenFiltered(node, @delegate), @delegate, parent: node)
             .Cast<object>()
             .ToList();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual string getChildrenDetailsSubtree(string diagnosticableId, string groupName)
     {
         return _safeJsonEncode(_getChildrenDetailsSubtree(diagnosticableId, groupName));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual List<object> _getChildrenDetailsSubtree(
@@ -1941,7 +1981,7 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
             )
             .Cast<object>()
             .ToList();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool _shouldShowInSummaryTree(DiagnosticsNode node)
@@ -1960,7 +2000,7 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
             return true;
         }
         return _isValueCreatedByLocalProject((Element)valueLocal);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual List<DiagnosticsNode> _getChildrenFiltered(
@@ -1969,7 +2009,7 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
     )
     {
         return _filterChildren(node.getChildren().ToList(), @delegate);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual List<DiagnosticsNode> _filterChildren(
@@ -1998,7 +2038,7 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
             }
         }
         return children;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual InspectorSerializationDelegate? _updateDelegateForWidgetInspectorEnabledState(
@@ -2031,13 +2071,13 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
             }
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual string getRootWidget(string groupName)
     {
         return _safeJsonEncode(_getRootWidget(groupName));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DartMap<string, object?>? _getRootWidget(string groupName)
@@ -2046,13 +2086,13 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
             WidgetsBinding.instance.rootElement?.toDiagnosticsNode(),
             new InspectorSerializationDelegate(groupName: groupName, service: this)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual string getRootWidgetSummaryTree(string groupName)
     {
         return _safeJsonEncode(_getRootWidgetSummaryTree(groupName));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DartMap<string, object?>? _getRootWidgetSummaryTree(
@@ -2070,7 +2110,7 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
             withPreviews: false,
             addAdditionalPropertiesCallback: addAdditionalPropertiesCallback
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Future<DartMap<string, object?>> _getRootWidgetSummaryTreeWithPreviews(
@@ -2086,7 +2126,7 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
         return Future<DartMap<string, object?>>.value(
             new DartMap<string, object?> { ["result"] = result }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Future<DartMap<string, object?>> _getRootWidgetTree(
@@ -2106,7 +2146,7 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
         return Future<DartMap<string, object?>>.value(
             new DartMap<string, object?> { ["result"] = result }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DartMap<string, object?>? _getRootWidgetTreeImpl(
@@ -2148,7 +2188,9 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
                 }
             }
             return additionalPropertiesJson;
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         return _nodeToJson(
             WidgetsBinding.instance.rootElement?.toDiagnosticsNode(),
@@ -2163,7 +2205,7 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
             ),
             fullDetails: fullDetails
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual string getDetailsSubtree(
@@ -2173,7 +2215,7 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
     )
     {
         return _safeJsonEncode(_getDetailsSubtree(diagnosticableId, groupName, subtreeDepth));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DartMap<string, object?>? _getDetailsSubtree(
@@ -2196,7 +2238,7 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
                 service: this
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual string getSelectedWidget(string? previousSelectionId, string groupName)
@@ -2206,7 +2248,7 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
             PrintLibrary.debugPrint("previousSelectionId is deprecated in API");
         }
         return _safeJsonEncode(_getSelectedWidget(null, groupName));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual async Future<Ui.Image?> screenshot(
@@ -2276,7 +2318,7 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
             pixelRatio: pixelRatioLocal,
             debugPaint: debugPaint
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Future<DartMap<string, object?>> _getLayoutExplorerNode(
@@ -2432,14 +2474,16 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
                     }
                     catch (Exception) { }
                     return additionalJson;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );
         return Future<DartMap<string, object?>>.value(
             new DartMap<string, object?> { ["result"] = result }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Future<DartMap<string, object?>> _setFlexFit(DartMap<string, string> parameters)
@@ -2465,7 +2509,7 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
         return Future<DartMap<string, object?>>.value(
             new DartMap<string, object?> { ["result"] = succeed }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Future<DartMap<string, object?>> _setFlexFactor(
@@ -2496,7 +2540,7 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
         return Future<DartMap<string, object?>>.value(
             new DartMap<string, object?> { ["result"] = succeed }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Future<DartMap<string, object?>> _setFlexProperties(
@@ -2531,7 +2575,7 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
         return Future<DartMap<string, object?>>.value(
             new DartMap<string, object?> { ["result"] = succeed }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual T _toEnumEntry<T>(List<T> enumEntries, string name)
@@ -2544,7 +2588,7 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
             }
         }
         throw new Exception($"Enum value {name} not found");
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DartMap<string, object?>? _getSelectedWidget(
@@ -2556,7 +2600,7 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
             _getSelectedWidgetDiagnosticsNode(previousSelectionId),
             new InspectorSerializationDelegate(groupName: groupName, service: this)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode? _getSelectedWidgetDiagnosticsNode(string? previousSelectionId)
@@ -2566,7 +2610,7 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
         return Equals(current, previousSelection?.value)
             ? previousSelection
             : current?.toDiagnosticsNode();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual string getSelectedSummaryWidget(string? previousSelectionId, string groupName)
@@ -2576,7 +2620,7 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
             PrintLibrary.debugPrint("previousSelectionId is deprecated in API");
         }
         return _safeJsonEncode(_getSelectedSummaryWidget(null, groupName));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual CreationLocation? _getSelectedWidgetLocation(bool restrictToSummaryTree = false)
@@ -2585,7 +2629,7 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
             ? _getSelectedSummaryDiagnosticsNode(null)
             : _getSelectedWidgetDiagnosticsNode(null);
         return Widget_inspectorLibrary._getCreationLocation(selectedNode?.value);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode? _getSelectedSummaryDiagnosticsNode(string? previousSelectionId)
@@ -2612,7 +2656,7 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
         return Equals(current, previousSelection?.value)
             ? previousSelection
             : current?.toDiagnosticsNode();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DartMap<string, object?>? _getSelectedSummaryWidget(
@@ -2624,7 +2668,7 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
             _getSelectedSummaryDiagnosticsNode(previousSelectionId),
             new InspectorSerializationDelegate(groupName: groupName, service: this)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool isWidgetCreationTracked()
@@ -2634,9 +2678,9 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
         );
         return (
             _widgetCreationTracked
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _onFrameStart(Duration timeStamp)
@@ -2712,7 +2756,9 @@ internal class _WidgetInspectorService__widget_inspector : WidgetInspectorServic
                     }
                     _repaintStats.add(ancestor);
                     return true;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
         }
@@ -3129,7 +3175,7 @@ public class _ElementLocationStatsTracker__widget_inspector
         resetCounts();
         newLocations.Clear();
         return json;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -3253,17 +3299,13 @@ internal class _WidgetInspectorState__widget_inspector
                 (paintClip is not null)
                 && !(
                     paintClip
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ).contains(localPosition)
             )
             {
                 Rect paintClip__106714__value106780 = (
                     paintClip
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 continue;
             }
@@ -3288,7 +3330,7 @@ internal class _WidgetInspectorState__widget_inspector
             hits.Add(@object);
         }
         return hit;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual List<RenderObject> hitTest(Offset position, RenderObject root)
@@ -3300,12 +3342,14 @@ internal class _WidgetInspectorState__widget_inspector
         {
             Size sizeLocal = @object.semanticBounds.size;
             return sizeLocal.width * sizeLocal.height;
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         regularHits.sort((a, b) => area(a).CompareTo(area(b)));
         var hits = new HashSet<RenderObject>();
         return hits.ToList();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _inspectAt(Offset position)
@@ -3345,9 +3389,7 @@ internal class _WidgetInspectorState__widget_inspector
             !bounds.contains(
                 (
                     _lastPointerLocation
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             )
         )
@@ -3374,9 +3416,7 @@ internal class _WidgetInspectorState__widget_inspector
             _inspectAt(
                 (
                     _lastPointerLocation
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             );
             WidgetInspectorService.instance._notifyToolsOfSelection(
@@ -3409,7 +3449,7 @@ internal class _WidgetInspectorState__widget_inspector
                 ),
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -3504,9 +3544,7 @@ public abstract class InspectorButton : StatelessWidget
         GlobalKey<IState>? buttonKey = null
     )
     {
-        throw new InvalidOperationException(
-            "Dart abstract constructors cannot be invoked directly."
-        );
+        throw new InvalidOperationException("Abstract constructors cannot be invoked directly.");
     }
 
     protected static InspectorButton CreateToggle(
@@ -3517,9 +3555,7 @@ public abstract class InspectorButton : StatelessWidget
         bool toggledOn = true
     )
     {
-        throw new InvalidOperationException(
-            "Dart abstract constructors cannot be invoked directly."
-        );
+        throw new InvalidOperationException("Abstract constructors cannot be invoked directly.");
     }
 
     protected static InspectorButton CreateIconOnly(
@@ -3529,9 +3565,7 @@ public abstract class InspectorButton : StatelessWidget
         IconData icon = default!
     )
     {
-        throw new InvalidOperationException(
-            "Dart abstract constructors cannot be invoked directly."
-        );
+        throw new InvalidOperationException("Abstract constructors cannot be invoked directly.");
     }
 
     public virtual double iconSizeForVariant
@@ -3550,7 +3584,9 @@ public abstract class InspectorButton : StatelessWidget
                     return buttonIconSize;
                 }
                 default:
-                    throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                    throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    );
             }
         }
     }
@@ -3675,7 +3711,7 @@ internal class _InspectorOverlay__widget_inspector : LeafRenderObjectWidget
     public override RenderObject createRenderObject(BuildContext context)
     {
         return new _RenderInspectorOverlay__widget_inspector(selection: selection);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -3713,7 +3749,7 @@ public class _RenderInspectorOverlay__widget_inspector : RenderBox
     public override Size computeDryLayout(BoxConstraints constraints)
     {
         return constraints.constrain(Size.infinite);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paint(PaintingContext context, Offset offset)
@@ -3856,7 +3892,7 @@ public static partial class Widget_inspectorLibrary
             return creator__124233__as124271.element;
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -3870,7 +3906,7 @@ public static partial class Widget_inspectorLibrary
             return null;
         }
         return ModalRoute<object>.untypedOf(element);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -3880,7 +3916,7 @@ public static partial class Widget_inspectorLibrary
     {
         Size sizeLocal = @object.semanticBounds.size;
         return sizeLocal.width * sizeLocal.height;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -3917,7 +3953,7 @@ public static partial class Widget_inspectorLibrary
             return _modalRouteForRenderObject(smallestHit);
         }
         return _modalRouteForRenderObject(hits.First());
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -3936,7 +3972,9 @@ public static partial class Widget_inspectorLibrary
                 {
                     IModalRoute? route = _modalRouteForRenderObject(hit);
                     return (route is null) || !route.offstage;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
             .ToList()
@@ -3955,7 +3993,7 @@ public static partial class Widget_inspectorLibrary
             .ToList();
         scopedHits.sort((a, b) => _inspectorHitArea(a).CompareTo(_inspectorHitArea(b)));
         return scopedHits;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -4120,7 +4158,7 @@ internal class _InspectorOverlayLayer__widget_inspector : Layer
             );
         }
         return recorder.endRecording();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _paintDescription(
@@ -4246,7 +4284,7 @@ internal class _InspectorOverlayLayer__widget_inspector : Layer
     )
     {
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _isInInspectorRenderObjectTree(RenderObject child)
@@ -4267,7 +4305,7 @@ internal class _InspectorOverlayLayer__widget_inspector : Layer
             current = current.parent;
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -4450,7 +4488,7 @@ internal class _WidgetInspectorButtonGroupState__widget_inspector
             bottom: bottomPadding,
             child: buttonGroup
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _exitWidgetSelectionMode()
@@ -4584,7 +4622,7 @@ internal class _WidgetInspectorButtonState__widget_inspector
                 ),
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _tooltipVisibleAfter(Duration duration)
@@ -4710,7 +4748,7 @@ internal class _ExitWidgetSelectionTooltipPainter__widget_inspector : CustomPain
     {
         var __oldDelegate = (_ExitWidgetSelectionTooltipPainter__widget_inspector)oldDelegate;
         return tooltipMessage != __oldDelegate.tooltipMessage;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -4769,7 +4807,7 @@ public static partial class Widget_inspectorLibrary
         }
         result.AddRange(pending.Cast<DiagnosticsNode>());
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -4809,7 +4847,7 @@ public static partial class Widget_inspectorLibrary
             });
             return new List<DiagnosticsNode>();
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -4847,7 +4885,9 @@ public static partial class Widget_inspectorLibrary
                 }
             }
             return false;
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         var nodes = new List<DiagnosticsNode>();
         bool processElement(Element target)
@@ -4887,14 +4927,16 @@ public static partial class Widget_inspectorLibrary
                 return false;
             }
             return true;
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         if (processElement(element))
         {
             element.visitAncestorElements(processElement);
         }
         return nodes;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -4917,10 +4959,10 @@ public static partial class Widget_inspectorLibrary
                 isLocal = WidgetInspectorService.instance._isLocalCreationLocation(location.file);
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return isLocal;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -4931,7 +4973,7 @@ public static partial class Widget_inspectorLibrary
         CreationLocation? location = CreationLocation.of(widget);
         return (location is not null)
             && WidgetInspectorService.instance._isLocalCreationLocation(location.file);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -4941,7 +4983,7 @@ public static partial class Widget_inspectorLibrary
     {
         CreationLocation? location = _getCreationLocation(@object);
         return location?.ToString();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -4954,7 +4996,7 @@ public static partial class Widget_inspectorLibrary
                 ? ((Element)@object).widget
                 : @object;
         return (candidate is null) ? null : CreationLocation.of(candidate);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -4976,19 +5018,19 @@ public static partial class Widget_inspectorLibrary
         if (id is not null)
         {
             long id__152830__value152866 = (
-                id ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                id ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             return ((id__152830__value152866));
         }
         id = checked(_locations.Count);
         _locations.Add(location);
         _locationToId[location] = (
-            (id ?? throw new global::System.NullReferenceException("Dart null assertion failed."))
+            (id ?? throw new global::System.NullReferenceException("A required value was null."))
         );
         return (
-            (id ?? throw new global::System.NullReferenceException("Dart null assertion failed."))
+            (id ?? throw new global::System.NullReferenceException("A required value was null."))
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -5023,7 +5065,7 @@ public static partial class Widget_inspectorLibrary
             locations.GetValueOrDefault(namesKey)!.Add(location.name);
         }
         return fileLocationsMap.cast<string, object?>();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -5113,7 +5155,7 @@ public class InspectorSerializationDelegate : DiagnosticsSerializationDelegate
             );
         }
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override DiagnosticsSerializationDelegate delegateForNode(DiagnosticsNode node)
@@ -5121,7 +5163,7 @@ public class InspectorSerializationDelegate : DiagnosticsSerializationDelegate
         return (summaryTree || (subtreeDepth > 1L) || service._shouldShowInSummaryTree(node))
             ? copyWith(subtreeDepth: subtreeDepth - 1L)
             : this;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual List<DiagnosticsNode> filterChildren(
@@ -5130,7 +5172,7 @@ public class InspectorSerializationDelegate : DiagnosticsSerializationDelegate
     )
     {
         return service._filterChildren(nodes, this);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual List<DiagnosticsNode> filterProperties(
@@ -5146,11 +5188,13 @@ public class InspectorSerializationDelegate : DiagnosticsSerializationDelegate
                     return !node.isFiltered(
                         createdByLocalProject ? DiagnosticLevel.fine : DiagnosticLevel.info
                     );
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
             .ToList();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override List<DiagnosticsNode> truncateNodesList(
@@ -5170,7 +5214,7 @@ public class InspectorSerializationDelegate : DiagnosticsSerializationDelegate
             );
         }
         return nodes;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsSerializationDelegate copyWith(
@@ -5192,7 +5236,7 @@ public class InspectorSerializationDelegate : DiagnosticsSerializationDelegate
             inDisableWidgetInspectorScope: inDisableWidgetInspectorScope
                 ?? this.inDisableWidgetInspectorScope
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -5210,7 +5254,7 @@ public class WeakMap<K, V>
     internal virtual bool _isPrimitive(object? key)
     {
         return (key is null) || (key is string) || (key is double) || (key is bool);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public V? this[K key]
@@ -5251,7 +5295,7 @@ public class WeakMap<K, V>
             _objects[key] = null;
             return result;
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void clear()

@@ -88,7 +88,9 @@ public abstract class RenderSliverPersistentHeader
             {
                 Axis.vertical => child!.size.height,
                 Axis.horizontal => child!.size.width,
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             };
         }
     }
@@ -187,7 +189,7 @@ public abstract class RenderSliverPersistentHeader
             );
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void applyPaintTransform(RenderObject child, Matrix4 transform)
@@ -215,7 +217,9 @@ public abstract class RenderSliverPersistentHeader
                 ),
                 AxisDirection.right => new Offset(childMainAxisPosition(child!), 0.0),
                 AxisDirection.down => new Offset(0.0, childMainAxisPosition(child!)),
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             };
             context.paintChild(child!, offset);
         }
@@ -272,7 +276,7 @@ public abstract class RenderSliverPersistentHeader
             return true;
         });
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual RenderBox? child
@@ -329,7 +333,7 @@ public abstract class RenderSliverPersistentHeader
                 ((Diagnosticable)child!).toDiagnosticsNode(name: "child"),
             }
             : new List<DiagnosticsNode>();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool _getRightWayUp(SliverConstraints constraints)
@@ -339,9 +343,11 @@ public abstract class RenderSliverPersistentHeader
         {
             GrowthDirection.forward => !reversed,
             GrowthDirection.reverse => reversed,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool hitTestBoxChild(
@@ -390,7 +396,7 @@ public abstract class RenderSliverPersistentHeader
                 return child.hitTest(result, position: transformedPosition);
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void applyPaintTransformForBoxChild(RenderBox child, Matrix4 transform)
@@ -455,7 +461,7 @@ public abstract class RenderSliverScrollingPersistentHeader : RenderSliverPersis
             hasVisualOverflow: true
         );
         return (stretchOffset > 0L) ? 0.0 : Math.Min(0.0, paintExtentLocal - childExtent);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void performLayout()
@@ -471,9 +477,9 @@ public abstract class RenderSliverScrollingPersistentHeader : RenderSliverPersis
         DartRuntimePrimitives.Assert(() => _childPosition is not null);
         return (
             _childPosition
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -560,7 +566,9 @@ public abstract class RenderSliverPinnedPersistentHeader : RenderSliverPersisten
             ),
             AxisDirection.right => Sliver_persistent_headerLibrary._trim(localBounds, left: 0),
             AxisDirection.down => Sliver_persistent_headerLibrary._trim(localBounds, top: 0),
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         base.showOnScreen(descendant: this, rect: newRect, duration: duration, curve: curve);
     }
@@ -649,7 +657,7 @@ public abstract class RenderSliverFloatingPersistentHeader : RenderSliverPersist
             maxExtentLocal
             - (
                 _effectiveScrollOffset
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         double layoutExtentLocal = maxExtentLocal - constraints.scrollOffset;
         geometry = new SliverGeometry(
@@ -669,7 +677,7 @@ public abstract class RenderSliverFloatingPersistentHeader : RenderSliverPersist
             hasVisualOverflow: true
         );
         return (stretchOffset > 0L) ? 0.0 : Math.Min(0.0, paintExtentLocal - childExtent);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _updateAnimation(Duration duration, double endValue, Curve curve)
@@ -697,9 +705,7 @@ public abstract class RenderSliverFloatingPersistentHeader : RenderSliverPersist
             new Tween<double>(
                 begin: (
                     _effectiveScrollOffset
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 end: endValue
             ).chain(new CurveTween(curve: curve))
@@ -723,9 +729,7 @@ public abstract class RenderSliverFloatingPersistentHeader : RenderSliverPersist
             && (
                 (
                     _effectiveScrollOffset
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) <= 0.0
             )
         )
@@ -737,9 +741,7 @@ public abstract class RenderSliverFloatingPersistentHeader : RenderSliverPersist
             && (
                 (
                     _effectiveScrollOffset
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) >= maxExtent
             )
         )
@@ -770,14 +772,12 @@ public abstract class RenderSliverFloatingPersistentHeader : RenderSliverPersist
                     < (
                         _lastActualScrollOffset
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 || (
                     _effectiveScrollOffset
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) < maxExtentLocal
             )
         )
@@ -785,9 +785,7 @@ public abstract class RenderSliverFloatingPersistentHeader : RenderSliverPersist
             double delta =
                 (
                     _lastActualScrollOffset
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) - constraintsLocal.scrollOffset;
             bool allowFloatingExpansion =
                 Equals(constraintsLocal.userScrollDirection, ScrollDirection.forward)
@@ -801,7 +799,7 @@ public abstract class RenderSliverFloatingPersistentHeader : RenderSliverPersist
                     (
                         _effectiveScrollOffset
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) > maxExtentLocal
                 )
@@ -819,9 +817,7 @@ public abstract class RenderSliverFloatingPersistentHeader : RenderSliverPersist
             _effectiveScrollOffset = Dart_uiLibrary.clampDouble(
                 (
                     _effectiveScrollOffset
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) - delta,
                 0.0,
                 constraintsLocal.scrollOffset
@@ -834,12 +830,12 @@ public abstract class RenderSliverFloatingPersistentHeader : RenderSliverPersist
         bool overlapsContentLocal =
             (
                 _effectiveScrollOffset
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ) < constraintsLocal.scrollOffset;
         layoutChild(
             (
                 _effectiveScrollOffset
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             maxExtentLocal,
             overlapsContent: overlapsContentLocal
@@ -936,7 +932,7 @@ public abstract class RenderSliverFloatingPersistentHeader : RenderSliverPersist
         var __child = (RenderBox)(object)child;
         DartRuntimePrimitives.Assert(() => Equals(__child, this.child));
         return _childPosition ?? 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -976,7 +972,7 @@ public abstract class RenderSliverFloatingPinnedPersistentHeader
             maxExtentLocal
             - (
                 _effectiveScrollOffset
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         double clampedPaintExtent = Dart_uiLibrary.clampDouble(
             paintExtentLocal,
@@ -995,6 +991,6 @@ public abstract class RenderSliverFloatingPinnedPersistentHeader
             hasVisualOverflow: true
         );
         return 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

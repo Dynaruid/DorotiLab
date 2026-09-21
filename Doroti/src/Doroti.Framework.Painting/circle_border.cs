@@ -31,7 +31,7 @@ public class CircleBorder : OutlinedBorder
                     (
                         Dart_uiLibrary.lerpDouble(a__as2194.eccentricity, eccentricity, t)
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ),
                     0.0,
@@ -40,7 +40,7 @@ public class CircleBorder : OutlinedBorder
             );
         }
         return base.lerpFrom(a, t);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override ShapeBorder? lerpTo(ShapeBorder? b, double t)
@@ -54,7 +54,7 @@ public class CircleBorder : OutlinedBorder
                     (
                         Dart_uiLibrary.lerpDouble(eccentricity, b__as2507.eccentricity, t)
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ),
                     0.0,
@@ -63,7 +63,7 @@ public class CircleBorder : OutlinedBorder
             );
         }
         return base.lerpTo(b, t);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Path getInnerPath(Rect rect, TextDirection? textDirection = null)
@@ -78,7 +78,7 @@ public class CircleBorder : OutlinedBorder
                 }
             )
         )();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Path getOuterPath(Rect rect, TextDirection? textDirection = null)
@@ -93,7 +93,7 @@ public class CircleBorder : OutlinedBorder
                 }
             )
         )();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool hitTest(Rect rect, Offset position, TextDirection? textDirection = null)
@@ -105,7 +105,7 @@ public class CircleBorder : OutlinedBorder
                 Radius.elliptical(adjustedRect.width / 2.0, adjustedRect.height / 2.0)
             )
             .contains(position);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paintInterior(
@@ -149,7 +149,7 @@ public class CircleBorder : OutlinedBorder
             side: side ?? this.side,
             eccentricity: eccentricity ?? this.eccentricity
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paint(
@@ -207,7 +207,7 @@ public class CircleBorder : OutlinedBorder
                 rect.bottom
             );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool Equals(object? other)
@@ -236,6 +236,6 @@ public class CircleBorder : OutlinedBorder
             return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "CircleBorder")}({side}, eccentricity: {eccentricity})";
         }
         return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "CircleBorder")}({side})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

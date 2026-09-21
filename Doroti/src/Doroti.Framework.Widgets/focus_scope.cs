@@ -133,7 +133,7 @@ public class Focus : StatefulWidget
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         DartRuntimePrimitives.Assert(() =>
         {
@@ -154,10 +154,10 @@ public class Focus : StatefulWidget
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return node!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static FocusNode? maybeOf(
@@ -176,7 +176,7 @@ public class Focus : StatefulWidget
                 DartRuntimePrimitives.ConvertValue<FocusNode>(null),
             FocusNode node => node,
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static bool isAt(BuildContext context) =>
@@ -290,9 +290,7 @@ internal class _FocusState__focus_scope : State<Focus>
             {
                 focusNode.canRequestFocus = (
                     widget._canRequestFocus
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
             }
         }
@@ -317,7 +315,7 @@ internal class _FocusState__focus_scope : State<Focus>
             descendantsAreTraversable: widget.descendantsAreTraversable,
             skipTraversal: widget.skipTraversal
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void dispose()
@@ -365,7 +363,7 @@ internal class _FocusState__focus_scope : State<Focus>
                 focusNode.debugLabel = widget.debugLabel;
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         if (Equals(oldWidget.focusNode, widget.focusNode))
         {
@@ -385,7 +383,7 @@ internal class _FocusState__focus_scope : State<Focus>
                     focusNode.canRequestFocus = (
                         widget._canRequestFocus
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     );
                 }
@@ -470,10 +468,10 @@ internal class _FocusState__focus_scope : State<Focus>
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return new _FocusInheritedScope__focus_scope(node: focusNode, child: childLocal);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -535,7 +533,7 @@ public class FocusScope : Focus
     {
         return maybeOf(context, scopeOk: true, createDependency: createDependency)?.nearestScope
             ?? context.owner!.focusManager.rootScope;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override State<Focus> createState() =>
@@ -582,7 +580,7 @@ internal class _FocusScopeState__focus_scope : _FocusState__focus_scope
             canRequestFocus: widget.canRequestFocus,
             skipTraversal: widget.skipTraversal
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -596,7 +594,7 @@ internal class _FocusScopeState__focus_scope : _FocusState__focus_scope
             );
         }
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -660,10 +658,12 @@ internal class _DebugFocusBorder__focus_scope : StatelessWidget
                     position: DecorationPosition.foreground,
                     child: child
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -694,6 +694,6 @@ public class ExcludeFocus : StatelessWidget
             descendantsAreFocusable: !excluding,
             child: child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

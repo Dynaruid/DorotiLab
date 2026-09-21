@@ -99,7 +99,7 @@ public abstract class ScrollView : StatelessWidget
             scrollDirection,
             reverse
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public abstract List<Widget> buildSlivers(BuildContext context);
@@ -131,9 +131,11 @@ public abstract class ScrollView : StatelessWidget
                     return true;
                 }
                 default:
-                    throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                    throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    );
             }
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         ScrollCacheExtent? effectiveScrollCacheExtent =
             scrollCacheExtent
@@ -143,7 +145,7 @@ public abstract class ScrollView : StatelessWidget
                         (
                             cacheExtent
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     )
@@ -170,7 +172,7 @@ public abstract class ScrollView : StatelessWidget
             paintOrder: paintOrder,
             clipBehavior: clipBehavior
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -198,7 +200,9 @@ public abstract class ScrollView : StatelessWidget
             viewportBuilder: (context, offset) =>
             {
                 return buildViewport(context, offset, axisDirectionLocal, slivers);
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             clipBehavior: clipBehavior
         );
@@ -224,7 +228,9 @@ public abstract class ScrollView : StatelessWidget
                         FocusManager.instance.primaryFocus?.unfocus();
                     }
                     return false;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
         }
@@ -232,7 +238,7 @@ public abstract class ScrollView : StatelessWidget
         {
             return scrollableResult;
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -423,7 +429,7 @@ public abstract class BoxScrollView : ScrollView
             );
         }
         return new List<Widget> { sliverLocal };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public abstract Widget buildChildLayout(BuildContext context);
@@ -636,7 +642,9 @@ public class ListView : BoxScrollView
                     return itemBuilder(context, itemIndex);
                 }
                 return separatorBuilder(context, itemIndex);
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             findChildIndexCallback: (findItemIndexCallback is not null)
                 ? (
@@ -649,12 +657,12 @@ public class ListView : BoxScrollView
                                 (
                                     itemIndexLocal
                                     ?? throw new global::System.NullReferenceException(
-                                        "Dart null assertion failed."
+                                        "A required value was null."
                                     )
                                 ) * 2L
                             );
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 )
@@ -666,7 +674,9 @@ public class ListView : BoxScrollView
             semanticIndexCallback: (widget, index) =>
             {
                 return ((checked(index) & 1L) == 0L) ? checked(index / 2L) : null;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
         return __instance;
@@ -733,15 +743,13 @@ public class ListView : BoxScrollView
         {
             double itemExtent__value70683 = (
                 itemExtent
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             return new SliverFixedExtentList(
                 @delegate: childrenDelegate,
                 itemExtent: (
                     itemExtent
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             );
         }
@@ -766,7 +774,7 @@ public class ListView : BoxScrollView
             }
         }
         return new SliverList(@delegate: childrenDelegate);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -778,7 +786,7 @@ public class ListView : BoxScrollView
     internal static long _computeActualChildCount(long itemCount)
     {
         return Math.Max(0L, ((itemCount) * 2L) - 1L);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1069,6 +1077,6 @@ public class GridView : BoxScrollView
     public override Widget buildChildLayout(BuildContext context)
     {
         return new SliverGrid(@delegate: childrenDelegate, gridDelegate: gridDelegate);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

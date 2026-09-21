@@ -191,7 +191,7 @@ public class TextButton : ButtonStyleButton
             backgroundBuilder: backgroundBuilder,
             foregroundBuilder: foregroundBuilder
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override ButtonStyle defaultStyleOf(BuildContext context)
@@ -221,7 +221,7 @@ public class TextButton : ButtonStyleButton
     public override ButtonStyle? themeStyleOf(BuildContext context)
     {
         return TextButtonTheme.of(context).style;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -279,7 +279,7 @@ internal class _TextButtonWithIconChild__text_button : StatelessWidget
             mainAxisSize: MainAxisSize.min,
             spacing: (
                 Dart_uiLibrary.lerpDouble(8L, 4L, scaleLocal)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             children: Equals(effectiveIconAlignment, IconAlignment.start)
                 ? new List<Widget>
@@ -293,7 +293,7 @@ internal class _TextButtonWithIconChild__text_button : StatelessWidget
                     DartRuntimePrimitives.ConvertValue<Widget>(icon),
                 }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -343,7 +343,9 @@ internal class _TextButtonDefaultsM3__text_button : ButtonStyle
                         return _colors.onSurface.withOpacity(0.38);
                     }
                     return _colors.primary;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );
@@ -365,7 +367,9 @@ internal class _TextButtonDefaultsM3__text_button : ButtonStyle
                         return _colors.primary.withOpacity(0.1);
                     }
                     return null;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );
@@ -421,7 +425,7 @@ internal class _TextButtonDefaultsM3__text_button : ButtonStyle
                         }
                         return _colors.primary;
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 );

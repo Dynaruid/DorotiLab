@@ -464,7 +464,9 @@ internal class _RadioListTileState__radio_list_tile<T> : State<RadioListTile<T>>
                         (widget.secondary, control)
                     ),
                 _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                    throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
             }
         );
         ThemeData theme = Theme.of(context);
@@ -515,7 +517,7 @@ internal class _RadioListTileState__radio_list_tile<T> : State<RadioListTile<T>>
                 internalAddSemanticForOnTap: widget.internalAddSemanticForOnTap
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual RadioGroupRegistry<T>? registry

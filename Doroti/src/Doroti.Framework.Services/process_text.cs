@@ -87,7 +87,7 @@ public class DefaultProcessTextService : ProcessTextService
                 return new ProcessTextAction(id, label);
             })
             .ToList();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual async Future<string?> processTextAction(string id, string text, bool readOnly)
@@ -100,6 +100,6 @@ public class DefaultProcessTextService : ProcessTextService
                 )
         )!;
         return processedText;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

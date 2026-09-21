@@ -86,9 +86,11 @@ public abstract class EdgeInsetsGeometry
         {
             Axis.horizontal => horizontal,
             Axis.vertical => vertical,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Size collapsedSize => new Size(horizontal, vertical);
@@ -98,13 +100,13 @@ public abstract class EdgeInsetsGeometry
     public virtual Size inflateSize(Size size)
     {
         return new Size(size.width + horizontal, size.height + vertical);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Size deflateSize(Size size)
     {
         return new Size(size.width - horizontal, size.height - vertical);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual EdgeInsetsGeometry subtract(EdgeInsetsGeometry other)
@@ -117,7 +119,7 @@ public abstract class EdgeInsetsGeometry
             _top - other._top,
             _bottom - other._bottom
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual EdgeInsetsGeometry add(EdgeInsetsGeometry other)
@@ -130,7 +132,7 @@ public abstract class EdgeInsetsGeometry
             _top + other._top,
             _bottom + other._bottom
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual EdgeInsetsGeometry clamp(EdgeInsetsGeometry min, EdgeInsetsGeometry max)
@@ -143,7 +145,7 @@ public abstract class EdgeInsetsGeometry
             Dart_uiLibrary.clampDouble(_top, min._top, max._top),
             Dart_uiLibrary.clampDouble(_bottom, min._bottom, max._bottom)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public abstract EdgeInsetsGeometry op_Subtract();
@@ -181,30 +183,30 @@ public abstract class EdgeInsetsGeometry
         return new _MixedEdgeInsets__edge_insets(
             (
                 Dart_uiLibrary.lerpDouble(a._left, b._left, t)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             (
                 Dart_uiLibrary.lerpDouble(a._right, b._right, t)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             (
                 Dart_uiLibrary.lerpDouble(a._start, b._start, t)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             (
                 Dart_uiLibrary.lerpDouble(a._end, b._end, t)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             (
                 Dart_uiLibrary.lerpDouble(a._top, b._top, t)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             (
                 Dart_uiLibrary.lerpDouble(a._bottom, b._bottom, t)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public abstract EdgeInsets resolve(TextDirection? direction);
@@ -242,7 +244,7 @@ public abstract class EdgeInsetsGeometry
             + "0.0, "
             + $"{_end.toStringAsFixed(1L)}, "
             + "0.0)";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool Equals(object? other)
@@ -352,7 +354,7 @@ public class EdgeInsets : EdgeInsetsGeometry
             rect.right + right,
             rect.bottom + bottom
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Rect deflateRect(Rect rect)
@@ -363,7 +365,7 @@ public class EdgeInsets : EdgeInsetsGeometry
             rect.right - right,
             rect.bottom - bottom
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual RRect inflateRRect(RRect rect)
@@ -382,7 +384,7 @@ public class EdgeInsets : EdgeInsetsGeometry
                 minimum: Radius.zero
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual RRect deflateRRect(RRect rect)
@@ -401,7 +403,7 @@ public class EdgeInsets : EdgeInsetsGeometry
                 minimum: Radius.zero
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override EdgeInsetsGeometry subtract(EdgeInsetsGeometry other)
@@ -412,7 +414,7 @@ public class EdgeInsets : EdgeInsetsGeometry
             return op_Subtract(other__as22836);
         }
         return base.subtract(other);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override EdgeInsetsGeometry add(EdgeInsetsGeometry other)
@@ -423,7 +425,7 @@ public class EdgeInsets : EdgeInsetsGeometry
             return op_Add(other__as23004);
         }
         return base.add(other);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override EdgeInsetsGeometry clamp(EdgeInsetsGeometry min, EdgeInsetsGeometry max)
@@ -434,7 +436,7 @@ public class EdgeInsets : EdgeInsetsGeometry
             Dart_uiLibrary.clampDouble(_right, min._right, max._right),
             Dart_uiLibrary.clampDouble(_bottom, min._bottom, max._bottom)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual EdgeInsets op_Subtract(EdgeInsets other)
@@ -445,7 +447,7 @@ public class EdgeInsets : EdgeInsetsGeometry
             right - other.right,
             bottom - other.bottom
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual EdgeInsets op_Add(EdgeInsets other)
@@ -456,25 +458,25 @@ public class EdgeInsets : EdgeInsetsGeometry
             right + other.right,
             bottom + other.bottom
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override EdgeInsets op_Subtract()
     {
         return new EdgeInsets(-left, -top, -right, -bottom);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override EdgeInsets op_Multiply(double other)
     {
         return new EdgeInsets(left * other, top * other, right * other, bottom * other);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override EdgeInsets op_Divide(double other)
     {
         return new EdgeInsets(left / other, top / other, right / other, bottom / other);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override EdgeInsets ___(double other)
@@ -485,13 +487,13 @@ public class EdgeInsets : EdgeInsetsGeometry
             checked((long)(right / other)).toDouble(),
             checked((long)(bottom / other)).toDouble()
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override EdgeInsets __(double other)
     {
         return new EdgeInsets(left % other, top % other, right % other, bottom % other);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static EdgeInsets? lerp(EdgeInsets? a, EdgeInsets? b, double t)
@@ -511,22 +513,22 @@ public class EdgeInsets : EdgeInsetsGeometry
         return new EdgeInsets(
             (
                 Dart_uiLibrary.lerpDouble(a.left, b.left, t)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             (
                 Dart_uiLibrary.lerpDouble(a.top, b.top, t)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             (
                 Dart_uiLibrary.lerpDouble(a.right, b.right, t)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             (
                 Dart_uiLibrary.lerpDouble(a.bottom, b.bottom, t)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override EdgeInsets resolve(TextDirection? direction) => this;
@@ -544,7 +546,7 @@ public class EdgeInsets : EdgeInsetsGeometry
             right: right ?? this.right,
             bottom: bottom ?? this.bottom
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -621,7 +623,7 @@ public class EdgeInsetsDirectional : EdgeInsetsGeometry
             return op_Subtract(other__as29924);
         }
         return base.subtract(other);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override EdgeInsetsGeometry add(EdgeInsetsGeometry other)
@@ -632,7 +634,7 @@ public class EdgeInsetsDirectional : EdgeInsetsGeometry
             return op_Add(other__as30103);
         }
         return base.add(other);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual EdgeInsetsDirectional op_Subtract(EdgeInsetsDirectional other)
@@ -643,7 +645,7 @@ public class EdgeInsetsDirectional : EdgeInsetsGeometry
             end - other.end,
             bottom - other.bottom
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual EdgeInsetsDirectional op_Add(EdgeInsetsDirectional other)
@@ -654,25 +656,25 @@ public class EdgeInsetsDirectional : EdgeInsetsGeometry
             end + other.end,
             bottom + other.bottom
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override EdgeInsetsDirectional op_Subtract()
     {
         return new EdgeInsetsDirectional(-start, -top, -end, -bottom);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override EdgeInsetsDirectional op_Multiply(double other)
     {
         return new EdgeInsetsDirectional(start * other, top * other, end * other, bottom * other);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override EdgeInsetsDirectional op_Divide(double other)
     {
         return new EdgeInsetsDirectional(start / other, top / other, end / other, bottom / other);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override EdgeInsetsDirectional ___(double other)
@@ -683,13 +685,13 @@ public class EdgeInsetsDirectional : EdgeInsetsGeometry
             checked((long)(end / other)).toDouble(),
             checked((long)(bottom / other)).toDouble()
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override EdgeInsetsDirectional __(double other)
     {
         return new EdgeInsetsDirectional(start % other, top % other, end % other, bottom % other);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static EdgeInsetsDirectional? lerp(
@@ -713,22 +715,22 @@ public class EdgeInsetsDirectional : EdgeInsetsGeometry
         return new EdgeInsetsDirectional(
             (
                 Dart_uiLibrary.lerpDouble(a.start, b.start, t)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             (
                 Dart_uiLibrary.lerpDouble(a.top, b.top, t)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             (
                 Dart_uiLibrary.lerpDouble(a.end, b.end, t)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             (
                 Dart_uiLibrary.lerpDouble(a.bottom, b.bottom, t)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override EdgeInsets resolve(TextDirection? direction)
@@ -741,14 +743,16 @@ public class EdgeInsetsDirectional : EdgeInsetsGeometry
         );
         return (
             direction
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         ) switch
         {
             TextDirection.rtl => new EdgeInsets(end, top, start, bottom),
             TextDirection.ltr => new EdgeInsets(start, top, end, bottom),
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual EdgeInsetsDirectional copyWith(
@@ -764,7 +768,7 @@ public class EdgeInsetsDirectional : EdgeInsetsGeometry
             end: end ?? this.end,
             bottom: bottom ?? this.bottom
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -834,7 +838,7 @@ internal class _MixedEdgeInsets__edge_insets : EdgeInsetsGeometry
     public override _MixedEdgeInsets__edge_insets op_Subtract()
     {
         return new _MixedEdgeInsets__edge_insets(-_left, -_right, -_start, -_end, -_top, -_bottom);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override _MixedEdgeInsets__edge_insets op_Multiply(double other)
@@ -847,7 +851,7 @@ internal class _MixedEdgeInsets__edge_insets : EdgeInsetsGeometry
             _top * other,
             _bottom * other
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override _MixedEdgeInsets__edge_insets op_Divide(double other)
@@ -860,7 +864,7 @@ internal class _MixedEdgeInsets__edge_insets : EdgeInsetsGeometry
             _top / other,
             _bottom / other
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override _MixedEdgeInsets__edge_insets ___(double other)
@@ -873,7 +877,7 @@ internal class _MixedEdgeInsets__edge_insets : EdgeInsetsGeometry
             checked((long)(_top / other)).toDouble(),
             checked((long)(_bottom / other)).toDouble()
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override _MixedEdgeInsets__edge_insets __(double other)
@@ -886,7 +890,7 @@ internal class _MixedEdgeInsets__edge_insets : EdgeInsetsGeometry
             _top % other,
             _bottom % other
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override EdgeInsets resolve(TextDirection? direction)
@@ -899,13 +903,15 @@ internal class _MixedEdgeInsets__edge_insets : EdgeInsetsGeometry
         );
         return (
             direction
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         ) switch
         {
             TextDirection.rtl => new EdgeInsets(_end + _left, _top, _start + _right, _bottom),
             TextDirection.ltr => new EdgeInsets(_start + _left, _top, _end + _right, _bottom),
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

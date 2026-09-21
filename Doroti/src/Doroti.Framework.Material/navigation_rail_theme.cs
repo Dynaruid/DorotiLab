@@ -84,7 +84,7 @@ public class NavigationRailThemeData : Diagnosticable
             minWidth: minWidth ?? this.minWidth,
             minExtendedWidth: minExtendedWidth ?? this.minExtendedWidth
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static NavigationRailThemeData? lerp(
@@ -126,7 +126,7 @@ public class NavigationRailThemeData : Diagnosticable
             minWidth: Dart_uiLibrary.lerpDouble(a?.minWidth, b?.minWidth, t),
             minExtendedWidth: Dart_uiLibrary.lerpDouble(a?.minExtendedWidth, b?.minExtendedWidth, t)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override int GetHashCode() =>
@@ -283,7 +283,7 @@ public class NavigationRailThemeData : Diagnosticable
             return true;
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -292,7 +292,7 @@ public class NavigationRailThemeData : Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -315,13 +315,13 @@ public class NavigationRailTheme : InheritedTheme
         NavigationRailTheme? navigationRailThemeLocal =
             context.dependOnInheritedWidgetOfExactType<NavigationRailTheme>();
         return navigationRailThemeLocal?.data ?? Theme.of(context).navigationRailTheme;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget wrap(BuildContext context, Widget child)
     {
         return new NavigationRailTheme(data: data, child: child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget) =>

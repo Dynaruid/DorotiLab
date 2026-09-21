@@ -60,9 +60,9 @@ public static class FoundationRuntimePorts
             string text => text.Length,
             ICollection collection => collection.Count,
             IEnumerable sequence => sequence.Cast<object?>().Count(),
-            null => throw new NullReferenceException("Dart length was read from null."),
+            null => throw new NullReferenceException("Length was read from a null value."),
             _ => throw new InvalidOperationException(
-                $"{value.GetType().FullName} has no Dart length contract."
+                $"{value.GetType().FullName} has no supported length contract."
             ),
         };
 
@@ -72,9 +72,9 @@ public static class FoundationRuntimePorts
             string text => text[Convert.ToInt32(index, CultureInfo.InvariantCulture)],
             IList list => list[Convert.ToInt32(index, CultureInfo.InvariantCulture)],
             IDictionary map => map[index!],
-            null => throw new NullReferenceException("Dart index access targeted null."),
+            null => throw new NullReferenceException("Index access targeted a null value."),
             _ => throw new InvalidOperationException(
-                $"{value.GetType().FullName} is not Dart-indexable."
+                $"{value.GetType().FullName} is not indexable."
             ),
         };
 }

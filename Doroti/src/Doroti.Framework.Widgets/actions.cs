@@ -14,11 +14,13 @@ public static partial class ActionsLibrary
             {
                 parent = DartRuntimePrimitives.ConvertValue<BuildContext>(ancestor);
                 return false;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
         return parent;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -41,10 +43,10 @@ public abstract class Intent : Diagnosticable
                 .toDiagnosticsNode()
                 .toStringDeep(minLevel: minLevel);
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -53,7 +55,7 @@ public abstract class Intent : Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties) { }
@@ -122,7 +124,7 @@ public abstract class IntentAction<T> : Diagnosticable, IActionListenerSource, I
                     $"An Intent of type {badIntentString} cannot be handled by {GetType()}: the Intent must be of a subtype of {typeof(T)}."
         );
         return badIntentString is null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual IntentAction<T>? callingAction => ((IntentAction<T>?)_currentCallingAction)!;
@@ -144,7 +146,7 @@ public abstract class IntentAction<T> : Diagnosticable, IActionListenerSource, I
     public virtual KeyEventResult toKeyEventResult(T intent, object? invokeResult)
     {
         return consumesKey(intent) ? KeyEventResult.handled : KeyEventResult.skipRemainingHandlers;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public abstract object? invoke(T intent, BuildContext? context = null);
@@ -202,7 +204,9 @@ public abstract class IntentAction<T> : Diagnosticable, IActionListenerSource, I
                         ),
                     };
                 return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             });
             try
             {
@@ -232,7 +236,7 @@ public abstract class IntentAction<T> : Diagnosticable, IActionListenerSource, I
     internal virtual IntentAction<T> _makeOverridableAction(BuildContext context)
     {
         return new _OverridableAction__actions<T>(defaultAction: this, lookupContext: context);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
@@ -248,10 +252,10 @@ public abstract class IntentAction<T> : Diagnosticable, IActionListenerSource, I
                 .toDiagnosticsNode()
                 .toStringDeep(minLevel: minLevel);
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -260,7 +264,7 @@ public abstract class IntentAction<T> : Diagnosticable, IActionListenerSource, I
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties) { }
@@ -341,7 +345,7 @@ public abstract class ContextAction<T> : IntentAction<T>
             defaultAction: this,
             lookupContext: context
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -392,7 +396,7 @@ public class ActionDispatcher : Diagnosticable
             () => (object?)"Action must be enabled when calling invokeAction"
         );
         return intentAction.InvokeIntent(intent, target);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual (bool, object?) invokeActionIfEnabled(
@@ -408,7 +412,7 @@ public class ActionDispatcher : Diagnosticable
             return (true, intentAction.InvokeIntent(intent, target));
         }
         return (false, null);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
@@ -424,10 +428,10 @@ public class ActionDispatcher : Diagnosticable
                 .toDiagnosticsNode()
                 .toStringDeep(minLevel: minLevel);
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -436,7 +440,7 @@ public class ActionDispatcher : Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties) { }
@@ -511,7 +515,7 @@ public class Actions : StatefulWidget
                 parent.getElementForInheritedWidgetOfExactType<_ActionsScope__actions>();
         }
         return actionsElement is not null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static ActionDispatcher _findDispatcher(BuildContext context)
@@ -528,11 +532,13 @@ public class Actions : StatefulWidget
                     return true;
                 }
                 return false;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
         return dispatcherLocal ?? new ActionDispatcher();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static Action? handler<T>(BuildContext context, T intent)
@@ -550,7 +556,7 @@ public class Actions : StatefulWidget
             };
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static IntentAction<T> find<T>(BuildContext context, T? intent = default)
@@ -576,10 +582,10 @@ public class Actions : StatefulWidget
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return action!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static IntentAction<T>? maybeFind<T>(BuildContext context, T? intent = default)
@@ -599,7 +605,9 @@ public class Actions : StatefulWidget
                     return true;
                 }
                 return false;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
         if (action is IntentAction<T> actionLocal)
@@ -628,10 +636,10 @@ public class Actions : StatefulWidget
                     }
                 )
             );
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static IIntentAction? _maybeFindWithoutDependingOn<T>(
@@ -658,11 +666,13 @@ public class Actions : StatefulWidget
                     return true;
                 }
                 return false;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
         return action;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static IIntentAction? _getActionForIntent<T>(
@@ -676,7 +686,7 @@ public class Actions : StatefulWidget
         );
         DartRuntimePrimitives.Assert(() => mappedAction?.DebugCanHandleIntent(intent) ?? true);
         return mappedAction;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static ActionDispatcher of(BuildContext context)
@@ -684,7 +694,7 @@ public class Actions : StatefulWidget
         _ActionsScope__actions? marker =
             context.dependOnInheritedWidgetOfExactType<_ActionsScope__actions>();
         return marker?.dispatcher ?? _findDispatcher(context);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static object? invoke<T>(BuildContext context, T intent)
@@ -702,7 +712,9 @@ public class Actions : StatefulWidget
                     returnValue = _findDispatcher(element).invokeAction(result, intent, context);
                 }
                 return result is not null;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
         DartRuntimePrimitives.Assert(() =>
@@ -725,10 +737,10 @@ public class Actions : StatefulWidget
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return returnValue;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static object? maybeInvoke<T>(BuildContext context, T intent)
@@ -746,11 +758,13 @@ public class Actions : StatefulWidget
                     returnValue = _findDispatcher(element).invokeAction(result, intent, context);
                 }
                 return result is not null;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
         return returnValue;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override IState createState() =>
@@ -824,7 +838,7 @@ internal class _ActionsState__actions : State<Actions>
             rebuildKey: rebuildKey,
             child: widget.child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -859,7 +873,7 @@ internal class _ActionsScope__actions : InheritedWidget
         return (!Equals(rebuildKey, __oldWidget.rebuildKey))
             || (!Equals(__oldWidget.dispatcher, dispatcher))
             || !actionsEqual;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -952,7 +966,9 @@ internal class _FocusableActionDetectorState__actions : State<FocusableActionDet
             {
                 FocusHighlightMode.touch => false,
                 FocusHighlightMode.traditional => true,
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             };
         });
     }
@@ -1008,7 +1024,9 @@ internal class _FocusableActionDetectorState__actions : State<FocusableActionDet
         bool shouldShowHoverHighlight(FocusableActionDetector target)
         {
             return _hovering && target.enabled && _canShowHighlight;
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         bool canRequestFocus(FocusableActionDetector target)
         {
@@ -1017,14 +1035,20 @@ internal class _FocusableActionDetectorState__actions : State<FocusableActionDet
                 NavigationMode.traditional => target.enabled,
                 null => target.enabled,
                 NavigationMode.directional => true,
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             };
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         bool shouldShowFocusHighlight(FocusableActionDetector target)
         {
             return _focused && _canShowHighlight && canRequestFocus(target);
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         DartRuntimePrimitives.Assert(() =>
             !Equals(
@@ -1069,7 +1093,9 @@ internal class _FocusableActionDetectorState__actions : State<FocusableActionDet
             NavigationMode.traditional => widget.enabled,
             null => widget.enabled,
             NavigationMode.directional => true,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
 
     public override Widget build(BuildContext context)
@@ -1103,7 +1129,7 @@ internal class _FocusableActionDetectorState__actions : State<FocusableActionDet
             );
         }
         return childLocal;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1123,7 +1149,7 @@ public class VoidCallbackAction : IntentAction<VoidCallbackIntent>
     {
         intent.callback();
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1155,7 +1181,7 @@ public class DoNothingAction : IntentAction<Intent>
 
     public override object? invoke(Intent intent, BuildContext? context = null)
     {
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1225,7 +1251,7 @@ public class PrioritizedAction : ContextAction<PrioritizedIntents>
             }
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override object? invoke(PrioritizedIntents intent, BuildContext? context = null)
@@ -1288,7 +1314,7 @@ internal class _OverridableAction__actions<T> : ContextAction<T>
             object? returnValue = _defaultAction.invoke(intent);
             return returnValue;
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal override ContextAction<T> _makeOverridableAction(BuildContext context)
@@ -1297,7 +1323,7 @@ internal class _OverridableAction__actions<T> : ContextAction<T>
             defaultAction: _defaultAction,
             lookupContext: context
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual IIntentAction? _getOverrideAction<U>(U? intent, bool declareDependency = false)
@@ -1308,7 +1334,7 @@ internal class _OverridableAction__actions<T> : ContextAction<T>
             : Actions._maybeFindWithoutDependingOn(_lookupContext, intent);
         DartRuntimePrimitives.Assert(() => !DartRuntimePrimitives.Identical(@override, this));
         return @override;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal override void _updateCallingAction(IIntentAction? value)
@@ -1328,7 +1354,7 @@ internal class _OverridableAction__actions<T> : ContextAction<T>
         {
             _debugAssertMutuallyRecursive = true;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         overrideAction.UpdateCallingAction(_defaultAction);
         object? returnValue = overrideAction.InvokeIntent(intent, context);
@@ -1337,10 +1363,10 @@ internal class _OverridableAction__actions<T> : ContextAction<T>
         {
             _debugAssertMutuallyRecursive = false;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return returnValue;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override object? invoke(T intent, BuildContext? context = null)
@@ -1351,7 +1377,7 @@ internal class _OverridableAction__actions<T> : ContextAction<T>
                 ? _invokeDefaultAction(intent, _currentCallingAction, context)
                 : _invokeOverride(overrideAction, intent, context);
         return returnValue;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool _isOverrideActionEnabled(IIntentAction overrideAction)
@@ -1361,7 +1387,7 @@ internal class _OverridableAction__actions<T> : ContextAction<T>
         {
             _debugAssertIsActionEnabledMutuallyRecursive = true;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         overrideAction.UpdateCallingAction(_defaultAction);
         bool isOverrideEnabled = overrideAction.IsActionEnabled;
@@ -1370,10 +1396,10 @@ internal class _OverridableAction__actions<T> : ContextAction<T>
         {
             _debugAssertIsActionEnabledMutuallyRecursive = false;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return isOverrideEnabled;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool isActionEnabled
@@ -1396,7 +1422,7 @@ internal class _OverridableAction__actions<T> : ContextAction<T>
         {
             _debugAssertIsEnabledMutuallyRecursive = true;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         IIntentAction? overrideAction = _getOverrideAction(intent);
         DartRuntimePrimitives.Assert(() => overrideAction?.DebugCanHandleIntent(intent) ?? true);
@@ -1407,10 +1433,10 @@ internal class _OverridableAction__actions<T> : ContextAction<T>
         {
             _debugAssertIsEnabledMutuallyRecursive = false;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return returnValue;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool consumesKey(T intent)
@@ -1420,7 +1446,7 @@ internal class _OverridableAction__actions<T> : ContextAction<T>
         {
             _debugAssertConsumeKeyMutuallyRecursive = true;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         IIntentAction? overrideAction = _getOverrideAction(intent);
         overrideAction?.UpdateCallingAction(_defaultAction);
@@ -1430,10 +1456,10 @@ internal class _OverridableAction__actions<T> : ContextAction<T>
         {
             _debugAssertConsumeKeyMutuallyRecursive = false;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return isEnabled;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -1474,7 +1500,7 @@ internal class _OverridableContextAction__actions<T> : ContextAction<T>
         {
             _debugAssertMutuallyRecursive = true;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         DartRuntimePrimitives.Assert(() => overrideAction.DebugCanHandleIntent(intent));
         IntentAction<T> wrappedDefault = new _ContextActionToActionAdapter__actions<T>(
@@ -1488,10 +1514,10 @@ internal class _OverridableContextAction__actions<T> : ContextAction<T>
         {
             _debugAssertMutuallyRecursive = false;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return returnValue;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual object? _invokeDefaultAction(
@@ -1509,7 +1535,7 @@ internal class _OverridableContextAction__actions<T> : ContextAction<T>
             object? returnValue = _defaultAction.invoke(intent, context);
             return returnValue;
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal override ContextAction<T> _makeOverridableAction(BuildContext context)
@@ -1518,7 +1544,7 @@ internal class _OverridableContextAction__actions<T> : ContextAction<T>
             defaultAction: _defaultAction,
             lookupContext: context
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual IIntentAction? _getOverrideAction<U>(U? intent, bool declareDependency = false)
@@ -1529,7 +1555,7 @@ internal class _OverridableContextAction__actions<T> : ContextAction<T>
             : Actions._maybeFindWithoutDependingOn(_lookupContext, intent);
         DartRuntimePrimitives.Assert(() => !DartRuntimePrimitives.Identical(@override, this));
         return @override;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal override void _updateCallingAction(IIntentAction? value)
@@ -1546,7 +1572,7 @@ internal class _OverridableContextAction__actions<T> : ContextAction<T>
                 ? _invokeDefaultAction(intent, _currentCallingAction, context)
                 : _invokeOverride(overrideAction, intent, context);
         return returnValue;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool _isOverrideActionEnabled(IIntentAction overrideAction)
@@ -1556,7 +1582,7 @@ internal class _OverridableContextAction__actions<T> : ContextAction<T>
         {
             _debugAssertIsActionEnabledMutuallyRecursive = true;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         overrideAction.UpdateCallingAction(_defaultAction);
         bool isOverrideEnabled = overrideAction.IsActionEnabled;
@@ -1565,10 +1591,10 @@ internal class _OverridableContextAction__actions<T> : ContextAction<T>
         {
             _debugAssertIsActionEnabledMutuallyRecursive = false;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return isOverrideEnabled;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool isActionEnabled
@@ -1591,7 +1617,7 @@ internal class _OverridableContextAction__actions<T> : ContextAction<T>
         {
             _debugAssertIsEnabledMutuallyRecursive = true;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         IIntentAction? overrideAction = _getOverrideAction(intent);
         DartRuntimePrimitives.Assert(() => overrideAction?.DebugCanHandleIntent(intent) ?? true);
@@ -1602,10 +1628,10 @@ internal class _OverridableContextAction__actions<T> : ContextAction<T>
         {
             _debugAssertIsEnabledMutuallyRecursive = false;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return returnValue;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool consumesKey(T intent)
@@ -1615,7 +1641,7 @@ internal class _OverridableContextAction__actions<T> : ContextAction<T>
         {
             _debugAssertConsumeKeyMutuallyRecursive = true;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         IIntentAction? overrideAction = _getOverrideAction(intent);
         overrideAction?.UpdateCallingAction(_defaultAction);
@@ -1625,10 +1651,10 @@ internal class _OverridableContextAction__actions<T> : ContextAction<T>
         {
             _debugAssertConsumeKeyMutuallyRecursive = false;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return isEnabled;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)

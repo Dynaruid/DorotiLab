@@ -134,7 +134,7 @@ public abstract class DragGestureRecognizer : OneSequenceGestureRecognizer
             }
         }
         return base.isPointerAllowed(((PointerDownEvent?)(object?)@event)!);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _addPointer(PointerEvent @event)
@@ -208,7 +208,7 @@ public abstract class DragGestureRecognizer : OneSequenceGestureRecognizer
             }
         }
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _recordMoveDeltaForMultitouch(long pointer, Offset localDelta)
@@ -268,7 +268,7 @@ public abstract class DragGestureRecognizer : OneSequenceGestureRecognizer
             }
         }
         return sum;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual long? _getMaxSumDeltaPointer(bool positive, _DragDirection__monodrag axis)
@@ -297,7 +297,7 @@ public abstract class DragGestureRecognizer : OneSequenceGestureRecognizer
                         > (
                             max
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     )
@@ -313,7 +313,7 @@ public abstract class DragGestureRecognizer : OneSequenceGestureRecognizer
                         < (
                             max
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     )
@@ -326,7 +326,7 @@ public abstract class DragGestureRecognizer : OneSequenceGestureRecognizer
         }
         DartRuntimePrimitives.Assert(() => ret is not null);
         return ret;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Offset _resolveLocalDeltaForMultitouch(long pointer, Offset localDelta)
@@ -403,7 +403,7 @@ public abstract class DragGestureRecognizer : OneSequenceGestureRecognizer
             }
         }
         return new Offset(dxLocal, dyLocal);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual double _resolveDelta(
@@ -429,9 +429,7 @@ public abstract class DragGestureRecognizer : OneSequenceGestureRecognizer
             double maxSumDelta = _getSumDelta(
                 pointer: (
                     maxSumDeltaPointer
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 positive: positiveLocal,
                 axis: axis
@@ -464,7 +462,7 @@ public abstract class DragGestureRecognizer : OneSequenceGestureRecognizer
                 }
             }
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual double _resolveDeltaForPanGesture(
@@ -490,7 +488,7 @@ public abstract class DragGestureRecognizer : OneSequenceGestureRecognizer
             }
         }
         return sum / pointerCount;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void handleEvent(PointerEvent @event)
@@ -889,7 +887,7 @@ public class VerticalDragGestureRecognizer : DragGestureRecognizer
             minFlingDistance ?? EventsLibrary.computeHitSlop(kind, gestureSettings);
         return (estimate.pixelsPerSecond.dy.abs() > minVelocity)
             && (estimate.offset.dy.abs() > minDistance);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override DragEndDetails? considerFling(VelocityEstimate estimate, PointerDeviceKind kind)
@@ -910,7 +908,7 @@ public class VerticalDragGestureRecognizer : DragGestureRecognizer
             globalPosition: lastPosition.global,
             localPosition: lastPosition.local
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool hasSufficientGlobalDistanceToAccept(
@@ -920,7 +918,7 @@ public class VerticalDragGestureRecognizer : DragGestureRecognizer
     {
         return globalDistanceMoved.abs()
             > EventsLibrary.computeHitSlop(pointerDeviceKind, gestureSettings);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal override Offset _getDeltaForDetails(Offset delta) => new Offset(0.0, delta.dy);
@@ -953,7 +951,7 @@ public class HorizontalDragGestureRecognizer : DragGestureRecognizer
             minFlingDistance ?? EventsLibrary.computeHitSlop(kind, gestureSettings);
         return (estimate.pixelsPerSecond.dx.abs() > minVelocity)
             && (estimate.offset.dx.abs() > minDistance);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override DragEndDetails? considerFling(VelocityEstimate estimate, PointerDeviceKind kind)
@@ -974,7 +972,7 @@ public class HorizontalDragGestureRecognizer : DragGestureRecognizer
             globalPosition: _lastPosition.global,
             localPosition: _lastPosition.local
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool hasSufficientGlobalDistanceToAccept(
@@ -984,7 +982,7 @@ public class HorizontalDragGestureRecognizer : DragGestureRecognizer
     {
         return globalDistanceMoved.abs()
             > EventsLibrary.computeHitSlop(pointerDeviceKind, gestureSettings);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal override Offset _getDeltaForDetails(Offset delta) => new Offset(delta.dx, 0.0);
@@ -1017,7 +1015,7 @@ public class PanGestureRecognizer : DragGestureRecognizer
             minFlingDistance ?? EventsLibrary.computeHitSlop(kind, gestureSettings);
         return (estimate.pixelsPerSecond.distanceSquared > (minVelocity * minVelocity))
             && (estimate.offset.distanceSquared > (minDistance * minDistance));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override DragEndDetails? considerFling(VelocityEstimate estimate, PointerDeviceKind kind)
@@ -1037,7 +1035,7 @@ public class PanGestureRecognizer : DragGestureRecognizer
             globalPosition: lastPosition.global,
             localPosition: lastPosition.local
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool hasSufficientGlobalDistanceToAccept(
@@ -1047,7 +1045,7 @@ public class PanGestureRecognizer : DragGestureRecognizer
     {
         return globalDistanceMoved.abs()
             > EventsLibrary.computePanSlop(pointerDeviceKind, gestureSettings);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal override Offset _getDeltaForDetails(Offset delta) => delta;

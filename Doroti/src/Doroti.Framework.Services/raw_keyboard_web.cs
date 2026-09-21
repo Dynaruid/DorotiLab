@@ -13,7 +13,7 @@ public static partial class Raw_keyboard_webLibrary
             return key.substring(0L, 1L);
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -113,15 +113,17 @@ public class RawKeyEventDataWeb : RawKeyEventData
             var __case5425
                 when Equals(__case5425, ModifierKey.functionModifier)
                     || Equals(__case5425, ModifierKey.symbolModifier) => false,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override KeyboardSide? getModifierSide(ModifierKey key)
     {
         return KeyboardSide.any;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)

@@ -236,7 +236,7 @@ public abstract class ToggleablePainter : ChangeNotifier
         get =>
             (
                 _splashRadius
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         set
         {
@@ -268,7 +268,7 @@ public abstract class ToggleablePainter : ChangeNotifier
         get =>
             (
                 _isFocused
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         set
         {
@@ -286,7 +286,7 @@ public abstract class ToggleablePainter : ChangeNotifier
         get =>
             (
                 _isHovered
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         set
         {
@@ -304,7 +304,7 @@ public abstract class ToggleablePainter : ChangeNotifier
         get =>
             (
                 _isActive
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         set
         {

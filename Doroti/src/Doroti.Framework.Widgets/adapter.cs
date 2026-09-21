@@ -58,7 +58,7 @@ public class RenderObjectToWidgetAdapter<T> : RenderObjectWidget
             element.markNeedsBuild();
         }
         return element!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string toStringShort() =>

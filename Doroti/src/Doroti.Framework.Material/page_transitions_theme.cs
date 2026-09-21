@@ -66,7 +66,9 @@ internal class _ZoomPageTransition__page_transitions_theme : StatelessWidget
                     backgroundColor: enterTransitionBackgroundColor,
                     child: child
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             reverseBuilder: (context, animation, child) =>
             {
@@ -76,7 +78,9 @@ internal class _ZoomPageTransition__page_transitions_theme : StatelessWidget
                     reverse: true,
                     child: child
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             child: ZoomPageTransitionsBuilder._snapshotAwareDelegatedTransition(
                 context,
@@ -88,7 +92,7 @@ internal class _ZoomPageTransition__page_transitions_theme : StatelessWidget
                 enterTransitionBackgroundColor
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -217,7 +221,7 @@ internal class _ZoomEnterTransitionState__page_transitions_theme
             autoresize: true,
             child: widget.child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void onAnimationValueChange()
@@ -357,7 +361,7 @@ internal class _ZoomExitTransitionState__page_transitions_theme
             autoresize: true,
             child: widget.child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void onAnimationValueChange()
@@ -424,7 +428,9 @@ internal class _FadeForwardsPageTransition__page_transitions_theme : StatelessWi
                         child: child
                     )
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             reverseBuilder: (context, animation, child) =>
             {
@@ -440,7 +446,9 @@ internal class _FadeForwardsPageTransition__page_transitions_theme : StatelessWi
                         )
                     )
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             child: FadeForwardsPageTransitionsBuilder._delegatedTransition(
                 context,
@@ -449,7 +457,7 @@ internal class _FadeForwardsPageTransition__page_transitions_theme : StatelessWi
                 child
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -511,7 +519,9 @@ public class FadeForwardsPageTransitionsBuilder : PageTransitionsBuilder
                         child: child
                     )
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             reverseBuilder: (context, animation, child) =>
             {
@@ -522,7 +532,9 @@ public class FadeForwardsPageTransitionsBuilder : PageTransitionsBuilder
                         child: child
                     )
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             child: child
         );
@@ -537,7 +549,7 @@ public class FadeForwardsPageTransitionsBuilder : PageTransitionsBuilder
                 : Colors.transparent,
             child: builder
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget buildTransitions<T>(
@@ -554,7 +566,7 @@ public class FadeForwardsPageTransitionsBuilder : PageTransitionsBuilder
             backgroundColor: backgroundColor,
             child: child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -618,7 +630,9 @@ public class ZoomPageTransitionsBuilder : PageTransitionsBuilder
                     backgroundColor: enterTransitionBackgroundColor,
                     child: child
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             reverseBuilder: (context, animation, child) =>
             {
@@ -627,11 +641,13 @@ public class ZoomPageTransitionsBuilder : PageTransitionsBuilder
                     allowSnapshotting: allowSnapshotting,
                     child: child
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             child: child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget buildTransitions<T>(
@@ -658,7 +674,7 @@ public class ZoomPageTransitionsBuilder : PageTransitionsBuilder
             backgroundColor: backgroundColor,
             child: child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -704,7 +720,7 @@ public class PageTransitionsTheme : Diagnosticable
             secondaryAnimation: secondaryAnimation,
             child: child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Func<
@@ -719,7 +735,7 @@ public class PageTransitionsTheme : Diagnosticable
         PageTransitionsBuilder matchingBuilder =
             builders.GetValueOrDefault(platform) ?? new ZoomPageTransitionsBuilder();
         return matchingBuilder.delegatedTransition;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual List<PageTransitionsBuilder?> _all(
@@ -730,7 +746,7 @@ public class PageTransitionsTheme : Diagnosticable
             .ToList()
             .map((platform) => builders.GetValueOrDefault(platform))
             .ToList();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool Equals(object? other)
@@ -792,7 +808,7 @@ public class PageTransitionsTheme : Diagnosticable
             return true;
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -801,7 +817,7 @@ public class PageTransitionsTheme : Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -848,7 +864,7 @@ internal class _PageTransitionsThemeTransitionsState__page_transitions_theme<T>
             _transitionPlatform ??= platformLocal;
             platformLocal = (
                 _transitionPlatform
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
         else
@@ -876,7 +892,9 @@ internal class _PageTransitionsThemeTransitionsState__page_transitions_theme<T>
                             new ZoomPageTransitionsBuilder()
                         ),
                     _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                        throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                        throw new InvalidOperationException(
+                            "Switch expression did not handle the supplied value."
+                        ),
                 }
             );
         return matchingBuilder.buildTransitions(
@@ -886,7 +904,7 @@ internal class _PageTransitionsThemeTransitionsState__page_transitions_theme<T>
             widget.secondaryAnimation,
             widget.child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1005,7 +1023,7 @@ public class _ZoomEnterTransitionPainter__page_transitions_theme : SnapshotPaint
             scrimOpacity = (
                 _ZoomEnterTransitionState__page_transitions_theme._scrimOpacityTween.evaluate(
                     animation
-                ) ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ) ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
         DartRuntimePrimitives.Assert(() => !reverse || (scrimOpacity == 0.0));
@@ -1095,7 +1113,7 @@ public class _ZoomEnterTransitionPainter__page_transitions_theme : SnapshotPaint
             || (__oldDelegate.animation.value != animation.value)
             || (__oldDelegate.scale.value != scale.value)
             || (__oldDelegate.fade.value != fade.value);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1186,7 +1204,7 @@ public class _ZoomExitTransitionPainter__page_transitions_theme : SnapshotPainte
         return (__oldDelegate.reverse != reverse)
             || (__oldDelegate.fade.value != fade.value)
             || (__oldDelegate.scale.value != scale.value);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void dispose()
@@ -1227,7 +1245,9 @@ internal class _ZoomPageTransitionNoCache__page_transitions_theme : StatelessWid
                     animation: animation,
                     child: child
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             reverseBuilder: (context, animation, child) =>
             {
@@ -1236,7 +1256,9 @@ internal class _ZoomPageTransitionNoCache__page_transitions_theme : StatelessWid
                     reverse: true,
                     child: child
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             child: new DualTransitionBuilder(
                 animation: new ReverseAnimation(secondaryAnimation),
@@ -1247,7 +1269,9 @@ internal class _ZoomPageTransitionNoCache__page_transitions_theme : StatelessWid
                         reverse: true,
                         child: child
                     );
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 },
                 reverseBuilder: (context, animation, child) =>
                 {
@@ -1255,12 +1279,14 @@ internal class _ZoomPageTransitionNoCache__page_transitions_theme : StatelessWid
                         animation: animation,
                         child: child
                     );
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 },
                 child: child
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1289,7 +1315,7 @@ internal class _ZoomEnterTransitionNoCache__page_transitions_theme : StatelessWi
             opacityLocal = (
                 _ZoomEnterTransitionState__page_transitions_theme._scrimOpacityTween.evaluate(
                     animation
-                ) ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ) ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
         Animation<double> fadeTransition = reverse
@@ -1307,7 +1333,9 @@ internal class _ZoomEnterTransitionNoCache__page_transitions_theme : StatelessWi
             builder: (context, child) =>
             {
                 return new ColoredBox(color: Colors.black.withOpacity(opacityLocal), child: child);
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             child: new FadeTransition(
                 opacity: fadeTransition,
@@ -1318,7 +1346,7 @@ internal class _ZoomEnterTransitionNoCache__page_transitions_theme : StatelessWi
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1357,6 +1385,6 @@ internal class _ZoomExitTransitionNoCache__page_transitions_theme : StatelessWid
                 child: child
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

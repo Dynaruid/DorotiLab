@@ -128,7 +128,7 @@ public class AutofillConfiguration
                 ["hintText"] = hintText,
             }
             : null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool Equals(object? other)
@@ -176,7 +176,7 @@ public class AutofillConfiguration
             $"currentEditingValue: {currentEditingValue}",
         };
         return $"AutofillConfiguration({string.Join(", ", description)})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -231,7 +231,7 @@ internal class _AutofillScopeTextInputConfiguration__autofill : TextInputConfigu
             .map((configuration) => configuration.toJson())
             .ToList();
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -253,6 +253,6 @@ public interface AutofillScopeMixin : AutofillScope
                 currentClientConfiguration: configuration
             );
         return TextInput.attach(trigger, inputConfiguration);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

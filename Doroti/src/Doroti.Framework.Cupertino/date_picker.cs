@@ -86,7 +86,7 @@ public static partial class Date_pickerLibrary
             : style.copyWith(
                 color: CupertinoDynamicColor.resolve(CupertinoColors.inactiveGray, context)
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -202,7 +202,7 @@ internal class _DatePickerLayoutDelegate__date_picker : MultiChildLayoutDelegate
         var __oldDelegate = (_DatePickerLayoutDelegate__date_picker)oldDelegate;
         return (!Equals(columnWidths, __oldDelegate.columnWidths))
             || (textDirectionFactor != __oldDelegate.textDirectionFactor);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -296,7 +296,7 @@ public class CupertinoDatePicker : StatefulWidget
                         (
                             minimumDate
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     )
@@ -310,7 +310,7 @@ public class CupertinoDatePicker : StatefulWidget
                         (
                             maximumDate
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     )
@@ -333,7 +333,7 @@ public class CupertinoDatePicker : StatefulWidget
                     <= (
                         maximumYear
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
@@ -346,9 +346,7 @@ public class CupertinoDatePicker : StatefulWidget
                 || (minimumDate is null)
                 || !(
                     minimumDate
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ).isAfter(initialDateTime ?? new DateTime())
         );
         System.Diagnostics.Debug.Assert(
@@ -359,9 +357,7 @@ public class CupertinoDatePicker : StatefulWidget
                 || (maximumDate is null)
                 || !(
                     maximumDate
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ).isBefore(initialDateTime ?? new DateTime())
         );
         System.Diagnostics.Debug.Assert(
@@ -382,7 +378,7 @@ public class CupertinoDatePicker : StatefulWidget
                     (
                         initialDateTime
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
@@ -405,9 +401,11 @@ public class CupertinoDatePicker : StatefulWidget
             CupertinoDatePickerMode.monthYear => DartRuntimePrimitives.ConvertValue<
                 State<CupertinoDatePicker>
             >(new _CupertinoDatePickerMonthYearState__date_picker(dateOrder: dateOrder)),
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static double _getColumnWidth(
@@ -505,7 +503,7 @@ public class CupertinoDatePicker : StatefulWidget
             () => (object?)"column type is not appropriate"
         );
         return getColumnWidth(texts: longTexts, context: context);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static double getColumnWidth(
@@ -526,7 +524,7 @@ public class CupertinoDatePicker : StatefulWidget
                     )
             )
             .reduce(Dart_mathLibrary.max);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -577,7 +575,9 @@ internal class _CupertinoDatePickerDateTimeState__date_picker : State<CupertinoD
                     break;
                 }
                 default:
-                    throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                    throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    );
             }
             DartRuntimePrimitives.Assert(
                 () => false,
@@ -593,7 +593,7 @@ internal class _CupertinoDatePickerDateTimeState__date_picker : State<CupertinoD
     internal virtual long _selectedHour(long selectedAmPm, long selectedHour)
     {
         return _isHourRegionFlipped(selectedAmPm) ? ((selectedHour + 12L) % 24L) : selectedHour;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual long selectedMinute
@@ -696,9 +696,9 @@ internal class _CupertinoDatePickerDateTimeState__date_picker : State<CupertinoD
             DartCollectionRuntime.NullableMapValue<double>(
                 estimatedColumnWidths,
                 FoundationRuntimePorts.EnumIndex(columnType)
-            ) ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ) ?? throw new global::System.NullReferenceException("A required value was null.")
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DateTime selectedDateTime
@@ -739,7 +739,7 @@ internal class _CupertinoDatePickerDateTimeState__date_picker : State<CupertinoD
         return widget.selectableDayPredicate is null
             ? true
             : widget.selectableDayPredicate.Invoke(date);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _buildMediumDatePicker(
@@ -764,7 +764,9 @@ internal class _CupertinoDatePickerDateTimeState__date_picker : State<CupertinoD
                     }
                 }
                 return false;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             child: CupertinoPicker.CreateBuilder(
                 scrollController: dateController,
@@ -815,12 +817,14 @@ internal class _CupertinoDatePickerDateTimeState__date_picker : State<CupertinoD
                         )
                     );
                     return isDisabled ? new ExcludeSemantics(child: childLocal) : childLocal;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 },
                 selectionOverlay: selectionOverlay
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _isValidHour(long meridiemIndex, long hourIndex)
@@ -834,7 +838,7 @@ internal class _CupertinoDatePickerDateTimeState__date_picker : State<CupertinoD
         DateTime rangeEnd = rangeStart.add(Duration.Create(hours: 1L));
         return (widget.minimumDate?.isBefore(rangeEnd) ?? true)
             && !(widget.maximumDate?.isBefore(rangeStart) ?? false);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _buildHourPicker(
@@ -859,7 +863,9 @@ internal class _CupertinoDatePickerDateTimeState__date_picker : State<CupertinoD
                     }
                 }
                 return false;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             child: new CupertinoPicker(
                 scrollController: hourController,
@@ -924,14 +930,14 @@ internal class _CupertinoDatePickerDateTimeState__date_picker : State<CupertinoD
                                 ? new ExcludeSemantics(child: childLocal)
                                 : childLocal;
                             throw new InvalidOperationException(
-                                "Dart closure completed without a value."
+                                "Callback completed without returning a value."
                             );
                         }
                     )
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _buildMinutePicker(
@@ -956,7 +962,9 @@ internal class _CupertinoDatePickerDateTimeState__date_picker : State<CupertinoD
                     }
                 }
                 return false;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             child: new CupertinoPicker(
                 scrollController: minuteController,
@@ -1003,14 +1011,14 @@ internal class _CupertinoDatePickerDateTimeState__date_picker : State<CupertinoD
                                 ? new ExcludeSemantics(child: childLocal)
                                 : childLocal;
                             throw new InvalidOperationException(
-                                "Dart closure completed without a value."
+                                "Callback completed without returning a value."
                             );
                         }
                     )
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _buildAmPmPicker(
@@ -1035,7 +1043,9 @@ internal class _CupertinoDatePickerDateTimeState__date_picker : State<CupertinoD
                     }
                 }
                 return false;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             child: new CupertinoPicker(
                 scrollController: meridiemController,
@@ -1077,14 +1087,14 @@ internal class _CupertinoDatePickerDateTimeState__date_picker : State<CupertinoD
                                 ? new ExcludeSemantics(child: childLocal)
                                 : childLocal;
                             throw new InvalidOperationException(
-                                "Dart closure completed without a value."
+                                "Callback completed without returning a value."
                             );
                         }
                     )
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _buildTimeSeparatorWidget(
@@ -1113,14 +1123,14 @@ internal class _CupertinoDatePickerDateTimeState__date_picker : State<CupertinoD
                                 new Text(":", style: Date_pickerLibrary._themeTextStyle(context))
                             );
                             throw new InvalidOperationException(
-                                "Dart closure completed without a value."
+                                "Callback completed without returning a value."
                             );
                         }
                     )
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _scrollToFirstSelectableDate()
@@ -1154,15 +1164,11 @@ internal class _CupertinoDatePickerDateTimeState__date_picker : State<CupertinoD
             DateTime targetDate = minCheck
                 ? (
                     widget.minimumDate
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
                 : (
                     widget.maximumDate
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
             _scrollToDate(targetDate, selectedDate, minCheck);
         }
@@ -1380,7 +1386,7 @@ internal class _CupertinoDatePickerDateTimeState__date_picker : State<CupertinoD
                                     )
                                 );
                                 throw new InvalidOperationException(
-                                    "Dart closure completed without a value."
+                                    "Callback completed without returning a value."
                                 );
                             },
                             selectionOverlay
@@ -1405,7 +1411,7 @@ internal class _CupertinoDatePickerDateTimeState__date_picker : State<CupertinoD
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1533,7 +1539,9 @@ internal class _CupertinoDatePickerDateState__date_picker : State<CupertinoDateP
                     }
                 }
                 return false;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             child: new CupertinoPicker(
                 scrollController: dayController,
@@ -1579,7 +1587,7 @@ internal class _CupertinoDatePickerDateState__date_picker : State<CupertinoDateP
                                         (
                                             widget.minimumDate
                                             ?? throw new global::System.NullReferenceException(
-                                                "Dart null assertion failed."
+                                                "A required value was null."
                                             )
                                         ).Month == selectedMonth
                                     )
@@ -1587,7 +1595,7 @@ internal class _CupertinoDatePickerDateState__date_picker : State<CupertinoDateP
                                         (
                                             widget.minimumDate
                                             ?? throw new global::System.NullReferenceException(
-                                                "Dart null assertion failed."
+                                                "A required value was null."
                                             )
                                         ).Day > day
                                     )
@@ -1598,7 +1606,7 @@ internal class _CupertinoDatePickerDateState__date_picker : State<CupertinoDateP
                                         (
                                             widget.maximumDate
                                             ?? throw new global::System.NullReferenceException(
-                                                "Dart null assertion failed."
+                                                "A required value was null."
                                             )
                                         ).Month == selectedMonth
                                     )
@@ -1606,7 +1614,7 @@ internal class _CupertinoDatePickerDateState__date_picker : State<CupertinoDateP
                                         (
                                             widget.maximumDate
                                             ?? throw new global::System.NullReferenceException(
-                                                "Dart null assertion failed."
+                                                "A required value was null."
                                             )
                                         ).Day < day
                                     )
@@ -1625,14 +1633,14 @@ internal class _CupertinoDatePickerDateState__date_picker : State<CupertinoDateP
                                 ? new ExcludeSemantics(child: childLocal)
                                 : childLocal;
                             throw new InvalidOperationException(
-                                "Dart closure completed without a value."
+                                "Callback completed without returning a value."
                             );
                         }
                     )
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _buildMonthPicker(
@@ -1657,7 +1665,9 @@ internal class _CupertinoDatePickerDateState__date_picker : State<CupertinoDateP
                     }
                 }
                 return false;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             child: new CupertinoPicker(
                 scrollController: monthController,
@@ -1697,7 +1707,7 @@ internal class _CupertinoDatePickerDateState__date_picker : State<CupertinoDateP
                                         (
                                             widget.minimumDate
                                             ?? throw new global::System.NullReferenceException(
-                                                "Dart null assertion failed."
+                                                "A required value was null."
                                             )
                                         ).Month > month
                                     )
@@ -1708,7 +1718,7 @@ internal class _CupertinoDatePickerDateState__date_picker : State<CupertinoDateP
                                         (
                                             widget.maximumDate
                                             ?? throw new global::System.NullReferenceException(
-                                                "Dart null assertion failed."
+                                                "A required value was null."
                                             )
                                         ).Month < month
                                     )
@@ -1733,14 +1743,14 @@ internal class _CupertinoDatePickerDateState__date_picker : State<CupertinoDateP
                                 ? new ExcludeSemantics(child: childLocal)
                                 : childLocal;
                             throw new InvalidOperationException(
-                                "Dart closure completed without a value."
+                                "Callback completed without returning a value."
                             );
                         }
                     )
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _buildYearPicker(
@@ -1765,7 +1775,9 @@ internal class _CupertinoDatePickerDateState__date_picker : State<CupertinoDateP
                     }
                 }
                 return false;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             child: CupertinoPicker.CreateBuilder(
                 scrollController: yearController,
@@ -1803,7 +1815,7 @@ internal class _CupertinoDatePickerDateState__date_picker : State<CupertinoDateP
                             > (
                                 widget.maximumYear
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             )
                         )
@@ -1818,7 +1830,7 @@ internal class _CupertinoDatePickerDateState__date_picker : State<CupertinoDateP
                                 (
                                     widget.minimumDate
                                     ?? throw new global::System.NullReferenceException(
-                                        "Dart null assertion failed."
+                                        "A required value was null."
                                     )
                                 ).Year <= year
                             )
@@ -1829,7 +1841,7 @@ internal class _CupertinoDatePickerDateState__date_picker : State<CupertinoDateP
                                 (
                                     widget.maximumDate
                                     ?? throw new global::System.NullReferenceException(
-                                        "Dart null assertion failed."
+                                        "A required value was null."
                                     )
                                 ).Year >= year
                             )
@@ -1842,12 +1854,14 @@ internal class _CupertinoDatePickerDateState__date_picker : State<CupertinoDateP
                         )
                     );
                     return isValidYear ? childLocal : new ExcludeSemantics(child: childLocal);
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 },
                 selectionOverlay: selectionOverlay
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _isCurrentDateValid
@@ -1894,15 +1908,11 @@ internal class _CupertinoDatePickerDateState__date_picker : State<CupertinoDateP
             DateTime targetDate = minCheck
                 ? (
                     widget.maximumDate
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
                 : (
                     widget.minimumDate
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
             _scrollToDate(targetDate);
             return;
@@ -1969,7 +1979,7 @@ internal class _CupertinoDatePickerDateState__date_picker : State<CupertinoDateP
                             FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.month)
                         )
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ),
                     (
@@ -1980,7 +1990,7 @@ internal class _CupertinoDatePickerDateState__date_picker : State<CupertinoDateP
                             )
                         )
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ),
                     (
@@ -1989,7 +1999,7 @@ internal class _CupertinoDatePickerDateState__date_picker : State<CupertinoDateP
                             FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.year)
                         )
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ),
                 };
@@ -2015,7 +2025,7 @@ internal class _CupertinoDatePickerDateState__date_picker : State<CupertinoDateP
                             )
                         )
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ),
                     (
@@ -2024,7 +2034,7 @@ internal class _CupertinoDatePickerDateState__date_picker : State<CupertinoDateP
                             FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.month)
                         )
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ),
                     (
@@ -2033,7 +2043,7 @@ internal class _CupertinoDatePickerDateState__date_picker : State<CupertinoDateP
                             FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.year)
                         )
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ),
                 };
@@ -2057,7 +2067,7 @@ internal class _CupertinoDatePickerDateState__date_picker : State<CupertinoDateP
                             FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.year)
                         )
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ),
                     (
@@ -2066,7 +2076,7 @@ internal class _CupertinoDatePickerDateState__date_picker : State<CupertinoDateP
                             FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.month)
                         )
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ),
                     (
@@ -2077,7 +2087,7 @@ internal class _CupertinoDatePickerDateState__date_picker : State<CupertinoDateP
                             )
                         )
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ),
                 };
@@ -2101,7 +2111,7 @@ internal class _CupertinoDatePickerDateState__date_picker : State<CupertinoDateP
                             FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.year)
                         )
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ),
                     (
@@ -2112,7 +2122,7 @@ internal class _CupertinoDatePickerDateState__date_picker : State<CupertinoDateP
                             )
                         )
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ),
                     (
@@ -2121,7 +2131,7 @@ internal class _CupertinoDatePickerDateState__date_picker : State<CupertinoDateP
                             FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.month)
                         )
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ),
                 };
@@ -2188,7 +2198,7 @@ internal class _CupertinoDatePickerDateState__date_picker : State<CupertinoDateP
                                     )
                                 );
                                 throw new InvalidOperationException(
-                                    "Dart closure completed without a value."
+                                    "Callback completed without returning a value."
                                 );
                             },
                             selectionOverlay
@@ -2213,7 +2223,7 @@ internal class _CupertinoDatePickerDateState__date_picker : State<CupertinoDateP
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -2322,7 +2332,9 @@ internal class _CupertinoDatePickerMonthYearState__date_picker : State<Cupertino
                     }
                 }
                 return false;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             child: new CupertinoPicker(
                 scrollController: monthController,
@@ -2358,7 +2370,7 @@ internal class _CupertinoDatePickerMonthYearState__date_picker : State<Cupertino
                                         (
                                             widget.minimumDate
                                             ?? throw new global::System.NullReferenceException(
-                                                "Dart null assertion failed."
+                                                "A required value was null."
                                             )
                                         ).Month > month
                                     )
@@ -2369,7 +2381,7 @@ internal class _CupertinoDatePickerMonthYearState__date_picker : State<Cupertino
                                         (
                                             widget.maximumDate
                                             ?? throw new global::System.NullReferenceException(
-                                                "Dart null assertion failed."
+                                                "A required value was null."
                                             )
                                         ).Month < month
                                     )
@@ -2394,14 +2406,14 @@ internal class _CupertinoDatePickerMonthYearState__date_picker : State<Cupertino
                                 ? new ExcludeSemantics(child: childLocal)
                                 : childLocal;
                             throw new InvalidOperationException(
-                                "Dart closure completed without a value."
+                                "Callback completed without returning a value."
                             );
                         }
                     )
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _buildYearPicker(
@@ -2426,7 +2438,9 @@ internal class _CupertinoDatePickerMonthYearState__date_picker : State<Cupertino
                     }
                 }
                 return false;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             child: CupertinoPicker.CreateBuilder(
                 scrollController: yearController,
@@ -2459,7 +2473,7 @@ internal class _CupertinoDatePickerMonthYearState__date_picker : State<Cupertino
                             > (
                                 widget.maximumYear
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             )
                         )
@@ -2474,7 +2488,7 @@ internal class _CupertinoDatePickerMonthYearState__date_picker : State<Cupertino
                                 (
                                     widget.minimumDate
                                     ?? throw new global::System.NullReferenceException(
-                                        "Dart null assertion failed."
+                                        "A required value was null."
                                     )
                                 ).Year <= year
                             )
@@ -2485,7 +2499,7 @@ internal class _CupertinoDatePickerMonthYearState__date_picker : State<Cupertino
                                 (
                                     widget.maximumDate
                                     ?? throw new global::System.NullReferenceException(
-                                        "Dart null assertion failed."
+                                        "A required value was null."
                                     )
                                 ).Year >= year
                             )
@@ -2498,12 +2512,14 @@ internal class _CupertinoDatePickerMonthYearState__date_picker : State<Cupertino
                         )
                     );
                     return isValidYear ? childLocal : new ExcludeSemantics(child: childLocal);
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 },
                 selectionOverlay: selectionOverlay
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _isCurrentDateValid
@@ -2542,15 +2558,11 @@ internal class _CupertinoDatePickerMonthYearState__date_picker : State<Cupertino
             DateTime targetDate = minCheck
                 ? (
                     widget.maximumDate
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
                 : (
                     widget.minimumDate
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
             _scrollToDate(targetDate);
             return;
@@ -2605,7 +2617,7 @@ internal class _CupertinoDatePickerMonthYearState__date_picker : State<Cupertino
                             FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.month)
                         )
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ),
                     (
@@ -2614,7 +2626,7 @@ internal class _CupertinoDatePickerMonthYearState__date_picker : State<Cupertino
                             FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.year)
                         )
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ),
                 };
@@ -2638,7 +2650,7 @@ internal class _CupertinoDatePickerMonthYearState__date_picker : State<Cupertino
                             FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.year)
                         )
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ),
                     (
@@ -2647,7 +2659,7 @@ internal class _CupertinoDatePickerMonthYearState__date_picker : State<Cupertino
                             FoundationRuntimePorts.EnumIndex(_PickerColumnType__date_picker.month)
                         )
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ),
                 };
@@ -2718,7 +2730,7 @@ internal class _CupertinoDatePickerMonthYearState__date_picker : State<Cupertino
                                     child: contents
                                 );
                                 throw new InvalidOperationException(
-                                    "Dart closure completed without a value."
+                                    "Callback completed without returning a value."
                                 );
                             },
                             selectionOverlay
@@ -2743,7 +2755,7 @@ internal class _CupertinoDatePickerMonthYearState__date_picker : State<Cupertino
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -2839,7 +2851,9 @@ internal class _CupertinoTimerPickerState__date_picker : State<CupertinoTimerPic
         {
             TextDirection.ltr => 1L,
             TextDirection.rtl => -1L,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
 
     public override void initState()
@@ -2962,7 +2976,7 @@ internal class _CupertinoTimerPickerState__date_picker : State<CupertinoTimerPic
             }
         }
         return maxWidth;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _buildLabel(string text, EdgeInsetsDirectional pickerPadding)
@@ -2996,7 +3010,7 @@ internal class _CupertinoTimerPickerState__date_picker : State<CupertinoTimerPic
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _buildPickerNumberLabel(string text, EdgeInsetsDirectional padding)
@@ -3022,7 +3036,7 @@ internal class _CupertinoTimerPickerState__date_picker : State<CupertinoTimerPic
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _buildHourPicker(
@@ -3033,7 +3047,7 @@ internal class _CupertinoTimerPickerState__date_picker : State<CupertinoTimerPic
         _hourScrollController ??= new FixedExtentScrollController(
             initialItem: (
                 selectedHour
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );
         return new CupertinoPicker(
@@ -3054,7 +3068,7 @@ internal class _CupertinoTimerPickerState__date_picker : State<CupertinoTimerPic
                             hours: (
                                 selectedHour
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             ),
                             minutes: selectedMinute,
@@ -3083,13 +3097,13 @@ internal class _CupertinoTimerPickerState__date_picker : State<CupertinoTimerPic
                             )
                         );
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _buildHourColumn(
@@ -3114,7 +3128,7 @@ internal class _CupertinoTimerPickerState__date_picker : State<CupertinoTimerPic
                             });
                             return false;
                             throw new InvalidOperationException(
-                                "Dart closure completed without a value."
+                                "Callback completed without returning a value."
                             );
                         },
                         child: _buildHourPicker(additionalPadding, selectionOverlay)
@@ -3127,7 +3141,7 @@ internal class _CupertinoTimerPickerState__date_picker : State<CupertinoTimerPic
                                 ?? (
                                     selectedHour
                                     ?? throw new global::System.NullReferenceException(
-                                        "Dart null assertion failed."
+                                        "A required value was null."
                                     )
                                 )
                         ) ?? "",
@@ -3136,7 +3150,7 @@ internal class _CupertinoTimerPickerState__date_picker : State<CupertinoTimerPic
                 ),
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _buildMinutePicker(
@@ -3194,13 +3208,13 @@ internal class _CupertinoTimerPickerState__date_picker : State<CupertinoTimerPic
                             )
                         );
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _buildMinuteColumn(
@@ -3225,7 +3239,7 @@ internal class _CupertinoTimerPickerState__date_picker : State<CupertinoTimerPic
                             });
                             return false;
                             throw new InvalidOperationException(
-                                "Dart closure completed without a value."
+                                "Callback completed without returning a value."
                             );
                         },
                         child: _buildMinutePicker(additionalPadding, selectionOverlay)
@@ -3240,7 +3254,7 @@ internal class _CupertinoTimerPickerState__date_picker : State<CupertinoTimerPic
                 ),
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _buildSecondPicker(
@@ -3252,9 +3266,7 @@ internal class _CupertinoTimerPickerState__date_picker : State<CupertinoTimerPic
             initialItem: checked(
                 (
                     selectedSecond
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) / widget.secondInterval
             )
         );
@@ -3282,7 +3294,7 @@ internal class _CupertinoTimerPickerState__date_picker : State<CupertinoTimerPic
                             seconds: (
                                 selectedSecond
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             )
                         )
@@ -3310,13 +3322,13 @@ internal class _CupertinoTimerPickerState__date_picker : State<CupertinoTimerPic
                             )
                         );
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _buildSecondColumn(
@@ -3341,7 +3353,7 @@ internal class _CupertinoTimerPickerState__date_picker : State<CupertinoTimerPic
                             });
                             return false;
                             throw new InvalidOperationException(
-                                "Dart closure completed without a value."
+                                "Callback completed without returning a value."
                             );
                         },
                         child: _buildSecondPicker(additionalPadding, selectionOverlay)
@@ -3354,7 +3366,7 @@ internal class _CupertinoTimerPickerState__date_picker : State<CupertinoTimerPic
                                 ?? (
                                     selectedSecond
                                     ?? throw new global::System.NullReferenceException(
-                                        "Dart null assertion failed."
+                                        "A required value was null."
                                     )
                                 )
                         ) ?? "",
@@ -3363,7 +3375,7 @@ internal class _CupertinoTimerPickerState__date_picker : State<CupertinoTimerPic
                 ),
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual TextStyle _textStyleFrom(BuildContext context, double magnification = 1.0)
@@ -3373,10 +3385,10 @@ internal class _CupertinoTimerPickerState__date_picker : State<CupertinoTimerPic
             color: CupertinoDynamicColor.maybeResolve(textStyle.color, context),
             fontSize: (
                 textStyle.fontSize
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ) * magnification
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual double _calculateOffAxisFraction(double paddingStart, long position)
@@ -3386,7 +3398,7 @@ internal class _CupertinoTimerPickerState__date_picker : State<CupertinoTimerPic
         double timerPickerOffAxisFraction =
             0.5 - ((centerPoint + (pickerColumnWidth * position)) / totalWidth);
         return (pickerColumnOffAxisFraction - timerPickerOffAxisFraction) * textDirectionFactor;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -3666,9 +3678,11 @@ internal class _CupertinoTimerPickerState__date_picker : State<CupertinoTimerPic
                         child: new Align(alignment: widget.alignment, child: contents)
                     )
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

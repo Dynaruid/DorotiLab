@@ -1381,7 +1381,7 @@ public class ColorScheme : Diagnosticable
             onBackground: onBackground ?? this.onBackground,
             surfaceVariant: surfaceVariant ?? this.surfaceVariant
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static ColorScheme lerp(ColorScheme a, ColorScheme b, double t)
@@ -1494,7 +1494,7 @@ public class ColorScheme : Diagnosticable
             onBackground: Dart_uiLibrary.Color.lerp(a.onBackground, b.onBackground, t),
             surfaceVariant: Dart_uiLibrary.Color.lerp(a.surfaceVariant, b.surfaceVariant, t)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool Equals(object? other)
@@ -2055,7 +2055,7 @@ public class ColorScheme : Diagnosticable
             surfaceVariant: surfaceVariant
                 ?? new Color(MaterialDynamicColors.surfaceVariant.getArgb(scheme))
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static async Future<QuantizerResult> _extractColorsFromImageProvider(
@@ -2166,7 +2166,7 @@ public class ColorScheme : Diagnosticable
         long r = (abgr & onlyRMask) >> (int)16L;
         long b = abgr & onlyBMask;
         return (abgr & exceptRMask & exceptBMask) | (b << (int)16L) | r;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static DynamicScheme _buildDynamicScheme(
@@ -2248,9 +2248,11 @@ public class ColorScheme : Diagnosticable
                 )
             ),
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static ColorScheme of(BuildContext context) => Theme.of(context).colorScheme;
@@ -2270,7 +2272,7 @@ public class ColorScheme : Diagnosticable
             return true;
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -2279,6 +2281,6 @@ public class ColorScheme : Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

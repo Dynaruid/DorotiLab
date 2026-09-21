@@ -45,7 +45,7 @@ public static partial class Drag_targetLibrary
     {
         var renderObject = ((RenderBox?)context.findRenderObject()!)!;
         return renderObject.globalToLocal(position);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -58,7 +58,7 @@ public static partial class Drag_targetLibrary
     )
     {
         return Offset.zero;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -164,7 +164,7 @@ public class Draggable<T> : StatefulWidget
                             )
                         ),
                         _ => throw new InvalidOperationException(
-                            "Non-exhaustive Dart switch value."
+                            "Switch expression did not handle the supplied value."
                         ),
                     };
                     __cascade.onStart = onStart;
@@ -172,7 +172,7 @@ public class Draggable<T> : StatefulWidget
                 }
             )
         )();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override IState createState() =>
@@ -214,14 +214,14 @@ public class LongPressDraggable<T> : Draggable<T>
             data: data,
             axis: (
                 axis
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             childWhenDragging: childWhenDragging,
             feedbackOffset: feedbackOffset,
             dragAnchorStrategy: dragAnchorStrategy ?? Drag_targetLibrary.childDragAnchorStrategy,
             maxSimultaneousDrags: (
                 maxSimultaneousDrags
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             onDragStarted: onDragStarted,
             onDragUpdate: onDragUpdate,
@@ -259,14 +259,14 @@ public class LongPressDraggable<T> : Draggable<T>
                         }
                         return result;
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     };
                     return __cascade;
                 }
             )
         )();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -313,9 +313,7 @@ internal class _DraggableState__drag_target<T> : State<Draggable<T>>
                 _activeCount
                 >= (
                     widget.maxSimultaneousDrags
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             )
         )
@@ -333,9 +331,7 @@ internal class _DraggableState__drag_target<T> : State<Draggable<T>>
                 _activeCount
                 >= (
                     widget.maxSimultaneousDrags
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             )
         )
@@ -406,7 +402,7 @@ internal class _DraggableState__drag_target<T> : State<Draggable<T>>
         );
         widget.onDragStarted?.Invoke();
         return avatar;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -418,9 +414,7 @@ internal class _DraggableState__drag_target<T> : State<Draggable<T>>
                 _activeCount
                 < (
                     widget.maxSimultaneousDrags
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             );
         bool showChild = (_activeCount == 0L) || (widget.childWhenDragging is null);
@@ -429,7 +423,7 @@ internal class _DraggableState__drag_target<T> : State<Draggable<T>>
             onPointerDown: canDrag ? _routePointer : null,
             child: showChild ? widget.child : widget.childWhenDragging
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -513,7 +507,7 @@ public static partial class Drag_targetLibrary
     internal static List<T?> _mapAvatarsToData<T>(List<IDragAvatar> avatars)
     {
         return avatars.map((avatar) => (T?)avatar.data).ToList();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -552,7 +546,7 @@ internal class _DragTargetState__drag_target<T> : State<DragTarget<T>>, IDragTar
             return false;
         }
         return data is T || (data is null && default(T) is null);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool didEnter(IDragAvatar avatar)
@@ -571,7 +565,7 @@ internal class _DragTargetState__drag_target<T> : State<DragTarget<T>>, IDragTar
                         offset: (
                             avatar.lastOffset
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     )
@@ -593,7 +587,7 @@ internal class _DragTargetState__drag_target<T> : State<DragTarget<T>>, IDragTar
             });
             return false;
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void didLeave(IDragAvatar avatar)
@@ -633,7 +627,7 @@ internal class _DragTargetState__drag_target<T> : State<DragTarget<T>>, IDragTar
                     offset: (
                         avatar.lastOffset
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
@@ -652,9 +646,7 @@ internal class _DragTargetState__drag_target<T> : State<DragTarget<T>>, IDragTar
                 data: ((T?)avatar.data!)!,
                 offset: (
                     avatar.lastOffset
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             )
         );
@@ -671,7 +663,7 @@ internal class _DragTargetState__drag_target<T> : State<DragTarget<T>>, IDragTar
                 Drag_targetLibrary._mapAvatarsToData<object>(_rejectedAvatars)
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -821,7 +813,9 @@ public class _DragAvatar__drag_target<T> : Drag, IDragAvatar
                     }
                     _enteredTargets.Add(target);
                     return target.didEnter(this);
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 },
                 orElse: () => default!
             );
@@ -876,7 +870,7 @@ public class _DragAvatar__drag_target<T> : Drag, IDragAvatar
             velocity ?? Velocity.zero,
             (
                 _lastOffset
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             wasAccepted
         );
@@ -892,7 +886,7 @@ public class _DragAvatar__drag_target<T> : Drag, IDragAvatar
                 child: new IgnorePointer(ignoring: ignoringFeedbackPointer, child: feedback)
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Velocity _restrictVelocityAxis(Velocity velocity)
@@ -902,7 +896,7 @@ public class _DragAvatar__drag_target<T> : Drag, IDragAvatar
             return velocity;
         }
         return new Velocity(pixelsPerSecond: _restrictAxis(velocity.pixelsPerSecond));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Offset _restrictAxis(Offset offset)
@@ -912,8 +906,10 @@ public class _DragAvatar__drag_target<T> : Drag, IDragAvatar
             Axis.horizontal => new Offset(offset.dx, 0.0),
             Axis.vertical => new Offset(0.0, offset.dy),
             null => offset,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

@@ -291,7 +291,7 @@ internal class _CupertinoPickerState__picker : State<CupertinoPicker>
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -362,7 +362,7 @@ internal class _CupertinoPickerState__picker : State<CupertinoPicker>
             decoration: new BoxDecoration(color: resolvedBackgroundColor),
             child: result
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -406,7 +406,7 @@ public class CupertinoPickerDefaultSelectionOverlay : StatelessWidget
                 color: CupertinoDynamicColor.resolve(background, context)
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -432,7 +432,7 @@ internal class _CupertinoPickerSemantics__picker : SingleChildRenderObjectWidget
             scrollController,
             Directionality.of(context)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -566,12 +566,14 @@ public class _RenderCupertinoPickerSemantics__picker : RenderProxyBox
                     (
                         child.indexInParent
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 ] = child;
                 return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
         if (!indexedChildren.ContainsKey(_currentIndex))
@@ -641,7 +643,7 @@ internal class _CupertinoPickerListWheelChildDelegateWrapper__picker : ListWheel
                 },
                 child: childLocal
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override long? estimatedChildCount => _wrapped.estimatedChildCount;

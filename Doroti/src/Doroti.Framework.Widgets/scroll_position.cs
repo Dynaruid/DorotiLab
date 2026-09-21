@@ -60,14 +60,14 @@ public abstract class ScrollPosition : ViewportOffset, ScrollMetrics
         DartRuntimePrimitives.ConvertValue<double>(
             (
                 _minScrollExtent
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );
     public virtual double maxScrollExtent =>
         DartRuntimePrimitives.ConvertValue<double>(
             (
                 _maxScrollExtent
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );
     public virtual bool hasContentDimensions =>
@@ -78,7 +78,7 @@ public abstract class ScrollPosition : ViewportOffset, ScrollMetrics
         DartRuntimePrimitives.ConvertValue<double>(
             (
                 _pixels
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );
     public override bool hasPixels => DartRuntimePrimitives.ConvertValue<bool>(_pixels is not null);
@@ -86,7 +86,7 @@ public abstract class ScrollPosition : ViewportOffset, ScrollMetrics
         DartRuntimePrimitives.ConvertValue<double>(
             (
                 _viewportDimension
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );
     public virtual bool hasViewportDimension =>
@@ -159,7 +159,9 @@ public abstract class ScrollPosition : ViewportOffset, ScrollMetrics
                     );
                 }
                 return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             });
             double oldPixels = pixels;
             _pixels = newPixels - overscroll;
@@ -179,7 +181,7 @@ public abstract class ScrollPosition : ViewportOffset, ScrollMetrics
             }
         }
         return 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void correctPixels(double value)
@@ -198,7 +200,7 @@ public abstract class ScrollPosition : ViewportOffset, ScrollMetrics
         _pixels =
             (
                 _pixels
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ) + correction;
         _didChangeViewportDimensionOrReceiveCorrection = true;
     }
@@ -233,9 +235,7 @@ public abstract class ScrollPosition : ViewportOffset, ScrollMetrics
             {
                 double value__23743__value23862 = (
                     value
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 correctPixels(((value__23743__value23862)));
             }
@@ -282,10 +282,10 @@ public abstract class ScrollPosition : ViewportOffset, ScrollMetrics
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool applyViewportDimension(double viewportDimension)
@@ -296,7 +296,7 @@ public abstract class ScrollPosition : ViewportOffset, ScrollMetrics
             _didChangeViewportDimensionOrReceiveCorrection = true;
         }
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _isMetricsChanged()
@@ -310,7 +310,7 @@ public abstract class ScrollPosition : ViewportOffset, ScrollMetrics
                 && (currentMetrics.extentAfter == _lastMetrics!.extentAfter)
                 && Equals(currentMetrics.axisDirection, _lastMetrics!.axisDirection)
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool applyContentDimensions(double minScrollExtent, double maxScrollExtent)
@@ -366,7 +366,7 @@ public abstract class ScrollPosition : ViewportOffset, ScrollMetrics
             _lastMetrics = copyWith();
         }
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool correctForNewDimensions(
@@ -386,7 +386,7 @@ public abstract class ScrollPosition : ViewportOffset, ScrollMetrics
             return false;
         }
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void applyNewDimensions()
@@ -405,7 +405,9 @@ public abstract class ScrollPosition : ViewportOffset, ScrollMetrics
             AxisDirection.down => (SemanticsAction.scrollUp, SemanticsAction.scrollDown),
             AxisDirection.left => (SemanticsAction.scrollRight, SemanticsAction.scrollLeft),
             AxisDirection.right => (SemanticsAction.scrollLeft, SemanticsAction.scrollRight),
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         var actions = new HashSet<SemanticsAction>();
         if (CollectionsLibrary.setEquals(actions, _semanticActions))
@@ -427,9 +429,11 @@ public abstract class ScrollPosition : ViewportOffset, ScrollMetrics
                 ScrollPositionAlignmentPolicy.keepVisibleAtStart,
             ScrollPositionAlignmentPolicy.keepVisibleAtStart =>
                 ScrollPositionAlignmentPolicy.keepVisibleAtEnd,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual ScrollPositionAlignmentPolicy _applyAxisDirectionToAlignmentPolicy(
@@ -442,9 +446,11 @@ public abstract class ScrollPosition : ViewportOffset, ScrollMetrics
             AxisDirection.left => _maybeFlipAlignment(alignmentPolicy),
             AxisDirection.down => alignmentPolicy,
             AxisDirection.right => alignmentPolicy,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual async Future ensureVisible(
@@ -535,16 +541,13 @@ public abstract class ScrollPosition : ViewportOffset, ScrollMetrics
         clamp ??= true;
         DartRuntimePrimitives.Assert(() => clamp is not null);
         if (
-            (
-                clamp
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
-            )
+            (clamp ?? throw new global::System.NullReferenceException("A required value was null."))
         )
         {
             to = Dart_uiLibrary.clampDouble(to, minScrollExtent, maxScrollExtent);
         }
         return base.moveTo(to, duration: duration, curve: curve);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool allowImplicitScrolling => physics.allowImplicitScrolling;
@@ -668,7 +671,7 @@ public abstract class ScrollPosition : ViewportOffset, ScrollMetrics
             copyWith(),
             context
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void dispose()
@@ -725,7 +728,7 @@ public abstract class ScrollPosition : ViewportOffset, ScrollMetrics
             axisDirection: axisDirection ?? this.axisDirection,
             devicePixelRatio: devicePixelRatio ?? this.devicePixelRatio
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Axis axis => Basic_typesLibrary.axisDirectionToAxis((axisDirection));
@@ -770,7 +773,7 @@ public class ScrollMetricsNotification : Notification, ViewportNotificationMixin
     public virtual ScrollUpdateNotification asScrollUpdate()
     {
         return new ScrollUpdateNotification(metrics: metrics, context: context, depth: depth);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillDescription(List<string> description)

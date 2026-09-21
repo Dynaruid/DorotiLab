@@ -68,14 +68,14 @@ public class FixedScrollMetrics : ScrollMetrics
         DartRuntimePrimitives.ConvertValue<double>(
             (
                 _minScrollExtent
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );
     public virtual double maxScrollExtent =>
         DartRuntimePrimitives.ConvertValue<double>(
             (
                 _maxScrollExtent
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );
     public virtual bool hasContentDimensions =>
@@ -86,7 +86,7 @@ public class FixedScrollMetrics : ScrollMetrics
         DartRuntimePrimitives.ConvertValue<double>(
             (
                 _pixels
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );
     public virtual bool hasPixels => DartRuntimePrimitives.ConvertValue<bool>(_pixels is not null);
@@ -94,7 +94,7 @@ public class FixedScrollMetrics : ScrollMetrics
         DartRuntimePrimitives.ConvertValue<double>(
             (
                 _viewportDimension
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );
     public virtual bool hasViewportDimension =>
@@ -103,7 +103,7 @@ public class FixedScrollMetrics : ScrollMetrics
     public override string ToString()
     {
         return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "FixedScrollMetrics")}({extentBefore.toStringAsFixed(1L)}..[{extentInside.toStringAsFixed(1L)}]..{extentAfter.toStringAsFixed(1L)})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual ScrollMetrics copyWith(
@@ -131,7 +131,7 @@ public class FixedScrollMetrics : ScrollMetrics
             axisDirection: axisDirection ?? this.axisDirection,
             devicePixelRatio: devicePixelRatio ?? this.devicePixelRatio
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Axis axis => Basic_typesLibrary.axisDirectionToAxis((axisDirection));

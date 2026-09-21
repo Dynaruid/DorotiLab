@@ -87,7 +87,7 @@ public static partial class AppLibrary
                     Locale match__8388__value8497 = (
                         match
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     );
                     return ((match__8388__value8497));
@@ -104,7 +104,7 @@ public static partial class AppLibrary
                     Locale match__8652__value8763 = (
                         matchLocal
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     );
                     return ((match__8652__value8763));
@@ -114,9 +114,7 @@ public static partial class AppLibrary
             {
                 Locale matchesLanguageCode__7850__value9013 = (
                     matchesLanguageCode
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 return ((matchesLanguageCode__7850__value9013));
             }
@@ -128,9 +126,7 @@ public static partial class AppLibrary
             {
                 Locale match__9139__value9197 = (
                     matchAlternate
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 matchesLanguageCode = (match__9139__value9197);
                 if (
@@ -148,7 +144,7 @@ public static partial class AppLibrary
                         (
                             matchesLanguageCode
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     );
@@ -165,7 +161,7 @@ public static partial class AppLibrary
                     Locale match__9139__value10144 = (
                         matchAlternate
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     );
                     matchesCountryCode = (match__9139__value10144);
@@ -175,7 +171,7 @@ public static partial class AppLibrary
         Locale resolvedLocale =
             (matchesLanguageCode ?? matchesCountryCode) ?? supportedLocales.First();
         return resolvedLocale;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -645,7 +641,9 @@ public class WidgetsApp : StatefulWidget
                     return _defaultAppleOsShortcuts;
                 }
                 default:
-                    throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                    throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    );
             }
         }
     }
@@ -707,9 +705,11 @@ internal class _WidgetsAppState__app : State<WidgetsApp>, WidgetsBindingObserver
                 return true;
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void didChangeAppLifecycleState(AppLifecycleState state)
@@ -858,7 +858,7 @@ internal class _WidgetsAppState__app : State<WidgetsApp>, WidgetsBindingObserver
             return widget.onGenerateRoute!(settings);
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual dynamic _onUnknownRoute(RouteSettings settings)
@@ -884,7 +884,7 @@ internal class _WidgetsAppState__app : State<WidgetsApp>, WidgetsBindingObserver
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         dynamic result =
             widget.onUnknownRoute!(settings)
@@ -905,10 +905,10 @@ internal class _WidgetsAppState__app : State<WidgetsApp>, WidgetsBindingObserver
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return result!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual async Future<bool> didPopRoute()
@@ -924,7 +924,7 @@ internal class _WidgetsAppState__app : State<WidgetsApp>, WidgetsBindingObserver
             return false;
         }
         return await navigator.maybePop<object>();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual async Future<bool> didPushRouteInformation(RouteInformation routeInformation)
@@ -954,7 +954,7 @@ internal class _WidgetsAppState__app : State<WidgetsApp>, WidgetsBindingObserver
             )
         );
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _shouldUpdateLocalizations(WidgetsApp oldWidget)
@@ -966,7 +966,7 @@ internal class _WidgetsAppState__app : State<WidgetsApp>, WidgetsBindingObserver
             || (!Equals(widget.localeResolutionCallback, oldWidget.localeResolutionCallback))
             || (!Equals(widget.supportedLocales, oldWidget.supportedLocales))
             || (!Equals(widget.localizationsDelegates, oldWidget.localizationsDelegates));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _updateLocalizations(WidgetsApp oldWidget)
@@ -1019,7 +1019,7 @@ internal class _WidgetsAppState__app : State<WidgetsApp>, WidgetsBindingObserver
                                     {
                                         return widget.onGenerateInitialRoutes!(initialRouteName);
                                         throw new InvalidOperationException(
-                                            "Dart closure completed without a value."
+                                            "Callback completed without returning a value."
                                         );
                                     }
                                 ),
@@ -1052,7 +1052,7 @@ internal class _WidgetsAppState__app : State<WidgetsApp>, WidgetsBindingObserver
                     {
                         return widget.builder!(context, routing);
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 )
@@ -1114,7 +1114,7 @@ internal class _WidgetsAppState__app : State<WidgetsApp>, WidgetsBindingObserver
                             }
                             return child!;
                             throw new InvalidOperationException(
-                                "Dart closure completed without a value."
+                                "Callback completed without returning a value."
                             );
                         },
                         child: result
@@ -1128,7 +1128,7 @@ internal class _WidgetsAppState__app : State<WidgetsApp>, WidgetsBindingObserver
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         result = DartRuntimePrimitives.ConvertValue<Widget>(
             new Focus(
@@ -1145,7 +1145,9 @@ internal class _WidgetsAppState__app : State<WidgetsApp>, WidgetsBindingObserver
                     return RawTooltip.dismissAllToolTips()
                         ? KeyEventResult.handled
                         : KeyEventResult.ignored;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 },
                 child: result
             )
@@ -1164,7 +1166,7 @@ internal class _WidgetsAppState__app : State<WidgetsApp>, WidgetsBindingObserver
                             child: result
                         );
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 )
@@ -1215,7 +1217,7 @@ internal class _WidgetsAppState__app : State<WidgetsApp>, WidgetsBindingObserver
                                                         child: titleLocal ?? result
                                                     );
                                                     throw new InvalidOperationException(
-                                                        "Dart closure completed without a value."
+                                                        "Callback completed without returning a value."
                                                     );
                                                 }
                                             )
@@ -1228,6 +1230,6 @@ internal class _WidgetsAppState__app : State<WidgetsApp>, WidgetsBindingObserver
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

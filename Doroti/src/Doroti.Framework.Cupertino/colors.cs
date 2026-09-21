@@ -491,7 +491,7 @@ public class CupertinoDynamicColor : Color, Diagnosticable
         return (resolvable is CupertinoDynamicColor)
             ? ((CupertinoDynamicColor)resolvable).resolveFrom(context)
             : resolvable;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static Color? maybeResolve(Color? resolvable, BuildContext context)
@@ -499,7 +499,7 @@ public class CupertinoDynamicColor : Color, Diagnosticable
         return (resolvable is CupertinoDynamicColor)
             ? ((CupertinoDynamicColor)resolvable).resolveFrom(context)
             : resolvable;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _isPlatformBrightnessDependent
@@ -594,7 +594,7 @@ public class CupertinoDynamicColor : Color, Diagnosticable
             debugContext,
             _debugLabel
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool Equals(object? other)
@@ -648,7 +648,9 @@ public class CupertinoDynamicColor : Color, Diagnosticable
         {
             var marker = Equals(color, _effectiveColor) ? "*" : "";
             return $"{marker}{name} = {color}{marker}";
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         string ToString(string name, Color color) => toString(name, color);
         var xs = (
@@ -700,7 +702,7 @@ public class CupertinoDynamicColor : Color, Diagnosticable
             )
         )();
         return $"{_debugLabel ?? objectRuntimeTypeFunctions.objectRuntimeType(this, "CupertinoDynamicColor")}({string.Join(", ", xs)}, resolved by: {(object?)_debugResolveContext?.widget ?? (object?)"UNRESOLVED"})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -829,7 +831,7 @@ public class CupertinoDynamicColor : Color, Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -868,6 +870,6 @@ public static partial class ColorsLibrary
                 level: level
             );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

@@ -51,7 +51,7 @@ public abstract class RawKeyEventData : Diagnosticable
                         result[key] = (
                             side
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         );
                     }
@@ -86,7 +86,7 @@ public abstract class RawKeyEventData : Diagnosticable
     public virtual bool shouldDispatchEvent()
     {
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -120,7 +120,9 @@ public abstract class RawKeyEvent : Diagnosticable
                 metaState: ((long?)message.GetValueOrDefault("metaState")) ?? 0L,
                 keyCode: ((long?)message.GetValueOrDefault("keyCode")) ?? 0L
             );
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         RawKeyEventData data = default!;
         if (ConstantsLibrary.kIsWeb)
@@ -535,7 +537,7 @@ public class RawKeyboard
             }
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _synchronizeModifiers(RawKeyEvent @event)

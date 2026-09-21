@@ -295,7 +295,9 @@ public class _SegmentState__sliding_segmented_control<T>
             _SegmentLocation__sliding_segmented_control.leftmost => Alignment.centerLeft,
             _SegmentLocation__sliding_segmented_control.rightmost => Alignment.centerRight,
             _SegmentLocation__sliding_segmented_control.inbetween => Alignment.center,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         return new MetaData(
             behavior: HitTestBehavior.opaque,
@@ -346,7 +348,7 @@ public class _SegmentState__sliding_segmented_control<T>
                 }
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
@@ -377,7 +379,7 @@ public class _SegmentState__sliding_segmented_control<T>
         )();
         _tickers!.Add(result);
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _removeTicker(_WidgetTicker__ticker_provider ticker)
@@ -546,10 +548,12 @@ public class _SegmentSeparatorState__sliding_segmented_control
                         child: child
                     )
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
@@ -580,7 +584,7 @@ public class _SegmentSeparatorState__sliding_segmented_control
         )();
         _tickers!.Add(result);
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _removeTicker(_WidgetTicker__ticker_provider ticker)
@@ -775,7 +779,7 @@ internal class _SlidingSegmentButtonState__sliding_segmented_control<T>
             onKeyEvent: (node, @event) => KeyEventResult.ignored,
             child: widget.child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual RadioGroupRegistry<T>? registry
@@ -993,7 +997,7 @@ public class _SegmentedControlState__sliding_segmented_control<T>
             }
         }
         return widget.children.Keys.elementAt(segmentIndex);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _hasDraggedTooFar(Gestures.DragUpdateDetails details)
@@ -1008,7 +1012,7 @@ public class _SegmentedControlState__sliding_segmented_control<T>
             + Dart_mathLibrary.pow(Math.Max(0.0, offCenter.dy.abs() - (sizeLocal.height / 2L)), 2L)
         );
         return l2 > Sliding_segmented_controlLibrary._kTouchYDistanceThreshold;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _playThumbScaleAnimation(bool isExpanding)
@@ -1205,7 +1209,9 @@ public class _SegmentedControlState__sliding_segmented_control<T>
                     _SegmentLocation__sliding_segmented_control.rightmost,
                 TextDirection.ltr => _SegmentLocation__sliding_segmented_control.inbetween,
                 TextDirection.rtl => _SegmentLocation__sliding_segmented_control.inbetween,
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             };
             GlobalKey<_SlidingSegmentButtonState__sliding_segmented_control<T>> segmentKey =
                 _segmentKeys.putIfAbsent(
@@ -1274,7 +1280,7 @@ public class _SegmentedControlState__sliding_segmented_control<T>
                     long highlightedIndex__30239__value33090 = (
                         highlightedIndexLocal
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     );
                     highlightedIndexLocal = index - 1L - (highlightedIndex__30239__value33090);
@@ -1328,7 +1334,7 @@ public class _SegmentedControlState__sliding_segmented_control<T>
                                     children: childrenLocal
                                 );
                                 throw new InvalidOperationException(
-                                    "Dart closure completed without a value."
+                                    "Callback completed without returning a value."
                                 );
                             }
                         )
@@ -1336,7 +1342,7 @@ public class _SegmentedControlState__sliding_segmented_control<T>
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
@@ -1367,7 +1373,7 @@ public class _SegmentedControlState__sliding_segmented_control<T>
         )();
         _tickers!.Add(result);
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _removeTicker(_WidgetTicker__ticker_provider ticker)
@@ -1467,7 +1473,7 @@ internal class _SegmentedControlRenderWidget__sliding_segmented_control<T>
             proportionalWidth: proportionalWidth,
             state: state
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -1671,14 +1677,14 @@ public class _RenderSegmentedControl__sliding_segmented_control<T>
         }
         long segmentCount = checked(childCount / 2L) + 1L;
         return Math.Min(index, segmentCount - 1L);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual RenderBox? nonSeparatorChildAfter(RenderBox child)
     {
         RenderBox? nextChild = childAfter(child);
         return (nextChild is null) ? null : childAfter(nextChild);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicWidth(double height)
@@ -1696,7 +1702,7 @@ public class _RenderSegmentedControl__sliding_segmented_control<T>
                 (maxMinChildWidth + (2L * Sliding_segmented_controlLibrary._kSegmentMinPadding))
                 * childCountLocal
             ) + totalSeparatorWidth;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicWidth(double height)
@@ -1714,7 +1720,7 @@ public class _RenderSegmentedControl__sliding_segmented_control<T>
                 (maxMaxChildWidth + (2L * Sliding_segmented_controlLibrary._kSegmentMinPadding))
                 * childCountLocal
             ) + totalSeparatorWidth;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicHeight(double width)
@@ -1728,7 +1734,7 @@ public class _RenderSegmentedControl__sliding_segmented_control<T>
             child = nonSeparatorChildAfter(child);
         }
         return maxMinChildHeight;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicHeight(double width)
@@ -1742,13 +1748,13 @@ public class _RenderSegmentedControl__sliding_segmented_control<T>
             child = nonSeparatorChildAfter(child);
         }
         return maxMaxChildHeight;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? computeDistanceToActualBaseline(TextBaseline baseline)
     {
         return defaultComputeDistanceToHighestActualBaseline(baseline);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void setupParentData(RenderObject child)
@@ -1779,7 +1785,7 @@ public class _RenderSegmentedControl__sliding_segmented_control<T>
             child = nonSeparatorChildAfter(child);
         }
         return Math.Min(childWidth, (constraints.maxWidth - totalSeparatorWidth) / childCountLocal);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual double _getMaxChildHeight(BoxConstraints constraints, double childWidth)
@@ -1793,7 +1799,7 @@ public class _RenderSegmentedControl__sliding_segmented_control<T>
             child = nonSeparatorChildAfter(child);
         }
         return maxHeight;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual List<double> _getChildWidths(BoxConstraints constraints)
@@ -1827,7 +1833,7 @@ public class _RenderSegmentedControl__sliding_segmented_control<T>
             }
         }
         return segmentWidths;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Size _computeOverallSize(BoxConstraints constraints)
@@ -1836,7 +1842,7 @@ public class _RenderSegmentedControl__sliding_segmented_control<T>
         return constraints.constrain(
             new Size(_getChildWidths(constraints).sum() + totalSeparatorWidth, maxChildHeight)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
@@ -1858,13 +1864,13 @@ public class _RenderSegmentedControl__sliding_segmented_control<T>
             index++;
         }
         return baselineOffset.offset;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Size computeDryLayout(BoxConstraints constraints)
     {
         return _computeOverallSize(constraints);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void performLayout()
@@ -1940,9 +1946,7 @@ public class _RenderSegmentedControl__sliding_segmented_control<T>
             Math.Max(
                 (
                     thumbRect
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ).left,
                 leftMost - Sliding_segmented_controlLibrary._kThumbInsets.left
             ),
@@ -1950,9 +1954,7 @@ public class _RenderSegmentedControl__sliding_segmented_control<T>
             Math.Min(
                 (
                     thumbRect
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ).right,
                 rightMost + Sliding_segmented_controlLibrary._kThumbInsets.right
             ),
@@ -1960,7 +1962,7 @@ public class _RenderSegmentedControl__sliding_segmented_control<T>
                 + children.First().size.height
                 + Sliding_segmented_controlLibrary._kThumbInsets.bottom
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paint(PaintingContext context, Offset offset)
@@ -1975,7 +1977,7 @@ public class _RenderSegmentedControl__sliding_segmented_control<T>
         {
             long highlightedChildIndex__50131__value50234 = (
                 highlightedChildIndex
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             RenderBox selectedChild = children[
                 (int)((highlightedChildIndex__50131__value50234) * 2L)
@@ -2045,7 +2047,9 @@ public class _RenderSegmentedControl__sliding_segmented_control<T>
                     unscaledThumbRect.width * thumbScale
                 ) - unscaledThumbRect.width,
                 _SegmentLocation__sliding_segmented_control.inbetween => 0,
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             };
             var thumbRect = Rect.fromCenter(
                 center: unscaledThumbRect.center - new Offset(delta / 2L, 0),
@@ -2144,7 +2148,7 @@ public class _RenderSegmentedControl__sliding_segmented_control<T>
                         );
                         return child!.hitTest(result, position: localOffset);
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 );
@@ -2152,7 +2156,7 @@ public class _RenderSegmentedControl__sliding_segmented_control<T>
             child = childParentData.previousSibling;
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool _debugUltimatePreviousSiblingOf(RenderBox child, RenderBox? equals = null)
@@ -2165,7 +2169,7 @@ public class _RenderSegmentedControl__sliding_segmented_control<T>
             childParentData = ((ContainerBoxParentData<RenderBox>?)child.parentData!)!;
         }
         return Equals(child, equals);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool _debugUltimateNextSiblingOf(RenderBox child, RenderBox? equals = null)
@@ -2178,7 +2182,7 @@ public class _RenderSegmentedControl__sliding_segmented_control<T>
             childParentData = ((ContainerBoxParentData<RenderBox>?)child.parentData!)!;
         }
         return Equals(child, equals);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual long childCount => _childCount;
@@ -2223,7 +2227,7 @@ public class _RenderSegmentedControl__sliding_segmented_control<T>
             return true;
         });
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _insertIntoChildList(RenderBox child, RenderBox? after = null)
@@ -2427,7 +2431,7 @@ public class _RenderSegmentedControl__sliding_segmented_control<T>
         DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         var childParentData = ((ContainerBoxParentData<RenderBox>?)child.parentData!)!;
         return childParentData.previousSibling;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual RenderBox? childAfter(RenderBox child)
@@ -2435,7 +2439,7 @@ public class _RenderSegmentedControl__sliding_segmented_control<T>
         DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         var childParentData = ((ContainerBoxParentData<RenderBox>?)child.parentData!)!;
         return childParentData.nextSibling;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override List<DiagnosticsNode> debugDescribeChildren()
@@ -2460,7 +2464,7 @@ public class _RenderSegmentedControl__sliding_segmented_control<T>
             }
         }
         return children;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double? defaultComputeDistanceToFirstActualBaseline(TextBaseline baseline)
@@ -2475,16 +2479,14 @@ public class _RenderSegmentedControl__sliding_segmented_control<T>
             {
                 double result__138852__value138916 = (
                     result
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 return (result__138852__value138916) + childParentData.offset.dy;
             }
             child = childParentData.nextSibling;
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double? defaultComputeDistanceToHighestActualBaseline(TextBaseline baseline)
@@ -2502,7 +2504,7 @@ public class _RenderSegmentedControl__sliding_segmented_control<T>
             child = childParentData.nextSibling;
         }
         return minBaseline.offset;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool defaultHitTestChildren(BoxHitTestResult result, Offset position)
@@ -2520,7 +2522,9 @@ public class _RenderSegmentedControl__sliding_segmented_control<T>
                         Equals(transformed, position - childParentData.offset)
                     );
                     return child!.hitTest(result, position: transformed);
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
             if (isHit)
@@ -2530,7 +2534,7 @@ public class _RenderSegmentedControl__sliding_segmented_control<T>
             child = childParentData.previousSibling;
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void defaultPaint(PaintingContext context, Offset offset)
@@ -2555,6 +2559,6 @@ public class _RenderSegmentedControl__sliding_segmented_control<T>
             child = childParentData.nextSibling;
         }
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

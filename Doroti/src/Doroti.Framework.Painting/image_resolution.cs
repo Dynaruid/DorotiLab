@@ -74,7 +74,7 @@ public class AssetImage : AssetBundleImageProvider
         }
         completer = new Completer<AssetBundleImageKey>();
         return completer.future;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual AssetMetadata _chooseVariant(
@@ -101,10 +101,10 @@ public class AssetImage : AssetBundleImageProvider
             candidatesByDevicePixelRatio,
             (
                 config.devicePixelRatio
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual AssetMetadata _findBestVariant(
@@ -123,9 +123,7 @@ public class AssetImage : AssetBundleImageProvider
             return candidatesByDpr.GetValueOrDefault(
                 (
                     upper
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             )!;
         }
@@ -134,9 +132,7 @@ public class AssetImage : AssetBundleImageProvider
             return candidatesByDpr.GetValueOrDefault(
                 (
                     lower
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             )!;
         }
@@ -149,13 +145,13 @@ public class AssetImage : AssetBundleImageProvider
                         (
                             lower
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                         + (
                             upper
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     ) / 2L
@@ -166,9 +162,7 @@ public class AssetImage : AssetBundleImageProvider
             return candidatesByDpr.GetValueOrDefault(
                 (
                     upper
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             )!;
         }
@@ -177,13 +171,11 @@ public class AssetImage : AssetBundleImageProvider
             return candidatesByDpr.GetValueOrDefault(
                 (
                     lower
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             )!;
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool Equals(object? other)

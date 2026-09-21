@@ -56,6 +56,6 @@ public abstract class PlaceholderSpan : InlineSpan
     {
         DartRuntimePrimitives.Assert(() => false);
         return base.debugAssertIsValid();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

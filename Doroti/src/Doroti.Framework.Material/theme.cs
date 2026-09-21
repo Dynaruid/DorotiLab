@@ -45,7 +45,7 @@ public class Theme : StatelessWidget
                     : _kFallbackTheme
             );
         return ThemeData.localize(themeLocal, themeLocal.typography.geometryThemeFor(category));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _wrapsWidgetThemes(BuildContext context, Widget child)
@@ -60,7 +60,7 @@ public class Theme : StatelessWidget
                 child: child
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual CupertinoThemeData _inheritedCupertinoThemeData(BuildContext context)
@@ -70,7 +70,7 @@ public class Theme : StatelessWidget
         return (
             inheritedTheme?.theme.data ?? new MaterialBasedCupertinoThemeData(materialTheme: data)
         ).resolveFrom(context);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static Brightness brightnessOf(BuildContext context)
@@ -78,7 +78,7 @@ public class Theme : StatelessWidget
         _InheritedTheme__theme? inheritedTheme =
             context.dependOnInheritedWidgetOfExactType<_InheritedTheme__theme>();
         return inheritedTheme?.theme.data.brightness ?? MediaQuery.platformBrightnessOf(context);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static Brightness? maybeBrightnessOf(BuildContext context)
@@ -87,7 +87,7 @@ public class Theme : StatelessWidget
             context.dependOnInheritedWidgetOfExactType<_InheritedTheme__theme>();
         return inheritedTheme?.theme.data.brightness
             ?? MediaQuery.maybePlatformBrightnessOf(context);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -99,7 +99,7 @@ public class Theme : StatelessWidget
                 child: _wrapsWidgetThemes(context, child)
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -122,7 +122,7 @@ internal class _InheritedTheme__theme : InheritedTheme
     public override Widget wrap(BuildContext context, Widget child)
     {
         return new Theme(data: theme.data, child: child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget) =>
@@ -186,7 +186,7 @@ internal class _AnimatedThemeState__theme : AnimatedWidgetBaseState<AnimatedThem
     public override Widget build(BuildContext context)
     {
         return new Theme(data: _data!.evaluate(animation), child: widget.child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder description)

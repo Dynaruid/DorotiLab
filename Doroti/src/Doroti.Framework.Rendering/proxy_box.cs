@@ -55,7 +55,7 @@ public class RenderProxyBox
             return true;
         });
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual RenderBox? child
@@ -112,7 +112,7 @@ public class RenderProxyBox
                 ((Diagnosticable)child!).toDiagnosticsNode(name: "child"),
             }
             : new List<DiagnosticsNode>();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void setupParentData(RenderObject child)
@@ -126,32 +126,32 @@ public class RenderProxyBox
     public override double computeMinIntrinsicWidth(double height)
     {
         return child?.getMinIntrinsicWidth(height) ?? 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicWidth(double height)
     {
         return child?.getMaxIntrinsicWidth(height) ?? 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicHeight(double width)
     {
         return child?.getMinIntrinsicHeight(width) ?? 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicHeight(double width)
     {
         return child?.getMaxIntrinsicHeight(width) ?? 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? computeDistanceToActualBaseline(TextBaseline baseline)
     {
         return child?.getDistanceToActualBaseline(baseline)
             ?? base.computeDistanceToActualBaseline(baseline);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
@@ -160,13 +160,13 @@ public class RenderProxyBox
         return (childLocal is null)
             ? base.computeDryBaseline(constraints, baseline)
             : childLocal.getDryBaseline(constraints, baseline);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Size computeDryLayout(BoxConstraints constraints)
     {
         return child?.getDryLayout(constraints) ?? computeSizeForNoChild(constraints);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void performLayout()
@@ -179,13 +179,13 @@ public class RenderProxyBox
     public virtual Size computeSizeForNoChild(BoxConstraints constraints)
     {
         return constraints.smallest;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool hitTestChildren(BoxHitTestResult result, Offset position)
     {
         return child?.hitTest(result, position: position) ?? false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void applyPaintTransform(RenderObject child, Matrix4 transform) { }
@@ -251,7 +251,7 @@ public abstract class RenderProxyBoxWithHitTestBehavior : RenderProxyBox
             }
         }
         return hitTarget;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool hitTestSelf(Offset position) => Equals(behavior, HitTestBehavior.opaque);
@@ -306,7 +306,7 @@ public class RenderConstrainedBox : RenderProxyBox
             return _additionalConstraints.constrainWidth(width);
         }
         return width;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicWidth(double height)
@@ -322,7 +322,7 @@ public class RenderConstrainedBox : RenderProxyBox
             return _additionalConstraints.constrainWidth(width);
         }
         return width;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicHeight(double width)
@@ -338,7 +338,7 @@ public class RenderConstrainedBox : RenderProxyBox
             return _additionalConstraints.constrainHeight(height);
         }
         return height;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicHeight(double width)
@@ -354,13 +354,13 @@ public class RenderConstrainedBox : RenderProxyBox
             return _additionalConstraints.constrainHeight(height);
         }
         return height;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
     {
         return child?.getDryBaseline(_additionalConstraints.enforce(constraints), baseline);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void performLayout()
@@ -381,7 +381,7 @@ public class RenderConstrainedBox : RenderProxyBox
     {
         return child?.getDryLayout(_additionalConstraints.enforce(constraints))
             ?? _additionalConstraints.enforce(constraints).constrain(Size.zero);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugPaintSize(PaintingContext context, Offset offset)
@@ -478,7 +478,7 @@ public class RenderLimitedBox : RenderProxyBox
                 ? constraints.maxHeight
                 : constraints.constrainHeight(maxHeight)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Size _computeSize(
@@ -492,7 +492,7 @@ public class RenderLimitedBox : RenderProxyBox
             return constraints.constrain(childSize);
         }
         return _limitConstraints(constraints).constrain(Size.zero);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Size computeDryLayout(BoxConstraints constraints)
@@ -501,7 +501,7 @@ public class RenderLimitedBox : RenderProxyBox
             constraints: constraints,
             layoutChild: ChildLayoutHelper.dryLayoutChild
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void performLayout()
@@ -557,7 +557,7 @@ public class RenderAspectRatio : RenderProxyBox
             return height * _aspectRatio;
         }
         return child?.getMinIntrinsicWidth(height) ?? 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicWidth(double height)
@@ -567,7 +567,7 @@ public class RenderAspectRatio : RenderProxyBox
             return height * _aspectRatio;
         }
         return child?.getMaxIntrinsicWidth(height) ?? 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicHeight(double width)
@@ -577,7 +577,7 @@ public class RenderAspectRatio : RenderProxyBox
             return width / _aspectRatio;
         }
         return child?.getMinIntrinsicHeight(width) ?? 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicHeight(double width)
@@ -587,7 +587,7 @@ public class RenderAspectRatio : RenderProxyBox
             return width / _aspectRatio;
         }
         return child?.getMaxIntrinsicHeight(width) ?? 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Size _applyAspectRatio(BoxConstraints constraints)
@@ -643,13 +643,13 @@ public class RenderAspectRatio : RenderProxyBox
             width = height * _aspectRatio;
         }
         return constraints.constrain(new Size(width, height));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Size computeDryLayout(BoxConstraints constraints)
     {
         return _applyAspectRatio(constraints);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
@@ -658,7 +658,7 @@ public class RenderAspectRatio : RenderProxyBox
             BoxConstraints.CreateTight(getDryLayout(constraints)),
             baseline
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void performLayout()
@@ -694,7 +694,7 @@ public class RenderIntrinsicWidth : RenderProxyBox
                     (
                         stepWidth
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) > 0.0
                 )
@@ -705,7 +705,7 @@ public class RenderIntrinsicWidth : RenderProxyBox
                     (
                         stepHeight
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) > 0.0
                 )
@@ -724,7 +724,7 @@ public class RenderIntrinsicWidth : RenderProxyBox
                     (
                         __value
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) > 0.0
                 )
@@ -749,7 +749,7 @@ public class RenderIntrinsicWidth : RenderProxyBox
                     (
                         __value
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) > 0.0
                 )
@@ -774,22 +774,20 @@ public class RenderIntrinsicWidth : RenderProxyBox
                 input
                 / (
                     step
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             ).ceil()
             * (
                 step
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicWidth(double height)
     {
         return getMaxIntrinsicWidth(height);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicWidth(double height)
@@ -800,7 +798,7 @@ public class RenderIntrinsicWidth : RenderProxyBox
         }
         double width = child!.getMaxIntrinsicWidth(height);
         return _applyStep(width, _stepWidth);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicHeight(double width)
@@ -816,7 +814,7 @@ public class RenderIntrinsicWidth : RenderProxyBox
         DartRuntimePrimitives.Assert(() => double.IsFinite(width));
         double height = child!.getMinIntrinsicHeight(width);
         return _applyStep(height, _stepHeight);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicHeight(double width)
@@ -832,7 +830,7 @@ public class RenderIntrinsicWidth : RenderProxyBox
         DartRuntimePrimitives.Assert(() => double.IsFinite(width));
         double height = child!.getMaxIntrinsicHeight(width);
         return _applyStep(height, _stepHeight);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual BoxConstraints _childConstraints(RenderBox child, BoxConstraints constraints)
@@ -845,7 +843,7 @@ public class RenderIntrinsicWidth : RenderProxyBox
                 ? null
                 : _applyStep(child.getMaxIntrinsicHeight(constraints.maxWidth), _stepHeight)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Size _computeSize(
@@ -857,7 +855,7 @@ public class RenderIntrinsicWidth : RenderProxyBox
         return (childLocal is null)
             ? constraints.smallest
             : layoutChild(childLocal, _childConstraints(childLocal, constraints));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Size computeDryLayout(BoxConstraints constraints)
@@ -866,14 +864,14 @@ public class RenderIntrinsicWidth : RenderProxyBox
             layoutChild: ChildLayoutHelper.dryLayoutChild,
             constraints: constraints
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
     {
         RenderBox? childLocal = child;
         return childLocal?.getDryBaseline(_childConstraints(childLocal, constraints), baseline);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void performLayout()
@@ -906,7 +904,7 @@ public class RenderIntrinsicHeight : RenderProxyBox
         }
         DartRuntimePrimitives.Assert(() => double.IsFinite(height));
         return child!.getMinIntrinsicWidth(height);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicWidth(double height)
@@ -921,13 +919,13 @@ public class RenderIntrinsicHeight : RenderProxyBox
         }
         DartRuntimePrimitives.Assert(() => double.IsFinite(height));
         return child!.getMaxIntrinsicWidth(height);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicHeight(double width)
     {
         return getMaxIntrinsicHeight(width);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual BoxConstraints _childConstraints(RenderBox child, BoxConstraints constraints)
@@ -935,7 +933,7 @@ public class RenderIntrinsicHeight : RenderProxyBox
         return constraints.hasTightHeight
             ? constraints
             : constraints.tighten(height: child.getMaxIntrinsicHeight(constraints.maxWidth));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Size _computeSize(
@@ -947,7 +945,7 @@ public class RenderIntrinsicHeight : RenderProxyBox
         return (childLocal is null)
             ? constraints.smallest
             : layoutChild(childLocal, _childConstraints(childLocal, constraints));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Size computeDryLayout(BoxConstraints constraints)
@@ -956,14 +954,14 @@ public class RenderIntrinsicHeight : RenderProxyBox
             layoutChild: ChildLayoutHelper.dryLayoutChild,
             constraints: constraints
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
     {
         RenderBox? childLocal = child;
         return childLocal?.getDryBaseline(_childConstraints(childLocal, constraints), baseline);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void performLayout()
@@ -980,13 +978,13 @@ public class RenderIgnoreBaseline : RenderProxyBox
     public override double? computeDistanceToActualBaseline(TextBaseline baseline)
     {
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
     {
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1057,7 +1055,7 @@ public class RenderOpacity : RenderProxyBox
         var __child = (RenderBox)child;
         DartRuntimePrimitives.Assert(() => Equals(__child.parent, this));
         return _alpha > 0L;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override OffsetLayer updateCompositedLayer(OffsetLayer? oldLayer)
@@ -1066,7 +1064,7 @@ public class RenderOpacity : RenderProxyBox
         OpacityLayer layer = __oldLayer ?? new OpacityLayer();
         layer.alpha = _alpha;
         return layer;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paint(PaintingContext context, Offset offset)
@@ -1143,7 +1141,7 @@ public class RenderAnimatedOpacity : RenderProxyBox, RenderAnimatedOpacityMixin<
         (child is not null)
         && (
             _currentlyIsRepaintBoundary
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         );
 
     public override OffsetLayer updateCompositedLayer(OffsetLayer? oldLayer)
@@ -1152,7 +1150,7 @@ public class RenderAnimatedOpacity : RenderProxyBox, RenderAnimatedOpacityMixin<
         OpacityLayer updatedLayer = __oldLayer ?? new OpacityLayer();
         updatedLayer.alpha = _alpha;
         return updatedLayer;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Animation<double> opacity
@@ -1182,7 +1180,7 @@ public class RenderAnimatedOpacity : RenderProxyBox, RenderAnimatedOpacityMixin<
         get =>
             (
                 _alwaysIncludeSemantics
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         set
         {
@@ -1219,9 +1217,7 @@ public class RenderAnimatedOpacity : RenderProxyBox, RenderAnimatedOpacityMixin<
             _currentlyIsRepaintBoundary =
                 (
                     _alpha
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) > 0L;
             if ((child is not null) && (wasRepaintBoundary != _currentlyIsRepaintBoundary))
             {
@@ -1239,7 +1235,7 @@ public class RenderAnimatedOpacity : RenderProxyBox, RenderAnimatedOpacityMixin<
     {
         DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         return opacity.value > 0L;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paint(PaintingContext context, Offset offset)
@@ -1533,7 +1529,7 @@ public class ShapeBorderClipper : CustomClipper<Path>
     public override Path getClip(Size size)
     {
         return shape.getOuterPath(Offset.zero & size, textDirection: textDirection);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool shouldReclip(CustomClipper<Path> oldClipper)
@@ -1545,7 +1541,7 @@ public class ShapeBorderClipper : CustomClipper<Path>
         var typedOldClipper = ((ShapeBorderClipper?)oldClipper)!;
         return (!Equals(typedOldClipper.shape, shape))
             || (!Equals(typedOldClipper.textDirection, textDirection));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1687,7 +1683,7 @@ public abstract class _RenderCustomClip__proxy_box<T> : RenderProxyBox
                 return _clipper?.getApproximateClipRect(size) ?? (Offset.zero & size);
             }
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugPaintSize(PaintingContext context, Offset offset)
@@ -1772,7 +1768,7 @@ public class RenderClipRect : _RenderCustomClip__proxy_box<Rect>
             }
         }
         return base.hitTest(result, position: position);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paint(PaintingContext context, Offset offset)
@@ -1821,7 +1817,7 @@ public class RenderClipRect : _RenderCustomClip__proxy_box<Rect>
                                 -(
                                     _debugText!.text!.style!.fontSize
                                     ?? throw new global::System.NullReferenceException(
-                                        "Dart null assertion failed."
+                                        "A required value was null."
                                     )
                                 ) * 1.1
                             )
@@ -1895,7 +1891,7 @@ public class RenderClipRRect : _RenderCustomClip__proxy_box<RRect>
             }
         }
         return base.hitTest(result, position: position);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paint(PaintingContext context, Offset offset)
@@ -1945,7 +1941,7 @@ public class RenderClipRRect : _RenderCustomClip__proxy_box<RRect>
                                 -(
                                     _debugText!.text!.style!.fontSize
                                     ?? throw new global::System.NullReferenceException(
-                                        "Dart null assertion failed."
+                                        "A required value was null."
                                     )
                                 ) * 1.1
                             )
@@ -2019,7 +2015,7 @@ public class RenderClipRSuperellipse : _RenderCustomClip__proxy_box<RSuperellips
             }
         }
         return base.hitTest(result, position: position);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paint(PaintingContext context, Offset offset)
@@ -2069,7 +2065,7 @@ public class RenderClipRSuperellipse : _RenderCustomClip__proxy_box<RSuperellips
                                 -(
                                     _debugText!.text!.style!.fontSize
                                     ?? throw new global::System.NullReferenceException(
-                                        "Dart null assertion failed."
+                                        "A required value was null."
                                     )
                                 ) * 1.1
                             )
@@ -2107,7 +2103,7 @@ public class RenderClipOval : _RenderCustomClip__proxy_box<Rect>
                             (
                                 _cachedRect
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             )
                         );
@@ -2117,7 +2113,7 @@ public class RenderClipOval : _RenderCustomClip__proxy_box<Rect>
             )();
         }
         return _cachedPath;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal override Rect _defaultClip => Offset.zero & size;
@@ -2136,7 +2132,7 @@ public class RenderClipOval : _RenderCustomClip__proxy_box<Rect>
             return false;
         }
         return base.hitTest(result, position: position);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paint(PaintingContext context, Offset offset)
@@ -2186,7 +2182,7 @@ public class RenderClipOval : _RenderCustomClip__proxy_box<Rect>
                                 -(
                                     _debugText!.text!.style!.fontSize
                                     ?? throw new global::System.NullReferenceException(
-                                        "Dart null assertion failed."
+                                        "A required value was null."
                                     )
                                 ) * 1.1
                             )
@@ -2231,7 +2227,7 @@ public class RenderClipPath : _RenderCustomClip__proxy_box<Path>
             }
         }
         return base.hitTest(result, position: position);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paint(PaintingContext context, Offset offset)
@@ -2426,7 +2422,9 @@ public class RenderPhysicalModel : _RenderPhysicalModelBase__proxy_box<RRect>
             {
                 BoxShape.rectangle => (borderRadius ?? BorderRadius.zero).toRRect(rect),
                 BoxShape.circle => RRect.fromRectXY(rect, rect.width / 2L, rect.height / 2L),
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             };
         }
     }
@@ -2443,7 +2441,7 @@ public class RenderPhysicalModel : _RenderPhysicalModelBase__proxy_box<RRect>
             }
         }
         return base.hitTest(result, position: position);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paint(PaintingContext context, Offset offset)
@@ -2602,7 +2600,7 @@ public class RenderPhysicalShape : _RenderPhysicalModelBase__proxy_box<Path>
             }
         }
         return base.hitTest(result, position: position);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paint(PaintingContext context, Offset offset)
@@ -2793,7 +2791,7 @@ public class RenderDecoratedBox : RenderProxyBox
     public override bool hitTestSelf(Offset position)
     {
         return _decoration.hitTest(size, position, textDirection: configuration.textDirection);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paint(PaintingContext context, Offset offset)
@@ -3030,13 +3028,13 @@ public class RenderTransform : RenderProxyBox
                     (
                         _origin
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ).dx,
                     (
                         _origin
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ).dy,
                     0,
@@ -3051,13 +3049,13 @@ public class RenderTransform : RenderProxyBox
                     (
                         translation
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ).dx,
                     (
                         translation
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ).dy,
                     0,
@@ -3071,13 +3069,13 @@ public class RenderTransform : RenderProxyBox
                     -(
                         translation
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ).dx,
                     -(
                         translation
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ).dy,
                     0,
@@ -3090,13 +3088,13 @@ public class RenderTransform : RenderProxyBox
                     -(
                         _origin
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ).dx,
                     -(
                         _origin
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ).dy,
                     0,
@@ -3110,7 +3108,7 @@ public class RenderTransform : RenderProxyBox
     public override bool hitTest(BoxHitTestResult result, Offset position)
     {
         return hitTestChildren(result, position: position);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool hitTestChildren(BoxHitTestResult result, Offset position)
@@ -3124,7 +3122,7 @@ public class RenderTransform : RenderProxyBox
                 return base.hitTestChildren(result, position: position);
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paint(PaintingContext context, Offset offset)
@@ -3159,7 +3157,7 @@ public class RenderTransform : RenderProxyBox
                             + (
                                 childOffset
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             )
                     );
@@ -3184,7 +3182,7 @@ public class RenderTransform : RenderProxyBox
                     filterQuality: (
                         filterQuality
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 );
@@ -3278,7 +3276,7 @@ public class RenderFittedBox : RenderProxyBox
                 return false;
             }
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual BoxFit fit
@@ -3364,13 +3362,13 @@ public class RenderFittedBox : RenderProxyBox
         {
             return constraints.smallest;
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
     {
         return child?.getDryBaseline(new BoxConstraints(), baseline);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void performLayout()
@@ -3499,13 +3497,13 @@ public class RenderFittedBox : RenderProxyBox
                     + (
                         childOffset
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
             );
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paint(PaintingContext context, Offset offset)
@@ -3519,7 +3517,7 @@ public class RenderFittedBox : RenderProxyBox
         if (
             (
                 _hasVisualOverflow
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ) && (!Equals(clipBehavior, Clip.none))
         )
         {
@@ -3559,7 +3557,7 @@ public class RenderFittedBox : RenderProxyBox
                 return base.hitTestChildren(result, position: position);
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool paintsChild(RenderObject child)
@@ -3567,7 +3565,7 @@ public class RenderFittedBox : RenderProxyBox
         var __child = (RenderBox)child;
         DartRuntimePrimitives.Assert(() => Equals(__child.parent, this));
         return !size.isEmpty && !__child.size.isEmpty;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void applyPaintTransform(RenderObject child, Matrix4 transform)
@@ -3630,7 +3628,7 @@ public class RenderFractionalTranslation : RenderProxyBox
     public override bool hitTest(BoxHitTestResult result, Offset position)
     {
         return hitTestChildren(result, position: position);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool hitTestChildren(BoxHitTestResult result, Offset position)
@@ -3649,7 +3647,7 @@ public class RenderFractionalTranslation : RenderProxyBox
                 return base.hitTestChildren(result, position: position);
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paint(PaintingContext context, Offset offset)
@@ -3744,7 +3742,7 @@ public class RenderPointerListener : RenderProxyBoxWithHitTestBehavior
     public override Size computeSizeForNoChild(BoxConstraints constraints)
     {
         return constraints.biggest;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void handleEvent(PointerEvent @event, HitTestEntry<HitTestTarget> entry)
@@ -3846,7 +3844,7 @@ public class RenderMouseRegion : RenderProxyBoxWithHitTestBehavior, IMouseTracke
     public override bool hitTest(BoxHitTestResult result, Offset position)
     {
         return base.hitTest(result, position: position) && _opaque;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void handleEvent(PointerEvent @event, HitTestEntry<HitTestTarget> entry)
@@ -3916,7 +3914,7 @@ public class RenderMouseRegion : RenderProxyBoxWithHitTestBehavior, IMouseTracke
     public override Size computeSizeForNoChild(BoxConstraints constraints)
     {
         return constraints.biggest;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -3964,7 +3962,7 @@ public class RenderRepaintBoundary : RenderProxyBox
         DartRuntimePrimitives.Assert(() => !debugNeedsPaint);
         var offsetLayer = ((OffsetLayer?)layer!)!;
         return offsetLayer.toImage(Offset.zero & size, pixelRatio: pixelRatio);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Image toImageSync(double pixelRatio = 1.0)
@@ -3972,7 +3970,7 @@ public class RenderRepaintBoundary : RenderProxyBox
         DartRuntimePrimitives.Assert(() => !debugNeedsPaint);
         var offsetLayer = ((OffsetLayer?)layer!)!;
         return offsetLayer.toImageSync(Offset.zero & size, pixelRatio: pixelRatio);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual long debugSymmetricPaintCount => _debugSymmetricPaintCount;
@@ -4114,7 +4112,7 @@ public class RenderIgnorePointer : RenderProxyBox
     public override bool hitTest(BoxHitTestResult result, Offset position)
     {
         return !ignoring && base.hitTest(result, position: position);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void visitChildrenForSemantics(Action<RenderObject> visitor)
@@ -4180,7 +4178,7 @@ public class RenderOffstage : RenderProxyBox
             return 0.0;
         }
         return base.computeMinIntrinsicWidth(height);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicWidth(double height)
@@ -4190,7 +4188,7 @@ public class RenderOffstage : RenderProxyBox
             return 0.0;
         }
         return base.computeMaxIntrinsicWidth(height);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicHeight(double width)
@@ -4200,7 +4198,7 @@ public class RenderOffstage : RenderProxyBox
             return 0.0;
         }
         return base.computeMinIntrinsicHeight(width);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicHeight(double width)
@@ -4210,7 +4208,7 @@ public class RenderOffstage : RenderProxyBox
             return 0.0;
         }
         return base.computeMaxIntrinsicHeight(width);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? computeDistanceToActualBaseline(TextBaseline baseline)
@@ -4220,7 +4218,7 @@ public class RenderOffstage : RenderProxyBox
             return null;
         }
         return base.computeDistanceToActualBaseline(baseline);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool sizedByParent => offstage;
@@ -4228,7 +4226,7 @@ public class RenderOffstage : RenderProxyBox
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
     {
         return offstage ? null : base.computeDryBaseline(constraints, baseline);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Size computeDryLayout(BoxConstraints constraints)
@@ -4238,7 +4236,7 @@ public class RenderOffstage : RenderProxyBox
             return constraints.smallest;
         }
         return base.computeDryLayout(constraints);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void performResize()
@@ -4262,7 +4260,7 @@ public class RenderOffstage : RenderProxyBox
     public override bool hitTest(BoxHitTestResult result, Offset position)
     {
         return !offstage && base.hitTest(result, position: position);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool paintsChild(RenderObject child)
@@ -4270,7 +4268,7 @@ public class RenderOffstage : RenderProxyBox
         var __child = (RenderBox)child;
         DartRuntimePrimitives.Assert(() => Equals(__child.parent, this));
         return !offstage;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paint(PaintingContext context, Offset offset)
@@ -4310,7 +4308,7 @@ public class RenderOffstage : RenderProxyBox
                 style: offstage ? DiagnosticsTreeStyle.offstage : DiagnosticsTreeStyle.sparse
             ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -4365,7 +4363,7 @@ public class RenderAbsorbPointer : RenderProxyBox
     public override bool hitTest(BoxHitTestResult result, Offset position)
     {
         return absorbing ? size.contains(position) : base.hitTest(result, position: position);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void visitChildrenForSemantics(Action<RenderObject> visitor)
@@ -4570,7 +4568,7 @@ public class RenderSemanticsGestureHandler : RenderProxyBoxWithHitTestBehavior
     internal virtual bool _isValidAction(SemanticsAction action)
     {
         return (validActions is null) || validActions!.Contains(action);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _performSemanticScrollLeft()
@@ -4802,14 +4800,14 @@ public class RenderSemanticsAnnotations : RenderProxyBox, SemanticsAnnotationsMi
     {
         return value.attributedLabel
             ?? ((value.label is null) ? null : new AttributedString(value.label!));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual AttributedString? _effectiveAttributedValue(SemanticsProperties value)
     {
         return value.attributedValue
             ?? ((value.value is null) ? null : new AttributedString(value.value!));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual AttributedString? _effectiveAttributedIncreasedValue(SemanticsProperties value)
@@ -4818,7 +4816,7 @@ public class RenderSemanticsAnnotations : RenderProxyBox, SemanticsAnnotationsMi
             ?? (
                 (value.increasedValue is null) ? null : new AttributedString(value.increasedValue!)
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual AttributedString? _effectiveAttributedDecreasedValue(SemanticsProperties value)
@@ -4827,14 +4825,14 @@ public class RenderSemanticsAnnotations : RenderProxyBox, SemanticsAnnotationsMi
             ?? (
                 (value.decreasedValue is null) ? null : new AttributedString(value.decreasedValue!)
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual AttributedString? _effectiveAttributedHint(SemanticsProperties value)
     {
         return value.attributedHint
             ?? ((value.hint is null) ? null : new AttributedString(value.hint!));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual TextDirection? textDirection
@@ -4898,14 +4896,14 @@ public class RenderSemanticsAnnotations : RenderProxyBox, SemanticsAnnotationsMi
         {
             config.isSelected = (
                 _properties.selected
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
         if (_properties.button is not null)
         {
             config.isButton = (
                 _properties.button
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
         if (_properties.expanded is not null)
@@ -4916,7 +4914,7 @@ public class RenderSemanticsAnnotations : RenderProxyBox, SemanticsAnnotationsMi
         {
             config.isLink = (
                 _properties.link
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
         if (_properties.linkUrl is not null)
@@ -4927,49 +4925,49 @@ public class RenderSemanticsAnnotations : RenderProxyBox, SemanticsAnnotationsMi
         {
             config.isSlider = (
                 _properties.slider
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
         if (_properties.keyboardKey is not null)
         {
             config.isKeyboardKey = (
                 _properties.keyboardKey
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
         if (_properties.header is not null)
         {
             config.isHeader = (
                 _properties.header
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
         if (_properties.headingLevel is not null)
         {
             config.headingLevel = (
                 _properties.headingLevel
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
         if (_properties.textField is not null)
         {
             config.isTextField = (
                 _properties.textField
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
         if (_properties.readOnly is not null)
         {
             config.isReadOnly = (
                 _properties.readOnly
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
         if (_properties.focusable is not null)
         {
             config.isFocusable = (
                 _properties.focusable
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
         if (_properties.focused is not null)
@@ -4980,42 +4978,42 @@ public class RenderSemanticsAnnotations : RenderProxyBox, SemanticsAnnotationsMi
         {
             config.accessibilityFocusBlockType = (
                 _properties.accessibilityFocusBlockType
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
         if (_properties.inMutuallyExclusiveGroup is not null)
         {
             config.isInMutuallyExclusiveGroup = (
                 _properties.inMutuallyExclusiveGroup
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
         if (_properties.obscured is not null)
         {
             config.isObscured = (
                 _properties.obscured
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
         if (_properties.multiline is not null)
         {
             config.isMultiline = (
                 _properties.multiline
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
         if (_properties.hidden is not null)
         {
             config.isHidden = (
                 _properties.hidden
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
         if (_properties.image is not null)
         {
             config.isImage = (
                 _properties.image
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
         if (_properties.isRequired is not null)
@@ -5066,21 +5064,21 @@ public class RenderSemanticsAnnotations : RenderProxyBox, SemanticsAnnotationsMi
         {
             config.scopesRoute = (
                 _properties.scopesRoute
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
         if (_properties.namesRoute is not null)
         {
             config.namesRoute = (
                 _properties.namesRoute
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
         if (_properties.liveRegion is not null)
         {
             config.liveRegion = (
                 _properties.liveRegion
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
         if (_properties.maxValueLength is not null)
@@ -5107,7 +5105,7 @@ public class RenderSemanticsAnnotations : RenderProxyBox, SemanticsAnnotationsMi
         {
             config.role = (
                 _properties.role
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
         if (_properties.controlsNodes is not null)
@@ -5122,14 +5120,14 @@ public class RenderSemanticsAnnotations : RenderProxyBox, SemanticsAnnotationsMi
         {
             config.hitTestBehavior = (
                 _properties.hitTestBehavior
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
         if (_properties.inputType is not null)
         {
             config.inputType = (
                 _properties.inputType
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
         if (_properties.minValue is not null)
@@ -5678,7 +5676,7 @@ public class RenderFollowerLayer : RenderProxyBox
     public virtual Matrix4 getCurrentTransform()
     {
         return layer?.getLastTransform() ?? Matrix4.identity();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool hitTest(BoxHitTestResult result, Offset position)
@@ -5688,7 +5686,7 @@ public class RenderFollowerLayer : RenderProxyBox
             return false;
         }
         return hitTestChildren(result, position: position);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool hitTestChildren(BoxHitTestResult result, Offset position)
@@ -5701,7 +5699,7 @@ public class RenderFollowerLayer : RenderProxyBox
                 return base.hitTestChildren(result, position: position);
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paint(PaintingContext context, Offset offset)
@@ -5721,11 +5719,11 @@ public class RenderFollowerLayer : RenderProxyBox
                             (
                                 leaderSizeLocal
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             )
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     )

@@ -111,7 +111,7 @@ public class WindowingOwnerWin32Io : WindowingOwnerIo
                         resizable: __resizable
                     )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DialogWindowControllerIo createDialogWindowController(
@@ -136,7 +136,7 @@ public class WindowingOwnerWin32Io : WindowingOwnerIo
                         resizable: resizable
                     )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual TooltipWindowControllerIo createTooltipWindowController(
@@ -159,7 +159,7 @@ public class WindowingOwnerWin32Io : WindowingOwnerIo
                         parent: parent
                     )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual PopupWindowControllerIo createPopupWindowController(
@@ -182,7 +182,7 @@ public class WindowingOwnerWin32Io : WindowingOwnerIo
                         parent: parent
                     )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual SatelliteWindowControllerIo createSatelliteWindowController(
@@ -197,7 +197,7 @@ public class WindowingOwnerWin32Io : WindowingOwnerIo
     )
     {
         throw new NotImplementedException("Satellite windows are not yet implemented on Windows.");
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _addMessageHandler(_WindowsMessageHandler___window_win32 handler)
@@ -244,9 +244,7 @@ public class WindowingOwnerWin32Io : WindowingOwnerIo
             {
                 long result__7844__value8042 = (
                     result
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 message.@ref.handled = true;
                 message.@ref.lResult = ((result__7844__value8042));
@@ -274,7 +272,7 @@ internal class _WindowMessageHandler___window_win32 : _WindowsMessageHandler___w
     )
     {
         return this.controller._handleWindowsMessage(view, windowHandle, message, wParam, lParam);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -485,7 +483,7 @@ public class WindowControllerWin32Io : WindowControllerIo, BaseWindowControllerW
                             (
                                 WidgetsBinding.instance.platformDispatcher.engineId
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             ),
                             checked((long)this.rootView.viewId)
@@ -562,7 +560,7 @@ public class WindowControllerWin32Io : WindowControllerIo, BaseWindowControllerW
             }
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -584,7 +582,7 @@ internal class _DialogWindowMesageHandler___window_win32 : _WindowsMessageHandle
     )
     {
         return this.controller._handleWindowsMessage(view, windowHandle, message, wParam, lParam);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -752,7 +750,7 @@ public class DialogWindowControllerWin32Io : DialogWindowControllerIo, BaseWindo
                             (
                                 WidgetsBinding.instance.platformDispatcher.engineId
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             ),
                             checked((long)this.rootView.viewId)
@@ -824,7 +822,7 @@ public class DialogWindowControllerWin32Io : DialogWindowControllerIo, BaseWindo
             }
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -913,7 +911,7 @@ public class TooltipWindowControllerWin32Io
         result.@ref.width = targetRect.width.toInt();
         result.@ref.height = targetRect.height.toInt();
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Pointer<Void> windowHandle
@@ -928,7 +926,7 @@ public class TooltipWindowControllerWin32Io
                             (
                                 PlatformDispatcher.instance.engineId
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             ),
                             checked((long)this.rootView.viewId)
@@ -988,7 +986,7 @@ public class TooltipWindowControllerWin32Io
         {
             Rect anchorRect__value25520 = (
                 anchorRect
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             _anchorRect = ((anchorRect__value25520));
         }
@@ -1062,7 +1060,7 @@ public class TooltipWindowControllerWin32Io
             }
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override BaseWindowControllerIo parent => this._parent;
@@ -1150,7 +1148,7 @@ public class PopupWindowControllerWin32Io
         result.@ref.width = targetRect.width.toInt();
         result.@ref.height = targetRect.height.toInt();
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Pointer<Void> getWindowHandle()
@@ -1163,13 +1161,13 @@ public class PopupWindowControllerWin32Io
                         (
                             PlatformDispatcher.instance.engineId
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ),
                         checked((long)this.rootView.viewId)
                     )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Size contentSize
@@ -1224,7 +1222,7 @@ public class PopupWindowControllerWin32Io
         {
             Rect anchorRect__value31555 = (
                 anchorRect
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             _anchorRect = ((anchorRect__value31555));
         }
@@ -1248,7 +1246,7 @@ public class PopupWindowControllerWin32Io
                             (
                                 PlatformDispatcher.instance.engineId
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             ),
                             checked((long)((BaseWindowControllerIo)this.parent).rootView.viewId)
@@ -1320,7 +1318,7 @@ public class PopupWindowControllerWin32Io
                             (
                                 PlatformDispatcher.instance.engineId
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             ),
                             checked((long)((BaseWindowControllerIo)this.parent).rootView.viewId)
@@ -1344,7 +1342,7 @@ public class PopupWindowControllerWin32Io
             return null;
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override BaseWindowControllerIo parent => this._parent;
@@ -1386,13 +1384,13 @@ internal class _Size___window_win32 : Struct
     public override string ToString()
     {
         return $"Size(width: {this.width}, height: {this.height})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual global::Doroti.Ui.Size toSize()
     {
         return new global::Doroti.Ui.Size(this.width.toDouble(), this.height.toDouble());
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1425,13 +1423,13 @@ internal class _Rect___window_win32 : Struct
             this.width.toDouble(),
             this.height.toDouble()
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string ToString()
     {
         return $"Rect(left: {this.left}, top: {this.top}, width: {this.width}, height: {this.height})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1487,7 +1485,7 @@ internal class _Win32PlatformInterface___window_win32
         {
             allocator.free(request);
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static abstract long _createWindow(
@@ -1521,7 +1519,7 @@ internal class _Win32PlatformInterface___window_win32
         {
             allocator.free(request);
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static abstract long _createDialogWindow(
@@ -1556,7 +1554,7 @@ internal class _Win32PlatformInterface___window_win32
         {
             allocator.free(request);
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static abstract long _createTooltipWindow(
@@ -1591,7 +1589,7 @@ internal class _Win32PlatformInterface___window_win32
         {
             allocator.free(request);
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static abstract long _createPopupWindow(
@@ -1735,7 +1733,7 @@ internal class _Win32PlatformInterface___window_win32
         {
             allocator.free(data);
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static abstract Pointer<Void> getForegroundWindow();
@@ -1780,7 +1778,7 @@ internal class _Win32PlatformInterface___window_win32
             allocator.free(windowRect);
             allocator.free(parentOrigin);
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1951,7 +1949,7 @@ internal class _CallocAllocator___window_win32 : Allocator
             _zeroMemory(result, byteCount);
         }
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void free(Pointer<NativeType> pointer)

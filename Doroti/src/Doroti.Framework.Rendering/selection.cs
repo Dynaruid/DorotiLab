@@ -115,7 +115,7 @@ public abstract class SelectionUtils
             return SelectionResult.next;
         }
         return (point.dx >= targetRect.right) ? SelectionResult.next : SelectionResult.previous;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static Offset adjustDragOffset(
@@ -141,7 +141,7 @@ public abstract class SelectionUtils
                 ? targetRect.bottomRight
                 : targetRect.bottomLeft;
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -288,7 +288,7 @@ public class DirectionallyExtendSelectionEvent : SelectionEvent
             isEnd: isEnd ?? this.isEnd,
             direction: direction ?? this.direction
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -350,7 +350,7 @@ public class SelectionGeometry : Diagnosticable
             status: status ?? this.status,
             hasContent: hasContent ?? this.hasContent
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool Equals(object? other)

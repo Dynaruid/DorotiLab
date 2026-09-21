@@ -318,7 +318,9 @@ public class CupertinoListSection : StatelessWidget
                 CupertinoListSectionType.insetGrouped =>
                     List_sectionLibrary._kDefaultInsetGroupedBorderRadius,
                 CupertinoListSectionType.@base => BorderRadius.zero,
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             };
             decoratedChildrenGroup = DartRuntimePrimitives.ConvertValue<Widget>(
                 new DecoratedBox(
@@ -370,7 +372,7 @@ public class CupertinoListSection : StatelessWidget
                                             height: (
                                                 topMargin
                                                 ?? throw new global::System.NullReferenceException(
-                                                    "Dart null assertion failed."
+                                                    "A required value was null."
                                                 )
                                             )
                                         )
@@ -430,6 +432,6 @@ public class CupertinoListSection : StatelessWidget
                 )()
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

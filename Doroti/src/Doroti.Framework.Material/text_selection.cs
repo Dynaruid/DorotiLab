@@ -119,7 +119,7 @@ public class MaterialTextSelectionControls : TextSelectionControls
                 )
                 : null
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget buildHandle(
@@ -149,9 +149,11 @@ public class MaterialTextSelectionControls : TextSelectionControls
                 Transform.CreateRotate(angle: Dart_mathLibrary.pi / 4.0, child: handle)
             ),
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Offset getHandleAnchor(TextSelectionHandleType type, double textLineHeight)
@@ -165,9 +167,11 @@ public class MaterialTextSelectionControls : TextSelectionControls
             TextSelectionHandleType.left => new Offset(Text_selectionLibrary._kHandleSize, 0),
             TextSelectionHandleType.right => Offset.zero,
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool canSelectAll(TextSelectionDelegate @delegate)
@@ -176,7 +180,7 @@ public class MaterialTextSelectionControls : TextSelectionControls
         return @delegate.selectAllEnabled
             && (value.text.Length != 0)
             && !((value.selection.start == 0L) && (value.selection.end == value.text.Length));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -417,7 +421,7 @@ public class _TextSelectionControlsToolbarState__text_selection
                             child: new Text(entry.value.label)
                         );
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 )
@@ -425,7 +429,7 @@ public class _TextSelectionControlsToolbarState__text_selection
                 .Cast<Widget>()
                 .ToList()
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
@@ -456,7 +460,7 @@ public class _TextSelectionControlsToolbarState__text_selection
         )();
         _tickers!.Add(result);
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _removeTicker(_WidgetTicker__ticker_provider ticker)
@@ -560,7 +564,7 @@ internal class _TextSelectionHandlePainter__text_selection : CustomPainter
     {
         var __oldPainter = (_TextSelectionHandlePainter__text_selection)oldDelegate;
         return !Equals(color, __oldPainter.color);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 

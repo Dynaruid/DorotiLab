@@ -27,7 +27,7 @@ public class SliverResizingHeader : StatelessWidget
     internal virtual Widget? _excludeFocus(Widget? extentPrototype)
     {
         return (extentPrototype is not null) ? new ExcludeFocus(child: extentPrototype) : null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -41,7 +41,7 @@ public class SliverResizingHeader : StatelessWidget
                 child: child ?? SizedBox.CreateShrink()
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -82,15 +82,17 @@ internal class _SliverResizingHeader__sliver_resizing_header
             _Slot__sliver_resizing_header.minExtent => minExtentPrototype,
             _Slot__sliver_resizing_header.maxExtent => maxExtentPrototype,
             _Slot__sliver_resizing_header.child => child,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override RenderObject createRenderObject(BuildContext context)
     {
         return new _RenderSliverResizingHeader__sliver_resizing_header();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -117,9 +119,11 @@ internal class _RenderSliverResizingHeader__sliver_resizing_header
         {
             Axis.vertical => box.size.height,
             Axis.horizontal => box.size.width,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double childExtent => (child is null) ? 0 : boxExtent(child!);
@@ -155,7 +159,9 @@ internal class _RenderSliverResizingHeader__sliver_resizing_header
                 -(geometry.scrollExtent - (geometry.paintExtent + constraints.scrollOffset)),
                 0.0
             ),
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
     }
 
@@ -184,7 +190,9 @@ internal class _RenderSliverResizingHeader__sliver_resizing_header
             {
                 Axis.vertical => childSize.height,
                 Axis.horizontal => childSize.width,
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             };
         }
         double scrollOffsetLocal = constraintsLocal.scrollOffset;
@@ -244,7 +252,7 @@ internal class _RenderSliverResizingHeader__sliver_resizing_header
             );
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void describeSemanticsConfiguration(SemanticsConfiguration config)
@@ -262,7 +270,7 @@ internal class _RenderSliverResizingHeader__sliver_resizing_header
     public virtual string debugNameForSlot(_Slot__sliver_resizing_header slot)
     {
         return slot.ToString();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void attach(PipelineOwner owner)
@@ -319,14 +327,14 @@ internal class _RenderSliverResizingHeader__sliver_resizing_header
                             child
                         )
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
             );
         }
         return value;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _addDiagnostics(RenderBox child, List<DiagnosticsNode> value, string name)
@@ -371,9 +379,11 @@ internal class _RenderSliverResizingHeader__sliver_resizing_header
         {
             GrowthDirection.forward => !reversed,
             GrowthDirection.reverse => reversed,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool hitTestBoxChild(
@@ -420,10 +430,12 @@ internal class _RenderSliverResizingHeader__sliver_resizing_header
             hitTest: (result) =>
             {
                 return child.hitTest(result, position: transformedPosition);
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void applyPaintTransformForBoxChild(RenderBox child, Matrix4 transform)

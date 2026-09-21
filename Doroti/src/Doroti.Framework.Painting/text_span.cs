@@ -124,7 +124,7 @@ public class TextSpan : InlineSpan, HitTestTarget
             }
         }
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool visitDirectChildren(Func<InlineSpan, bool> visitor)
@@ -141,7 +141,7 @@ public class TextSpan : InlineSpan, HitTestTarget
             }
         }
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override InlineSpan? getSpanForPositionVisitor(TextPosition position, Accumulator offset)
@@ -164,7 +164,7 @@ public class TextSpan : InlineSpan, HitTestTarget
         }
         offset.increment(textLocal.Length);
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void computeToPlainText(
@@ -253,7 +253,7 @@ public class TextSpan : InlineSpan, HitTestTarget
         DartRuntimePrimitives.Assert(() => localOffset >= 0L);
         offset.increment(textLocal.Length);
         return (localOffset < textLocal.Length) ? textLocal.codeUnitAt(localOffset) : null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool debugAssertIsValid()
@@ -270,7 +270,7 @@ public class TextSpan : InlineSpan, HitTestTarget
             return true;
         });
         return base.debugAssertIsValid();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override RenderComparison compareTo(InlineSpan other)
@@ -331,7 +331,7 @@ public class TextSpan : InlineSpan, HitTestTarget
             }
         }
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool Equals(object? other)
@@ -431,6 +431,6 @@ public class TextSpan : InlineSpan, HitTestTarget
                 )
                 .ToList()
             ?? new List<DiagnosticsNode>();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

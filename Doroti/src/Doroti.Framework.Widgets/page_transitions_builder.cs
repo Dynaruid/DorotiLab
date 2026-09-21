@@ -61,7 +61,7 @@ internal class _FadeUpwardsPageTransition__page_transitions_builder : StatelessW
             position: _positionAnimation,
             child: new FadeTransition(opacity: _opacityAnimation, child: child)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -81,7 +81,7 @@ public class FadeUpwardsPageTransitionsBuilder : PageTransitionsBuilder
             routeAnimation: animation,
             child: child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -233,14 +233,16 @@ internal class _OpenUpwardsPageTransitionState__page_transitions_builder
                             )
                         );
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -261,6 +263,6 @@ public class OpenUpwardsPageTransitionsBuilder : PageTransitionsBuilder
             secondaryAnimation: secondaryAnimation,
             child: child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

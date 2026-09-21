@@ -113,9 +113,7 @@ public class Badge : StatelessWidget
                 (largeSize ?? badgeTheme.largeSize)
                 ?? (
                     defaults.largeSize
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
             badge = DartRuntimePrimitives.ConvertValue<Widget>(
                 new DefaultTextStyle(
@@ -141,9 +139,7 @@ public class Badge : StatelessWidget
                 (smallSize ?? badgeTheme.smallSize)
                 ?? (
                     defaults.smallSize
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
             badge = DartRuntimePrimitives.ConvertValue<Widget>(
                 new Container(
@@ -185,7 +181,7 @@ public class Badge : StatelessWidget
                 ),
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -223,7 +219,7 @@ internal class _Badge__badge : SingleChildRenderObjectWidget
             offset: offset,
             textDirection: Directionality.maybeOf(context)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -341,7 +337,7 @@ public class _RenderBadge__badge : RenderAligningShiftedBox
     public override Size computeDryLayout(BoxConstraints constraints)
     {
         return constraints.biggest;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
@@ -369,9 +365,9 @@ public class _RenderBadge__badge : RenderAligningShiftedBox
         }
         return (
                 childBaseline
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ) + badgeLocation.dy;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -388,7 +384,7 @@ internal class _IntrinsicHorizontalStadium__badge : SingleChildRenderObjectWidge
     public override RenderObject createRenderObject(BuildContext context)
     {
         return new _RenderIntrinsicHorizontalStadium__badge(minSize: minSize);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -423,7 +419,7 @@ public class _RenderIntrinsicHorizontalStadium__badge : RenderProxyBox
     public override double computeMinIntrinsicWidth(double height)
     {
         return getMaxIntrinsicWidth(height);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicWidth(double height)
@@ -432,19 +428,19 @@ public class _RenderIntrinsicHorizontalStadium__badge : RenderProxyBox
             getMaxIntrinsicHeight(double.PositiveInfinity),
             base.computeMaxIntrinsicWidth(height)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicHeight(double width)
     {
         return getMaxIntrinsicHeight(width);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicHeight(double width)
     {
         return Math.Max(minSize, base.computeMaxIntrinsicHeight(width));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual BoxConstraints _childConstraints(RenderBox child, BoxConstraints constraints)
@@ -452,7 +448,7 @@ public class _RenderIntrinsicHorizontalStadium__badge : RenderProxyBox
         double childHeight = Math.Max(minSize, child.getMaxIntrinsicHeight(constraints.maxWidth));
         double childWidth = child.getMaxIntrinsicWidth(constraints.maxHeight);
         return constraints.tighten(width: Math.Max(childWidth, childHeight), height: childHeight);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Size _computeSize(
@@ -467,7 +463,7 @@ public class _RenderIntrinsicHorizontalStadium__badge : RenderProxyBox
             return new Size(childSize.height, childSize.height);
         }
         return childSize;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Size computeDryLayout(BoxConstraints constraints)
@@ -476,14 +472,14 @@ public class _RenderIntrinsicHorizontalStadium__badge : RenderProxyBox
             layoutChild: ChildLayoutHelper.dryLayoutChild,
             constraints: constraints
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
     {
         RenderBox childLocal = child!;
         return childLocal.getDryBaseline(_childConstraints(childLocal, constraints), baseline);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void performLayout()

@@ -27,7 +27,7 @@ internal class _MouseState__mouse_tracker
         DartMap<IMouseTrackerAnnotation, Matrix4> previous = _annotations;
         _annotations = value;
         return previous;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual PointerEvent latestEvent => _latestEvent;
@@ -38,7 +38,7 @@ internal class _MouseState__mouse_tracker
         PointerEvent previous = _latestEvent;
         _latestEvent = value;
         return previous;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual long device => latestEvent.device;
@@ -49,7 +49,7 @@ internal class _MouseState__mouse_tracker
             $"latestEvent: {DiagnosticsLibrary.describeIdentity(latestEvent)}";
         var describeAnnotations = $"annotations: [list of {checked((long)annotations.Count)}]";
         return $"{DiagnosticsLibrary.describeIdentity(this)}({describeLatestEvent}, {describeAnnotations})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -194,7 +194,7 @@ public class MouseTracker : ChangeNotifier
         return (lastEvent is PointerAddedEvent)
             || (@event is Gestures.PointerRemovedEvent)
             || (!Equals(lastEvent.position, @event.position));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual DartMap<IMouseTrackerAnnotation, Matrix4> _hitTestInViewResultToAnnotations(
@@ -212,7 +212,7 @@ public class MouseTracker : ChangeNotifier
             }
         }
         return annotations;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual DartMap<IMouseTrackerAnnotation, Matrix4> _findAnnotations(
@@ -227,7 +227,7 @@ public class MouseTracker : ChangeNotifier
             return new DartMap<IMouseTrackerAnnotation, Matrix4>();
         }
         return _hitTestInViewResultToAnnotations(_hitTestInView(globalPosition, viewIdLocal));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _handleDeviceUpdate(_MouseTrackerUpdateDetails__mouse_tracker details)
@@ -341,7 +341,7 @@ public class MouseTracker : ChangeNotifier
     public virtual MouseCursor? debugDeviceActiveCursor(long device)
     {
         return _mouseCursorMixin.debugDeviceActiveCursor(device);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static void _handleDeviceUpdateMouseEvents(

@@ -19,7 +19,7 @@ public abstract class InheritedNotifier<T> : InheritedWidget
     {
         var __oldWidget = (InheritedNotifier<T>)oldWidget;
         return !EqualityComparer<T>.Default.Equals(__oldWidget.notifier, notifier);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override InheritedElement createElement() =>
@@ -57,7 +57,7 @@ internal class _InheritedNotifierElement__inherited_notifier<T> : InheritedEleme
             notifyClients(((InheritedNotifier<T>?)widget)!);
         }
         return base.build();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _handleUpdate()

@@ -77,9 +77,11 @@ public class PlaceholderDimensions
                 $"PlaceholderDimensions({size}, {alignment})",
             Dart_uiLibrary.PlaceholderAlignment.baseline =>
                 $"PlaceholderDimensions({size}, {alignment}({baselineOffset} from top))",
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -130,7 +132,7 @@ public class WordBoundary : TextBoundary
         DartRuntimePrimitives.Assert(() => TextPainter.isLowSurrogate(lowSurrogate));
         long @base = 65536L - (55296L << (int)10L) - 56320L;
         return (highSurrogate << (int)10L) + lowSurrogate + @base;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual long? _codePointAt(long index)
@@ -143,7 +145,7 @@ public class WordBoundary : TextBoundary
         return (
             (
                 codeUnitAtIndex
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ) & 64512L
         ) switch
         {
@@ -152,39 +154,35 @@ public class WordBoundary : TextBoundary
                     (
                         codeUnitAtIndex
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 ),
                 (
                     _text.codeUnitAt(index + 1L)
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             ),
             56320L => _codePointFromSurrogates(
                 (
                     _text.codeUnitAt(index - 1L)
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 (
                     (
                         codeUnitAtIndex
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
             ),
             _ => (
                 codeUnitAtIndex
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static bool _isNewline(long codePoint)
@@ -195,7 +193,7 @@ public class WordBoundary : TextBoundary
             8233L => true,
             _ => false,
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _skipSpacesAndPunctuations(long offset, bool forward)
@@ -210,7 +208,7 @@ public class WordBoundary : TextBoundary
                     (
                         innerCodePoint
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
@@ -220,7 +218,7 @@ public class WordBoundary : TextBoundary
                     (
                         outerCodeUnit
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
@@ -232,13 +230,13 @@ public class WordBoundary : TextBoundary
                         (int)(
                             innerCodePoint
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     )
                 )
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -268,9 +266,7 @@ internal class _UntilTextBoundary__text_painter : TextBoundary
             || _predicate(
                 (
                     offset
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 false
             )
@@ -279,12 +275,10 @@ internal class _UntilTextBoundary__text_painter : TextBoundary
             : getLeadingTextBoundaryAt(
                 (
                     offset
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) - 1L
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override long? getTrailingTextBoundaryAt(long position)
@@ -295,9 +289,7 @@ internal class _UntilTextBoundary__text_painter : TextBoundary
             || _predicate(
                 (
                     offset
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 true
             )
@@ -308,12 +300,12 @@ internal class _UntilTextBoundary__text_painter : TextBoundary
                     (
                         offset
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -365,9 +357,11 @@ internal class _TextLayout__text_painter
         {
             TextBaseline.alphabetic => _paragraph.alphabeticBaseline,
             TextBaseline.ideographic => _paragraph.ideographicBaseline,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual _LineCaretMetrics__text_painter _computeEndOfTextCaretAnchorOffset()
@@ -396,7 +390,9 @@ internal class _TextLayout__text_painter
             {
                 TextDirection.ltr => glyphBounds.right,
                 TextDirection.rtl => glyphBounds.left,
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             };
             heightLocal = glyphBounds.height;
         }
@@ -406,7 +402,9 @@ internal class _TextLayout__text_painter
             {
                 TextDirection.ltr => lineMetrics.left + lineMetrics.width,
                 TextDirection.rtl => lineMetrics.left,
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             };
             heightLocal = lineMetrics.height;
         }
@@ -415,7 +413,7 @@ internal class _TextLayout__text_painter
             writingDirection: writingDirection,
             height: heightLocal
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual double _contentWidthFor(
@@ -436,9 +434,11 @@ internal class _TextLayout__text_painter
                 minWidth,
                 maxWidth
             ),
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -525,7 +525,7 @@ internal class _TextPainterLayoutCacheWithOffset__text_painter
             return true;
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual List<TextBox> inlinePlaceholderBoxes =>
@@ -560,7 +560,7 @@ internal class _LineCaretMetrics__text_painter
                 writingDirection: writingDirection,
                 height: height
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -623,7 +623,7 @@ public class TextPainter
                     (
                         maxLines
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) > 0L
                 )
@@ -684,7 +684,7 @@ public class TextPainter
         {
             painter.dispose();
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static double computeMaxIntrinsicWidth(
@@ -738,7 +738,7 @@ public class TextPainter
         {
             painter.dispose();
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _debugAssertTextLayoutIsValid
@@ -915,7 +915,7 @@ public class TextPainter
                     (
                         __value
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) > 0L
                 )
@@ -1039,7 +1039,7 @@ public class TextPainter
             locale: _locale,
             strutStyle: _strutStyle
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Paragraph _createLayoutTemplate()
@@ -1061,7 +1061,7 @@ public class TextPainter
                 }
             )
         )();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Paragraph _getOrCreateLayoutTemplate() =>
@@ -1115,7 +1115,7 @@ public class TextPainter
     {
         DartRuntimePrimitives.Assert(() => _debugAssertTextLayoutIsValid);
         return _layoutCache!.layout.getDistanceToBaseline(baseline);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool didExceedMaxLines
@@ -1138,7 +1138,7 @@ public class TextPainter
         });
         _rebuildParagraphForPaint = false;
         return builder.build();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void layout(double minWidth = 0.0, double maxWidth = double.PositiveInfinity)
@@ -1177,9 +1177,7 @@ public class TextPainter
             (
                 (
                     textDirectionLocal
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             )
         );
@@ -1202,7 +1200,7 @@ public class TextPainter
             paragraphLocal,
             (
                 textDirectionLocal
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             this
         );
@@ -1311,27 +1309,27 @@ public class TextPainter
             canvas.drawRect(textBox.toRect().shift(offset), paint);
         }
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static bool _isUTF16(long value)
     {
         return (value >= 0L) && (value <= 1048575L);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static bool isHighSurrogate(long value)
     {
         DartRuntimePrimitives.Assert(() => _isUTF16(((value))));
         return ((value) & 64512L) == 55296L;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static bool isLowSurrogate(long value)
     {
         DartRuntimePrimitives.Assert(() => _isUTF16(((value))));
         return ((value) & 64512L) == 56320L;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual long? getOffsetAfter(long offset)
@@ -1345,15 +1343,13 @@ public class TextPainter
             (
                 (
                     nextCodeUnit
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             )
         )
             ? (offset + 2L)
             : (offset + 1L);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual long? getOffsetBefore(long offset)
@@ -1367,15 +1363,13 @@ public class TextPainter
             (
                 (
                     prevCodeUnit
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             )
         )
             ? (offset - 2L)
             : (offset - 1L);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static double _computePaintOffsetFraction(
@@ -1392,9 +1386,11 @@ public class TextPainter
             (TextAlign.start or TextAlign.justify, TextDirection.rtl) => 1.0,
             (TextAlign.end, TextDirection.ltr) => 1.0,
             (TextAlign.end, TextDirection.rtl) => 0.0,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Offset getOffsetForCaret(TextPosition position, Rect caretPrototype)
@@ -1407,9 +1403,7 @@ public class TextPainter
                 textAlign,
                 (
                     textDirection
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             );
             double dxLocal =
@@ -1433,7 +1427,9 @@ public class TextPainter
                 offsetAlternate.dx - caretPrototype.width,
                 offsetAlternate.dy
             ),
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         double adjustedDx = Dart_uiLibrary.clampDouble(
             rawOffset.dx + layoutCache.paintOffset.dx,
@@ -1441,7 +1437,7 @@ public class TextPainter
             layoutCache.contentWidth
         );
         return new Offset(adjustedDx, rawOffset.dy + layoutCache.paintOffset.dy);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _strutDisabled =>
@@ -1450,7 +1446,9 @@ public class TextPainter
             null => true,
             var __constant56323 when Equals(__constant56323, StrutStyle.disabled) => true,
             StrutStyle { fontSize: double fontSizeLocal } __object56356 => fontSizeLocal == 0.0,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
 
     public virtual double getFullHeightForCaret(TextPosition position, Rect caretPrototype)
@@ -1462,9 +1460,7 @@ public class TextPainter
             {
                 double heightFromCaretMetrics__56763__value56838 = (
                     heightFromCaretMetrics
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 return (heightFromCaretMetrics__56763__value56838);
             }
@@ -1476,7 +1472,7 @@ public class TextPainter
             return preferredLineHeight;
         }
         return boxes.Single().toRect().height;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _isNewlineAtOffset(long offset) =>
@@ -1511,7 +1507,9 @@ public class TextPainter
                 offset: long offsetCurrent,
                 affinity: TextAffinity.upstream
             } __object61090 => (offsetCurrent - 1L, false),
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         long caretPositionCacheKey = anchorToLeadingEdge ? offsetLocal : (-offsetLocal - 1L);
         if (caretPositionCacheKey == cachedLayout._previousCaretPositionKey)
@@ -1549,7 +1547,9 @@ public class TextPainter
         {
             TextDirection.ltr => anchorToLeadingEdge,
             TextDirection.rtl => !anchorToLeadingEdge,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         TextBox box = anchorToLeft ? boxes.First() : boxes.Last();
         metrics = new _LineCaretMetrics__text_painter(
@@ -1559,7 +1559,7 @@ public class TextPainter
         );
         cachedLayout._previousCaretPositionKey = caretPositionCacheKey;
         return _caretMetrics = metrics;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual List<TextBox> getBoxesForSelection(
@@ -1586,7 +1586,7 @@ public class TextPainter
         return Equals(offset, Offset.zero)
             ? boxes
             : boxes.map((box) => _shiftTextBox(box, offset)).ToList();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual GlyphInfo? getClosestGlyphForOffset(Offset offset)
@@ -1606,7 +1606,7 @@ public class TextPainter
             rawGlyphInfo.graphemeClusterCodeUnitRange,
             rawGlyphInfo.writingDirection
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual TextPosition getPositionForOffset(Offset offset)
@@ -1615,14 +1615,14 @@ public class TextPainter
         DartRuntimePrimitives.Assert(() => !_debugNeedsRelayout);
         _TextPainterLayoutCacheWithOffset__text_painter cachedLayout = _layoutCache!;
         return cachedLayout.paragraph.getPositionForOffset(offset - cachedLayout.paintOffset);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual TextRange getWordBoundary(TextPosition position)
     {
         DartRuntimePrimitives.Assert(() => _debugAssertTextLayoutIsValid);
         return _layoutCache!.paragraph.getWordBoundary(position);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual WordBoundary wordBoundaries => new WordBoundary(text!, _layoutCache!.paragraph);
@@ -1631,7 +1631,7 @@ public class TextPainter
     {
         DartRuntimePrimitives.Assert(() => _debugAssertTextLayoutIsValid);
         return _layoutCache!.paragraph.getLineBoundary(position);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static LineMetrics _shiftLineMetrics(LineMetrics metrics, Offset offset)
@@ -1649,7 +1649,7 @@ public class TextPainter
             baseline: metrics.baseline + offset.dy,
             lineNumber: metrics.lineNumber
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static TextBox _shiftTextBox(TextBox box, Offset offset)
@@ -1663,7 +1663,7 @@ public class TextPainter
             box.bottom + offset.dy,
             box.direction
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual List<LineMetrics> computeLineMetrics()
@@ -1680,7 +1680,7 @@ public class TextPainter
         return Equals(offset, Offset.zero)
             ? rawMetrics
             : rawMetrics.map((metrics) => _shiftLineMetrics(metrics, offset)).ToList();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool debugDisposed

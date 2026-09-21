@@ -120,7 +120,7 @@ internal class _MenuControllerScope__raw_menu_anchor : InheritedWidget
     {
         var __oldWidget = (_MenuControllerScope__raw_menu_anchor)oldWidget;
         return isOpen != __oldWidget.isOpen;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -417,7 +417,7 @@ internal class _RawMenuAnchorState__raw_menu_anchor
             tapRegionGroupId: root.menuController
         );
         return widget.overlayBuilder(context, info);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Widget buildAnchor(BuildContext context)
@@ -439,7 +439,7 @@ internal class _RawMenuAnchorState__raw_menu_anchor
                                     : widget.builder.Invoke(context, menuController, widget.child)
                             ) ?? new SizedBox();
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 )
@@ -453,13 +453,13 @@ internal class _RawMenuAnchorState__raw_menu_anchor
                 : OverlayChildLocation.nearestOverlay,
             child: childLocal
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string ToString(DiagnosticLevel minLevel = default!)
     {
         return DiagnosticsLibrary.describeIdentity(this);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool isRoot => DartRuntimePrimitives.ConvertValue<bool>(_parent is null);
@@ -656,7 +656,7 @@ internal class _RawMenuAnchorState__raw_menu_anchor
                 child: new Builder(builder: buildAnchor)
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -771,7 +771,7 @@ internal class _RawMenuAnchorGroupState__raw_menu_anchor
             onTapOutside: handleOutsideTap,
             child: widget.child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool isRoot => DartRuntimePrimitives.ConvertValue<bool>(_parent is null);
@@ -968,7 +968,7 @@ internal class _RawMenuAnchorGroupState__raw_menu_anchor
                 child: new Builder(builder: buildAnchor)
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string ToString(DiagnosticLevel minLevel = default!) =>
@@ -1017,7 +1017,7 @@ public class MenuController
         return context
             .getInheritedWidgetOfExactType<_MenuControllerScope__raw_menu_anchor>()
             ?.controller;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static bool? maybeIsOpenOf(BuildContext context)
@@ -1025,7 +1025,7 @@ public class MenuController
         return context
             .dependOnInheritedWidgetOfExactType<_MenuControllerScope__raw_menu_anchor>()
             ?.isOpen;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string ToString() => DiagnosticsLibrary.describeIdentity(this);
@@ -1049,7 +1049,7 @@ public class DismissMenuAction : DismissAction
     public override bool isEnabled(DismissIntent intent, BuildContext? context = null)
     {
         return controller._anchor is not null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1071,9 +1071,9 @@ public static partial class Raw_menu_anchorLibrary
                 }
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

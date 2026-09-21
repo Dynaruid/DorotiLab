@@ -49,7 +49,7 @@ public abstract class Decoration : Diagnosticable
                     ? (a.lerpTo(null, t * 2.0) ?? a)
                     : (b.lerpFrom(null, (t - 0.5) * 2.0) ?? b)
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool hitTest(Size size, Offset position, TextDirection? textDirection = null) =>
@@ -62,7 +62,7 @@ public abstract class Decoration : Diagnosticable
         throw new NotSupportedException(
             $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "This Decoration subclass")} does not expect to be used for clipping."
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 

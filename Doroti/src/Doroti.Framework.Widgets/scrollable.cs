@@ -96,7 +96,7 @@ public class Scrollable : StatefulWidget
                     (
                         axis
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
@@ -110,7 +110,7 @@ public class Scrollable : StatefulWidget
                 context.getElementForInheritedWidgetOfExactType<_ScrollableScope__scrollable>();
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static ScrollableState of(BuildContext context, Axis? axis = null)
@@ -130,7 +130,7 @@ public class Scrollable : StatefulWidget
                             ),
                             new ErrorDescription(
                                 "No Scrollable widget ancestor could be found "
-                                    + $"{((axis is null) ? "" : $"for the provided Axis: {(axis ?? throw new global::System.NullReferenceException("Dart null assertion failed."))} ")}"
+                                    + $"{((axis is null) ? "" : $"for the provided Axis: {(axis ?? throw new global::System.NullReferenceException("A required value was null."))} ")}"
                                     + "starting from the context that was passed to Scrollable.of(). This "
                                     + "can happen because you are using a widget that looks for a Scrollable "
                                     + "ancestor, but no such ancestor exists.\n"
@@ -142,10 +142,10 @@ public class Scrollable : StatefulWidget
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return scrollableState!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static bool recommendDeferredLoadingForContext(BuildContext context, Axis? axis = null)
@@ -161,7 +161,7 @@ public class Scrollable : StatefulWidget
                     (
                         axis
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
@@ -173,7 +173,7 @@ public class Scrollable : StatefulWidget
             widget = context.getInheritedWidgetOfExactType<_ScrollableScope__scrollable>();
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static Future ensureVisible(
@@ -214,7 +214,7 @@ public class Scrollable : StatefulWidget
             return futures.Single();
         }
         return DartAsyncRuntime.wait<object?>(futures).then((_) => { });
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -238,7 +238,7 @@ internal class _ScrollableScope__scrollable : InheritedWidget
     {
         var __old = (_ScrollableScope__scrollable)oldWidget;
         return !Equals(position, __old.position);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -293,7 +293,9 @@ public class ScrollableState
                 AxisDirection.down => new Offset(0, position.pixels),
                 AxisDirection.left => new Offset(-position.pixels, 0),
                 AxisDirection.right => new Offset(position.pixels, 0),
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             }
         );
     internal virtual ScrollController _effectiveScrollController =>
@@ -335,9 +337,7 @@ public class ScrollableState
             position.restoreOffset(
                 (
                     _persistedScrollOffset.value
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 initialRestore: initialRestore
             );
@@ -423,7 +423,7 @@ public class ScrollableState
             DartRuntimePrimitives.RuntimeType(widget.controller),
             DartRuntimePrimitives.RuntimeType(oldWidget.controller)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void didUpdateWidget(Scrollable oldWidget)
@@ -698,7 +698,7 @@ public class ScrollableState
             Math.Max(position.pixels + delta, position.minScrollExtent),
             position.maxScrollExtent
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual double _pointerSignalEventDelta(PointerScrollEvent @event)
@@ -712,10 +712,12 @@ public class ScrollableState
         {
             Axis.horizontal => @event.scrollDelta.dx,
             Axis.vertical => @event.scrollDelta.dy,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         return Basic_typesLibrary.axisDirectionIsReversed(widget.axisDirection) ? -delta : delta;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _receivedPointerSignal(PointerSignalEvent @event)
@@ -777,7 +779,7 @@ public class ScrollableState
             }
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _buildChrome(BuildContext context, Widget child)
@@ -792,7 +794,7 @@ public class ScrollableState
             _configuration.buildOverscrollIndicator(context, child, details),
             details
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -849,7 +851,7 @@ public class ScrollableState
             );
         }
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual (List<Future>, ScrollableState) _performEnsureVisible(
@@ -870,7 +872,7 @@ public class ScrollableState
             targetRenderObject: targetRenderObject
         );
         return (new List<Future> { ensureVisibleFuture }, this);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -918,7 +920,7 @@ public class ScrollableState
         )();
         _tickers!.Add(result);
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _removeTicker(_WidgetTicker__ticker_provider ticker)
@@ -1014,7 +1016,7 @@ public class ScrollableState
         {
             _debugPropertiesWaitingForReregistration?.Remove(property);
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
     }
 
@@ -1073,7 +1075,7 @@ public class ScrollableState
         {
             _debugPropertiesWaitingForReregistration = _properties.Keys.ToList();
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         restoreState(oldBucket, _firstRestorePending);
         _firstRestorePending = false;
@@ -1098,7 +1100,7 @@ public class ScrollableState
             }
             _debugPropertiesWaitingForReregistration = null;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
     }
 
@@ -1129,7 +1131,7 @@ public class ScrollableState
         _bucket!.rename(restorationId!);
         parent.adoptChild(_bucket!);
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool _setNewBucketIfNecessary(RestorationBucket? newBucket, bool restorePending)
@@ -1151,7 +1153,7 @@ public class ScrollableState
             didToggleBucket(oldBucket);
         }
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _updateProperty(IRestorableProperty property)
@@ -1173,7 +1175,7 @@ public class ScrollableState
         {
             _debugPropertiesWaitingForReregistration?.Remove(property);
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         property.removeListener(listener);
         property._unregister();
@@ -1243,7 +1245,7 @@ public class _ScrollableSelectionHandlerState__scrollable
             @delegate: _selectionDelegate,
             child: widget.child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1337,7 +1339,7 @@ internal class _ScrollableSelectionContainerDelegate__scrollable
         _currentDragEndRelatedToOrigin = null;
         _selectionStartsInScrollable = false;
         return base.handleClearSelection(@event);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override SelectionResult handleSelectionEdgeUpdate(SelectionEdgeUpdateEvent @event)
@@ -1353,7 +1355,7 @@ internal class _ScrollableSelectionContainerDelegate__scrollable
             _currentDragEndRelatedToOrigin = _inferPositionRelatedToOrigin(@event.globalPosition);
             Offset endOffset = (
                 _currentDragEndRelatedToOrigin
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ).translate(-deltaToOrigin.dx, -deltaToOrigin.dy);
             @event = SelectionEdgeUpdateEvent.CreateForEnd(
                 globalPosition: endOffset,
@@ -1365,7 +1367,7 @@ internal class _ScrollableSelectionContainerDelegate__scrollable
             _currentDragStartRelatedToOrigin = _inferPositionRelatedToOrigin(@event.globalPosition);
             Offset startOffset = (
                 _currentDragStartRelatedToOrigin
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ).translate(-deltaToOrigin.dx, -deltaToOrigin.dy);
             @event = new SelectionEdgeUpdateEvent(
                 globalPosition: startOffset,
@@ -1387,7 +1389,7 @@ internal class _ScrollableSelectionContainerDelegate__scrollable
             }
         }
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Offset _inferPositionRelatedToOrigin(Offset globalPosition)
@@ -1407,7 +1409,7 @@ internal class _ScrollableSelectionContainerDelegate__scrollable
         }
         Offset deltaToOrigin = ScrollableLibrary._getDeltaToScrollOrigin(state);
         return box.localToGlobal(localPosition.translate(deltaToOrigin.dx, deltaToOrigin.dy));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _updateDragLocationsFromGeometries(
@@ -1470,7 +1472,7 @@ internal class _ScrollableSelectionContainerDelegate__scrollable
             _updateDragLocationsFromGeometries();
         }
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override SelectionResult handleSelectWord(SelectWordSelectionEvent @event)
@@ -1479,7 +1481,7 @@ internal class _ScrollableSelectionContainerDelegate__scrollable
         SelectionResult result = base.handleSelectWord(@event);
         _updateDragLocationsFromGeometries();
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override SelectionResult handleGranularlyExtendSelection(
@@ -1496,7 +1498,7 @@ internal class _ScrollableSelectionContainerDelegate__scrollable
             _jumpToEdge(@event.isEnd);
         }
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override SelectionResult handleDirectionallyExtendSelection(
@@ -1513,7 +1515,7 @@ internal class _ScrollableSelectionContainerDelegate__scrollable
             _jumpToEdge(@event.isEnd);
         }
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _jumpToEdge(bool isExtent)
@@ -1559,7 +1561,7 @@ internal class _ScrollableSelectionContainerDelegate__scrollable
                     - (
                         lineHeightLocal
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     );
                 if ((edgeBottom >= scrollableRect.bottom) && (edgeTop <= scrollableRect.top))
@@ -1603,7 +1605,7 @@ internal class _ScrollableSelectionContainerDelegate__scrollable
                     - (
                         lineHeightLocal
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     );
                 if (
@@ -1646,7 +1648,9 @@ internal class _ScrollableSelectionContainerDelegate__scrollable
                 return;
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
     }
 
@@ -1656,7 +1660,7 @@ internal class _ScrollableSelectionContainerDelegate__scrollable
         Offset localPosition = box.globalToLocal(globalPosition);
         var rect = Rect.fromLTWH(0, 0, box.size.width, box.size.height);
         return rect.contains(localPosition);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Rect _dragTargetFromEvent(SelectionEdgeUpdateEvent @event)
@@ -1666,7 +1670,7 @@ internal class _ScrollableSelectionContainerDelegate__scrollable
             width: _kDefaultDragTargetSize,
             height: _kDefaultDragTargetSize
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override SelectionResult dispatchSelectionEventToChild(
@@ -1712,7 +1716,7 @@ internal class _ScrollableSelectionContainerDelegate__scrollable
             }
         }
         return base.dispatchSelectionEventToChild(selectable, @event);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void ensureChildUpdated(Selectable selectable)
@@ -1732,7 +1736,7 @@ internal class _ScrollableSelectionContainerDelegate__scrollable
                         - (
                             previousStartRecord
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     ).abs() > Foundation.ConstantsLibrary.precisionErrorTolerance
@@ -1743,7 +1747,7 @@ internal class _ScrollableSelectionContainerDelegate__scrollable
             Offset deltaToOrigin = ScrollableLibrary._getDeltaToScrollOrigin(state);
             Offset startOffset = (
                 _currentDragStartRelatedToOrigin
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ).translate(-deltaToOrigin.dx, -deltaToOrigin.dy);
             selectable.dispatchSelectionEvent(
                 new SelectionEdgeUpdateEvent(globalPosition: startOffset)
@@ -1764,7 +1768,7 @@ internal class _ScrollableSelectionContainerDelegate__scrollable
                         - (
                             previousEndRecord
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     ).abs() > Foundation.ConstantsLibrary.precisionErrorTolerance
@@ -1775,7 +1779,7 @@ internal class _ScrollableSelectionContainerDelegate__scrollable
             Offset deltaToOriginLocal = ScrollableLibrary._getDeltaToScrollOrigin(state);
             Offset endOffset = (
                 _currentDragEndRelatedToOrigin
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ).translate(-deltaToOriginLocal.dx, -deltaToOriginLocal.dy);
             selectable.dispatchSelectionEvent(
                 SelectionEdgeUpdateEvent.CreateForEnd(globalPosition: endOffset)
@@ -1804,9 +1808,11 @@ public static partial class ScrollableLibrary
             AxisDirection.down => new Offset(0, scrollableState.position.pixels),
             AxisDirection.left => new Offset(-scrollableState.position.pixels, 0),
             AxisDirection.right => new Offset(scrollableState.position.pixels, 0),
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1842,7 +1848,7 @@ internal class _ScrollSemantics__scrollable : SingleChildRenderObjectWidget
             semanticChildCount: semanticChildCount,
             axis: axis
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -1941,7 +1947,9 @@ public class _RenderScrollSemantics__scrollable : RenderProxyBox
         {
             Axis.horizontal => targetOffset.dx,
             Axis.vertical => targetOffset.dy,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         _position.jumpTo(offset);
     }
@@ -2045,13 +2053,13 @@ internal class _RestorableScrollOffset__scrollable : RestorableValue<double?>
     public override double? fromPrimitives(object? data)
     {
         return (double)data!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override object? toPrimitives()
     {
         return value;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool enabled => DartRuntimePrimitives.ConvertValue<bool>(value is not null);
@@ -2114,7 +2122,7 @@ public class TwoDimensionalScrollable : StatefulWidget
         _TwoDimensionalScrollableScope__scrollable? widget =
             context.dependOnInheritedWidgetOfExactType<_TwoDimensionalScrollableScope__scrollable>();
         return widget?.twoDimensionalScrollable;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static TwoDimensionalScrollableState of(BuildContext context)
@@ -2145,10 +2153,10 @@ public class TwoDimensionalScrollable : StatefulWidget
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return scrollableState!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -2302,11 +2310,13 @@ public class TwoDimensionalScrollableState : State<TwoDimensionalScrollable>
                                 horizontalOffset
                             );
                             throw new InvalidOperationException(
-                                "Dart closure completed without a value."
+                                "Callback completed without returning a value."
                             );
                         }
                     );
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );
@@ -2314,7 +2324,7 @@ public class TwoDimensionalScrollableState : State<TwoDimensionalScrollable>
             twoDimensionalScrollable: this,
             child: result
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void dispose()
@@ -2416,7 +2426,7 @@ internal class _VerticalOuterDimensionState__scrollable : ScrollableState
                 + "scrollable handles both axes."
         );
         return (new List<Future>(), this);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _evaluateLockedAxis(Offset offset)
@@ -2425,7 +2435,7 @@ internal class _VerticalOuterDimensionState__scrollable : ScrollableState
         Offset offsetDelta =
             (
                 lastDragOffset
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ) - offset;
         double axisDifferential = offsetDelta.dx.abs() - offsetDelta.dy.abs();
         if (axisDifferential.abs() >= Gestures.ConstantsLibrary.kTouchSlop)
@@ -2681,7 +2691,9 @@ internal class _VerticalOuterDimensionState__scrollable : ScrollableState
                 return;
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
     }
 
@@ -2693,7 +2705,7 @@ internal class _VerticalOuterDimensionState__scrollable : ScrollableState
             clipBehavior: widget.clipBehavior
         );
         return _configuration.buildOverscrollIndicator(context, child, details);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -2790,7 +2802,7 @@ internal class _HorizontalInnerDimensionState__scrollable : ScrollableState
             ),
         };
         return (newFutures, verticalScrollable);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void setCanDrag(bool value)
@@ -2823,7 +2835,9 @@ internal class _HorizontalInnerDimensionState__scrollable : ScrollableState
                 return;
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
     }
 
@@ -2835,6 +2849,6 @@ internal class _HorizontalInnerDimensionState__scrollable : ScrollableState
             clipBehavior: widget.clipBehavior
         );
         return _configuration.buildOverscrollIndicator(context, child, details);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

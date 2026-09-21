@@ -85,7 +85,9 @@ public class Drawer : StatelessWidget
             TargetPlatform.windows => semanticLabel
                 ?? MaterialLocalizations.of(context).drawerLabel,
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
         var isDrawerStart = !Equals(
             DrawerController.maybeOf(context)?.alignment,
@@ -115,7 +117,7 @@ public class Drawer : StatelessWidget
                         ?? (
                             defaults.elevation
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ),
                     shadowColor: (shadowColor ?? drawerTheme.shadowColor) ?? defaults.shadowColor,
@@ -128,7 +130,7 @@ public class Drawer : StatelessWidget
                             ?? (
                                 defaults.clipBehavior
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             )
                         )
@@ -156,7 +158,7 @@ internal class _DrawerControllerScope__drawer : InheritedWidget
     {
         var __old = (_DrawerControllerScope__drawer)oldWidget;
         return !Equals(controller, __old.controller);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -202,7 +204,7 @@ public class DrawerController : StatefulWidget
         return context
             .dependOnInheritedWidgetOfExactType<_DrawerControllerScope__drawer>()
             ?.controller;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static DrawerController of(BuildContext context)
@@ -228,7 +230,7 @@ public class DrawerController : StatefulWidget
             return true;
         });
         return controller!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override IState createState() =>
@@ -414,7 +416,9 @@ public class DrawerControllerState
                 (TextDirection.ltr, DrawerAlignment.start) => 1L,
                 (TextDirection.ltr, DrawerAlignment.end) => -1L,
                 _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                    throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
             };
         }
     }
@@ -424,7 +428,7 @@ public class DrawerControllerState
         _controller.value +=
             (
                 details.primaryDelta
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
             / _width
             * _directionFactor;
@@ -480,7 +484,9 @@ public class DrawerControllerState
             DrawerAlignment.start => AlignmentDirectional.centerStart,
             DrawerAlignment.end => AlignmentDirectional.centerEnd,
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
     internal virtual AlignmentDirectional _drawerInnerAlignment =>
         widget.alignment switch
@@ -488,7 +494,9 @@ public class DrawerControllerState
             DrawerAlignment.start => AlignmentDirectional.centerEnd,
             DrawerAlignment.end => AlignmentDirectional.centerStart,
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
 
     internal virtual Widget _buildDrawer(BuildContext context)
@@ -500,7 +508,9 @@ public class DrawerControllerState
             TargetPlatform.macOS or TargetPlatform.linux => true,
             TargetPlatform.windows => true,
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
         double dragAreaWidth =
             widget.edgeDragWidth
@@ -523,7 +533,7 @@ public class DrawerControllerState
                             .right,
                         _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
                             throw new InvalidOperationException(
-                                "Non-exhaustive Dart switch value."
+                                "Switch expression did not handle the supplied value."
                             ),
                     }
                 )
@@ -567,7 +577,9 @@ public class DrawerControllerState
                 or TargetPlatform.linux => false,
                 TargetPlatform.windows => false,
                 _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                    throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
             };
             Color scrimColorLocal =
                 (widget.scrimColor ?? DrawerTheme.of(context).scrimColor) ?? Colors.black54;
@@ -635,7 +647,7 @@ public class DrawerControllerState
                 child: childLocal
             );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -644,7 +656,7 @@ public class DrawerControllerState
             DebugLibrary.debugCheckHasMaterialLocalizations(context)
         );
         return ListTileTheme.merge(style: ListTileStyle.drawer, child: _buildDrawer(context));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
@@ -683,7 +695,7 @@ public class DrawerControllerState
         _updateTickerModeNotifier();
         _updateTicker();
         return _ticker!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void activate()

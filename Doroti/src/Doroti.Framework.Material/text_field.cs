@@ -291,7 +291,7 @@ public class TextField : StatefulWidget
                     (
                         maxLines
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) > 0L
                 )
@@ -302,7 +302,7 @@ public class TextField : StatefulWidget
                     (
                         minLines
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) > 0L
                 )
@@ -314,7 +314,7 @@ public class TextField : StatefulWidget
                     >= (
                         minLines
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
         );
@@ -326,7 +326,7 @@ public class TextField : StatefulWidget
                     (
                         maxLength
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) == noMaxLength
                 )
@@ -334,7 +334,7 @@ public class TextField : StatefulWidget
                     (
                         maxLength
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) > 0L
                 )
@@ -360,7 +360,7 @@ public class TextField : StatefulWidget
         return AdaptiveTextSelectionToolbar.CreateEditableText(
             editableTextState: editableTextState
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static Widget defaultSpellCheckSuggestionsToolbarBuilder(
@@ -387,9 +387,11 @@ public class TextField : StatefulWidget
                 );
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static SpellCheckConfiguration inferAndroidSpellCheckConfiguration(
@@ -408,7 +410,7 @@ public class TextField : StatefulWidget
             spellCheckSuggestionsToolbarBuilder: configuration.spellCheckSuggestionsToolbarBuilder
                 ?? defaultSpellCheckSuggestionsToolbarBuilder
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override IState createState() =>
@@ -688,7 +690,7 @@ internal class _TextFieldState__text_field
                     (
                         widget.maxLength
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) > 0L
                 )
@@ -701,7 +703,7 @@ internal class _TextFieldState__text_field
                                 > (
                                     widget.maxLength
                                     ?? throw new global::System.NullReferenceException(
-                                        "Dart null assertion failed."
+                                        "A required value was null."
                                     )
                                 )
                             )
@@ -711,7 +713,7 @@ internal class _TextFieldState__text_field
                             > (
                                 widget.maxLength
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             )
                         )
@@ -784,7 +786,7 @@ internal class _TextFieldState__text_field
         if (
             (
                 widget.maxLength
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ) > 0L
         )
         {
@@ -792,17 +794,13 @@ internal class _TextFieldState__text_field
             long remaining = (
                 (
                     widget.maxLength
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) - currentLengthLocal
             ).clamp(
                 0L,
                 (
                     widget.maxLength
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             );
             semanticCounterTextLocal = localizations.remainingTextFieldCharacterCount(remaining);
@@ -848,7 +846,9 @@ internal class _TextFieldState__text_field
                 NavigationMode.traditional => widget.canRequestFocus && _isEnabled,
                 NavigationMode.directional => true,
                 _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                    throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
             };
         }
     }
@@ -1016,7 +1016,7 @@ internal class _TextFieldState__text_field
             return true;
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _handleFocusChanged()
@@ -1475,7 +1475,7 @@ internal class _TextFieldState__text_field
                             child: child
                         );
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     },
                     child: childLocal
@@ -1493,9 +1493,7 @@ internal class _TextFieldState__text_field
             && (
                 (
                     widget.maxLength
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) > 0L
             )
         )
@@ -1580,7 +1578,7 @@ internal class _TextFieldState__text_field
                                 child: child
                             );
                             throw new InvalidOperationException(
-                                "Dart closure completed without a value."
+                                "Callback completed without returning a value."
                             );
                         },
                         child: _selectionGestureDetectorBuilder.buildGestureDetector(
@@ -1779,7 +1777,7 @@ internal class _TextFieldState__text_field
         _bucket!.rename(restorationId!);
         parent.adoptChild(_bucket!);
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool _setNewBucketIfNecessary(RestorationBucket? newBucket, bool restorePending)
@@ -1801,7 +1799,7 @@ internal class _TextFieldState__text_field
             didToggleBucket(oldBucket);
         }
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _updateProperty(IRestorableProperty property)
@@ -1841,7 +1839,9 @@ public static partial class Text_fieldLibrary
                     return new TextStyle(color: theme.disabledColor);
                 }
                 return new TextStyle(color: theme.textTheme.titleMedium?.color);
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
 }
@@ -1865,7 +1865,9 @@ public static partial class Text_fieldLibrary
                     );
                 }
                 return new TextStyle(color: Theme.of(context).textTheme.bodyLarge!.color);
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
 }

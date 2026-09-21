@@ -74,7 +74,7 @@ public class MagnifierInfo
             + $"caret: {caretRect}, "
             + $"field: {fieldBounds}"
             + ")";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -225,7 +225,7 @@ public class MagnifierController
             }
         }
         return rect.shift(rectShift);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -341,7 +341,7 @@ public class RawMagnifier : StatelessWidget
                 ),
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -368,7 +368,7 @@ internal class _NegativeClip__magnifier : CustomClipper<Path>
                 }
             )
         )();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool shouldReclip(CustomClipper<Path> oldClipper) =>
@@ -396,7 +396,7 @@ internal class _Magnifier__magnifier : SingleChildRenderObjectWidget
     public override RenderObject createRenderObject(BuildContext context)
     {
         return new _RenderMagnification__magnifier(focalPointOffset, magnificationScale);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)

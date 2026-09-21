@@ -276,7 +276,7 @@ sealed record ManifestRow(
 sealed class Rewriter(IReadOnlyDictionary<(int Start, int Length), Replacement> replacements)
     : CSharpSyntaxRewriter
 {
-    private const string NullMessage = "Dart null assertion failed.";
+    private const string NullMessage = "A required value was null.";
 
     public override SyntaxNode? VisitInvocationExpression(InvocationExpressionSyntax node)
     {

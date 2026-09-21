@@ -33,7 +33,7 @@ public abstract class TextScaler
         return (minScaleFactor == maxScaleFactor)
             ? CreateLinear(minScaleFactor)
             : new _ClampedTextScaler__text_scaler(this, minScaleFactor, maxScaleFactor);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -56,7 +56,7 @@ internal class _LinearTextScaler__text_scaler : TextScaler
         DartRuntimePrimitives.Assert(() => fontSize >= 0L);
         DartRuntimePrimitives.Assert(() => double.IsFinite(fontSize));
         return fontSize * textScaleFactor;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override TextScaler clamp(
@@ -76,7 +76,7 @@ internal class _LinearTextScaler__text_scaler : TextScaler
         return (newScaleFactor == textScaleFactor)
             ? this
             : new _LinearTextScaler__text_scaler(newScaleFactor);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool Equals(object? other)
@@ -127,7 +127,7 @@ internal class _ClampedTextScaler__text_scaler : TextScaler
             minScale * fontSize,
             maxScale * fontSize
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override TextScaler clamp(
@@ -148,7 +148,7 @@ internal class _ClampedTextScaler__text_scaler : TextScaler
             );
         }
         return new _ClampedTextScaler__text_scaler(scaler, newMinScale, newMaxScale);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool Equals(object? other)

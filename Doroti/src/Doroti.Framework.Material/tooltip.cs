@@ -90,7 +90,7 @@ public class Tooltip : StatefulWidget
     public static bool dismissAllToolTips()
     {
         return RawTooltip.dismissAllToolTips();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override IState createState() =>
@@ -211,7 +211,7 @@ public class TooltipState : State<Tooltip>, SingleTickerProviderStateMixin<Toolt
     public virtual bool ensureTooltipVisible()
     {
         return _tooltipKey.currentState?.ensureTooltipVisible() ?? false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void didChangeDependencies()
@@ -230,9 +230,11 @@ public class TooltipState : State<Tooltip>, SingleTickerProviderStateMixin<Toolt
             TargetPlatform.android or TargetPlatform.fuchsia => 32.0,
             TargetPlatform.iOS => 32.0,
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual EdgeInsets _getDefaultPadding()
@@ -250,9 +252,11 @@ public class TooltipState : State<Tooltip>, SingleTickerProviderStateMixin<Toolt
             ),
             TargetPlatform.iOS => EdgeInsets.CreateSymmetric(horizontal: 16.0, vertical: 4.0),
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static double _getDefaultFontSize(TargetPlatform platform)
@@ -264,9 +268,11 @@ public class TooltipState : State<Tooltip>, SingleTickerProviderStateMixin<Toolt
             TargetPlatform.android or TargetPlatform.fuchsia => 14.0,
             TargetPlatform.iOS => 14.0,
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Offset _getDefaultPositionDelegate(TooltipPositionContext context)
@@ -292,7 +298,7 @@ public class TooltipState : State<Tooltip>, SingleTickerProviderStateMixin<Toolt
                 preferBelow: effectivePreferBelow
             )
             : widget.positionDelegate.Invoke(resolvedContext);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -336,7 +342,9 @@ public class TooltipState : State<Tooltip>, SingleTickerProviderStateMixin<Toolt
                     )
                 ),
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
         var defaultConstraints = new BoxConstraints(
             minHeight: (widget.height ?? _tooltipTheme.height) ?? (double)_getDefaultTooltipHeight()
@@ -384,7 +392,7 @@ public class TooltipState : State<Tooltip>, SingleTickerProviderStateMixin<Toolt
             );
         }
         return effectiveChild;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
@@ -423,7 +431,7 @@ public class TooltipState : State<Tooltip>, SingleTickerProviderStateMixin<Toolt
         _updateTickerModeNotifier();
         _updateTicker();
         return _ticker!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void dispose()
@@ -559,6 +567,6 @@ internal class _TooltipBox__tooltip : StatelessWidget
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

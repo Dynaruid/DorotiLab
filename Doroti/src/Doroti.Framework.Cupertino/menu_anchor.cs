@@ -41,7 +41,9 @@ public static partial class Menu_anchorLibrary
                     return false;
                 }
                 default:
-                    throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                    throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    );
             }
         }
     }
@@ -71,7 +73,7 @@ public static partial class Menu_anchorLibrary
             return 0;
         }
         return textScaler.scale(_kCupertinoMobileBaseFontSize) - _kCupertinoMobileBaseFontSize;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -100,7 +102,7 @@ public static partial class Menu_anchorLibrary
             return false;
         }
         return _normalizeTextScale(textScaler) >= _kMinimumNormalizedLargeTextScale;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -232,7 +234,7 @@ internal static class _DynamicTypeStyle__menu_anchorMembers
             )!;
         }
         return value.styles().Last();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -243,7 +245,7 @@ public static partial class Menu_anchorLibrary
         double dxLocal = point.dx - Dart_uiLibrary.clampDouble(point.dx, rect.left, rect.right);
         double dyLocal = point.dy - Dart_uiLibrary.clampDouble(point.dy, rect.top, rect.bottom);
         return (dxLocal * dxLocal) + (dyLocal * dyLocal);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -256,7 +258,7 @@ public static partial class Menu_anchorLibrary
             return value;
         }
         return (value / to).round() * to;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -280,7 +282,7 @@ internal class _AnchorScope__menu_anchor : InheritedWidget
     {
         var __oldWidget = (_AnchorScope__menu_anchor)oldWidget;
         return hasLeading != __oldWidget.hasLeading;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -350,7 +352,7 @@ public class CupertinoMenuAnchor : StatefulWidget
     public static bool? maybeHasLeadingOf(BuildContext context)
     {
         return context.dependOnInheritedWidgetOfExactType<_AnchorScope__menu_anchor>()?.hasLeading;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override IState createState() =>
@@ -359,7 +361,7 @@ public class CupertinoMenuAnchor : StatefulWidget
     public override List<DiagnosticsNode> debugDescribeChildren()
     {
         return menuChildren.map((child) => ((Diagnosticable)child).toDiagnosticsNode()).ToList();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -440,7 +442,7 @@ internal class _CupertinoMenuAnchorState__menu_anchor
                         AnimationStatus.dismissed => true,
                         AnimationStatus.reverse => false,
                         _ => throw new InvalidOperationException(
-                            "Non-exhaustive Dart switch value."
+                            "Switch expression did not handle the supplied value."
                         ),
                     }
                 )
@@ -549,10 +551,12 @@ internal class _CupertinoMenuAnchorState__menu_anchor
                     CupertinoMenuEntry entry => entry.hasLeading(context),
                     _ => false,
                 };
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _handleAnimationStatusChange(AnimationStatus status)
@@ -649,7 +653,7 @@ internal class _CupertinoMenuAnchorState__menu_anchor
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _buildChild(
@@ -673,7 +677,7 @@ internal class _CupertinoMenuAnchorState__menu_anchor
             delay: _kLongPressToOpenDuration,
             child: anchor
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -684,9 +688,7 @@ internal class _CupertinoMenuAnchorState__menu_anchor
             child: new _AnchorScope__menu_anchor(
                 hasLeading: (
                     _hasLeadingWidget
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 child: new RawMenuAnchor(
                     useRootOverlay: widget.useRootOverlay,
@@ -702,7 +704,7 @@ internal class _CupertinoMenuAnchorState__menu_anchor
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
@@ -733,7 +735,7 @@ internal class _CupertinoMenuAnchorState__menu_anchor
         )();
         _tickers!.Add(result);
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _removeTicker(_WidgetTicker__ticker_provider ticker)
@@ -1085,9 +1087,7 @@ internal class _MenuOverlayState__menu_anchor
                 widget.anchorRect.topLeft
                 + (
                     widget.anchorPosition
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
         }
         else
@@ -1111,9 +1111,7 @@ internal class _MenuOverlayState__menu_anchor
                 widget.anchorRect.topLeft
                 + (
                     widget.anchorPosition
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
             transformOrigin = _attachmentPoint;
         }
@@ -1192,7 +1190,7 @@ internal class _MenuOverlayState__menu_anchor
             alignment: Alignment.topCenter,
             child: child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -1304,13 +1302,13 @@ internal class _MenuOverlayState__menu_anchor
                             child: child
                         );
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static HashSet<Rect> avoidBounds(List<DisplayFeature> displayFeatures)
@@ -1327,7 +1325,7 @@ internal class _MenuOverlayState__menu_anchor
             }
         }
         return boundsLocal;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
@@ -1358,7 +1356,7 @@ internal class _MenuOverlayState__menu_anchor
         )();
         _tickers!.Add(result);
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _removeTicker(_WidgetTicker__ticker_provider ticker)
@@ -1490,7 +1488,7 @@ internal class _ShadowPainter__menu_anchor : CustomPainter
         var __oldDelegate = (_ShadowPainter__menu_anchor)oldDelegate;
         return (!Equals(__oldDelegate.brightness, brightness))
             || (!Equals(__oldDelegate.repaint, repaint));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool shouldRebuildSemantics(CustomPainter oldDelegate) => false;
@@ -1525,7 +1523,7 @@ internal class _MenuLayoutDelegate__menu_anchor : SingleChildLayoutDelegate
     public override BoxConstraints getConstraintsForChild(BoxConstraints constraints)
     {
         return BoxConstraints.CreateLoose(constraints.biggest).deflate(overlayPadding);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Offset getPositionForChild(Size size, Size childSize)
@@ -1545,9 +1543,9 @@ internal class _MenuLayoutDelegate__menu_anchor : SingleChildLayoutDelegate
         var initialPosition = new Offset(finalPosition.dx, anchorRect.bottom);
         return (
             Dart_uiLibrary.Offset.lerp(initialPosition, finalPosition, heightFactor)
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Offset _positionChild(
@@ -1562,22 +1560,30 @@ internal class _MenuLayoutDelegate__menu_anchor : SingleChildLayoutDelegate
         bool overLeftEdge(double x)
         {
             return x < (screen.left + overlayPadding.left);
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         bool overRightEdge(double x)
         {
             return x > (screen.right - childSize.width - overlayPadding.right);
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         bool overTopEdge(double y)
         {
             return y < (screen.top + overlayPadding.top);
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         bool overBottomEdge(double y)
         {
             return y > (screen.bottom - childSize.height - overlayPadding.bottom);
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         bool hasHorizontalAnchorOverlap = childSize.width >= screen.width;
         if (hasHorizontalAnchorOverlap)
@@ -1664,7 +1670,7 @@ internal class _MenuLayoutDelegate__menu_anchor : SingleChildLayoutDelegate
             }
         }
         return new Offset(xLocal, yLocal);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Rect _findClosestScreen(
@@ -1694,7 +1700,7 @@ internal class _MenuLayoutDelegate__menu_anchor : SingleChildLayoutDelegate
                         (
                             closest
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     )
@@ -1712,10 +1718,9 @@ internal class _MenuLayoutDelegate__menu_anchor : SingleChildLayoutDelegate
             }
         }
         return (
-            closest
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            closest ?? throw new global::System.NullReferenceException("A required value was null.")
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool shouldRelayout(SingleChildLayoutDelegate oldDelegate)
@@ -1727,7 +1732,7 @@ internal class _MenuLayoutDelegate__menu_anchor : SingleChildLayoutDelegate
             || (heightFactor != __oldDelegate.heightFactor)
             || (!Equals(menuAlignment, __oldDelegate.menuAlignment))
             || (!Equals(overlayPadding, __oldDelegate.overlayPadding));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1776,7 +1781,7 @@ internal class _FocusUpAction__menu_anchor : ContextAction<DirectionalFocusInten
             }
         }
         policy.inDirection(Focus_managerLibrary.primaryFocus!, intent.direction);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1813,7 +1818,7 @@ internal class _FocusDownAction__menu_anchor : ContextAction<DirectionalFocusInt
             }
         }
         policy.inDirection(Focus_managerLibrary.primaryFocus!, intent.direction);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1842,7 +1847,7 @@ internal class _FocusFirstAction__menu_anchor : ContextAction<_FocusFirstIntent_
             return default!;
         }
         policy.requestFocusCallback(firstFocus);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1871,7 +1876,7 @@ internal class _FocusLastAction__menu_anchor : ContextAction<_FocusLastIntent__m
             return default!;
         }
         policy.requestFocusCallback(lastFocus);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1900,7 +1905,7 @@ internal class _CupertinoMenuImplicitDivider__menu_anchor : StatelessWidget
                 antiAlias: pixelRatio < 1.0
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1930,7 +1935,7 @@ public class CupertinoMenuDivider : StatelessWidget, CupertinoMenuEntry
             color: CupertinoDynamicColor.resolve(color, context),
             child: new SizedBox(height: _kDividerHeight, width: double.PositiveInfinity)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1993,7 +1998,7 @@ internal class _CupertinoDividerPainter__menu_anchor : CustomPainter
         return (!Equals(color, __oldDelegate.color))
             || (!Equals(overlayColor, __oldDelegate.overlayColor))
             || (antiAlias != __oldDelegate.antiAlias);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -2060,7 +2065,9 @@ public class CupertinoMenuItem : StatelessWidget, CupertinoMenuEntry
                 )
                     ? SystemMouseCursors.click
                     : MouseCursor.defer;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
     internal static Color _kDefaultTextColor = new CupertinoDynamicColor(
@@ -2163,7 +2170,7 @@ public class CupertinoMenuItem : StatelessWidget, CupertinoMenuEntry
         return _DynamicTypeStyle__menu_anchor
             .body.resolveTextStyle(textScaler)
             .copyWith(fontSize: 17, color: CupertinoDynamicColor.resolve(colorLocal, context));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual TextStyle _resolveDefaultSubtitleStyle(
@@ -2192,7 +2199,7 @@ public class CupertinoMenuItem : StatelessWidget, CupertinoMenuEntry
                     )
                 )()
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _handleSelect(BuildContext context)
@@ -2277,7 +2284,7 @@ public class CupertinoMenuItem : StatelessWidget, CupertinoMenuEntry
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -2380,7 +2387,7 @@ internal class _CupertinoMenuItemLabel__menu_anchor : StatelessWidget
         double units = Menu_anchorLibrary._normalizeTextScale(textScaler);
         double value = (_kLeadingWidthSlope * units) + _kLeadingWidthYIntercept;
         return Menu_anchorLibrary._roundToDivisible(value + lineHeight, to: 1L / pixelRatio);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual double _resolveTrailingWidth(
@@ -2392,7 +2399,7 @@ internal class _CupertinoMenuItemLabel__menu_anchor : StatelessWidget
         double units = Menu_anchorLibrary._normalizeTextScale(textScaler);
         double value = (_kTrailingWidthSlope * units) + _kTrailingWidthYIntercept;
         return Menu_anchorLibrary._roundToDivisible(value + lineHeight, to: 1L / pixelRatio);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual AlignmentGeometry _resolveTrailingAlignment(double trailingWidth)
@@ -2401,7 +2408,7 @@ internal class _CupertinoMenuItemLabel__menu_anchor : StatelessWidget
         double horizontalRatio = ((trailingWidth) - horizontalOffset) / (trailingWidth);
         double horizontalAlignment = (horizontalRatio * 2L) - 1L;
         return new AlignmentDirectional(horizontalAlignment, 0.0);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual AlignmentGeometry _resolveLeadingAlignment(
@@ -2413,7 +2420,7 @@ internal class _CupertinoMenuItemLabel__menu_anchor : StatelessWidget
         double horizontalRatio = (_kLeadingMidpointSlope * units) + _kLeadingMidpointYIntercept;
         double horizontalAlignment = (horizontalRatio * 2L) - 1L;
         return new AlignmentDirectional(horizontalAlignment, 0.0);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual double _resolveFirstBaselineToTop(double lineHeight, double pixelRatio)
@@ -2422,7 +2429,7 @@ internal class _CupertinoMenuItemLabel__menu_anchor : StatelessWidget
             lineHeight * _kFirstBaselineToTopSlope,
             to: 1L / pixelRatio
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual double _resolveLastBaselineToBottom(double lineHeight, double pixelRatio)
@@ -2431,14 +2438,14 @@ internal class _CupertinoMenuItemLabel__menu_anchor : StatelessWidget
             lineHeight * _kLastBaselineToBottomSlope,
             to: 1L / pixelRatio
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual EdgeInsets _resolvePadding(double minimumHeight, double lineHeight)
     {
         double padding = Math.Max(0, minimumHeight - lineHeight);
         return EdgeInsets.CreateSymmetric(vertical: (padding) / 2L);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -2455,11 +2462,11 @@ internal class _CupertinoMenuItemLabel__menu_anchor : StatelessWidget
         double lineHeight =
             (
                 dynamicBodyText.fontSize
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
             * (
                 dynamicBodyText.height
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         bool showLeadingWidget =
             (leading is not null) || (CupertinoMenuAnchor.maybeHasLeadingOf(context) ?? false);
@@ -2593,7 +2600,7 @@ internal class _CupertinoMenuItemLabel__menu_anchor : StatelessWidget
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -2613,7 +2620,7 @@ internal class _AlignMidpoint__menu_anchor : SingleChildRenderObjectWidget
             alignment: alignment,
             textDirection: Directionality.maybeOf(context)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -2969,7 +2976,7 @@ internal class _CupertinoMenuItemInteractionHandlerState__menu_anchor
                 child: child
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -3039,7 +3046,7 @@ internal class _CupertinoMenuItemInteractionHandlerState__menu_anchor
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -3068,7 +3075,7 @@ internal class _SwipeTarget__menu_anchor : StatelessWidget
     public override Widget build(BuildContext context)
     {
         return new MetaData(metaData: this, child: child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -3086,7 +3093,7 @@ internal class _SwipeScope__menu_anchor : InheritedWidget
     {
         var __oldWidget = (_SwipeScope__menu_anchor)oldWidget;
         return !Equals(state, __oldWidget.state);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -3112,7 +3119,7 @@ public class _SwipeRegion__menu_anchor : StatefulWidget
         _SwipeScope__menu_anchor? scope =
             context.dependOnInheritedWidgetOfExactType<_SwipeScope__menu_anchor>();
         return scope?.state;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override IState createState() =>
@@ -3184,7 +3191,9 @@ public class _SwipeRegionState__menu_anchor : State<_SwipeRegion__menu_anchor>
         {
             onStart?.Invoke();
             return _createSwipeHandle(position);
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         if (Equals(delay, Duration.zero))
         {
@@ -3241,7 +3250,7 @@ public class _SwipeRegionState__menu_anchor : State<_SwipeRegion__menu_anchor>
             onSwipeEnd: _handleSwipeEnd,
             onSwipeCanceled: () => _handleSwipeCancel()
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _handleSwipeUpdate(Gestures.DragUpdateDetails updateDetails)
@@ -3249,7 +3258,7 @@ public class _SwipeRegionState__menu_anchor : State<_SwipeRegion__menu_anchor>
         _position =
             (
                 _position
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ) + updateDetails.delta;
         double minimumSquaredDistance = double.MaxValue;
         foreach (_RenderSwipeSurface__menu_anchor surface in _surfaces)
@@ -3257,9 +3266,7 @@ public class _SwipeRegionState__menu_anchor : State<_SwipeRegion__menu_anchor>
             double squaredDistance = Menu_anchorLibrary._computeSquaredDistanceToRect(
                 (
                     _position
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 surface.computeRect()
             );
@@ -3299,7 +3306,7 @@ public class _SwipeRegionState__menu_anchor : State<_SwipeRegion__menu_anchor>
     public override Widget build(BuildContext context)
     {
         return new _SwipeScope__menu_anchor(state: this, child: widget.child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -3326,7 +3333,7 @@ internal class _SwipeSurface__menu_anchor : SingleChildRenderObjectWidget
             delay: delay,
             onStart: onStart
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -3488,7 +3495,9 @@ internal class _SwipeHandle__menu_anchor : Gestures.Drag
                     return true;
                 }
                 return false;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
         var hitTargets = new HashSet<_SwipeTarget__menu_anchor>();
@@ -3584,6 +3593,6 @@ internal class _ClampTween__menu_anchor : Animatable<double>
             return end;
         }
         return t;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

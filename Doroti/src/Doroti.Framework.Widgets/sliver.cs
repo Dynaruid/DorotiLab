@@ -43,7 +43,7 @@ public abstract class SliverMultiBoxAdaptorWidget : SliverWithKeepAliveWidget
             leadingScrollOffset,
             trailingScrollOffset
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -141,7 +141,7 @@ public class SliverList : SliverMultiBoxAdaptorWidget
     {
         var element = ((SliverMultiBoxAdaptorElement?)context)!;
         return new RenderSliverList(childManager: element);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -211,7 +211,7 @@ public class SliverFixedExtentList : SliverMultiBoxAdaptorWidget
     {
         var element = ((SliverMultiBoxAdaptorElement?)context)!;
         return new RenderSliverFixedExtentList(childManager: element, itemExtent: itemExtent);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -288,7 +288,7 @@ public class SliverVariedExtentList : SliverMultiBoxAdaptorWidget
             childManager: element,
             itemExtentBuilder: itemExtentBuilder
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -408,7 +408,7 @@ public class SliverGrid : SliverMultiBoxAdaptorWidget
     {
         var element = ((SliverMultiBoxAdaptorElement?)context)!;
         return new RenderSliverGrid(childManager: element, gridDelegate: gridDelegate);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -439,11 +439,11 @@ public class SliverGrid : SliverMultiBoxAdaptorWidget
                         (
                             @delegate.estimatedChildCount
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -580,7 +580,7 @@ public class SliverMultiBoxAdaptorElement : RenderObjectElement, RenderSliverBox
                     indexToLayoutOffset[indexLocal] = (
                         childParentData.layoutOffset
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     );
                 }
@@ -590,7 +590,7 @@ public class SliverMultiBoxAdaptorElement : RenderObjectElement, RenderSliverBox
                         (
                             newIndex
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ) != indexLocal
                     )
@@ -599,7 +599,7 @@ public class SliverMultiBoxAdaptorElement : RenderObjectElement, RenderSliverBox
                     long newIndex__39285__value39663 = (
                         newIndex
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     );
                     if (childParentData is not null)
@@ -643,7 +643,7 @@ public class SliverMultiBoxAdaptorElement : RenderObjectElement, RenderSliverBox
     internal virtual Widget? _build(long index, SliverMultiBoxAdaptorWidget widget)
     {
         return widget.@delegate.build(this, index);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void createChild(long index, RenderBox? after)
@@ -705,7 +705,7 @@ public class SliverMultiBoxAdaptorElement : RenderObjectElement, RenderSliverBox
             newParentData.layoutOffset = oldParentData.layoutOffset;
         }
         return newChild;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void forgetChild(Element child)
@@ -764,7 +764,7 @@ public class SliverMultiBoxAdaptorElement : RenderObjectElement, RenderSliverBox
         double averageExtent = ((trailingScrollOffset) - (leadingScrollOffset)) / reifiedCount;
         long remainingCount = childCount - (lastIndex) - 1L;
         return (trailingScrollOffset) + (averageExtent * remainingCount);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double estimateMaxScrollOffset(
@@ -784,27 +784,19 @@ public class SliverMultiBoxAdaptorElement : RenderObjectElement, RenderSliverBox
                 constraints,
                 (
                     firstIndex
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 (
                     lastIndex
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 (
                     leadingScrollOffset
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 (
                     trailingScrollOffset
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             )
             ?? (double)_extrapolateMaxScrollOffset(
@@ -812,7 +804,7 @@ public class SliverMultiBoxAdaptorElement : RenderObjectElement, RenderSliverBox
                     (
                         firstIndex
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 ),
@@ -820,7 +812,7 @@ public class SliverMultiBoxAdaptorElement : RenderObjectElement, RenderSliverBox
                     (
                         lastIndex
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 ),
@@ -828,7 +820,7 @@ public class SliverMultiBoxAdaptorElement : RenderObjectElement, RenderSliverBox
                     (
                         leadingScrollOffset
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 ),
@@ -836,7 +828,7 @@ public class SliverMultiBoxAdaptorElement : RenderObjectElement, RenderSliverBox
                     (
                         trailingScrollOffset
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 ),
@@ -844,12 +836,12 @@ public class SliverMultiBoxAdaptorElement : RenderObjectElement, RenderSliverBox
                     (
                         childCount
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual long? estimatedChildCount =>
@@ -909,9 +901,7 @@ public class SliverMultiBoxAdaptorElement : RenderObjectElement, RenderSliverBox
             return (
                 (
                     result
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             );
         }
@@ -937,7 +927,7 @@ public class SliverMultiBoxAdaptorElement : RenderObjectElement, RenderSliverBox
     {
         DartRuntimePrimitives.Assert(() => _currentlyUpdatingChildIndex is null);
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void didAdoptChild(RenderBox child)
@@ -965,7 +955,7 @@ public class SliverMultiBoxAdaptorElement : RenderObjectElement, RenderSliverBox
             )!;
             DartRuntimePrimitives.Assert(() => __slot == childParentData.index);
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
     }
 
@@ -1006,7 +996,7 @@ public class SliverMultiBoxAdaptorElement : RenderObjectElement, RenderSliverBox
                             Axis.horizontal => child.renderObject!.paintBounds.width,
                             Axis.vertical => child.renderObject!.paintBounds.height,
                             _ => throw new InvalidOperationException(
-                                "Non-exhaustive Dart switch value."
+                                "Switch expression did not handle the supplied value."
                             ),
                         }
                     );
@@ -1015,7 +1005,7 @@ public class SliverMultiBoxAdaptorElement : RenderObjectElement, RenderSliverBox
                             (
                                 parentDataLocal.layoutOffset
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             )
                             < (
@@ -1028,12 +1018,14 @@ public class SliverMultiBoxAdaptorElement : RenderObjectElement, RenderSliverBox
                                 (
                                     parentDataLocal.layoutOffset
                                     ?? throw new global::System.NullReferenceException(
-                                        "Dart null assertion failed."
+                                        "A required value was null."
                                     )
                                 ) + itemExtent
                             ) > renderObject.constraints.scrollOffset
                         );
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
             .forEach((__arg0) => visitor(__arg0));
@@ -1064,7 +1056,7 @@ public class SliverOpacity : SingleChildRenderObjectWidget
             opacity: opacity,
             alwaysIncludeSemantics: alwaysIncludeSemantics
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -1122,7 +1114,7 @@ public class SliverIgnorePointer : SingleChildRenderObjectWidget
             ignoring: ignoring,
             ignoringSemantics: ignoringSemantics
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -1277,7 +1269,7 @@ public class SliverConstrainedCrossAxis : StatelessWidget
         return new _SliverZeroFlexParentDataWidget__sliver(
             sliver: new _SliverConstrainedCrossAxis__sliver(maxExtent: maxExtent, sliver: sliver)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1319,7 +1311,7 @@ internal class _SliverConstrainedCrossAxis__sliver : SingleChildRenderObjectWidg
     public override RenderObject createRenderObject(BuildContext context)
     {
         return new RenderSliverConstrainedCrossAxis(maxExtent: maxExtent);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -1370,7 +1362,7 @@ public class SliverCrossAxisGroup : MultiChildRenderObjectWidget
     public override RenderObject createRenderObject(BuildContext context)
     {
         return new RenderSliverCrossAxisGroup();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1387,7 +1379,7 @@ public class SliverMainAxisGroup : MultiChildRenderObjectWidget
     public override RenderObject createRenderObject(BuildContext context)
     {
         return new RenderSliverMainAxisGroup();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1404,7 +1396,9 @@ internal class _SliverMainAxisGroupElement__sliver : MultiChildRenderObjectEleme
                 {
                     var renderSliver = ((RenderSliver?)e.renderObject!)!;
                     return renderSliver.geometry!.visible;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
             .forEach((__arg0) => visitor(__arg0));

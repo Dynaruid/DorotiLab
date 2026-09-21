@@ -58,7 +58,7 @@ internal class _MatrixTransformPart__hit_test : _TransformPart__hit_test
     public virtual Matrix4 multiply(Matrix4 rhs)
     {
         return matrix.multiplied(rhs);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -83,7 +83,7 @@ internal class _OffsetTransformPart__hit_test : _TransformPart__hit_test
                 }
             )
         )();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -201,7 +201,7 @@ public class HitTestResult
             return true;
         });
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string ToString() =>

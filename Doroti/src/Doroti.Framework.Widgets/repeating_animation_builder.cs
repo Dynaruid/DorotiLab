@@ -45,7 +45,7 @@ public class RepeatingAnimationBuilder<T> : StatefulWidget
     public override IState createState()
     {
         return new _RepeatingAnimationBuilderState__repeating_animation_builder<T>();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -128,7 +128,7 @@ internal class _RepeatingAnimationBuilderState__repeating_animation_builder<T>
                     }
                 )
             );
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         _tickerModeNotifier?.removeListener(_updateTicker);
         _tickerModeNotifier = null;
@@ -143,11 +143,13 @@ internal class _RepeatingAnimationBuilderState__repeating_animation_builder<T>
             {
                 T valueLocal = widget.animatable.transform(_curvedAnimation.value);
                 return widget.builder(context, valueLocal, child);
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             child: widget.child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
@@ -176,7 +178,7 @@ internal class _RepeatingAnimationBuilderState__repeating_animation_builder<T>
                     }
                 )
             );
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         _ticker = new Scheduler.Ticker(
             onTick,
@@ -187,7 +189,7 @@ internal class _RepeatingAnimationBuilderState__repeating_animation_builder<T>
         _updateTickerModeNotifier();
         _updateTicker();
         return _ticker!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void activate()

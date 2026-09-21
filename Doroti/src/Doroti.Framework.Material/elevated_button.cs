@@ -144,7 +144,7 @@ public class ElevatedButton : ButtonStyleButton
         {
             double elevation__value8154 = (
                 elevation
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             elevationValue = WidgetStateProperty<double>.CreateFromMap(
                 new DartMap<WidgetStatesConstraint, double>
@@ -192,7 +192,7 @@ public class ElevatedButton : ButtonStyleButton
             backgroundBuilder: backgroundBuilder,
             foregroundBuilder: foregroundBuilder
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override ButtonStyle defaultStyleOf(BuildContext context)
@@ -222,7 +222,7 @@ public class ElevatedButton : ButtonStyleButton
     public override ButtonStyle? themeStyleOf(BuildContext context)
     {
         return ElevatedButtonTheme.of(context).style;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -283,7 +283,7 @@ internal class _ElevatedButtonWithIconChild__elevated_button : StatelessWidget
             mainAxisSize: MainAxisSize.min,
             spacing: (
                 Dart_uiLibrary.lerpDouble(8L, 4L, scaleLocal)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             children: Equals(effectiveIconAlignment, IconAlignment.start)
                 ? new List<Widget>
@@ -297,7 +297,7 @@ internal class _ElevatedButtonWithIconChild__elevated_button : StatelessWidget
                     DartRuntimePrimitives.ConvertValue<Widget>(icon),
                 }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -343,7 +343,9 @@ internal class _ElevatedButtonDefaultsM3__elevated_button : ButtonStyle
                         return _colors.onSurface.withOpacity(0.12);
                     }
                     return _colors.surfaceContainerLow;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );
@@ -357,7 +359,9 @@ internal class _ElevatedButtonDefaultsM3__elevated_button : ButtonStyle
                         return _colors.onSurface.withOpacity(0.38);
                     }
                     return _colors.primary;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );
@@ -379,7 +383,9 @@ internal class _ElevatedButtonDefaultsM3__elevated_button : ButtonStyle
                         return _colors.primary.withOpacity(0.1);
                     }
                     return null;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );
@@ -412,7 +418,9 @@ internal class _ElevatedButtonDefaultsM3__elevated_button : ButtonStyle
                     return 1.0;
                 }
                 return 1.0;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
     public override WidgetStateProperty<EdgeInsetsGeometry?>? padding =>
@@ -455,7 +463,7 @@ internal class _ElevatedButtonDefaultsM3__elevated_button : ButtonStyle
                         }
                         return _colors.primary;
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 );

@@ -156,7 +156,9 @@ public class CupertinoTextFormFieldRow : FormField<string>
                         )
                     )
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         )
     {
@@ -178,7 +180,7 @@ public class CupertinoTextFormFieldRow : FormField<string>
                     (
                         maxLines
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) > 0L
                 )
@@ -189,7 +191,7 @@ public class CupertinoTextFormFieldRow : FormField<string>
                     (
                         minLines
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) > 0L
                 )
@@ -201,7 +203,7 @@ public class CupertinoTextFormFieldRow : FormField<string>
                     >= (
                         minLines
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
         );
@@ -213,7 +215,7 @@ public class CupertinoTextFormFieldRow : FormField<string>
                     (
                         maxLength
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) > 0L
                 )
@@ -232,7 +234,7 @@ public class CupertinoTextFormFieldRow : FormField<string>
         return CupertinoAdaptiveTextSelectionToolbar.CreateEditableText(
             editableTextState: editableTextState
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override FormFieldState<string> createState() =>

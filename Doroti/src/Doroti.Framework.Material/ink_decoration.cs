@@ -145,7 +145,7 @@ internal class _InkState__ink_decoration : State<Ink>
             _ink!.configuration = ImageLibrary.createLocalImageConfiguration(context);
         }
         return widget.child ?? new ConstrainedBox(constraints: BoxConstraints.CreateExpand());
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -163,7 +163,7 @@ internal class _InkState__ink_decoration : State<Ink>
             );
         }
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -269,7 +269,7 @@ public class InkDecoration : InkFeature
                     (
                         originOffset
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 ),

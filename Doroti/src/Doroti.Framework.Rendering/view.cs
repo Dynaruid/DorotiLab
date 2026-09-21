@@ -42,7 +42,7 @@ public class ViewConfiguration
     public virtual Matrix4 toMatrix()
     {
         return Matrix4.diagonal3Values(devicePixelRatio, devicePixelRatio, 1.0);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool shouldUpdateMatrix(ViewConfiguration oldConfiguration)
@@ -52,13 +52,13 @@ public class ViewConfiguration
             return true;
         }
         return oldConfiguration.devicePixelRatio != devicePixelRatio;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Size toPhysicalSize(Size logicalSize)
     {
         return physicalConstraints.constrain(logicalSize * devicePixelRatio);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool Equals(object? other)
@@ -169,7 +169,7 @@ public class RenderView : RenderObject, RenderObjectWithChildMixin<RenderBox>
         rootLayer.attach(this);
         DartRuntimePrimitives.Assert(() => _rootTransform is not null);
         return rootLayer;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugAssertDoesMeetConstraints()
@@ -197,7 +197,7 @@ public class RenderView : RenderObject, RenderObjectWithChildMixin<RenderBox>
         child?.hitTest(BoxHitTestResult.CreateWrap(result), position: position);
         result.add(new HitTestEntry<HitTestTarget>(this));
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool isRepaintBoundary => true;
@@ -459,7 +459,7 @@ public class RenderView : RenderObject, RenderObjectWithChildMixin<RenderBox>
             return true;
         });
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual RenderBox? child
@@ -516,7 +516,7 @@ public class RenderView : RenderObject, RenderObjectWithChildMixin<RenderBox>
                 ((Diagnosticable)child!).toDiagnosticsNode(name: "child"),
             }
             : new List<DiagnosticsNode>();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 

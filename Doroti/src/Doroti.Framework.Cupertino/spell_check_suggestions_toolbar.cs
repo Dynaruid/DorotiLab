@@ -93,7 +93,7 @@ public class CupertinoSpellCheckSuggestionsToolbar : StatelessWidget
             );
         }
         return buttonItems;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static void _replaceText(
@@ -137,12 +137,14 @@ public class CupertinoSpellCheckSuggestionsToolbar : StatelessWidget
                     return CupertinoTextSelectionToolbarButton.CreateButtonItem(
                         buttonItem: buttonItem
                     );
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
             .Cast<Widget>()
             .ToList();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -158,12 +160,10 @@ public class CupertinoSpellCheckSuggestionsToolbar : StatelessWidget
                 ? anchors.primaryAnchor
                 : (
                     anchors.secondaryAnchor
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
             children: childrenLocal
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

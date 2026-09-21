@@ -21,13 +21,13 @@ public abstract class Animatable<T>
     public virtual Animation<T> animate(Animation<double> parent)
     {
         return new _AnimatedEvaluation__tween<T>(parent, this);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Animatable<T> chain(Animatable<double> parent)
     {
         return new _ChainedEvaluation__tween<T>(parent, this);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -43,7 +43,7 @@ internal class _CallbackAnimatable__tween<T> : Animatable<T>
     public override T transform(double t)
     {
         return _callback(t);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -63,13 +63,13 @@ internal class _AnimatedEvaluation__tween<T> : Animation<T>, AnimationWithParent
     public override string ToString()
     {
         return $"{parent}➩{_evaluatable}➩{value}";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string toStringDetails()
     {
         return $"{base.toStringDetails()} {_evaluatable}";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void addListener(Action listener) => parent.addListener(listener);
@@ -99,13 +99,13 @@ internal class _ChainedEvaluation__tween<T> : Animatable<T>
     public override T transform(double t)
     {
         return _evaluatable.transform(_parent.transform(t));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string ToString()
     {
         return $"{_parent}➩{_evaluatable}";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -150,7 +150,7 @@ public class Tween<T> : Animatable<T>, IDartTween
             return ((T?)(object?)end)!;
         }
         return lerp(t);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string ToString() =>
@@ -215,11 +215,10 @@ public class IntTween : Tween<long>
         : base(
             begin: (
                 begin
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             end: (
-                end
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                end ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         ) { }
 
@@ -232,11 +231,10 @@ public class StepTween : Tween<long>
         : base(
             begin: (
                 begin
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             end: (
-                end
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                end ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         ) { }
 
@@ -271,7 +269,7 @@ public class CurveTween : Animatable<double>
             return t;
         }
         return curve.transform(t);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string ToString() =>

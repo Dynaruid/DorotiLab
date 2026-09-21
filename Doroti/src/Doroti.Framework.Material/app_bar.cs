@@ -39,19 +39,19 @@ internal class _ToolbarContainerLayout__app_bar : SingleChildLayoutDelegate
     public override BoxConstraints getConstraintsForChild(BoxConstraints constraints)
     {
         return constraints.tighten(height: toolbarHeight);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Size getSize(BoxConstraints constraints)
     {
         return new Size(constraints.maxWidth, toolbarHeight);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Offset getPositionForChild(Size size, Size childSize)
     {
         return new Offset(0.0, size.height - childSize.height);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool shouldRelayout(SingleChildLayoutDelegate oldDelegate) =>
@@ -204,7 +204,7 @@ public class AppBar : StatefulWidget, PreferredSizeWidget
                 + (preferredSize__as9579.bottomHeight ?? 0L);
         }
         return preferredSize.height;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _getEffectiveCenterTitle(ThemeData theme, AppBarThemeData appbarTheme)
@@ -218,12 +218,16 @@ public class AppBar : StatefulWidget, PreferredSizeWidget
                 TargetPlatform.android or TargetPlatform.fuchsia or TargetPlatform.linux => false,
                 TargetPlatform.windows => false,
                 _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                    throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
             };
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         return (centerTitle ?? appbarTheme.centerTitle) ?? platformCenter();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override IState createState() =>
@@ -308,7 +312,7 @@ internal class _AppBarState__app_bar : State<AppBar>
                 WidgetStateProperty.resolveAs(widgetColor, states)
                 ?? WidgetStateProperty.resolveAs(themeColor, states)
             ) ?? WidgetStateProperty.resolveAs(defaultColor, states);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual SystemUiOverlayStyle _systemOverlayStyleForBrightness(
@@ -325,7 +329,7 @@ internal class _AppBarState__app_bar : State<AppBar>
             statusBarIconBrightness: style.statusBarIconBrightness,
             systemStatusBarContrastEnforced: style.systemStatusBarContrastEnforced
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -383,7 +387,7 @@ internal class _AppBarState__app_bar : State<AppBar>
             (widget.elevation ?? appBarTheme.elevation)
             ?? (
                 defaults.elevation
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         double effectiveElevation = states.Contains(WidgetState.scrolledUnder)
             ? (
@@ -518,7 +522,7 @@ internal class _AppBarState__app_bar : State<AppBar>
                             TargetPlatform.macOS => DartRuntimePrimitives.ConvertValue<bool>(null),
                             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
                                 throw new InvalidOperationException(
-                                    "Non-exhaustive Dart switch value."
+                                    "Switch expression did not handle the supplied value."
                                 ),
                         },
                         header: true,
@@ -938,7 +942,9 @@ internal class _SliverAppBarDelegate__app_bar : SliverPersistentHeaderDelegate
                 )
             ),
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
         Widget appBar = FlexibleSpaceBar.createSettings(
             minExtent: minExtent,
@@ -988,7 +994,7 @@ internal class _SliverAppBarDelegate__app_bar : SliverPersistentHeaderDelegate
             )
         );
         return appBar;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate)
@@ -1029,13 +1035,13 @@ internal class _SliverAppBarDelegate__app_bar : SliverPersistentHeaderDelegate
             || (useDefaultSemanticsOrder != __oldDelegate.useDefaultSemanticsOrder)
             || (accessibleNavigation != __oldDelegate.accessibleNavigation)
             || (!Equals(actionsPadding, __oldDelegate.actionsPadding));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string ToString()
     {
         return $"{DiagnosticsLibrary.describeIdentity(this)}(topPadding: {topPadding.toStringAsFixed(1L)}, bottomHeight: {_bottomHeight.toStringAsFixed(1L)}, ...)";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1632,7 +1638,7 @@ internal class _SliverAppBarState__app_bar
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
@@ -1663,7 +1669,7 @@ internal class _SliverAppBarState__app_bar
         )();
         _tickers!.Add(result);
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _removeTicker(_WidgetTicker__ticker_provider ticker)
@@ -1769,7 +1775,7 @@ internal class _AppBarTitleBox__app_bar : SingleChildRenderObjectWidget
     public override RenderObject createRenderObject(BuildContext context)
     {
         return new _RenderAppBarTitleBox__app_bar(textDirection: Directionality.of(context));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -1789,7 +1795,7 @@ public class _RenderAppBarTitleBox__app_bar : RenderAligningShiftedBox
         BoxConstraints innerConstraints = constraints.copyWith(maxHeight: double.PositiveInfinity);
         Size childSize = child!.getDryLayout(innerConstraints);
         return constraints.constrain(childSize);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
@@ -1808,9 +1814,9 @@ public class _RenderAppBarTitleBox__app_bar : RenderAligningShiftedBox
         Size childSize = childLocal.getDryLayout(innerConstraints);
         return (
                 result
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ) + resolvedAlignment.alongOffset(getDryLayout(constraints) - childSize).dy;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void performLayout()
@@ -1959,7 +1965,7 @@ internal class _ExpandedTitleWithPadding__app_bar : SingleChildRenderObjectWidge
             maxExtent,
             null
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -2057,7 +2063,7 @@ public class _RenderExpandedTitleBox__app_bar : RenderShiftedBox
                 childLocal.getMaxIntrinsicHeight(Math.Max(0, width - padding.horizontal))
                 + padding.vertical
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicWidth(double height)
@@ -2066,7 +2072,7 @@ public class _RenderExpandedTitleBox__app_bar : RenderShiftedBox
         return (childLocal is null)
             ? 0.0
             : (childLocal.getMaxIntrinsicWidth(double.PositiveInfinity) + padding.horizontal);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicHeight(double width)
@@ -2078,7 +2084,7 @@ public class _RenderExpandedTitleBox__app_bar : RenderShiftedBox
                 childLocal.getMinIntrinsicHeight(Math.Max(0, width - padding.horizontal))
                 + padding.vertical
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicWidth(double height)
@@ -2087,7 +2093,7 @@ public class _RenderExpandedTitleBox__app_bar : RenderShiftedBox
         return (childLocal is null)
             ? 0.0
             : (childLocal.getMinIntrinsicWidth(double.PositiveInfinity) + padding.horizontal);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Size computeDryLayout(BoxConstraints constraints) =>
@@ -2108,7 +2114,7 @@ public class _RenderExpandedTitleBox__app_bar : RenderShiftedBox
             + padding.left;
         double offsetY = size.height - childSize.height - padding.bottom + yAdjustment;
         return new Offset(offsetX, offsetY);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
@@ -2128,7 +2134,7 @@ public class _RenderExpandedTitleBox__app_bar : RenderShiftedBox
             ).dy
         );
         return result.offset;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void performLayout()

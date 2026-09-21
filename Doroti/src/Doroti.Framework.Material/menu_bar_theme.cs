@@ -17,7 +17,7 @@ public class MenuBarThemeData : MenuThemeData
             return a;
         }
         return new MenuBarThemeData(style: MenuStyle.lerp(a?.style, b?.style, t));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -36,13 +36,13 @@ public class MenuBarTheme : InheritedTheme
         MenuBarTheme? menuBarThemeLocal =
             context.dependOnInheritedWidgetOfExactType<MenuBarTheme>();
         return menuBarThemeLocal?.data ?? Theme.of(context).menuBarTheme;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget wrap(BuildContext context, Widget child)
     {
         return new MenuBarTheme(data: data, child: child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget) =>

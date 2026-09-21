@@ -368,7 +368,7 @@ public class RefreshIndicatorState
             )
             && (_status is null)
             && _start(notification.metrics.axisDirection);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _handleScrollNotification(ScrollNotification notification)
@@ -393,7 +393,9 @@ public class RefreshIndicatorState
             AxisDirection.left => DartRuntimePrimitives.ConvertValue<bool>(null),
             AxisDirection.right => DartRuntimePrimitives.ConvertValue<bool>(null),
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
         if (indicatorAtTopNow != _isIndicatorAtTop)
         {
@@ -422,13 +424,13 @@ public class RefreshIndicatorState
                             (
                                 _dragOffset
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             )
                             - (
                                 notification__as16986.scrollDelta
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             );
                     }
@@ -440,13 +442,13 @@ public class RefreshIndicatorState
                                 (
                                     _dragOffset
                                     ?? throw new global::System.NullReferenceException(
-                                        "Dart null assertion failed."
+                                        "A required value was null."
                                     )
                                 )
                                 + (
                                     notification__as16986.scrollDelta
                                     ?? throw new global::System.NullReferenceException(
-                                        "Dart null assertion failed."
+                                        "A required value was null."
                                     )
                                 );
                         }
@@ -478,7 +480,7 @@ public class RefreshIndicatorState
                                 (
                                     _dragOffset
                                     ?? throw new global::System.NullReferenceException(
-                                        "Dart null assertion failed."
+                                        "A required value was null."
                                     )
                                 ) - notification__as17855.overscroll;
                         }
@@ -495,7 +497,7 @@ public class RefreshIndicatorState
                                     (
                                         _dragOffset
                                         ?? throw new global::System.NullReferenceException(
-                                            "Dart null assertion failed."
+                                            "A required value was null."
                                         )
                                     ) + notification__as17855.overscroll;
                             }
@@ -546,7 +548,7 @@ public class RefreshIndicatorState
             }
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _handleIndicatorNotification(OverscrollIndicatorNotification notification)
@@ -561,7 +563,7 @@ public class RefreshIndicatorState
             return true;
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _start(AxisDirection direction)
@@ -588,7 +590,7 @@ public class RefreshIndicatorState
         _scaleController.value = 0.0;
         _positionController.value = 0.0;
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _checkDragOffset(double containerExtent)
@@ -600,7 +602,7 @@ public class RefreshIndicatorState
         double newValue =
             (
                 _dragOffset
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ) / (containerExtent * Refresh_indicatorLibrary._kDragContainerExtentPercentage);
         if (Equals(_status, RefreshIndicatorStatus.armed))
         {
@@ -632,7 +634,7 @@ public class RefreshIndicatorState
         switch (
             (
                 _status
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         )
         {
@@ -710,7 +712,7 @@ public class RefreshIndicatorState
                             );
                         }
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 )
@@ -731,7 +733,7 @@ public class RefreshIndicatorState
             _show();
         }
         return _pendingRefreshFuture;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -780,7 +782,7 @@ public class RefreshIndicatorState
                                         top: (
                                             _isIndicatorAtTop
                                             ?? throw new global::System.NullReferenceException(
-                                                "Dart null assertion failed."
+                                                "A required value was null."
                                             )
                                         )
                                             ? widget.edgeOffset
@@ -788,7 +790,7 @@ public class RefreshIndicatorState
                                         bottom: !(
                                             _isIndicatorAtTop
                                             ?? throw new global::System.NullReferenceException(
-                                                "Dart null assertion failed."
+                                                "A required value was null."
                                             )
                                         )
                                             ? widget.edgeOffset
@@ -801,7 +803,7 @@ public class RefreshIndicatorState
                                                 (
                                                     _isIndicatorAtTop
                                                     ?? throw new global::System.NullReferenceException(
-                                                        "Dart null assertion failed."
+                                                        "A required value was null."
                                                     )
                                                 )
                                                     ? 1.0
@@ -812,7 +814,7 @@ public class RefreshIndicatorState
                                                 padding: (
                                                     _isIndicatorAtTop
                                                     ?? throw new global::System.NullReferenceException(
-                                                        "Dart null assertion failed."
+                                                        "A required value was null."
                                                     )
                                                 )
                                                     ? EdgeInsets.CreateOnly(
@@ -825,7 +827,7 @@ public class RefreshIndicatorState
                                                     alignment: (
                                                         _isIndicatorAtTop
                                                         ?? throw new global::System.NullReferenceException(
-                                                            "Dart null assertion failed."
+                                                            "A required value was null."
                                                         )
                                                     )
                                                         ? Alignment.topCenter
@@ -882,7 +884,7 @@ public class RefreshIndicatorState
                                                                             }
                                                                             default:
                                                                                 throw new InvalidOperationException(
-                                                                                    "Non-exhaustive Dart switch value."
+                                                                                    "Switch expression did not handle the supplied value."
                                                                                 );
                                                                         }
                                                                     }
@@ -892,7 +894,7 @@ public class RefreshIndicatorState
                                                                     }
                                                                 }
                                                                 throw new InvalidOperationException(
-                                                                    "Dart closure completed without a value."
+                                                                    "Callback completed without returning a value."
                                                                 );
                                                             }
                                                         )
@@ -909,7 +911,7 @@ public class RefreshIndicatorState
                 )
             )()
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
@@ -940,7 +942,7 @@ public class RefreshIndicatorState
         )();
         _tickers!.Add(result);
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _removeTicker(_WidgetTicker__ticker_provider ticker)

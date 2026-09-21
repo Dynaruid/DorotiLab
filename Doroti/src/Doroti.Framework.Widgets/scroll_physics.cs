@@ -28,13 +28,13 @@ public class ScrollPhysics
     public virtual ScrollPhysics applyTo(ScrollPhysics? ancestor)
     {
         return new ScrollPhysics(parent: buildParent(ancestor));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double applyPhysicsToUserOffset(ScrollMetrics position, double offset)
     {
         return parent?.applyPhysicsToUserOffset(position, offset) ?? offset;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool shouldAcceptUserOffset(ScrollMetrics position)
@@ -49,7 +49,7 @@ public class ScrollPhysics
                 || (position.minScrollExtent != position.maxScrollExtent);
         }
         return parent!.shouldAcceptUserOffset(position);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool recommendDeferredLoading(
@@ -64,13 +64,13 @@ public class ScrollPhysics
             return velocity.abs() > maxPhysicalPixels;
         }
         return parent!.recommendDeferredLoading(velocity, metrics, context);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double applyBoundaryConditions(ScrollMetrics position, double value)
     {
         return parent?.applyBoundaryConditions(position, value) ?? 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double adjustPositionForNewDimensions(
@@ -90,7 +90,7 @@ public class ScrollPhysics
             isScrolling: isScrolling,
             velocity: velocity
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Physics.Simulation? createBallisticSimulation(
@@ -99,7 +99,7 @@ public class ScrollPhysics
     )
     {
         return parent?.createBallisticSimulation(position, velocity);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Physics.SpringDescription spring =>
@@ -130,7 +130,7 @@ public class ScrollPhysics
                 velocity: 1.0 / (0.05 * metrics.devicePixelRatio),
                 distance: 1.0 / metrics.devicePixelRatio
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double minFlingDistance =>
@@ -149,7 +149,7 @@ public class ScrollPhysics
     public virtual double carriedMomentum(double existingVelocity)
     {
         return parent?.carriedMomentum(existingVelocity) ?? 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double? dragStartDistanceMotionThreshold =>
@@ -164,7 +164,7 @@ public class ScrollPhysics
             return objectRuntimeTypeFunctions.objectRuntimeType(this, "ScrollPhysics");
         }
         return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "ScrollPhysics")} -> {parent}";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -176,7 +176,7 @@ public class RangeMaintainingScrollPhysics : ScrollPhysics
     public override RangeMaintainingScrollPhysics applyTo(ScrollPhysics? ancestor)
     {
         return new RangeMaintainingScrollPhysics(parent: buildParent(ancestor));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double adjustPositionForNewDimensions(
@@ -254,7 +254,7 @@ public class RangeMaintainingScrollPhysics : ScrollPhysics
             );
         }
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -277,7 +277,7 @@ public class BouncingScrollPhysics : ScrollPhysics
             parent: buildParent(ancestor),
             decelerationRate: decelerationRate
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double frictionFactor(double overscrollFraction)
@@ -288,10 +288,12 @@ public class BouncingScrollPhysics : ScrollPhysics
                 {
                     ScrollDecelerationRate.fast => 0.26,
                     ScrollDecelerationRate.normal => 0.52,
-                    _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    _ => throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
                 }
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double applyPhysicsToUserOffset(ScrollMetrics position, double offset)
@@ -317,7 +319,7 @@ public class BouncingScrollPhysics : ScrollPhysics
             return direction * offset.abs();
         }
         return direction * _applyFriction(overscrollPast, offset.abs(), friction);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static double _applyFriction(double extentOutside, double absDelta, double gamma)
@@ -335,7 +337,7 @@ public class BouncingScrollPhysics : ScrollPhysics
             absDelta -= deltaToLimit;
         }
         return total + absDelta;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double applyBoundaryConditions(ScrollMetrics position, double value) => 0.0;
@@ -361,13 +363,13 @@ public class BouncingScrollPhysics : ScrollPhysics
                         ScrollDecelerationRate.fast => 1400,
                         ScrollDecelerationRate.normal => 0,
                         _ => throw new InvalidOperationException(
-                            "Non-exhaustive Dart switch value."
+                            "Switch expression did not handle the supplied value."
                         ),
                     }
                 );
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double minFlingVelocity =>
@@ -382,7 +384,7 @@ public class BouncingScrollPhysics : ScrollPhysics
                 0.000816 * Dart_mathLibrary.pow(existingVelocity.abs(), 1.967).toDouble(),
                 40000.0
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? dragStartDistanceMotionThreshold => 3.5;
@@ -391,7 +393,9 @@ public class BouncingScrollPhysics : ScrollPhysics
         {
             ScrollDecelerationRate.fast => Gestures.ConstantsLibrary.kMaxFlingVelocity * 8.0,
             ScrollDecelerationRate.normal => base.maxFlingVelocity,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
     public override Physics.SpringDescription spring
     {
@@ -412,7 +416,9 @@ public class BouncingScrollPhysics : ScrollPhysics
                     return base.spring;
                 }
                 default:
-                    throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                    throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    );
             }
         }
     }
@@ -426,7 +432,7 @@ public class ClampingScrollPhysics : ScrollPhysics
     public override ClampingScrollPhysics applyTo(ScrollPhysics? ancestor)
     {
         return new ClampingScrollPhysics(parent: buildParent(ancestor));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double applyBoundaryConditions(ScrollMetrics position, double value)
@@ -463,7 +469,7 @@ public class ClampingScrollPhysics : ScrollPhysics
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         if ((value < position.pixels) && (position.pixels <= position.minScrollExtent))
         {
@@ -482,7 +488,7 @@ public class ClampingScrollPhysics : ScrollPhysics
             return value - position.maxScrollExtent;
         }
         return 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Physics.Simulation? createBallisticSimulation(
@@ -510,7 +516,7 @@ public class ClampingScrollPhysics : ScrollPhysics
                     (
                         end
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ),
                     Math.Min(0.0, velocity),
@@ -535,7 +541,7 @@ public class ClampingScrollPhysics : ScrollPhysics
                 velocity: velocity,
                 tolerance: toleranceLocal
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -547,7 +553,7 @@ public class AlwaysScrollableScrollPhysics : ScrollPhysics
     public override AlwaysScrollableScrollPhysics applyTo(ScrollPhysics? ancestor)
     {
         return new AlwaysScrollableScrollPhysics(parent: buildParent(ancestor));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool shouldAcceptUserOffset(ScrollMetrics position) => true;
@@ -561,7 +567,7 @@ public class NeverScrollableScrollPhysics : ScrollPhysics
     public override NeverScrollableScrollPhysics applyTo(ScrollPhysics? ancestor)
     {
         return new NeverScrollableScrollPhysics(parent: buildParent(ancestor));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool allowUserScrolling => false;

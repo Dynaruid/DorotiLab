@@ -101,7 +101,7 @@ internal class _PopupMenuDividerState__popup_menu : State<PopupMenuDivider>
             endIndent: widget.endIndent,
             radius: widget.radius
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -118,7 +118,7 @@ internal class _MenuItem__popup_menu : SingleChildRenderObjectWidget
     public override RenderObject createRenderObject(BuildContext context)
     {
         return new _RenderMenuItem__popup_menu(onLayout);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -141,13 +141,13 @@ public class _RenderMenuItem__popup_menu : RenderShiftedBox
     public override Size computeDryLayout(BoxConstraints constraints)
     {
         return child?.getDryLayout(constraints) ?? Size.zero;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
     {
         return child?.getDryBaseline(constraints, baseline);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void performLayout()
@@ -307,7 +307,7 @@ public class PopupMenuItemState<T, W> : State<W>
             button: true,
             child: child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -434,7 +434,7 @@ internal class _CheckedPopupMenuItemState__popup_menu<T>
             button: true,
             child: child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget? buildChild()
@@ -510,7 +510,7 @@ internal class _CheckedPopupMenuItemState__popup_menu<T>
         _updateTickerModeNotifier();
         _updateTicker();
         return _ticker!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void activate()
@@ -725,7 +725,7 @@ internal class _PopupMenuState__popup_menu<T> : State<_PopupMenu__popup_menu<T>>
                             ?? (
                                 defaults.elevation
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             ),
                         shadowColor: (widget.route.shadowColor ?? popupMenuTheme.shadowColor)
@@ -741,7 +741,9 @@ internal class _PopupMenuState__popup_menu<T> : State<_PopupMenu__popup_menu<T>>
                         )
                     )
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             child: childLocal
         );
@@ -779,7 +781,7 @@ internal class _PopupMenuRouteLayout__popup_menu : SingleChildLayoutDelegate
         return BoxConstraints
             .CreateLoose(constraints.biggest)
             .deflate(EdgeInsets.CreateAll(Popup_menuLibrary._kMenuScreenPadding).op_Add(padding));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Offset getPositionForChild(Size size, Size childSize)
@@ -803,7 +805,9 @@ internal class _PopupMenuRouteLayout__popup_menu : SingleChildLayoutDelegate
                     TextDirection.rtl => size.width - position.right - childSize.width,
                     TextDirection.ltr => position.left,
                     _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                        throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                        throw new InvalidOperationException(
+                            "Switch expression did not handle the supplied value."
+                        ),
                 };
             }
         }
@@ -815,7 +819,7 @@ internal class _PopupMenuRouteLayout__popup_menu : SingleChildLayoutDelegate
         );
         Rect subScreen = _closestScreen(subScreens.Cast<Rect>(), originCenter);
         return _fitInsideScreen(subScreen, childSize, wantedPosition);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Rect _closestScreen(IEnumerable<Rect> screens, Offset point)
@@ -829,7 +833,7 @@ internal class _PopupMenuRouteLayout__popup_menu : SingleChildLayoutDelegate
             }
         }
         return closest;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Offset _fitInsideScreen(Rect screen, Size childSize, Offset wantedPosition)
@@ -873,7 +877,7 @@ internal class _PopupMenuRouteLayout__popup_menu : SingleChildLayoutDelegate
             }
         }
         return new Offset(x, y);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool shouldRelayout(SingleChildLayoutDelegate oldDelegate)
@@ -888,7 +892,7 @@ internal class _PopupMenuRouteLayout__popup_menu : SingleChildLayoutDelegate
             || !CollectionsLibrary.listEquals(itemSizes, __oldDelegate.itemSizes)
             || (!Equals(padding, __oldDelegate.padding))
             || !CollectionsLibrary.setEquals(avoidBounds, __oldDelegate.avoidBounds);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -986,7 +990,7 @@ public class _PopupMenuRoute__popup_menu<T> : PopupRoute<T>
             );
         }
         return base.createAnimation();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void scrollTo(long selectedItemIndex)
@@ -1036,7 +1040,7 @@ public class _PopupMenuRoute__popup_menu<T> : PopupRoute<T>
         {
             long selectedItemIndex__34930__value35194 = (
                 selectedItemIndex
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             scrollTo(((selectedItemIndex__34930__value35194)));
         }
@@ -1070,17 +1074,19 @@ public class _PopupMenuRoute__popup_menu<T> : PopupRoute<T>
                         ),
                         child: capturedThemes.wrap(menu)
                     );
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual HashSet<Rect> _avoidBounds(MediaQueryData mediaQuery)
     {
         return DisplayFeatureSubScreen.avoidBounds(mediaQuery).toSet();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void dispose()
@@ -1170,7 +1176,7 @@ public static partial class Popup_menuLibrary
                 requestFocus: requestFocus
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1336,7 +1342,7 @@ public class PopupMenuButtonState<T> : State<PopupMenuButton<T>>
     internal virtual RelativeRect _getDefaultPosition(BoxConstraints constraints)
     {
         return _lastPosition ?? RelativeRect.CreateFromSize(Rect.zero, constraints.biggest);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual RelativeRect _positionBuilder(
@@ -1386,7 +1392,7 @@ public class PopupMenuButtonState<T> : State<PopupMenuButton<T>>
             Offset.zero & overlay.size
         );
         return _lastPosition = positionLocal;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void showButtonMenu()
@@ -1456,7 +1462,9 @@ public class PopupMenuButtonState<T> : State<PopupMenuButton<T>>
                 NavigationMode.traditional => widget.enabled,
                 NavigationMode.directional => true,
                 _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                    throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
             };
         }
     }
@@ -1514,7 +1522,7 @@ public class PopupMenuButtonState<T> : State<PopupMenuButton<T>>
                 style: widget.style
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1538,7 +1546,7 @@ internal class _EffectiveMouseCursor__popup_menu : WidgetStateMouseCursor
                 WidgetStateProperty.resolveAs(widgetCursor, states)
                 ?? (themeCursor?.resolve(states))
             ) ?? adaptiveClickable.resolve(states);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string debugDescription => "WidgetStateMouseCursor(PopupMenuItemState)";
@@ -1612,7 +1620,7 @@ internal class _PopupMenuDefaultsM3__popup_menu : PopupMenuThemeData
                         }
                         return style.apply(color: _colors.onSurface);
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 );

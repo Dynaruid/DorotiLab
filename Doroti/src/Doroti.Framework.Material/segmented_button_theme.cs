@@ -25,7 +25,7 @@ public class SegmentedButtonThemeData : Diagnosticable
             style: style ?? this.style,
             selectedIcon: selectedIcon ?? this.selectedIcon
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static SegmentedButtonThemeData lerp(
@@ -42,7 +42,7 @@ public class SegmentedButtonThemeData : Diagnosticable
             style: ButtonStyle.lerp(a?.style, b?.style, t),
             selectedIcon: (t < 0.5) ? a?.selectedIcon : b?.selectedIcon
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override int GetHashCode() =>
@@ -91,7 +91,7 @@ public class SegmentedButtonThemeData : Diagnosticable
             return true;
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -100,7 +100,7 @@ public class SegmentedButtonThemeData : Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -121,19 +121,19 @@ public class SegmentedButtonTheme : InheritedTheme
     public static SegmentedButtonThemeData of(BuildContext context)
     {
         return maybeOf(context) ?? Theme.of(context).segmentedButtonTheme;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static SegmentedButtonThemeData? maybeOf(BuildContext context)
     {
         return context.dependOnInheritedWidgetOfExactType<SegmentedButtonTheme>()?.data;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget wrap(BuildContext context, Widget child)
     {
         return new SegmentedButtonTheme(data: data, child: child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget) =>

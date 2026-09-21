@@ -66,7 +66,7 @@ public class UndoManager
             return default!;
         }
         throw new MissingPluginException();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _setUndoState(bool canUndo = false, bool canRedo = false)
@@ -107,7 +107,7 @@ public class UndoManager
                 }
             ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 

@@ -51,7 +51,7 @@ public class StrutStyle : Diagnosticable
                     (
                         fontSize
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) > 0L
                 )
@@ -129,7 +129,7 @@ public class StrutStyle : Diagnosticable
             return RenderComparison.layout;
         }
         return RenderComparison.identical;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual StrutStyle inheritFromTextStyle(TextStyle? other)
@@ -153,7 +153,7 @@ public class StrutStyle : Diagnosticable
                 ? (leadingDistribution ?? other.leadingDistribution)
                 : null
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual StrutStyle merge(StrutStyle? other)
@@ -175,7 +175,7 @@ public class StrutStyle : Diagnosticable
             debugLabel: other.debugLabel ?? debugLabel,
             package: other._package ?? _package
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool Equals(object? other)
@@ -267,7 +267,7 @@ public class StrutStyle : Diagnosticable
         {
             double height__value26382 = (
                 height
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             styles.Add(
                 new EnumProperty<TextLeadingDistribution>(

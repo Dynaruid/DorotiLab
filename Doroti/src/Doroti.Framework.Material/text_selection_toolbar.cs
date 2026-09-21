@@ -47,7 +47,7 @@ public class TextSelectionToolbar : StatelessWidget
     internal static Widget _defaultToolbarBuilder(BuildContext context, Widget child)
     {
         return new _TextSelectionToolbarContainer__text_selection_toolbar(child: child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -76,7 +76,7 @@ public class TextSelectionToolbar : StatelessWidget
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -192,7 +192,7 @@ public class _TextSelectionToolbarOverflowableState__text_selection_toolbar
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
@@ -223,7 +223,7 @@ public class _TextSelectionToolbarOverflowableState__text_selection_toolbar
         )();
         _tickers!.Add(result);
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _removeTicker(_WidgetTicker__ticker_provider ticker)
@@ -345,7 +345,7 @@ internal class _TextSelectionToolbarTrailingEdgeAlign__text_selection_toolbar
             overflowOpen: overflowOpen,
             textDirection: textDirection
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -429,7 +429,7 @@ public class _TextSelectionToolbarTrailingEdgeAlignRenderBox__text_selection_too
                         > (
                             _closedWidth
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     )
@@ -438,7 +438,7 @@ public class _TextSelectionToolbarTrailingEdgeAlignRenderBox__text_selection_too
                     : (
                         _closedWidth
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ),
                 child!.size.height
@@ -469,10 +469,12 @@ public class _TextSelectionToolbarTrailingEdgeAlignRenderBox__text_selection_too
                     Equals(transformed, position - childParentData.offset)
                 );
                 return child!.hitTest(result, position: transformed);
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void setupParentData(RenderObject child)
@@ -519,7 +521,7 @@ internal class _TextSelectionToolbarItemsLayout__text_selection_toolbar
             overflowOpen: overflowOpen,
             textDirection: textDirection
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -557,7 +559,7 @@ public class _TextSelectionToolbarItemsLayoutElement__text_selection_toolbar
     internal static bool _shouldPaint(Element child)
     {
         return ((ToolbarItemsParentData?)child.renderObject!.parentData!)!.shouldPaint;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugVisitOnstageChildren(Action<Element> visitor)
@@ -680,7 +682,7 @@ public class _RenderTextSelectionToolbarItemsLayout__text_selection_toolbar
             return true;
         }
         return (index > _lastIndexThatFits) == overflowOpen;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Size _placeChildrenHorizontally()
@@ -746,7 +748,7 @@ public class _RenderTextSelectionToolbarItemsLayout__text_selection_toolbar
             }
         }
         return new Size(totalWidth, maxHeight);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Size _placeChildrenVertically()
@@ -798,7 +800,7 @@ public class _RenderTextSelectionToolbarItemsLayout__text_selection_toolbar
             maxWidth = Math.Max(maxWidth, navButton.size.width);
         }
         return new Size(maxWidth, currentY);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _placeChildren()
@@ -895,7 +897,9 @@ public class _RenderTextSelectionToolbarItemsLayout__text_selection_toolbar
                         Equals(transformed, position - childParentData.offset)
                     );
                     return child!.hitTest(result, position: transformed);
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
             if (isHit)
@@ -905,7 +909,7 @@ public class _RenderTextSelectionToolbarItemsLayout__text_selection_toolbar
             child = childParentData.previousSibling;
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void visitChildrenForSemantics(Action<RenderObject> visitor)
@@ -933,7 +937,7 @@ public class _RenderTextSelectionToolbarItemsLayout__text_selection_toolbar
             childParentData = ((ToolbarItemsParentData?)child.parentData!)!;
         }
         return Equals(child, equals);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool _debugUltimateNextSiblingOf(RenderBox child, RenderBox? equals = null)
@@ -946,7 +950,7 @@ public class _RenderTextSelectionToolbarItemsLayout__text_selection_toolbar
             childParentData = ((ToolbarItemsParentData?)child.parentData!)!;
         }
         return Equals(child, equals);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual long childCount => _childCount;
@@ -991,7 +995,7 @@ public class _RenderTextSelectionToolbarItemsLayout__text_selection_toolbar
             return true;
         });
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _insertIntoChildList(RenderBox child, RenderBox? after = null)
@@ -1217,7 +1221,7 @@ public class _RenderTextSelectionToolbarItemsLayout__text_selection_toolbar
         DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         var childParentData = ((ToolbarItemsParentData?)child.parentData!)!;
         return childParentData.previousSibling;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual RenderBox? childAfter(RenderBox child)
@@ -1225,7 +1229,7 @@ public class _RenderTextSelectionToolbarItemsLayout__text_selection_toolbar
         DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         var childParentData = ((ToolbarItemsParentData?)child.parentData!)!;
         return childParentData.nextSibling;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override List<DiagnosticsNode> debugDescribeChildren()
@@ -1250,7 +1254,7 @@ public class _RenderTextSelectionToolbarItemsLayout__text_selection_toolbar
             }
         }
         return children;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1278,7 +1282,9 @@ internal class _TextSelectionToolbarContainer__text_selection_toolbar : Stateles
                 colorScheme.surface
             ),
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
         if (!isDefaultSurface)
         {
@@ -1289,9 +1295,11 @@ internal class _TextSelectionToolbarContainer__text_selection_toolbar : Stateles
             Brightness.light => _defaultColorLight,
             Brightness.dark => _defaultColorDark,
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -1307,7 +1315,7 @@ internal class _TextSelectionToolbarContainer__text_selection_toolbar : Stateles
             type: MaterialType.card,
             child: child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1337,6 +1345,6 @@ internal class _TextSelectionToolbarOverflowButton__text_selection_toolbar : Sta
             color: new Color(0L),
             child: new IconButton(icon: icon, onPressed: onPressed, tooltip: tooltip)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

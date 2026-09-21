@@ -12,7 +12,7 @@ namespace Doroti.DartToCSharp;
 internal static class CSharpNullAssertionLowering
 {
     private const string Placeholder = "__dorotiNullAssert";
-    private const string NullMessage = "Dart null assertion failed.";
+    private const string NullMessage = "A required value was null.";
 
     public static string Normalize(string source)
     {

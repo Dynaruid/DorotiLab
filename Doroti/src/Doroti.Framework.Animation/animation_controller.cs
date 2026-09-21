@@ -41,7 +41,9 @@ public static class AnimationBehaviorMembers
                 .accessibilityFeatures
                 .disableAnimations,
             AnimationBehavior.preserve => true,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
 }
 
@@ -159,9 +161,7 @@ public class AnimationController
             return _simulation!.dx(
                 (
                     lastElapsedDuration
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ).inMicroseconds.toDouble() / Duration.microsecondsPerSecond
             );
         }
@@ -186,7 +186,9 @@ public class AnimationController
                 {
                     _AnimationDirection__animation_controller.forward => AnimationStatus.forward,
                     _AnimationDirection__animation_controller.reverse => AnimationStatus.reverse,
-                    _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    _ => throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
                 };
             }
         }
@@ -216,12 +218,12 @@ public class AnimationController
         {
             double from__value18454 = (
                 from
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             value = (from__value18454);
         }
         return _animateToInternal(upperBound);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual TickerFuture reverse(double? from = null)
@@ -244,12 +246,12 @@ public class AnimationController
         {
             double from__value19811 = (
                 from
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             value = (from__value19811);
         }
         return _animateToInternal(lowerBound);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual TickerFuture toggle(double? from = null)
@@ -279,7 +281,7 @@ public class AnimationController
         {
             double from__value21256 = (
                 from
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             value = (from__value21256);
         }
@@ -288,10 +290,12 @@ public class AnimationController
             {
                 _AnimationDirection__animation_controller.forward => upperBound,
                 _AnimationDirection__animation_controller.reverse => lowerBound,
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual TickerFuture animateTo(
@@ -316,7 +320,7 @@ public class AnimationController
         DartRuntimePrimitives.Assert(() => _ticker is not null);
         _direction = _AnimationDirection__animation_controller.forward;
         return _animateToInternal(target, duration: duration, curve: curve);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual TickerFuture animateBack(
@@ -341,7 +345,7 @@ public class AnimationController
         DartRuntimePrimitives.Assert(() => _ticker is not null);
         _direction = _AnimationDirection__animation_controller.reverse;
         return _animateToInternal(target, duration: duration, curve: curve);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual TickerFuture _animateToInternal(
@@ -380,13 +384,13 @@ public class AnimationController
                     ? (
                         reverseDuration
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                     : (
                         this.duration
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     );
             simulationDuration = directionDuration * remainingFraction;
@@ -403,9 +407,7 @@ public class AnimationController
             Equals(
                 (
                     simulationDuration
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 Duration.zero
             )
@@ -425,7 +427,7 @@ public class AnimationController
         DartRuntimePrimitives.Assert(() =>
             (
                 simulationDuration
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ) > Duration.zero
         );
         DartRuntimePrimitives.Assert(() => !isAnimating);
@@ -435,15 +437,13 @@ public class AnimationController
                 target,
                 (
                     simulationDuration
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 curve,
                 scale
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual TickerFuture repeat(
@@ -473,8 +473,7 @@ public class AnimationController
         DartRuntimePrimitives.Assert(() =>
             max
             >= (
-                min
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                min ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );
         DartRuntimePrimitives.Assert(() => (max <= upperBound) && (min >= lowerBound));
@@ -483,9 +482,7 @@ public class AnimationController
             || (
                 (
                     count
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) > 0L
             )
         );
@@ -495,28 +492,22 @@ public class AnimationController
                 _value,
                 (
                     min
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 (
                     max
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 reverse,
                 (
                     period
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 _directionSetter,
                 count
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _directionSetter(_AnimationDirection__animation_controller direction)
@@ -565,7 +556,7 @@ public class AnimationController
         );
         stop();
         return _startSimulation(simulation);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual TickerFuture animateWith(Physics.Simulation simulation)
@@ -574,7 +565,7 @@ public class AnimationController
         stop();
         _direction = _AnimationDirection__animation_controller.forward;
         return _startSimulation(simulation);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual TickerFuture animateBackWith(Physics.Simulation simulation)
@@ -583,7 +574,7 @@ public class AnimationController
         stop();
         _direction = _AnimationDirection__animation_controller.reverse;
         return _startSimulation(simulation);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual TickerFuture _startSimulation(Physics.Simulation simulation)
@@ -598,7 +589,7 @@ public class AnimationController
             : AnimationStatus.reverse;
         _checkStatusChanged();
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void stop(bool canceled = true)
@@ -688,7 +679,7 @@ public class AnimationController
         });
         var more = $"{base.toStringDetails()} {value.toStringAsFixed(3L)}";
         return $"{more}{paused}{ticker}{label}";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void didRegisterListener() { }
@@ -853,14 +844,14 @@ internal class _InterpolationSimulation__animation_controller : Physics.Simulati
             1.0 => _end,
             _ => _begin + ((_end - _begin) * _curve.transform(t)),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double dx(double time)
     {
         double epsilon = tolerance.time;
         return (x(time + epsilon) - x(time - epsilon)) / (2L * epsilon);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool isDone(double time) => time > _durationInSeconds;
@@ -896,7 +887,7 @@ internal class _RepeatingSimulation__animation_controller : Physics.Simulation
                         (
                             count
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ) * _periodInSeconds
                     ) - _initialT;
@@ -936,7 +927,7 @@ internal class _RepeatingSimulation__animation_controller : Physics.Simulation
                     (
                         count
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) > 0L
                 )
@@ -955,7 +946,7 @@ internal class _RepeatingSimulation__animation_controller : Physics.Simulation
             directionSetter(_AnimationDirection__animation_controller.reverse);
             return (
                 Dart_uiLibrary.lerpDouble(max, min, t)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
         else
@@ -963,10 +954,10 @@ internal class _RepeatingSimulation__animation_controller : Physics.Simulation
             directionSetter(_AnimationDirection__animation_controller.forward);
             return (
                 Dart_uiLibrary.lerpDouble(min, max, t)
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double dx(double time) => (max - min) / _periodInSeconds;
@@ -974,6 +965,6 @@ internal class _RepeatingSimulation__animation_controller : Physics.Simulation
     public override bool isDone(double time)
     {
         return (count is not null) && time >= _exitTimeInSeconds;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

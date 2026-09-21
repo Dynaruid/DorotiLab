@@ -117,7 +117,7 @@ public class PaginatedDataTable : StatefulWidget
                         (
                             sortColumnIndex
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ) < checked(columns.Count)
                     )
@@ -131,7 +131,7 @@ public class PaginatedDataTable : StatefulWidget
                     >= (
                         dataRowMinHeight
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
@@ -154,7 +154,7 @@ public class PaginatedDataTable : StatefulWidget
                         }
                         return true;
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 )
@@ -248,7 +248,7 @@ public class PaginatedDataTableState : State<PaginatedDataTable>
             index: index,
             cells: widget.columns.map((column) => DataCell.empty).ToList()
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual DataRow _getProgressIndicatorRowFor(long index)
@@ -264,7 +264,9 @@ public class PaginatedDataTableState : State<PaginatedDataTable>
                         return new DataCell(new CircularProgressIndicator());
                     }
                     return DataCell.empty;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
             .ToList()
@@ -275,7 +277,7 @@ public class PaginatedDataTableState : State<PaginatedDataTable>
             cellsLocal[(int)0L] = new DataCell(new CircularProgressIndicator());
         }
         return DataRow.CreateByIndex(index: index, cells: cellsLocal);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual List<DataRow> _getRows(long firstRowIndex, long rowsPerPage)
@@ -305,7 +307,7 @@ public class PaginatedDataTableState : State<PaginatedDataTable>
             }
         }
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _handleFirst()
@@ -370,7 +372,7 @@ public class PaginatedDataTableState : State<PaginatedDataTable>
                                 child: action
                             );
                             throw new InvalidOperationException(
-                                "Dart closure completed without a value."
+                                "Callback completed without returning a value."
                             );
                         }
                     )
@@ -394,7 +396,7 @@ public class PaginatedDataTableState : State<PaginatedDataTable>
                             child: new Text($"{value}")
                         );
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 )
@@ -646,10 +648,12 @@ public class PaginatedDataTableState : State<PaginatedDataTable>
                             )
                         )()
                     );
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

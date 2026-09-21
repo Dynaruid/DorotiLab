@@ -156,10 +156,14 @@ internal class _SnackBarActionState__snack_bar : State<SnackBarAction>
                     }
                     return (widget.textColor ?? snackBarTheme.actionTextColor)
                         ?? defaults.actionTextColor!;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         WidgetStateColor? resolveBackgroundColor()
         {
@@ -183,10 +187,14 @@ internal class _SnackBarActionState__snack_bar : State<SnackBarAction>
                     }
                     return (widget.backgroundColor ?? snackBarTheme.actionBackgroundColor)
                         ?? Colors.transparent;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         return new TextButton(
             style: TextButton
@@ -287,7 +295,7 @@ public class SnackBar : StatefulWidget
             debugLabel: "SnackBar",
             vsync: vsync
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual SnackBar withAnimation(Animation<double> newAnimation, Key? fallbackKey = null)
@@ -314,7 +322,7 @@ public class SnackBar : StatefulWidget
             dismissDirection: dismissDirection,
             clipBehavior: clipBehavior
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override IState createState() =>
@@ -429,7 +437,7 @@ internal class _SnackBarState__snack_bar : State<SnackBar>
             widget.behavior
             ?? snackBarTheme.behavior
             ?? defaults.behavior
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         );
         double? widthLocal = widget.width ?? snackBarTheme.width;
         DartRuntimePrimitives.Assert(() =>
@@ -455,7 +463,7 @@ internal class _SnackBarState__snack_bar : State<SnackBar>
                         }
                     }
                     throw new InvalidOperationException(
-                        "Dart control flow completed without a value."
+                        "Control flow completed without returning a value."
                     );
                 }
                 DartRuntimePrimitives.Assert(
@@ -473,7 +481,7 @@ internal class _SnackBarState__snack_bar : State<SnackBar>
             (widget.showCloseIcon ?? snackBarTheme.showCloseIcon)
             ?? (
                 defaults.showCloseIcon
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         var isFloatingSnackBar = Equals(snackBarBehavior, SnackBarBehavior.floating);
         var horizontalPadding = isFloatingSnackBar ? 16.0 : 24.0;
@@ -534,7 +542,7 @@ internal class _SnackBarState__snack_bar : State<SnackBar>
             (widget.actionOverflowThreshold ?? snackBarTheme.actionOverflowThreshold)
             ?? (
                 defaults.actionOverflowThreshold
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         bool willOverflowAction =
             (actionAndIconWidth / snackBarWidth) > actionOverflowThresholdLocal;
@@ -673,7 +681,7 @@ internal class _SnackBarState__snack_bar : State<SnackBar>
             (widget.elevation ?? snackBarTheme.elevation)
             ?? (
                 defaults.elevation
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         Color backgroundColorLocal =
             (widget.backgroundColor ?? snackBarTheme.backgroundColor) ?? defaults.backgroundColor!;
@@ -696,9 +704,7 @@ internal class _SnackBarState__snack_bar : State<SnackBar>
             {
                 double width__24238__value30275 = (
                     widthLocal
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 snackBar = DartRuntimePrimitives.ConvertValue<Widget>(
                     new Padding(
@@ -783,7 +789,7 @@ internal class _SnackBarState__snack_bar : State<SnackBar>
                                         child: child
                                     );
                                     throw new InvalidOperationException(
-                                        "Dart closure completed without a value."
+                                        "Callback completed without returning a value."
                                     );
                                 },
                                 child: snackBar
@@ -804,7 +810,7 @@ internal class _SnackBarState__snack_bar : State<SnackBar>
                                     child: child
                                 );
                                 throw new InvalidOperationException(
-                                    "Dart closure completed without a value."
+                                    "Callback completed without returning a value."
                                 );
                             },
                             child: snackBar
@@ -882,7 +888,9 @@ internal class _SnackbarDefaultsM3__snack_bar : SnackBarThemeData
                         return _colors.inversePrimary;
                     }
                     return _colors.inversePrimary;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );

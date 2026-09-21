@@ -96,7 +96,7 @@ public class StarBorder : OutlinedBorder
             valleyRounding: valleyRounding,
             squash: squash
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual ShapeBorder? _twoPhaseLerp(
@@ -115,7 +115,7 @@ public class StarBorder : OutlinedBorder
             t = 1L / (1.0 - split) * (t - split);
             return second(t);
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override ShapeBorder? lerpFrom(ShapeBorder? a, double t)
@@ -135,39 +135,27 @@ public class StarBorder : OutlinedBorder
                 side: BorderSide.lerp(a__as7561.side, side, t),
                 points: (
                     Dart_uiLibrary.lerpDouble(a__as7561.points, points, t)
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 rotation: (
                     Dart_uiLibrary.lerpDouble(a__as7561._rotationRadians, _rotationRadians, t)
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) * Star_borderLibrary._kRadToDeg,
                 innerRadiusRatio: (
                     Dart_uiLibrary.lerpDouble(a__as7561.innerRadiusRatio, innerRadiusRatio, t)
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 pointRounding: (
                     Dart_uiLibrary.lerpDouble(a__as7561.pointRounding, pointRounding, t)
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 valleyRounding: (
                     Dart_uiLibrary.lerpDouble(a__as7561.valleyRounding, valleyRounding, t)
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 squash: (
                     Dart_uiLibrary.lerpDouble(a__as7561.squash, squash, t)
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             );
         }
@@ -178,9 +166,7 @@ public class StarBorder : OutlinedBorder
             {
                 double lerpedPoints = (
                     Dart_uiLibrary.lerpDouble(points.round(), points, t)
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 return new StarBorder(
                     side: BorderSide.lerp(a__as8105.side, side, t),
@@ -188,7 +174,7 @@ public class StarBorder : OutlinedBorder
                     squash: (
                         Dart_uiLibrary.lerpDouble(a__as8105.eccentricity, squash, t)
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ),
                     rotation: rotation,
@@ -199,19 +185,19 @@ public class StarBorder : OutlinedBorder
                             t
                         )
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ),
                     pointRounding: (
                         Dart_uiLibrary.lerpDouble(1.0, pointRounding, t)
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ),
                     valleyRounding: (
                         Dart_uiLibrary.lerpDouble(0.0, valleyRounding, t)
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 );
@@ -220,9 +206,7 @@ public class StarBorder : OutlinedBorder
             {
                 double lerpedPointsLocal = (
                     Dart_uiLibrary.lerpDouble(points, 2L, t)
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 return new StarBorder(
                     side: BorderSide.lerp(a__as8105.side, side, t),
@@ -230,26 +214,26 @@ public class StarBorder : OutlinedBorder
                     squash: (
                         Dart_uiLibrary.lerpDouble(a__as8105.eccentricity, squash, t)
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ),
                     rotation: rotation,
                     innerRadiusRatio: (
                         Dart_uiLibrary.lerpDouble(1L, innerRadiusRatio, t)
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ),
                     pointRounding: (
                         Dart_uiLibrary.lerpDouble(0.5, pointRounding, t)
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ),
                     valleyRounding: (
                         Dart_uiLibrary.lerpDouble(0.5, valleyRounding, t)
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 );
@@ -293,7 +277,7 @@ public class StarBorder : OutlinedBorder
             );
         }
         return base.lerpFrom(a, t);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override ShapeBorder? lerpTo(ShapeBorder? b, double t)
@@ -313,39 +297,27 @@ public class StarBorder : OutlinedBorder
                 side: BorderSide.lerp(side, b__as10562.side, t),
                 points: (
                     Dart_uiLibrary.lerpDouble(points, b__as10562.points, t)
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 rotation: (
                     Dart_uiLibrary.lerpDouble(_rotationRadians, b__as10562._rotationRadians, t)
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) * Star_borderLibrary._kRadToDeg,
                 innerRadiusRatio: (
                     Dart_uiLibrary.lerpDouble(innerRadiusRatio, b__as10562.innerRadiusRatio, t)
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 pointRounding: (
                     Dart_uiLibrary.lerpDouble(pointRounding, b__as10562.pointRounding, t)
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 valleyRounding: (
                     Dart_uiLibrary.lerpDouble(valleyRounding, b__as10562.valleyRounding, t)
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 squash: (
                     Dart_uiLibrary.lerpDouble(squash, b__as10562.squash, t)
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             );
         }
@@ -356,9 +328,7 @@ public class StarBorder : OutlinedBorder
             {
                 double lerpedPoints = (
                     Dart_uiLibrary.lerpDouble(points, points.round(), t)
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 return new StarBorder(
                     side: BorderSide.lerp(side, b__as11105.side, t),
@@ -366,7 +336,7 @@ public class StarBorder : OutlinedBorder
                     squash: (
                         Dart_uiLibrary.lerpDouble(squash, b__as11105.eccentricity, t)
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ),
                     rotation: rotation,
@@ -377,19 +347,19 @@ public class StarBorder : OutlinedBorder
                             t
                         )
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ),
                     pointRounding: (
                         Dart_uiLibrary.lerpDouble(pointRounding, 1.0, t)
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ),
                     valleyRounding: (
                         Dart_uiLibrary.lerpDouble(valleyRounding, 0.0, t)
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 );
@@ -398,9 +368,7 @@ public class StarBorder : OutlinedBorder
             {
                 double lerpedPointsLocal = (
                     Dart_uiLibrary.lerpDouble(points, 2L, t)
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 return new StarBorder(
                     side: BorderSide.lerp(side, b__as11105.side, t),
@@ -408,26 +376,26 @@ public class StarBorder : OutlinedBorder
                     squash: (
                         Dart_uiLibrary.lerpDouble(squash, b__as11105.eccentricity, t)
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ),
                     rotation: rotation,
                     innerRadiusRatio: (
                         Dart_uiLibrary.lerpDouble(innerRadiusRatio, 1L, t)
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ),
                     pointRounding: (
                         Dart_uiLibrary.lerpDouble(pointRounding, 0.5, t)
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ),
                     valleyRounding: (
                         Dart_uiLibrary.lerpDouble(valleyRounding, 0.5, t)
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 );
@@ -471,7 +439,7 @@ public class StarBorder : OutlinedBorder
             );
         }
         return base.lerpTo(b, t);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override StarBorder copyWith(
@@ -501,7 +469,7 @@ public class StarBorder : OutlinedBorder
             valleyRounding: valleyRounding ?? this.valleyRounding,
             squash: squash ?? this.squash
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Path getInnerPath(Rect rect, TextDirection? textDirection = null)
@@ -515,7 +483,7 @@ public class StarBorder : OutlinedBorder
             valleyRounding: valleyRounding,
             squash: squash
         ).generate(adjustedRect);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Path getOuterPath(Rect rect, TextDirection? textDirection = null)
@@ -528,7 +496,7 @@ public class StarBorder : OutlinedBorder
             valleyRounding: valleyRounding,
             squash: squash
         ).generate(rect);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paint(
@@ -589,7 +557,7 @@ public class StarBorder : OutlinedBorder
     public override string ToString()
     {
         return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "StarBorder")}({side}, points: {points}, innerRadiusRatio: {innerRadiusRatio})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -688,7 +656,7 @@ internal class _StarGenerator__star_border
         squashMatrix.multiply(Matrix4.rotationZ(rotation));
         squashMatrix.multiply(Matrix4.translationValues(-rect.center.dx, -rect.center.dy, 0));
         return path.transform(squashMatrix.storage);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual double _generatePoints(
@@ -709,7 +677,9 @@ internal class _StarGenerator__star_border
             double angleLocal = _getAngle(a, b, c);
             double w = _getWeight(angleLocal) / 2L;
             return ((a1 / 4) + (b * w) + (c1 / 4)) / (0.5 + w);
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         double addPoint(
             double pointAngle,
@@ -744,7 +714,9 @@ internal class _StarGenerator__star_border
             );
             valleyLocal = nextValley;
             return pointAngle;
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         double remainder = points - points.truncateToDouble();
         bool hasIntegerSides = remainder < 0.000001;
@@ -785,7 +757,7 @@ internal class _StarGenerator__star_border
             double.Epsilon,
             double.MaxValue
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _drawPoints(Path path, List<_PointInfo__star_border> points)
@@ -845,7 +817,7 @@ internal class _StarGenerator__star_border
     internal virtual double _getWeight(double angle)
     {
         return Dart_mathLibrary.cos(angle / 2L % (Dart_mathLibrary.pi / 2L));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual double _getAngle(Offset a, Offset b, Offset c)
@@ -865,6 +837,6 @@ internal class _StarGenerator__star_border
             angle += Dart_mathLibrary.pi;
         }
         return angle;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

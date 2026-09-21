@@ -119,7 +119,7 @@ public class Ticker
             _startTime = SchedulerBinding.instance.currentFrameTimeStamp;
         }
         return _future!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode describeForError(string name)
@@ -129,7 +129,7 @@ public class Ticker
             this,
             description: ToString(debugIncludeStack: true)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void stop(bool canceled = false)
@@ -167,9 +167,7 @@ public class Ticker
             timeStamp
                 - (
                     _startTime
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
         );
         if (shouldScheduleTick)
@@ -207,9 +205,7 @@ public class Ticker
             SchedulerBinding.instance.cancelFrameCallbackWithId(
                 (
                     _animationId
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             );
             _animationId = null;
@@ -295,7 +291,7 @@ public class Ticker
             return true;
         });
         return buffer.ToString();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -371,35 +367,35 @@ public class TickerFuture : Future
     public virtual Stream<object?> asStream()
     {
         return _primaryCompleter.future.asStream();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public new virtual Future catchError(Delegate onError, Func<object, bool>? test = null)
     {
         return _primaryCompleter.future.catchError(onError, test: test);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Future<R> then<R>(Func<object?, object?> onValue, Delegate? onError = null)
     {
         return _primaryCompleter.future.then<R>(onValue, onError: onError);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Future timeout(Duration timeLimit, Func<object>? onTimeout = null)
     {
         return _primaryCompleter.future.timeout(timeLimit, onTimeout: onTimeout);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Future whenComplete(Func<object> action)
     {
         return _primaryCompleter.future.whenComplete(action);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string ToString() =>
-        $"{DiagnosticsLibrary.describeIdentity(this)}({((_completed is null) ? "active" : ((_completed ?? throw new global::System.NullReferenceException("Dart null assertion failed.")) ? "complete" : "canceled"))})";
+        $"{DiagnosticsLibrary.describeIdentity(this)}({((_completed is null) ? "active" : ((_completed ?? throw new global::System.NullReferenceException("A required value was null.")) ? "complete" : "canceled"))})";
 }
 
 public class TickerCanceled : Exception
@@ -418,6 +414,6 @@ public class TickerCanceled : Exception
             return $"This ticker was canceled: {ticker}";
         }
         return "The ticker was canceled before the \"orCancel\" property was first used.";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

@@ -61,7 +61,7 @@ public class BoxDecoration : Decoration
             backgroundBlendMode: backgroundBlendMode ?? this.backgroundBlendMode,
             shape: shape ?? this.shape
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool debugAssertIsValid()
@@ -70,7 +70,7 @@ public class BoxDecoration : Decoration
             (!Equals(shape, BoxShape.circle)) || (borderRadius is null)
         );
         return base.debugAssertIsValid();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override EdgeInsetsGeometry padding => border?.dimensions ?? EdgeInsets.zero;
@@ -124,7 +124,7 @@ public class BoxDecoration : Decoration
                 )();
             }
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual BoxDecoration scale(double factor)
@@ -138,7 +138,7 @@ public class BoxDecoration : Decoration
             gradient: gradient?.scale(factor),
             shape: shape
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool isComplex => boxShadow is not null;
@@ -190,7 +190,7 @@ public class BoxDecoration : Decoration
             gradient: Gradient.lerp(a.gradient, b.gradient, t),
             shape: (t < 0.5) ? a.shape : b.shape
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool Equals(object? other)
@@ -293,14 +293,14 @@ public class BoxDecoration : Decoration
                 return (position - centerLocal).distanceSquared <= (radius * radius);
             }
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override BoxPainter createBoxPainter(Action onChanged = default!)
     {
         DartRuntimePrimitives.Assert(() => (onChanged is not null) || (image is null));
         return new _BoxDecorationPainter__box_decoration(this, onChanged);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -334,9 +334,7 @@ internal class _BoxDecorationPainter__box_decoration : BoxPainter
             {
                 paint.blendMode = (
                     _decoration.backgroundBlendMode
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
             }
             if (_decoration.color is not null)
@@ -354,7 +352,7 @@ internal class _BoxDecorationPainter__box_decoration : BoxPainter
             _cachedBackgroundPaint = paint;
         }
         return _cachedBackgroundPaint!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _paintBox(
@@ -457,7 +455,7 @@ internal class _BoxDecorationPainter__box_decoration : BoxPainter
             return side.strokeInset;
         }
         return 0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Rect _adjustedRectOnOutlinedBorder(Rect rect, TextDirection? textDirection)
@@ -488,9 +486,7 @@ internal class _BoxDecorationPainter__box_decoration : BoxPainter
             {
                 TextDirection textDirection__value18244 = (
                     textDirection
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 var borderAlternate = ((BorderDirectional?)(object?)_decoration.border!)!;
                 BorderSide leftSide = Equals((textDirection__value18244), TextDirection.rtl)
@@ -514,7 +510,7 @@ internal class _BoxDecorationPainter__box_decoration : BoxPainter
             }
         }
         return rect;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _paintBackgroundImage(
@@ -587,7 +583,7 @@ internal class _BoxDecorationPainter__box_decoration : BoxPainter
             offset
             & (
                 configuration.size
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         TextDirection? textDirectionLocal = configuration.textDirection;
         _paintShadows(canvas, rect, textDirectionLocal);
@@ -605,6 +601,6 @@ internal class _BoxDecorationPainter__box_decoration : BoxPainter
     public override string ToString()
     {
         return $"BoxPainter for {_decoration}";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

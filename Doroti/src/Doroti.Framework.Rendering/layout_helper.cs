@@ -18,14 +18,14 @@ public abstract class ChildLayoutHelper
     public static Size dryLayoutChild(RenderBox child, BoxConstraints constraints)
     {
         return child.getDryLayout(constraints);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static Size layoutChild(RenderBox child, BoxConstraints constraints)
     {
         child.layout(constraints, parentUsesSize: true);
         return child.size;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static double? getDryBaseline(
@@ -35,7 +35,7 @@ public abstract class ChildLayoutHelper
     )
     {
         return child.getDryBaseline(constraints, baseline);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static double? getBaseline(
@@ -47,6 +47,6 @@ public abstract class ChildLayoutHelper
         DartRuntimePrimitives.Assert(() => !child.debugNeedsLayout);
         DartRuntimePrimitives.Assert(() => Equals(child.constraints, constraints));
         return child.getDistanceToBaseline(baseline, onlyReal: true);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

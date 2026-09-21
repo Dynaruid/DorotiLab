@@ -48,7 +48,7 @@ public class TimeOfDay : IComparable<TimeOfDay>
                     (
                         hour
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) < hoursPerDay
                 )
@@ -62,14 +62,14 @@ public class TimeOfDay : IComparable<TimeOfDay>
                     (
                         minute
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) < minutesPerHour
                 )
             )
         );
         return new TimeOfDay(hour: hour ?? this.hour, minute: minute ?? this.minute);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DayPeriod period => (hour < hoursPerPeriod) ? DayPeriod.am : DayPeriod.pm;
@@ -88,7 +88,7 @@ public class TimeOfDay : IComparable<TimeOfDay>
             this,
             alwaysUse24HourFormat: MediaQuery.alwaysUse24HourFormatOf(context)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool isBefore(TimeOfDay other) =>
@@ -104,7 +104,7 @@ public class TimeOfDay : IComparable<TimeOfDay>
     {
         long hourComparison = hour.CompareTo((other.hour));
         return (hourComparison == 0L) ? minute.CompareTo((other.minute)) : hourComparison;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool Equals(object? other)
@@ -130,12 +130,14 @@ public class TimeOfDay : IComparable<TimeOfDay>
                 return $"0{value}";
             }
             return value.ToString();
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         string hourLabel = addLeadingZeroIfNeeded((hour));
         string minuteLabel = addLeadingZeroIfNeeded((minute));
         return $"{typeof(TimeOfDay)}({hourLabel}:{minuteLabel})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public int CompareTo(TimeOfDay? other) => checked((int)compareTo(other!));
@@ -167,7 +169,7 @@ public class RestorableTimeOfDay : RestorableValue<TimeOfDay>
     {
         var timeData = ((List<object?>?)data!)!;
         return new TimeOfDay(minute: (long)timeData[(int)0L]!, hour: (long)timeData[(int)1L]!);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override object? toPrimitives() => new List<long> { value.minute, value.hour };
@@ -201,6 +203,8 @@ public static partial class TimeLibrary
             TimeOfDayFormat.HH_dot_mm or TimeOfDayFormat.HH_colon_mm => HourFormat.HH,
             TimeOfDayFormat.frenchCanadian => HourFormat.HH,
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
 }

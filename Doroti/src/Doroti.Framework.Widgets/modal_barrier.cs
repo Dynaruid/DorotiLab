@@ -21,7 +21,7 @@ internal class _SemanticsClipper__modal_barrier : SingleChildRenderObjectWidget
     public override RenderObject createRenderObject(BuildContext context)
     {
         return new _RenderSemanticsClipper__modal_barrier(clipDetailsNotifier: clipDetailsNotifier);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -211,7 +211,7 @@ public class ModalBarrier : StatelessWidget
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -258,7 +258,7 @@ public class AnimatedModalBarrier : AnimatedWidget
             clipDetailsNotifier: clipDetailsNotifier,
             semanticsOnTapHint: semanticsOnTapHint
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -275,7 +275,7 @@ public class _AnyTapGestureRecognizer__modal_barrier : BaseTapGestureRecognizer
             return false;
         }
         return base.isPointerAllowed(@event);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void handleTapDown(Gestures.PointerDownEvent down = default!) { }
@@ -349,6 +349,6 @@ internal class _ModalBarrierGestureDetector__modal_barrier : StatelessWidget
             behavior: HitTestBehavior.opaque,
             child: child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

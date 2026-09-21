@@ -31,7 +31,7 @@ public class MaterialSlice : MergeableMaterialItem
     public override string ToString()
     {
         return $"MergeableSlice(key: {key}, child: {child}, color: {color})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -48,7 +48,7 @@ public class MaterialGap : MergeableMaterialItem
     public override string ToString()
     {
         return $"MaterialGap(key: {key}, child: {size})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -251,7 +251,7 @@ internal class _MergeableMaterialState__mergeable_material
             }
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _debugGapsAreValid(List<MergeableMaterialItem> children)
@@ -268,7 +268,7 @@ internal class _MergeableMaterialState__mergeable_material
             }
         }
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _insertChild(long index, MergeableMaterialItem child)
@@ -302,7 +302,7 @@ internal class _MergeableMaterialState__mergeable_material
             );
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _removeEmptyGaps()
@@ -627,7 +627,7 @@ internal class _MergeableMaterialState__mergeable_material
                     _animationTuples
                         .GetValueOrDefault(_children[(int)(index - 1L)].key)!
                         .startAnimation.value
-                ) ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ) ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
         if (
@@ -642,7 +642,7 @@ internal class _MergeableMaterialState__mergeable_material
                     _animationTuples
                         .GetValueOrDefault(_children[(int)(index + 1L)].key)!
                         .endAnimation.value
-                ) ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ) ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
         if (Equals(widget.mainAxis, Axis.vertical))
@@ -659,7 +659,7 @@ internal class _MergeableMaterialState__mergeable_material
                 right: end ? cardRadius : endRadius
             );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual double _getGapSize(long index)
@@ -670,9 +670,9 @@ internal class _MergeableMaterialState__mergeable_material
                 _animationTuples.GetValueOrDefault(gap.key)!.gapStart,
                 gap.size,
                 _animationTuples.GetValueOrDefault(gap.key)!.gapAnimation.value
-            ) ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ) ?? throw new global::System.NullReferenceException("A required value was null.")
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _willNeedDivider(long index)
@@ -686,7 +686,7 @@ internal class _MergeableMaterialState__mergeable_material
             return false;
         }
         return (_children[(int)index] is MaterialSlice) || _isClosingGap(index);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -709,7 +709,7 @@ internal class _MergeableMaterialState__mergeable_material
                         Axis.vertical => new SizedBox(height: _getGapSize(i)),
                         _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
                             throw new InvalidOperationException(
-                                "Non-exhaustive Dart switch value."
+                                "Switch expression did not handle the supplied value."
                             ),
                     }
                 );
@@ -789,7 +789,7 @@ internal class _MergeableMaterialState__mergeable_material
             items: _children,
             children: widgets
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
@@ -820,7 +820,7 @@ internal class _MergeableMaterialState__mergeable_material
         )();
         _tickers!.Add(result);
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _removeTicker(_WidgetTicker__ticker_provider ticker)
@@ -906,7 +906,7 @@ internal class _MergeableMaterialSliceKey__mergeable_material : GlobalKey<IState
     public override string ToString()
     {
         return $"_MergeableMaterialSliceKey({value})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -935,7 +935,7 @@ internal class _MergeableMaterialListBody__mergeable_material : ListBody
             mainAxis,
             false
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override RenderObject createRenderObject(BuildContext context)
@@ -944,7 +944,7 @@ internal class _MergeableMaterialListBody__mergeable_material : ListBody
             axisDirection: _getDirection(context),
             elevation: elevation
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)

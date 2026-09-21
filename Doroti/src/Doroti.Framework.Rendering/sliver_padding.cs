@@ -26,7 +26,9 @@ public abstract class RenderSliverEdgeInsetsPadding
                 AxisDirection.right => resolvedPadding!.left,
                 AxisDirection.down => resolvedPadding!.top,
                 AxisDirection.left => resolvedPadding!.right,
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             };
         }
     }
@@ -44,7 +46,9 @@ public abstract class RenderSliverEdgeInsetsPadding
                 AxisDirection.right => resolvedPadding!.right,
                 AxisDirection.down => resolvedPadding!.bottom,
                 AxisDirection.left => resolvedPadding!.left,
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             };
         }
     }
@@ -65,7 +69,9 @@ public abstract class RenderSliverEdgeInsetsPadding
             {
                 Axis.horizontal => resolvedPadding!.vertical,
                 Axis.vertical => resolvedPadding!.horizontal,
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             };
         }
     }
@@ -84,12 +90,16 @@ public abstract class RenderSliverEdgeInsetsPadding
         double paintOffset(double from, double to)
         {
             return calculatePaintOffset(constraintsLocal, from: from, to: to);
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         double cacheOffset(double from, double to)
         {
             return calculateCacheOffset(constraintsLocal, from: from, to: to);
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         DartRuntimePrimitives.Assert(() => resolvedPadding is not null);
         EdgeInsets resolvedPaddingLocal = resolvedPadding!;
@@ -194,14 +204,18 @@ public abstract class RenderSliverEdgeInsetsPadding
             ),
             AxisDirection.right => paintOffset(from: 0.0, to: resolvedPaddingLocal.left),
             AxisDirection.down => paintOffset(from: 0.0, to: resolvedPaddingLocal.top),
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         var childParentData = ((SliverPhysicalParentData?)(object?)child!.parentData!)!;
         childParentData.paintOffset = constraintsLocal.axis switch
         {
             Axis.horizontal => new Offset(calculatedOffset, resolvedPaddingLocal.top),
             Axis.vertical => new Offset(resolvedPaddingLocal.left, calculatedOffset),
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         DartRuntimePrimitives.Assert(() => beforePaddingLocal == beforePadding);
         DartRuntimePrimitives.Assert(() => afterPaddingLocal == afterPadding);
@@ -228,7 +242,7 @@ public abstract class RenderSliverEdgeInsetsPadding
             );
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double childMainAxisPosition(RenderObject child)
@@ -236,7 +250,7 @@ public abstract class RenderSliverEdgeInsetsPadding
         var __child = (RenderSliver)(object)child;
         DartRuntimePrimitives.Assert(() => Equals(__child, this.child));
         return calculatePaintOffset(constraints, from: 0.0, to: beforePadding);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double childCrossAxisPosition(RenderObject child)
@@ -248,16 +262,18 @@ public abstract class RenderSliverEdgeInsetsPadding
         {
             Axis.horizontal => resolvedPadding!.top,
             Axis.vertical => resolvedPadding!.left,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? childScrollOffset(RenderObject child)
     {
         DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         return beforePadding;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void applyPaintTransform(RenderObject child, Matrix4 transform)
@@ -295,7 +311,7 @@ public abstract class RenderSliverEdgeInsetsPadding
                         (
                             innerRect
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ).top >= outerRect.top
                     );
@@ -303,7 +319,7 @@ public abstract class RenderSliverEdgeInsetsPadding
                         (
                             innerRect
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ).left >= outerRect.left
                     );
@@ -311,7 +327,7 @@ public abstract class RenderSliverEdgeInsetsPadding
                         (
                             innerRect
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ).right <= outerRect.right
                     );
@@ -319,7 +335,7 @@ public abstract class RenderSliverEdgeInsetsPadding
                         (
                             innerRect
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ).bottom <= outerRect.bottom
                     );
@@ -368,7 +384,7 @@ public abstract class RenderSliverEdgeInsetsPadding
             return true;
         });
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual RenderSliver? child
@@ -425,7 +441,7 @@ public abstract class RenderSliverEdgeInsetsPadding
                 ((Diagnosticable)child!).toDiagnosticsNode(name: "child"),
             }
             : new List<DiagnosticsNode>();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 

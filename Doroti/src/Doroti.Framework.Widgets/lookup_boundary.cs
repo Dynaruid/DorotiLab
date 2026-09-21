@@ -23,7 +23,7 @@ public class LookupBoundary : InheritedWidget
         }
         context.dependOnInheritedElement(candidate, aspect: aspect);
         return ((T?)candidate.widget)!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static T? getInheritedWidgetOfExactType<T>(BuildContext context, object? aspect = null)
@@ -35,7 +35,7 @@ public class LookupBoundary : InheritedWidget
             return default;
         }
         return ((T?)candidate.widget)!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static InheritedElement? getElementForInheritedWidgetOfExactType<T>(BuildContext context)
@@ -52,7 +52,7 @@ public class LookupBoundary : InheritedWidget
             return null;
         }
         return candidate;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static T? findAncestorWidgetOfExactType<T>(BuildContext context)
@@ -71,11 +71,13 @@ public class LookupBoundary : InheritedWidget
                     DartRuntimePrimitives.RuntimeType(ancestor.widget),
                     typeof(LookupBoundary)
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
         return ((T?)target?.widget)!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static T? findAncestorStateOfType<T>(BuildContext context)
@@ -94,11 +96,13 @@ public class LookupBoundary : InheritedWidget
                     DartRuntimePrimitives.RuntimeType(ancestor.widget),
                     typeof(LookupBoundary)
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
         return ((T?)(object?)target?.state)!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static T? findRootAncestorStateOfType<T>(BuildContext context)
@@ -116,11 +120,13 @@ public class LookupBoundary : InheritedWidget
                     DartRuntimePrimitives.RuntimeType(ancestor.widget),
                     typeof(LookupBoundary)
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
         return ((T?)(object?)target?.state)!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static T? findAncestorRenderObjectOfType<T>(BuildContext context)
@@ -144,11 +150,13 @@ public class LookupBoundary : InheritedWidget
                     DartRuntimePrimitives.RuntimeType(ancestor.widget),
                     typeof(LookupBoundary)
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
         return ((T?)target?.renderObject)!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static void visitAncestorElements(BuildContext context, Func<Element, bool> visitor)
@@ -163,7 +171,9 @@ public class LookupBoundary : InheritedWidget
                             typeof(LookupBoundary)
                         )
                     );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
     }
@@ -206,17 +216,19 @@ public class LookupBoundary : InheritedWidget
                             typeof(LookupBoundary)
                         );
                     return true;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
             result = ancestorFound & hiddenByBoundary;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return (
-            result ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            result ?? throw new global::System.NullReferenceException("A required value was null.")
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static bool debugIsHidingAncestorStateOfType<T>(BuildContext context)
@@ -242,17 +254,19 @@ public class LookupBoundary : InheritedWidget
                             typeof(LookupBoundary)
                         );
                     return true;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
             result = ancestorFound & hiddenByBoundary;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return (
-            result ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            result ?? throw new global::System.NullReferenceException("A required value was null.")
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static bool debugIsHidingAncestorRenderObjectOfType<T>(BuildContext context)
@@ -281,17 +295,19 @@ public class LookupBoundary : InheritedWidget
                             typeof(LookupBoundary)
                         );
                     return true;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
             result = ancestorFound & hiddenByBoundary;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return (
-            result ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            result ?? throw new global::System.NullReferenceException("A required value was null.")
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget) => false;

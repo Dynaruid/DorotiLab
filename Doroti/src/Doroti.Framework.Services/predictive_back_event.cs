@@ -73,6 +73,6 @@ public class PredictiveBackEvent
     public override string ToString()
     {
         return $"PredictiveBackEvent{{touchOffset: {touchOffset}, progress: {progress}, swipeEdge: {swipeEdge}}}";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

@@ -59,7 +59,7 @@ public class AppLifecycleListener : WidgetsBindingObserver, Diagnosticable
         {
             _debugDisposed = true;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
     }
 
@@ -78,10 +78,10 @@ public class AppLifecycleListener : WidgetsBindingObserver, Diagnosticable
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual async Future<AppExitResponse> didRequestAppExit()
@@ -92,7 +92,7 @@ public class AppLifecycleListener : WidgetsBindingObserver, Diagnosticable
             return AppExitResponse.exit;
         }
         return await onExitRequested!();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void didChangeAppLifecycleState(AppLifecycleState state)
@@ -191,7 +191,7 @@ public class AppLifecycleListener : WidgetsBindingObserver, Diagnosticable
         onStateChange?.Invoke(
             (
                 _lifecycleState
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );
     }
@@ -243,10 +243,10 @@ public class AppLifecycleListener : WidgetsBindingObserver, Diagnosticable
                 .toDiagnosticsNode()
                 .toStringDeep(minLevel: minLevel);
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -255,6 +255,6 @@ public class AppLifecycleListener : WidgetsBindingObserver, Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

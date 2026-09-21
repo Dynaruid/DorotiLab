@@ -39,7 +39,7 @@ public class DisposableBuildContext<T> : IDisposableBuildContext
                 + "DisposableBuildContext fails to call dispose when it is disposed."
         );
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void dispose()

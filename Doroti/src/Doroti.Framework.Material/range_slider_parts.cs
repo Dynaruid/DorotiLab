@@ -45,7 +45,7 @@ public abstract class RangeSliderValueIndicatorShape
     )
     {
         return 0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public abstract void paint(
@@ -177,7 +177,9 @@ public class RectangularRangeSliderTrackShape : RangeSliderTrackShape, BaseRange
             TextDirection.ltr => (startThumbCenter, endThumbCenter),
             TextDirection.rtl => (endThumbCenter, startThumbCenter),
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
         Rect trackRect = getPreferredRect(
             parentBox: parentBox,
@@ -235,7 +237,7 @@ public class RectangularRangeSliderTrackShape : RangeSliderTrackShape, BaseRange
             .width;
         double trackHeightLocal = (
             sliderTheme.trackHeight
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         );
         DartRuntimePrimitives.Assert(() => overlayWidth >= 0L);
         DartRuntimePrimitives.Assert(() => trackHeightLocal >= 0L);
@@ -269,7 +271,7 @@ public class RectangularRangeSliderTrackShape : RangeSliderTrackShape, BaseRange
             Math.Max(trackLeft, trackRight),
             trackBottom
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -301,9 +303,7 @@ public class RoundedRectRangeSliderTrackShape : RangeSliderTrackShape, BaseRange
             || (
                 (
                     sliderTheme.trackHeight
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) <= 0L
             )
         )
@@ -343,7 +343,9 @@ public class RoundedRectRangeSliderTrackShape : RangeSliderTrackShape, BaseRange
             TextDirection.ltr => (startThumbCenter, endThumbCenter),
             TextDirection.rtl => (endThumbCenter, startThumbCenter),
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
         Size thumbSize = sliderTheme.rangeThumbShape!.getPreferredSize(isEnabled, isDiscrete);
         double thumbRadius = thumbSize.width / 2L;
@@ -385,7 +387,7 @@ public class RoundedRectRangeSliderTrackShape : RangeSliderTrackShape, BaseRange
                         (
                             sliderTheme.trackHeight
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ) / 2L
                     ),
@@ -395,7 +397,7 @@ public class RoundedRectRangeSliderTrackShape : RangeSliderTrackShape, BaseRange
                         (
                             sliderTheme.trackHeight
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ) / 2L
                     ),
@@ -425,7 +427,7 @@ public class RoundedRectRangeSliderTrackShape : RangeSliderTrackShape, BaseRange
             .width;
         double trackHeightLocal = (
             sliderTheme.trackHeight
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         );
         DartRuntimePrimitives.Assert(() => overlayWidth >= 0L);
         DartRuntimePrimitives.Assert(() => trackHeightLocal >= 0L);
@@ -459,7 +461,7 @@ public class RoundedRectRangeSliderTrackShape : RangeSliderTrackShape, BaseRange
             Math.Max(trackLeft, trackRight),
             trackBottom
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -481,12 +483,12 @@ public class RoundRangeSliderTickMarkShape : RangeSliderTickMarkShape
                     (
                         sliderTheme.trackHeight
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) / 4L
                 )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void paint(
@@ -510,9 +512,7 @@ public class RoundRangeSliderTickMarkShape : RangeSliderTickMarkShape
             && (
                 (
                     sliderTheme.trackGap
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) > 0L
             );
         bool underThumb = (startThumbCenter.dx == center.dx) || (endThumbCenter.dx == center.dx);
@@ -527,7 +527,9 @@ public class RoundRangeSliderTickMarkShape : RangeSliderTickMarkShape
             TextDirection.rtl => (endThumbCenter.dx < center.dx)
                 && (center.dx < startThumbCenter.dx),
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
         Color? beginLocal = isBetweenThumbs
             ? sliderTheme.disabledActiveTickMarkColor
@@ -582,7 +584,7 @@ public class RoundRangeSliderThumbShape : RangeSliderThumbShape
     public virtual Size getPreferredSize(bool isEnabled, bool isDiscrete)
     {
         return Size.fromRadius(isEnabled ? enabledThumbRadius : _disabledThumbRadius);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void paint(
@@ -719,7 +721,7 @@ public class RangeValues
     public override string ToString()
     {
         return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "RangeValues")}({start}, {end})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -755,7 +757,7 @@ public class RangeLabels
     public override string ToString()
     {
         return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "RangeLabels")}({start}, {end})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -812,9 +814,7 @@ public class GappedRangeSliderTrackShape : RangeSliderTrackShape, BaseRangeSlide
             || (
                 (
                     sliderTheme.trackHeight
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) <= 0L
             )
         )
@@ -863,14 +863,16 @@ public class GappedRangeSliderTrackShape : RangeSliderTrackShape, BaseRangeSlide
             TextDirection.ltr => (startThumbCenter, endThumbCenter),
             TextDirection.rtl => (endThumbCenter, startThumbCenter),
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
         Size thumbSize = sliderTheme.rangeThumbShape!.getPreferredSize(isEnabled, isDiscrete);
         double thumbRadius = thumbSize.width / 2L;
         DartRuntimePrimitives.Assert(() => thumbRadius > 0L);
         double trackGapLocal = (
             sliderTheme.trackGap
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         );
         var trackRRect = RRect.fromRectAndCorners(
             trackRect,
@@ -919,7 +921,7 @@ public class GappedRangeSliderTrackShape : RangeSliderTrackShape, BaseRangeSlide
                     (
                         sliderTheme.trackHeight
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) / 2L
                 );
@@ -930,7 +932,7 @@ public class GappedRangeSliderTrackShape : RangeSliderTrackShape, BaseRangeSlide
                     (
                         sliderTheme.trackHeight
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) / 2L
                 );
@@ -960,7 +962,7 @@ public class GappedRangeSliderTrackShape : RangeSliderTrackShape, BaseRangeSlide
         double stopIndicatorTrailingSpace =
             (
                 sliderTheme.trackHeight
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ) / 2L;
         var startStopIndicatorOffset = new Offset(
             trackRect.centerLeft.dx + stopIndicatorTrailingSpace,
@@ -1013,7 +1015,7 @@ public class GappedRangeSliderTrackShape : RangeSliderTrackShape, BaseRangeSlide
             .width;
         double trackHeightLocal = (
             sliderTheme.trackHeight
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         );
         DartRuntimePrimitives.Assert(() => overlayWidth >= 0L);
         DartRuntimePrimitives.Assert(() => trackHeightLocal >= 0L);
@@ -1047,7 +1049,7 @@ public class GappedRangeSliderTrackShape : RangeSliderTrackShape, BaseRangeSlide
             Math.Max(trackLeft, trackRight),
             trackBottom
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1058,7 +1060,7 @@ public class HandleRangeSliderThumbShape : RangeSliderThumbShape
     public virtual Size getPreferredSize(bool isEnabled, bool isDiscrete)
     {
         return new Size(4.0, 44.0);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void paint(
@@ -1089,7 +1091,7 @@ public class HandleRangeSliderThumbShape : RangeSliderThumbShape
         Canvas canvasLocal = context.canvas;
         Size thumbSizeLocal = (
             __sliderTheme.thumbSize!.resolve(new HashSet<WidgetState>())
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         );
         var rrect = RRect.fromRectAndRadius(
             Rect.fromCenter(
@@ -1132,7 +1134,7 @@ public class RoundedRectRangeSliderValueIndicatorShape : RangeSliderValueIndicat
         DartRuntimePrimitives.Assert(() => labelPainter is not null);
         DartRuntimePrimitives.Assert(() => textScaleFactor >= 0L);
         return _pathPainter.getPreferredSize(labelPainter!, (textScaleFactor));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paint(
@@ -1166,7 +1168,7 @@ public class RoundedRectRangeSliderValueIndicatorShape : RangeSliderValueIndicat
             textScaleFactor: (textScaleFactor),
             sizeWithOverflow: (
                 sizeWithOverflow
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             backgroundPaintColor: sliderTheme.valueIndicatorColor!,
             strokePaintColor: (isOnTop)
@@ -1193,7 +1195,7 @@ public class DropRangeSliderValueIndicatorShape : RangeSliderValueIndicatorShape
         DartRuntimePrimitives.Assert(() => labelPainter is not null);
         DartRuntimePrimitives.Assert(() => textScaleFactor >= 0L);
         return _pathPainter.getPreferredSize(labelPainter!, (textScaleFactor));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paint(
@@ -1224,7 +1226,7 @@ public class DropRangeSliderValueIndicatorShape : RangeSliderValueIndicatorShape
             textScaleFactor: (textScaleFactor),
             sizeWithOverflow: (
                 sizeWithOverflow
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             backgroundPaintColor: sliderTheme.valueIndicatorColor!,
             strokePaintColor: (isOnTop)
@@ -1250,7 +1252,7 @@ internal class _RoundedRectSliderValueIndicatorPathPainter__range_slider_parts
         double widthLocal =
             Math.Max(_minLabelWidth, labelPainter.width) + (_labelPadding * 2L * textScaleFactor);
         return new Size(widthLocal, _preferredHeight * textScaleFactor);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double getHorizontalShift(
@@ -1286,14 +1288,14 @@ internal class _RoundedRectSliderValueIndicatorPathPainter__range_slider_parts
                 return -overflowRight + (edgePadding * textScaleFactor);
             }
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual double _upperRectangleWidth(TextPainter labelPainter, double scale)
     {
         double unscaledWidth = Math.Max(_minLabelWidth, labelPainter.width) + (_labelPadding * 2L);
         return unscaledWidth * scale;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void paint(
@@ -1388,7 +1390,7 @@ internal class _DropSliderValueIndicatorPathPainter__range_slider_parts
         double widthLocal =
             Math.Max(_minLabelWidth, labelPainter.width) + (_labelPadding * 2L * textScaleFactor);
         return new Size(widthLocal, _preferredHeight * textScaleFactor);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double getHorizontalShift(
@@ -1424,14 +1426,14 @@ internal class _DropSliderValueIndicatorPathPainter__range_slider_parts
                 return -overflowRight + (edgePadding * textScaleFactor);
             }
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual double _upperRectangleWidth(TextPainter labelPainter, double scale)
     {
         double unscaledWidth = Math.Max(_minLabelWidth, labelPainter.width) + _labelPadding;
         return unscaledWidth * scale;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual BorderRadius _adjustBorderRadius(Rect rect)
@@ -1442,7 +1444,7 @@ internal class _DropSliderValueIndicatorPathPainter__range_slider_parts
             BorderRadius.CreateAll(Radius.circular(rect.shortestSide / 2.0)),
             1.0 - rectness
         )!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void paint(

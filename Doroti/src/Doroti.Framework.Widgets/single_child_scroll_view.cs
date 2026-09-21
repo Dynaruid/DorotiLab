@@ -59,7 +59,7 @@ public class SingleChildScrollView : StatelessWidget
             scrollDirection,
             reverse
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -97,7 +97,9 @@ public class SingleChildScrollView : StatelessWidget
                     clipBehavior: clipBehavior,
                     child: contents
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
         ScrollViewKeyboardDismissBehavior effectiveKeyboardDismissBehavior =
@@ -121,7 +123,7 @@ public class SingleChildScrollView : StatelessWidget
                         }
                         return false;
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 )
@@ -130,7 +132,7 @@ public class SingleChildScrollView : StatelessWidget
         return (effectivePrimary && (scrollController is not null))
             ? PrimaryScrollController.CreateNone(child: scrollable)
             : scrollable;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -160,7 +162,7 @@ public class _SingleChildViewport__single_child_scroll_view : SingleChildRenderO
             offset: offset,
             clipBehavior: clipBehavior
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -185,7 +187,7 @@ public class _SingleChildViewport__single_child_scroll_view : SingleChildRenderO
     public override SingleChildRenderObjectElement createElement()
     {
         return new _SingleChildViewportElement__single_child_scroll_view(this);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -211,7 +213,7 @@ internal class _SingleChildViewportElement__single_child_scroll_view
             ((ViewportNotificationMixin)notification)._depth += 1L;
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -322,7 +324,9 @@ public class _RenderSingleChildViewport__single_child_scroll_view
             {
                 Axis.horizontal => size.width,
                 Axis.vertical => size.height,
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             };
         }
     }
@@ -349,7 +353,9 @@ public class _RenderSingleChildViewport__single_child_scroll_view
                 {
                     Axis.horizontal => child!.size.width - size.width,
                     Axis.vertical => child!.size.height - size.height,
-                    _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    _ => throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
                 }
             );
         }
@@ -361,33 +367,35 @@ public class _RenderSingleChildViewport__single_child_scroll_view
         {
             Axis.horizontal => constraints.heightConstraints(),
             Axis.vertical => constraints.widthConstraints(),
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicWidth(double height)
     {
         return child?.getMinIntrinsicWidth(height) ?? 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicWidth(double height)
     {
         return child?.getMaxIntrinsicWidth(height) ?? 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicHeight(double width)
     {
         return child?.getMinIntrinsicHeight(width) ?? 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicHeight(double width)
     {
         return child?.getMaxIntrinsicHeight(width) ?? 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Size computeDryLayout(BoxConstraints constraints)
@@ -398,7 +406,7 @@ public class _RenderSingleChildViewport__single_child_scroll_view
         }
         Size childSize = child!.getDryLayout(_getInnerConstraints(constraints));
         return constraints.constrain(childSize);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void performLayout()
@@ -442,9 +450,11 @@ public class _RenderSingleChildViewport__single_child_scroll_view
             AxisDirection.left => new Offset(position - child!.size.width + size.width, 0.0),
             AxisDirection.right => new Offset(-position, 0.0),
             AxisDirection.down => new Offset(0.0, -position),
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _shouldClipAtPaintOffset(Offset paintOffset)
@@ -466,9 +476,11 @@ public class _RenderSingleChildViewport__single_child_scroll_view
                     || ((paintOffset.dy + child!.size.height) > size.height);
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paint(PaintingContext context, Offset offset)
@@ -519,7 +531,7 @@ public class _RenderSingleChildViewport__single_child_scroll_view
             return Offset.zero & size;
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool hitTestChildren(BoxHitTestResult result, Offset position)
@@ -535,12 +547,14 @@ public class _RenderSingleChildViewport__single_child_scroll_view
                         Equals(transformed, position + -_paintOffset)
                     );
                     return child!.hitTest(result, position: transformed);
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual RevealedOffset getOffsetToReveal(
@@ -560,7 +574,7 @@ public class _RenderSingleChildViewport__single_child_scroll_view
                     (
                         rect
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
@@ -573,9 +587,7 @@ public class _RenderSingleChildViewport__single_child_scroll_view
             (
                 (
                     rect
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             )
         );
@@ -586,13 +598,15 @@ public class _RenderSingleChildViewport__single_child_scroll_view
             AxisDirection.left => (size.width, contentSize.width - bounds.right, bounds.width),
             AxisDirection.right => (size.width, bounds.left, bounds.width),
             AxisDirection.down => (size.height, bounds.top, bounds.height),
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         double targetOffset =
             leadingScrollOffset - ((mainAxisExtent - targetMainAxisExtent) * alignment);
         Rect targetRect = bounds.shift(_paintOffsetForPosition(targetOffset));
         return new RevealedOffset(offset: targetOffset, rect: targetRect);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void showOnScreen(
@@ -683,9 +697,11 @@ public class _RenderSingleChildViewport__single_child_scroll_view
                 );
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool debugValidateChild(RenderObject child)
@@ -726,10 +742,10 @@ public class _RenderSingleChildViewport__single_child_scroll_view
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual RenderBox? child
@@ -774,6 +790,6 @@ public class _RenderSingleChildViewport__single_child_scroll_view
                 ((Diagnosticable)child!).toDiagnosticsNode(name: "child"),
             }
             : new List<DiagnosticsNode>();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

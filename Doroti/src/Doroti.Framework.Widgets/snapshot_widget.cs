@@ -76,7 +76,7 @@ public class SnapshotWidget : SingleChildRenderObjectWidget
             painter: painter,
             autoresize: autoresize
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -294,7 +294,7 @@ internal class _RenderSnapshotWidget__snapshot_widget : RenderProxyBox
         offsetLayer.dispose();
         _lastCachedSize = size;
         return image;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paint(PaintingContext context, Offset offset)
@@ -337,9 +337,7 @@ internal class _RenderSnapshotWidget__snapshot_widget : RenderProxyBox
                 _childRaster!,
                 (
                     _childRasterSize
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 devicePixelRatio
             );

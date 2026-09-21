@@ -62,7 +62,9 @@ public class ImgElementPlatformViewIo : StatelessWidget
                         )()
                     );
                     return img;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );
@@ -91,7 +93,7 @@ public class ImgElementPlatformViewIo : StatelessWidget
                             .transparent
                     )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -163,7 +165,7 @@ public class RawWebImageIo : SingleChildRenderObjectWidget
                         )
                     )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(
@@ -391,7 +393,7 @@ public class RenderWebImageIo : global::Doroti.Framework.Rendering.RenderShifted
                         )
                     )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicWidth(double height)
@@ -408,7 +410,7 @@ public class RenderWebImageIo : global::Doroti.Framework.Rendering.RenderShifted
                 )
             ).width
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicWidth(double height)
@@ -421,7 +423,7 @@ public class RenderWebImageIo : global::Doroti.Framework.Rendering.RenderShifted
                 )
             ).width
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicHeight(double width)
@@ -438,7 +440,7 @@ public class RenderWebImageIo : global::Doroti.Framework.Rendering.RenderShifted
                 )
             ).height
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicHeight(double width)
@@ -451,7 +453,7 @@ public class RenderWebImageIo : global::Doroti.Framework.Rendering.RenderShifted
                 )
             ).height
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool hitTestSelf(Offset position) => true;
@@ -461,7 +463,7 @@ public class RenderWebImageIo : global::Doroti.Framework.Rendering.RenderShifted
     )
     {
         return _sizeForConstraints(constraints);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void performLayout()
@@ -514,7 +516,7 @@ public class RenderWebImageIo : global::Doroti.Framework.Rendering.RenderShifted
                             (
                                 this._flipHorizontally
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             )
                                 ? -this._resolvedAlignment!.x

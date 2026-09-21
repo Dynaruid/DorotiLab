@@ -413,7 +413,7 @@ public abstract class SatelliteWindowControllerIo : BaseWindowControllerIo
         {
             Size size__value41904 = (
                 size
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             DartRuntimePrimitives.Assert(() =>
                 constraints.isSatisfiedBy(
@@ -421,11 +421,11 @@ public abstract class SatelliteWindowControllerIo : BaseWindowControllerIo
                         (
                             size__value41904
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
@@ -544,7 +544,7 @@ public static partial class _windowLibrary
         return new _WindowingOwnerUnsupported___window(
             errorMessage: "Windowing is unsupported on this platform."
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -566,7 +566,7 @@ internal class _WindowingOwnerUnsupported___window : WindowingOwnerIo
     )
     {
         throw new NotSupportedException(errorMessage);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DialogWindowControllerIo createDialogWindowController(
@@ -579,7 +579,7 @@ internal class _WindowingOwnerUnsupported___window : WindowingOwnerIo
     )
     {
         throw new NotSupportedException(errorMessage);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual TooltipWindowControllerIo createTooltipWindowController(
@@ -591,7 +591,7 @@ internal class _WindowingOwnerUnsupported___window : WindowingOwnerIo
     )
     {
         throw new NotImplementedException(errorMessage);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual PopupWindowControllerIo createPopupWindowController(
@@ -603,7 +603,7 @@ internal class _WindowingOwnerUnsupported___window : WindowingOwnerIo
     )
     {
         throw new NotImplementedException(errorMessage);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual SatelliteWindowControllerIo createSatelliteWindowController(
@@ -618,7 +618,7 @@ internal class _WindowingOwnerUnsupported___window : WindowingOwnerIo
     )
     {
         throw new NotImplementedException(errorMessage);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -648,7 +648,7 @@ public class WindowIo : StatelessWidget
                     child: new View(view: controller.rootView, child: child)
                 )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -678,7 +678,7 @@ public class DialogWindowIo : StatelessWidget
                     child: new View(view: controller.rootView, child: child)
                 )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -708,7 +708,7 @@ public class TooltipWindowIo : StatelessWidget
                     child: new View(view: controller.rootView, child: child)
                 )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -738,7 +738,7 @@ public class PopupWindowIo : StatelessWidget
                     child: new View(view: controller.rootView, child: child)
                 )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -768,7 +768,7 @@ public class SatelliteWindowIo : StatelessWidget
                     child: new View(view: controller.rootView, child: child)
                 )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -814,13 +814,13 @@ public class WindowScopeIo : InheritedModel<_WindowControllerAspect___window>
     public static BaseWindowControllerIo of(BuildContext context)
     {
         return _of(context);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static BaseWindowControllerIo? maybeOf(BuildContext context)
     {
         return _maybeOf(context);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static Size contentSizeOf(BuildContext context) =>
@@ -836,7 +836,7 @@ public class WindowScopeIo : InheritedModel<_WindowControllerAspect___window>
     public static string titleOf(BuildContext context)
     {
         return _titleValue(_of(context, _WindowControllerAspect___window.title));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static string? maybeTitleOf(BuildContext context)
@@ -850,13 +850,13 @@ public class WindowScopeIo : InheritedModel<_WindowControllerAspect___window>
             return null;
         }
         return (string?)_titleValue(controller);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static bool isActivatedOf(BuildContext context)
     {
         return _isActivatedValue(_of(context, _WindowControllerAspect___window.activated));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static bool? maybeIsActivatedOf(BuildContext context)
@@ -870,13 +870,13 @@ public class WindowScopeIo : InheritedModel<_WindowControllerAspect___window>
             return null;
         }
         return _isActivatedValue(controller);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static bool isMinimizedOf(BuildContext context)
     {
         return _isMinimizedValue(_of(context, _WindowControllerAspect___window.minimized));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static bool? maybeIsMinimizedOf(BuildContext context)
@@ -890,13 +890,13 @@ public class WindowScopeIo : InheritedModel<_WindowControllerAspect___window>
             return null;
         }
         return _isMinimizedValue(controller);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static bool isMaximizedOf(BuildContext context)
     {
         return _isMaximizedValue(_of(context, _WindowControllerAspect___window.maximized));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static bool? maybeIsMaximizedOf(BuildContext context)
@@ -910,13 +910,13 @@ public class WindowScopeIo : InheritedModel<_WindowControllerAspect___window>
             return null;
         }
         return _isMaximizedValue(controller);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static bool isFullscreenOf(BuildContext context)
     {
         return _isFullscreenValue(_of(context, _WindowControllerAspect___window.fullscreen));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static bool? maybeIsFullscreenOf(BuildContext context)
@@ -930,19 +930,19 @@ public class WindowScopeIo : InheritedModel<_WindowControllerAspect___window>
             return null;
         }
         return _isFullscreenValue(controller);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static bool isDestroyedOf(BuildContext context)
     {
         return _of(context, _WindowControllerAspect___window.destroyed).isDestroyed;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static bool? maybeIsDestroyedOf(BuildContext context)
     {
         return _maybeOf(context, _WindowControllerAspect___window.destroyed)?.isDestroyed;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static string _titleValue(BaseWindowControllerIo controller) =>
@@ -953,7 +953,9 @@ public class WindowScopeIo : InheritedModel<_WindowControllerAspect___window>
             TooltipWindowControllerIo __object77433 => "",
             PopupWindowControllerIo __object77470 => "",
             SatelliteWindowControllerIo __object77505 => __object77505.title,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
 
     internal static bool _isActivatedValue(BaseWindowControllerIo controller) =>
@@ -964,7 +966,9 @@ public class WindowScopeIo : InheritedModel<_WindowControllerAspect___window>
             TooltipWindowControllerIo __object77924 => false,
             PopupWindowControllerIo __object77964 => __object77964.isActivated,
             SatelliteWindowControllerIo __object78019 => __object78019.isActivated,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
 
     internal static bool _isMaximizedValue(BaseWindowControllerIo controller) =>
@@ -975,7 +979,9 @@ public class WindowScopeIo : InheritedModel<_WindowControllerAspect___window>
             TooltipWindowControllerIo __object78437 => false,
             PopupWindowControllerIo __object78477 => false,
             SatelliteWindowControllerIo __object78515 => false,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
 
     internal static bool _isMinimizedValue(BaseWindowControllerIo controller) =>
@@ -986,7 +992,9 @@ public class WindowScopeIo : InheritedModel<_WindowControllerAspect___window>
             TooltipWindowControllerIo __object78933 => false,
             PopupWindowControllerIo __object78973 => false,
             SatelliteWindowControllerIo __object79011 => false,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
 
     internal static bool _isFullscreenValue(BaseWindowControllerIo controller) =>
@@ -997,7 +1005,9 @@ public class WindowScopeIo : InheritedModel<_WindowControllerAspect___window>
             TooltipWindowControllerIo __object79413 => false,
             PopupWindowControllerIo __object79453 => false,
             SatelliteWindowControllerIo __object79491 => false,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
 
     internal static BaseWindowControllerIo _of(
@@ -1013,7 +1023,7 @@ public class WindowScopeIo : InheritedModel<_WindowControllerAspect___window>
         return InheritedModel<object>
             .inheritFrom<WindowScopeIo>(context, aspect: aspect)!
             .controller;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static BaseWindowControllerIo? _maybeOf(
@@ -1028,7 +1038,7 @@ public class WindowScopeIo : InheritedModel<_WindowControllerAspect___window>
         return InheritedModel<object>
             .inheritFrom<WindowScopeIo>(context, aspect: aspect)
             ?.controller;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static bool _debugCheckHasWindowController(BuildContext context)
@@ -1062,10 +1072,10 @@ public class WindowScopeIo : InheritedModel<_WindowControllerAspect___window>
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget)
@@ -1079,7 +1089,7 @@ public class WindowScopeIo : InheritedModel<_WindowControllerAspect___window>
             || (_isMinimized != __oldWidget._isMinimized)
             || (_isFullscreen != __oldWidget._isFullscreen)
             || (_isDestroyed != __oldWidget._isDestroyed);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool updateShouldNotifyDependent(
@@ -1111,12 +1121,12 @@ public class WindowScopeIo : InheritedModel<_WindowControllerAspect___window>
                         _WindowControllerAspect___window.destroyed => _isDestroyed
                             != __oldWidget._isDestroyed,
                         _ => throw new InvalidOperationException(
-                            "Non-exhaustive Dart switch value."
+                            "Switch expression did not handle the supplied value."
                         ),
                     }
                 )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1154,7 +1164,7 @@ public class WindowRegistryIo : ChangeNotifier
         return context
             .dependOnInheritedWidgetOfExactType<_WindowRegistryScope___window>()
             ?._registry;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static WindowRegistryIo of(BuildContext context)
@@ -1189,10 +1199,10 @@ public class WindowRegistryIo : ChangeNotifier
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return registry!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1210,7 +1220,7 @@ internal class _WindowRegistryScope___window : InheritedWidget
     {
         var __oldWidget = (_WindowRegistryScope___window)oldWidget;
         return !Equals(_registry, __oldWidget._registry);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1302,11 +1312,11 @@ internal class _WindowManagerState___window : State<WindowManagerIo>
                                             )
                                         ),
                                     _ => throw new InvalidOperationException(
-                                        "Non-exhaustive Dart switch value."
+                                        "Switch expression did not handle the supplied value."
                                     ),
                                 };
                                 throw new InvalidOperationException(
-                                    "Dart closure completed without a value."
+                                    "Callback completed without returning a value."
                                 );
                             }
                         )
@@ -1314,10 +1324,12 @@ internal class _WindowManagerState___window : State<WindowManagerIo>
                         .Cast<Widget>()
                         .ToList();
                     return new ViewCollection(views: subViews);
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

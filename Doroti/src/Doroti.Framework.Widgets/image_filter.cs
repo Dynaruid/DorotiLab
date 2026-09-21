@@ -110,6 +110,6 @@ internal class _ImageFilterRenderObject__image_filter : RenderProxyBox
         layer.imageFilter = imageFilter;
         layer.bounds = paintBounds;
         return layer;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

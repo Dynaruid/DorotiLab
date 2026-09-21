@@ -20,11 +20,13 @@ public static partial class Focus_traversalLibrary
                     return false;
                 }
                 return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
         return target;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -146,13 +148,13 @@ public abstract class FocusTraversalPolicy : Diagnosticable
             curve: curve
         );
         return !nodeHadPrimaryFocus;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual FocusNode? findFirstFocus(FocusNode currentNode, bool ignoreCurrentFocus = false)
     {
         return (FocusNode?)_findInitialFocus(currentNode, ignoreCurrentFocus: ignoreCurrentFocus);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual FocusNode findLastFocus(FocusNode currentNode, bool ignoreCurrentFocus = false)
@@ -162,7 +164,7 @@ public abstract class FocusTraversalPolicy : Diagnosticable
             fromEnd: true,
             ignoreCurrentFocus: ignoreCurrentFocus
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual FocusNode _findInitialFocus(
@@ -188,7 +190,7 @@ public abstract class FocusTraversalPolicy : Diagnosticable
         }
         candidate ??= currentNode;
         return candidate;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public abstract FocusNode? findFirstFocusInDirection(
@@ -213,7 +215,7 @@ public abstract class FocusTraversalPolicy : Diagnosticable
     internal static bool _canRequestTraversalFocus(FocusNode node)
     {
         return node.canRequestFocus && !node.skipTraversal;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static IEnumerable<FocusNode> _getDescendantsWithoutExpandingScope(FocusNode node)
@@ -235,7 +237,7 @@ public abstract class FocusTraversalPolicy : Diagnosticable
             }
         }
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static DartMap<FocusNode?, _FocusTraversalGroupInfo__focus_traversal> _findGroups(
@@ -284,7 +286,7 @@ public abstract class FocusTraversalPolicy : Diagnosticable
             }
         }
         return groups;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static List<FocusNode> _sortAllDescendants(FocusScopeNode scope, FocusNode currentNode)
@@ -328,7 +330,9 @@ public abstract class FocusTraversalPolicy : Diagnosticable
             (node) =>
             {
                 return (!Equals(node, currentNode)) && !_canRequestTraversalFocus(node);
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
         DartRuntimePrimitives.Assert(() =>
@@ -360,10 +364,10 @@ public abstract class FocusTraversalPolicy : Diagnosticable
                     + $"These are the different nodes: {differenceLocal}"
             );
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return sortedDescendants;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _moveFocus(FocusNode currentNode, bool forward)
@@ -433,7 +437,9 @@ public abstract class FocusTraversalPolicy : Diagnosticable
                     return false;
                 }
                 default:
-                    throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                    throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    );
             }
         }
         if (!forward && Equals(focusedChildLocal, sortedNodes.First()))
@@ -479,7 +485,9 @@ public abstract class FocusTraversalPolicy : Diagnosticable
                     return false;
                 }
                 default:
-                    throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                    throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    );
             }
         }
         IEnumerable<FocusNode> maybeFlipped = forward
@@ -501,7 +509,7 @@ public abstract class FocusTraversalPolicy : Diagnosticable
             previousNode = node;
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual string toStringShort() => DiagnosticsLibrary.describeIdentity(this);
@@ -517,10 +525,10 @@ public abstract class FocusTraversalPolicy : Diagnosticable
                 .toDiagnosticsNode()
                 .toStringDeep(minLevel: minLevel);
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -529,7 +537,7 @@ public abstract class FocusTraversalPolicy : Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties) { }
@@ -608,7 +616,9 @@ public interface DirectionalFocusTraversalPolicyMixin
                     return _horizontalCompare(target, a, b);
                 }
                 return vertical;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
         return sorted;
@@ -631,7 +641,9 @@ public interface DirectionalFocusTraversalPolicyMixin
                     return _verticalCompare(target, a, b);
                 }
                 return horizontal;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
         return sorted;
@@ -668,7 +680,9 @@ public interface DirectionalFocusTraversalPolicyMixin
                     return _verticalCompare(target, nodeA.rect.center, nodeB.rect.center);
                 }
                 return horizontal;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
         return sorted;
@@ -689,7 +703,9 @@ public interface DirectionalFocusTraversalPolicyMixin
                     return _horizontalCompare(target, nodeA.rect.center, nodeB.rect.center);
                 }
                 return vertical;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
         return sorted;
@@ -776,7 +792,7 @@ public class WidgetOrderTraversalPolicy : FocusTraversalPolicy, DirectionalFocus
                     {
                         return Equals(entry.node, node);
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 );
@@ -796,7 +812,9 @@ public class WidgetOrderTraversalPolicy : FocusTraversalPolicy, DirectionalFocus
             TraversalDirection.down => (true, true),
             TraversalDirection.left => (false, false),
             TraversalDirection.right => (false, true),
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         CollectionsLibrary.mergeSort(
             sorted,
@@ -824,11 +842,13 @@ public class WidgetOrderTraversalPolicy : FocusTraversalPolicy, DirectionalFocus
                         return b.rect.right.CompareTo(a.rect.right);
                     }
                 }
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
         return sorted.FirstOrDefault();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual FocusNode? _findNextFocusInDirection(
@@ -997,10 +1017,12 @@ public class WidgetOrderTraversalPolicy : FocusTraversalPolicy, DirectionalFocus
                     .Last();
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual IEnumerable<FocusNode> _sortAndFilterHorizontally(
@@ -1038,7 +1060,9 @@ public class WidgetOrderTraversalPolicy : FocusTraversalPolicy, DirectionalFocus
                     TraversalDirection.down => throw DartRuntimePrimitives.AsException(
                         new DartArgumentError($"Invalid direction {direction}")
                     ),
-                    _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    _ => throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
                 }
             )
             .ToList()
@@ -1048,7 +1072,7 @@ public class WidgetOrderTraversalPolicy : FocusTraversalPolicy, DirectionalFocus
             compare: (a, b) => a.rect.center.dx.CompareTo(b.rect.center.dx)
         );
         return sorted;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual IEnumerable<FocusNode> _sortAndFilterVertically(
@@ -1085,7 +1109,9 @@ public class WidgetOrderTraversalPolicy : FocusTraversalPolicy, DirectionalFocus
                     TraversalDirection.right => throw DartRuntimePrimitives.AsException(
                         new DartArgumentError($"Invalid direction {direction}")
                     ),
-                    _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    _ => throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
                 }
             )
             .ToList()
@@ -1095,7 +1121,7 @@ public class WidgetOrderTraversalPolicy : FocusTraversalPolicy, DirectionalFocus
             compare: (a, b) => a.rect.center.dy.CompareTo(b.rect.center.dy)
         );
         return sorted;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool _popPolicyDataIfNeeded(
@@ -1154,7 +1180,9 @@ public class WidgetOrderTraversalPolicy : FocusTraversalPolicy, DirectionalFocus
                     groupNode: groupNode
                 );
                 return true;
-                throw new InvalidOperationException("Dart control flow completed without a value.");
+                throw new InvalidOperationException(
+                    "Control flow completed without returning a value."
+                );
             }
             switch (direction)
             {
@@ -1211,7 +1239,7 @@ public class WidgetOrderTraversalPolicy : FocusTraversalPolicy, DirectionalFocus
             invalidateScopeData(nearestScope);
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _pushPolicyData(
@@ -1310,7 +1338,7 @@ public class WidgetOrderTraversalPolicy : FocusTraversalPolicy, DirectionalFocus
             }
         }
         return !nodeHadPrimaryFocus;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _requestFocus(
@@ -1413,7 +1441,7 @@ public class WidgetOrderTraversalPolicy : FocusTraversalPolicy, DirectionalFocus
             );
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool inDirection(FocusNode currentNode, TraversalDirection direction)
@@ -1471,7 +1499,7 @@ public class WidgetOrderTraversalPolicy : FocusTraversalPolicy, DirectionalFocus
             );
         }
         return _onEdgeForDirection(currentNode, focusedChildLocal, groupNodeLocal, direction);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1492,7 +1520,7 @@ public class _ReadingOrderSortData__focus_traversal : Diagnosticable
     internal static TextDirection? _findDirectionality(BuildContext context)
     {
         return context.getInheritedWidgetOfExactType<Directionality>()?.textDirection;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static TextDirection? commonDirectionalityOf(
@@ -1513,7 +1541,7 @@ public class _ReadingOrderSortData__focus_traversal : Diagnosticable
             return list.First().directionality;
         }
         return list.First().directionalAncestors.firstWhere(common.Contains).textDirection;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static void sortWithDirectionality(
@@ -1528,7 +1556,9 @@ public class _ReadingOrderSortData__focus_traversal : Diagnosticable
                 {
                     TextDirection.ltr => a.rect.left.CompareTo(b.rect.left),
                     TextDirection.rtl => b.rect.right.CompareTo(a.rect.right),
-                    _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    _ => throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
                 }
         );
     }
@@ -1550,7 +1580,9 @@ public class _ReadingOrderSortData__focus_traversal : Diagnosticable
                         ?.getElementForInheritedWidgetOfExactType<Directionality>();
                 }
                 return result;
-                throw new InvalidOperationException("Dart control flow completed without a value.");
+                throw new InvalidOperationException(
+                    "Control flow completed without returning a value."
+                );
             }
             _directionalAncestors ??= getDirectionalityAncestors(node.context!);
             return _directionalAncestors!;
@@ -1577,10 +1609,10 @@ public class _ReadingOrderSortData__focus_traversal : Diagnosticable
                 .toDiagnosticsNode()
                 .toStringDeep(minLevel: minLevel);
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -1589,7 +1621,7 @@ public class _ReadingOrderSortData__focus_traversal : Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1621,14 +1653,14 @@ internal class _ReadingOrderDirectionalGroupData__focus_traversal : Diagnosticab
                     _rect = (
                         _rect
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ).expandToInclude(rectLocal);
                 }
             }
             return (
                 _rect
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         }
     }
@@ -1660,7 +1692,9 @@ internal class _ReadingOrderDirectionalGroupData__focus_traversal : Diagnosticab
                 {
                     TextDirection.ltr => a.rect.left.CompareTo(b.rect.left),
                     TextDirection.rtl => b.rect.right.CompareTo(a.rect.right),
-                    _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    _ => throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
                 }
         );
     }
@@ -1678,7 +1712,7 @@ internal class _ReadingOrderDirectionalGroupData__focus_traversal : Diagnosticab
                         {
                             return $"\"{member.node.debugLabel}\"({member.rect})";
                             throw new InvalidOperationException(
-                                "Dart closure completed without a value."
+                                "Callback completed without returning a value."
                             );
                         }
                     )
@@ -1700,10 +1734,10 @@ internal class _ReadingOrderDirectionalGroupData__focus_traversal : Diagnosticab
                 .toDiagnosticsNode()
                 .toStringDeep(minLevel: minLevel);
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -1712,7 +1746,7 @@ internal class _ReadingOrderDirectionalGroupData__focus_traversal : Diagnosticab
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1749,7 +1783,7 @@ public class ReadingOrderTraversalPolicy
             unplaced.Remove(current);
         }
         return sortedList;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static List<_ReadingOrderDirectionalGroupData__focus_traversal> _collectDirectionalityGroups(
@@ -1784,14 +1818,12 @@ public class ReadingOrderTraversalPolicy
                 bandGroup.members,
                 (
                     bandGroup.directionality
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             );
         }
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static _ReadingOrderSortData__focus_traversal _pickNext(
@@ -1820,12 +1852,14 @@ public class ReadingOrderTraversalPolicy
                     {
                         return !item.rect.intersect(band).isEmpty;
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 )
                 .ToList();
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         List<_ReadingOrderSortData__focus_traversal> inBandOfTop = inBand(
                 topmost,
@@ -1843,7 +1877,7 @@ public class ReadingOrderTraversalPolicy
             inBandOfTop,
             (
                 nearestCommonDirectionality
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );
         List<_ReadingOrderDirectionalGroupData__focus_traversal> bandGroups =
@@ -1859,14 +1893,12 @@ public class ReadingOrderTraversalPolicy
             (
                 (
                     nearestCommonDirectionality
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             )
         );
         return bandGroups.First().members.First();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override IEnumerable<FocusNode> sortDescendants(
@@ -1892,7 +1924,7 @@ public class ReadingOrderTraversalPolicy
                     {
                         return Equals(entry.node, node);
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 );
@@ -1912,7 +1944,9 @@ public class ReadingOrderTraversalPolicy
             TraversalDirection.down => (true, true),
             TraversalDirection.left => (false, false),
             TraversalDirection.right => (false, true),
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         CollectionsLibrary.mergeSort(
             sorted,
@@ -1940,11 +1974,13 @@ public class ReadingOrderTraversalPolicy
                         return b.rect.right.CompareTo(a.rect.right);
                     }
                 }
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
         return sorted.FirstOrDefault();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual FocusNode? _findNextFocusInDirection(
@@ -2113,10 +2149,12 @@ public class ReadingOrderTraversalPolicy
                     .Last();
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual IEnumerable<FocusNode> _sortAndFilterHorizontally(
@@ -2154,7 +2192,9 @@ public class ReadingOrderTraversalPolicy
                     TraversalDirection.down => throw DartRuntimePrimitives.AsException(
                         new DartArgumentError($"Invalid direction {direction}")
                     ),
-                    _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    _ => throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
                 }
             )
             .ToList()
@@ -2164,7 +2204,7 @@ public class ReadingOrderTraversalPolicy
             compare: (a, b) => a.rect.center.dx.CompareTo(b.rect.center.dx)
         );
         return sorted;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual IEnumerable<FocusNode> _sortAndFilterVertically(
@@ -2201,7 +2241,9 @@ public class ReadingOrderTraversalPolicy
                     TraversalDirection.right => throw DartRuntimePrimitives.AsException(
                         new DartArgumentError($"Invalid direction {direction}")
                     ),
-                    _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    _ => throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
                 }
             )
             .ToList()
@@ -2211,7 +2253,7 @@ public class ReadingOrderTraversalPolicy
             compare: (a, b) => a.rect.center.dy.CompareTo(b.rect.center.dy)
         );
         return sorted;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool _popPolicyDataIfNeeded(
@@ -2270,7 +2312,9 @@ public class ReadingOrderTraversalPolicy
                     groupNode: groupNode
                 );
                 return true;
-                throw new InvalidOperationException("Dart control flow completed without a value.");
+                throw new InvalidOperationException(
+                    "Control flow completed without returning a value."
+                );
             }
             switch (direction)
             {
@@ -2327,7 +2371,7 @@ public class ReadingOrderTraversalPolicy
             invalidateScopeData(nearestScope);
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _pushPolicyData(
@@ -2426,7 +2470,7 @@ public class ReadingOrderTraversalPolicy
             }
         }
         return !nodeHadPrimaryFocus;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _requestFocus(
@@ -2529,7 +2573,7 @@ public class ReadingOrderTraversalPolicy
             );
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool inDirection(FocusNode currentNode, TraversalDirection direction)
@@ -2587,7 +2631,7 @@ public class ReadingOrderTraversalPolicy
             );
         }
         return _onEdgeForDirection(currentNode, focusedChildLocal, groupNodeLocal, direction);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -2605,7 +2649,7 @@ public abstract class FocusOrder : Diagnosticable, IComparable<FocusOrder>
                 + $"know how to order themselves relative to each other. Comparing {this} with {other}"
         );
         return doCompare(other);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public abstract long doCompare(FocusOrder other);
@@ -2623,10 +2667,10 @@ public abstract class FocusOrder : Diagnosticable, IComparable<FocusOrder>
                 .toDiagnosticsNode()
                 .toStringDeep(minLevel: minLevel);
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -2635,7 +2679,7 @@ public abstract class FocusOrder : Diagnosticable, IComparable<FocusOrder>
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties) { }
@@ -2755,11 +2799,13 @@ public class OrderedTraversalPolicy : FocusTraversalPolicy, DirectionalFocusTrav
                         + "similar orders together."
                 );
                 return a.order.compareTo(b.order);
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
         return ordered.map((info) => info.node).followedBy(unordered.Cast<FocusNode>());
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void invalidateScopeData(FocusScopeNode node)
@@ -2780,7 +2826,7 @@ public class OrderedTraversalPolicy : FocusTraversalPolicy, DirectionalFocusTrav
                     {
                         return Equals(entry.node, node);
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 );
@@ -2800,7 +2846,9 @@ public class OrderedTraversalPolicy : FocusTraversalPolicy, DirectionalFocusTrav
             TraversalDirection.down => (true, true),
             TraversalDirection.left => (false, false),
             TraversalDirection.right => (false, true),
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         CollectionsLibrary.mergeSort(
             sorted,
@@ -2828,11 +2876,13 @@ public class OrderedTraversalPolicy : FocusTraversalPolicy, DirectionalFocusTrav
                         return b.rect.right.CompareTo(a.rect.right);
                     }
                 }
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
         return sorted.FirstOrDefault();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual FocusNode? _findNextFocusInDirection(
@@ -3001,10 +3051,12 @@ public class OrderedTraversalPolicy : FocusTraversalPolicy, DirectionalFocusTrav
                     .Last();
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual IEnumerable<FocusNode> _sortAndFilterHorizontally(
@@ -3042,7 +3094,9 @@ public class OrderedTraversalPolicy : FocusTraversalPolicy, DirectionalFocusTrav
                     TraversalDirection.down => throw DartRuntimePrimitives.AsException(
                         new DartArgumentError($"Invalid direction {direction}")
                     ),
-                    _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    _ => throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
                 }
             )
             .ToList()
@@ -3052,7 +3106,7 @@ public class OrderedTraversalPolicy : FocusTraversalPolicy, DirectionalFocusTrav
             compare: (a, b) => a.rect.center.dx.CompareTo(b.rect.center.dx)
         );
         return sorted;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual IEnumerable<FocusNode> _sortAndFilterVertically(
@@ -3089,7 +3143,9 @@ public class OrderedTraversalPolicy : FocusTraversalPolicy, DirectionalFocusTrav
                     TraversalDirection.right => throw DartRuntimePrimitives.AsException(
                         new DartArgumentError($"Invalid direction {direction}")
                     ),
-                    _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    _ => throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
                 }
             )
             .ToList()
@@ -3099,7 +3155,7 @@ public class OrderedTraversalPolicy : FocusTraversalPolicy, DirectionalFocusTrav
             compare: (a, b) => a.rect.center.dy.CompareTo(b.rect.center.dy)
         );
         return sorted;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool _popPolicyDataIfNeeded(
@@ -3158,7 +3214,9 @@ public class OrderedTraversalPolicy : FocusTraversalPolicy, DirectionalFocusTrav
                     groupNode: groupNode
                 );
                 return true;
-                throw new InvalidOperationException("Dart control flow completed without a value.");
+                throw new InvalidOperationException(
+                    "Control flow completed without returning a value."
+                );
             }
             switch (direction)
             {
@@ -3215,7 +3273,7 @@ public class OrderedTraversalPolicy : FocusTraversalPolicy, DirectionalFocusTrav
             invalidateScopeData(nearestScope);
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _pushPolicyData(
@@ -3314,7 +3372,7 @@ public class OrderedTraversalPolicy : FocusTraversalPolicy, DirectionalFocusTrav
             }
         }
         return !nodeHadPrimaryFocus;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _requestFocus(
@@ -3417,7 +3475,7 @@ public class OrderedTraversalPolicy : FocusTraversalPolicy, DirectionalFocusTrav
             );
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool inDirection(FocusNode currentNode, TraversalDirection direction)
@@ -3475,7 +3533,7 @@ public class OrderedTraversalPolicy : FocusTraversalPolicy, DirectionalFocusTrav
             );
         }
         return _onEdgeForDirection(currentNode, focusedChildLocal, groupNodeLocal, direction);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -3512,17 +3570,17 @@ public class FocusTraversalOrder : InheritedWidget
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return marker!.order;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static FocusOrder? maybeOf(BuildContext context)
     {
         FocusTraversalOrder? marker = context.getInheritedWidgetOfExactType<FocusTraversalOrder>();
         return marker?.order;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget) => false;
@@ -3565,7 +3623,7 @@ public class FocusTraversalGroup : StatefulWidget
     public static FocusTraversalPolicy? maybeOfNode(FocusNode node)
     {
         return _getGroupNode(node)?.policy;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static _FocusTraversalGroupNode__focus_traversal? _getGroupNode(FocusNode node)
@@ -3585,7 +3643,7 @@ public class FocusTraversalGroup : StatefulWidget
             node = node.parent!;
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static FocusTraversalPolicy of(BuildContext context)
@@ -3610,10 +3668,10 @@ public class FocusTraversalGroup : StatefulWidget
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return policy!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static FocusTraversalPolicy? maybeOf(BuildContext context)
@@ -3624,7 +3682,7 @@ public class FocusTraversalGroup : StatefulWidget
             return null;
         }
         return maybeOfNode(node);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override IState createState() =>
@@ -3709,7 +3767,7 @@ internal class _FocusTraversalGroupState__focus_traversal : State<FocusTraversal
             descendantsAreTraversable: widget.descendantsAreTraversable,
             child: widget.child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _handleFocusChanged()
@@ -3769,14 +3827,14 @@ public class NextFocusAction : IntentAction<NextFocusIntent>
     public override object? invoke(NextFocusIntent intent, BuildContext? context = null)
     {
         return Focus_managerLibrary.primaryFocus!.nextFocus();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override KeyEventResult toKeyEventResult(NextFocusIntent intent, object? invokeResult)
     {
         bool __invokeResult = DartRuntimePrimitives.ConvertValue<bool>(invokeResult);
         return __invokeResult ? KeyEventResult.handled : KeyEventResult.skipRemainingHandlers;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -3790,7 +3848,7 @@ public class PreviousFocusAction : IntentAction<PreviousFocusIntent>
     public override object? invoke(PreviousFocusIntent intent, BuildContext? context = null)
     {
         return Focus_managerLibrary.primaryFocus!.previousFocus();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override KeyEventResult toKeyEventResult(
@@ -3800,7 +3858,7 @@ public class PreviousFocusAction : IntentAction<PreviousFocusIntent>
     {
         bool __invokeResult = DartRuntimePrimitives.ConvertValue<bool>(invokeResult);
         return __invokeResult ? KeyEventResult.handled : KeyEventResult.skipRemainingHandlers;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -3844,7 +3902,7 @@ public class DirectionalFocusAction : IntentAction<DirectionalFocusIntent>
         {
             Focus_managerLibrary.primaryFocus!.focusInDirection(intent.direction);
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -3869,6 +3927,6 @@ public class ExcludeFocusTraversal : StatelessWidget
             descendantsAreTraversable: !excluding,
             child: child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

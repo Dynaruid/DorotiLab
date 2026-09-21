@@ -69,7 +69,7 @@ public class AboutListTile : StatelessWidget
                 );
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -106,14 +106,14 @@ public static partial class AboutLibrary
                         applicationLegalese: applicationLegalese,
                         children: children
                     );
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 },
                 routeSettings: routeSettings,
                 anchorPoint: (
                     anchorPoint
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             )
         );
@@ -153,7 +153,9 @@ public static partial class AboutLibrary
                         applicationLegalese: applicationLegalese,
                         children: children
                     );
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 },
                 routeSettings: routeSettings,
                 anchorPoint: anchorPoint
@@ -466,9 +468,11 @@ internal class _AdaptiveAboutDialog__about : AboutDialog
                 };
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -572,7 +576,7 @@ internal class _AdaptiveAboutDialog__about : AboutDialog
             actions: actionsLocal,
             scrollable: true
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -621,7 +625,7 @@ internal class _LicensePageState__about : State<LicensePage>
             detailPageBuilder: _packageLicensePage,
             masterViewBuilder: _packagesView
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _packageLicensePage(
@@ -637,7 +641,7 @@ internal class _LicensePageState__about : State<LicensePage>
             licenseEntries: detailArguments.licenseEntries,
             scrollController: scrollController
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _packagesView(BuildContext __unused0, bool isLateral)
@@ -653,7 +657,7 @@ internal class _LicensePageState__about : State<LicensePage>
             isLateral: isLateral,
             selectedId: selectedId
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -759,7 +763,7 @@ internal class _AboutProgram__about : StatelessWidget
                 )()
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -839,7 +843,7 @@ internal class _PackagesViewState__about : State<_PackagesView__about>
                                             )
                                         );
                                         throw new InvalidOperationException(
-                                            "Dart closure completed without a value."
+                                            "Callback completed without returning a value."
                                         );
                                     }
                                 );
@@ -865,18 +869,20 @@ internal class _PackagesViewState__about : State<_PackagesView__about>
                             }
                             default:
                                 throw new InvalidOperationException(
-                                    "Non-exhaustive Dart switch value."
+                                    "Switch expression did not handle the supplied value."
                                 );
                         }
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _initDefaultDetailPage(_LicenseData__about data, BuildContext context)
@@ -942,10 +948,12 @@ internal class _PackagesViewState__about : State<_PackagesView__about>
                             );
                     }
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -985,7 +993,7 @@ internal class _PackageListTile__about : StatelessWidget
                 onTap: onTap
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1034,7 +1042,7 @@ public class _LicenseData__about
                         }
                         return a.toLowerCase().CompareTo(b.toLowerCase());
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 )
@@ -1307,7 +1315,7 @@ internal class _PackageLicensePageState__about : State<_PackageLicensePage__abou
                                             child: listWidgets[(int)index]
                                         );
                                         throw new InvalidOperationException(
-                                            "Dart closure completed without a value."
+                                            "Callback completed without returning a value."
                                         );
                                     }
                                 )
@@ -1363,7 +1371,7 @@ internal class _PackageLicensePageTitle__about : StatelessWidget
                 ),
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1374,7 +1382,7 @@ public static partial class AboutLibrary
         Title? ancestorTitle = context.findAncestorWidgetOfExactType<Title>();
         return ancestorTitle?.title
             ?? Platform.resolvedExecutable.split(Platform.pathSeparator).Last();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1383,7 +1391,7 @@ public static partial class AboutLibrary
     internal static string _defaultApplicationVersion(BuildContext context)
     {
         return "";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1392,7 +1400,7 @@ public static partial class AboutLibrary
     internal static Widget? _defaultApplicationIcon(BuildContext context)
     {
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1508,7 +1516,7 @@ internal class _MasterDetailFlow__about : StatefulWidget
             return true;
         });
         return new _MasterDetailFlowProxy__about(pageOpener!);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1585,10 +1593,12 @@ internal class _MasterDetailFlowState__about : State<_MasterDetailFlow__about>, 
                     return _lateralUI(context);
                 }
                 return _nestedUI(context);
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _nestedUI(BuildContext context)
@@ -1615,10 +1625,12 @@ internal class _MasterDetailFlowState__about : State<_MasterDetailFlow__about>, 
                         },
                         _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
                             throw new InvalidOperationException(
-                                "Non-exhaustive Dart switch value."
+                                "Switch expression did not handle the supplied value."
                             ),
                     };
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 },
                 onGenerateRoute: (settings) =>
                 {
@@ -1642,11 +1654,13 @@ internal class _MasterDetailFlowState__about : State<_MasterDetailFlow__about>, 
                             throw new Exception($"Unknown route {settings.name}");
                         }
                     }
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual MaterialPageRoute<object?> _masterPageRoute(BuildContext context)
@@ -1666,10 +1680,12 @@ internal class _MasterDetailFlowState__about : State<_MasterDetailFlow__about>, 
                         masterViewBuilder: widget.masterViewBuilder
                     )
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual MaterialPageRoute<object?> _detailPageRoute(object? arguments)
@@ -1686,10 +1702,12 @@ internal class _MasterDetailFlowState__about : State<_MasterDetailFlow__about>, 
                         child: widget.detailPageBuilder(context, arguments, null)
                     )
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _lateralUI(BuildContext context)
@@ -1704,7 +1722,7 @@ internal class _MasterDetailFlowState__about : State<_MasterDetailFlow__about>, 
             masterViewBuilder: (context, isLateral) => widget.masterViewBuilder(context, isLateral),
             title: widget.title
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1731,7 +1749,7 @@ internal class _MasterPage__about : StatelessWidget
             appBar: new AppBar(title: title, leading: leading, actions: new List<Widget>()),
             body: masterViewBuilder!(context, false)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1924,7 +1942,7 @@ internal class _MasterDetailScaffoldState__about
                                         )
                                     );
                                     throw new InvalidOperationException(
-                                        "Dart closure completed without a value."
+                                        "Callback completed without returning a value."
                                     );
                                 }
                             )
@@ -1933,7 +1951,7 @@ internal class _MasterDetailScaffoldState__about
                 ),
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual ConstrainedBox _masterPanel(BuildContext context, bool needsScaffold = false)
@@ -1950,7 +1968,7 @@ internal class _MasterDetailScaffoldState__about
                 )
                 : widget.masterViewBuilder(context, true)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -2003,9 +2021,11 @@ internal class _DetailView__about : StatelessWidget
                         child: _builder(context, _arguments, controller)
                     )
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

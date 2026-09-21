@@ -48,12 +48,12 @@ public class AnimatedIcon : StatelessWidget
             size
             ?? (
                 iconTheme.size
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
         TextDirection textDirectionLocal = textDirection ?? Directionality.of(context);
         double iconOpacity = (
             iconTheme.opacity
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         );
         Color iconColor = color ?? iconTheme.color!;
         if (iconOpacity != 1.0)
@@ -75,7 +75,7 @@ public class AnimatedIcon : StatelessWidget
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -131,7 +131,7 @@ internal class _AnimatedIconPainter__animated_icons : CustomPainter
             || (!Equals(__oldDelegate.paths, paths))
             || (__oldDelegate.scale != scale)
             || (!Equals(__oldDelegate.uiPathFactory, uiPathFactory));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool? hitTest(Offset position) =>
@@ -312,13 +312,13 @@ public static partial class Animated_iconsLibrary
         }
         double targetIdx = (
             Dart_uiLibrary.lerpDouble(0L, checked(values.Count) - 1L, progress)
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         );
         long lowIdx = targetIdx.floor();
         long highIdx = targetIdx.ceil();
         double t = targetIdx - lowIdx;
         return interpolator(values[(int)lowIdx], values[(int)highIdx], t);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 

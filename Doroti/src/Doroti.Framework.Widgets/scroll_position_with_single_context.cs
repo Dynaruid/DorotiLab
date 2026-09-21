@@ -42,7 +42,7 @@ public class ScrollPositionWithSingleContext : ScrollPosition, ScrollActivityDel
     {
         DartRuntimePrimitives.Assert(() => activity!.isScrolling);
         return base.setPixels(newPixels);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void absorb(ScrollPosition other)
@@ -145,7 +145,7 @@ public class ScrollPositionWithSingleContext : ScrollPosition, ScrollActivityDel
         );
         beginActivity(activity);
         return activity.done;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void jumpTo(double pixels)
@@ -209,7 +209,7 @@ public class ScrollPositionWithSingleContext : ScrollPosition, ScrollActivityDel
         beginActivity(holdActivity);
         _heldPreviousVelocity = previousVelocity;
         return holdActivity;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Drag drag(DragStartDetails details, Action dragCancelCallback)
@@ -225,7 +225,7 @@ public class ScrollPositionWithSingleContext : ScrollPosition, ScrollActivityDel
         DartRuntimePrimitives.Assert(() => _currentDrag is null);
         _currentDrag = dragLocal;
         return dragLocal;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void dispose()

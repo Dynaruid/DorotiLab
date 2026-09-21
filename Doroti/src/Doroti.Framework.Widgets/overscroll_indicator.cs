@@ -153,7 +153,7 @@ internal class _GlowingOverscrollIndicatorState__overscroll_indicator
                     (
                         DartCollectionRuntime.NullableMapValue<bool>(_accepted, isLeading)
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
@@ -165,9 +165,7 @@ internal class _GlowingOverscrollIndicatorState__overscroll_indicator
             if (
                 (
                     DartCollectionRuntime.NullableMapValue<bool>(_accepted, isLeading)
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             )
             {
@@ -235,7 +233,7 @@ internal class _GlowingOverscrollIndicatorState__overscroll_indicator
         }
         _lastNotificationType = DartRuntimePrimitives.RuntimeType(notification);
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void dispose()
@@ -273,7 +271,7 @@ internal class _GlowingOverscrollIndicatorState__overscroll_indicator
                 }
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         _tickerModeNotifier?.removeListener(_updateTickers);
         _tickerModeNotifier = null;
@@ -296,7 +294,7 @@ internal class _GlowingOverscrollIndicatorState__overscroll_indicator
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
@@ -327,7 +325,7 @@ internal class _GlowingOverscrollIndicatorState__overscroll_indicator
         )();
         _tickers!.Add(result);
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _removeTicker(_WidgetTicker__ticker_provider ticker)
@@ -623,9 +621,7 @@ public class _GlowController__overscroll_indicator : ChangeNotifier
                 elapsed.inMicroseconds
                 - (
                     _displacementTickerLastElapsed
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ).inMicroseconds
             ).toDouble();
             _displacement =
@@ -686,7 +682,7 @@ public class _GlowController__overscroll_indicator : ChangeNotifier
     public override string ToString()
     {
         return $"_GlowController(color: {color}, axis: {axis.ToString()})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -770,13 +766,13 @@ internal class _GlowingOverscrollIndicatorPainter__overscroll_indicator : Custom
         var __oldDelegate = (_GlowingOverscrollIndicatorPainter__overscroll_indicator)oldDelegate;
         return (!Equals(__oldDelegate.leadingController, leadingController))
             || (!Equals(__oldDelegate.trailingController, trailingController));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string ToString()
     {
         return $"_GlowingOverscrollIndicatorPainter({leadingController}, {trailingController})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -931,7 +927,7 @@ internal class _StretchingOverscrollIndicatorState__overscroll_indicator
                             .dx
                             ?? 0.0,
                         _ => throw new InvalidOperationException(
-                            "Non-exhaustive Dart switch value."
+                            "Switch expression did not handle the supplied value."
                         ),
                     };
                     if (
@@ -961,7 +957,7 @@ internal class _StretchingOverscrollIndicatorState__overscroll_indicator
         }
         _lastNotification = notification;
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void dispose()
@@ -998,7 +994,7 @@ internal class _StretchingOverscrollIndicatorState__overscroll_indicator
                 }
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         _tickerModeNotifier?.removeListener(_updateTickers);
         _tickerModeNotifier = null;
@@ -1049,11 +1045,13 @@ internal class _StretchingOverscrollIndicatorState__overscroll_indicator
                             : Clip.none,
                         child: transform
                     );
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
@@ -1084,7 +1082,7 @@ internal class _StretchingOverscrollIndicatorState__overscroll_indicator
         )();
         _tickers!.Add(result);
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _removeTicker(_WidgetTicker__ticker_provider ticker)
@@ -1206,7 +1204,7 @@ internal class _StretchController__overscroll_indicator : Listenable
             0.0,
             velocity * kTimeCorrectionFactor
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void absorbImpact(double velocity)

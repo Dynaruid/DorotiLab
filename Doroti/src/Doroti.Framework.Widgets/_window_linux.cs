@@ -59,7 +59,7 @@ public class WindowingOwnerLinuxIo : WindowingOwnerIo
             viewHandle: ((WindowControllerLinuxIo)controller)._view.instance.cast<Void>()
         );
         return ((WindowControllerIo)(object?)controller);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DialogWindowControllerIo createDialogWindowController(
@@ -85,7 +85,7 @@ public class WindowingOwnerLinuxIo : WindowingOwnerIo
             viewHandle: ((DialogWindowControllerLinuxIo)controller)._view.instance.cast<Void>()
         );
         return ((DialogWindowControllerIo)(object?)controller);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual TooltipWindowControllerIo createTooltipWindowController(
@@ -112,7 +112,7 @@ public class WindowingOwnerLinuxIo : WindowingOwnerIo
             viewHandle: ((TooltipWindowControllerLinuxIo)controller)._view.instance.cast<Void>()
         );
         return ((TooltipWindowControllerIo)(object?)controller);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual PopupWindowControllerIo createPopupWindowController(
@@ -137,7 +137,7 @@ public class WindowingOwnerLinuxIo : WindowingOwnerIo
             viewHandle: ((PopupWindowControllerLinuxIo)controller)._view.instance.cast<Void>()
         );
         return ((PopupWindowControllerIo)(object?)controller);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual SatelliteWindowControllerIo createSatelliteWindowController(
@@ -152,7 +152,7 @@ public class WindowingOwnerLinuxIo : WindowingOwnerIo
     )
     {
         throw new NotImplementedException("Satellite windows are not yet implemented on Linux.");
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -248,11 +248,11 @@ public class WindowControllerLinuxIo : WindowControllerIo, BaseWindowControllerL
         this._window.resize(
             (
                 size
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ).width.toInt(),
             (
                 size
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ).height.toInt()
         );
     }
@@ -421,11 +421,11 @@ public class DialogWindowControllerLinuxIo : DialogWindowControllerIo, BaseWindo
         this._window.resize(
             (
                 size
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ).width.toInt(),
             (
                 size
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ).height.toInt()
         );
     }
@@ -569,7 +569,7 @@ public class TooltipWindowControllerLinuxIo : TooltipWindowControllerIo, BaseWin
         {
             Rect anchorRect__value23034 = (
                 anchorRect
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             _anchorRect = ((anchorRect__value23034));
         }
@@ -626,10 +626,12 @@ public class TooltipWindowControllerLinuxIo : TooltipWindowControllerIo, BaseWin
                 WindowPositionerAnchorIo.bottomLeft => _GdkGravity___window_linux.southWest,
                 WindowPositionerAnchorIo.topRight => _GdkGravity___window_linux.northEast,
                 WindowPositionerAnchorIo.bottomRight => _GdkGravity___window_linux.southEast,
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual HashSet<_GdkAnchorHint___window_linux> _constraintAdjustmentToHints(
@@ -637,7 +639,7 @@ public class TooltipWindowControllerLinuxIo : TooltipWindowControllerIo, BaseWin
     )
     {
         return new HashSet<_GdkAnchorHint___window_linux>();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override BaseWindowControllerIo parent => this._parent;
@@ -760,7 +762,7 @@ public class PopupWindowControllerLinuxIo : PopupWindowControllerIo, BaseWindowC
         {
             Rect anchorRect__value29691 = (
                 anchorRect
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             _anchorRect = ((anchorRect__value29691));
         }
@@ -826,10 +828,12 @@ public class PopupWindowControllerLinuxIo : PopupWindowControllerIo, BaseWindowC
                 WindowPositionerAnchorIo.bottomLeft => _GdkGravity___window_linux.southWest,
                 WindowPositionerAnchorIo.topRight => _GdkGravity___window_linux.northEast,
                 WindowPositionerAnchorIo.bottomRight => _GdkGravity___window_linux.southEast,
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual HashSet<_GdkAnchorHint___window_linux> _constraintAdjustmentToHints(
@@ -837,7 +841,7 @@ public class PopupWindowControllerLinuxIo : PopupWindowControllerIo, BaseWindowC
     )
     {
         return new HashSet<_GdkAnchorHint___window_linux>();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override BaseWindowControllerIo parent => this._parent;
@@ -980,7 +984,7 @@ public static partial class _window_linuxLibrary
         nativeString.setAll(0L, units);
         nativeString[units.Count] = 0L;
         return buffer;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -994,7 +998,7 @@ public static partial class _window_linuxLibrary
             length++;
         }
         return global::Doroti.Runtime.Dart_convertLibrary.utf8.decode(value.asTypedList(length));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1051,13 +1055,13 @@ public class _GtkWidget___window_linux : _GObject___window_linux
         return new _GdkWindow___window_linux(
             _GtkWidget___window_linux._gtkWidgetGetWindow(this.instance)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual long getScaleFactor()
     {
         return _GtkWidget___window_linux._gtkWidgetGetScaleFactor(this.instance);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual (long, long)? translateCoordinates(
@@ -1077,7 +1081,7 @@ public class _GtkWidget___window_linux : _GObject___window_linux
         (long, long)? result = (translated ? (dest[0L], dest[1L]) : null);
         _gFree(dest);
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void destroy()
@@ -1126,7 +1130,7 @@ public class _GdkWindow___window_linux : _GObject___window_linux
             }
         }
         return states;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void moveToRect(
@@ -1259,7 +1263,7 @@ public class _GtkWindow___window_linux : _GtkContainer___window_linux
         return _window_linuxLibrary._nativeToString(
             _GtkWindow___window_linux._gtkWindowGetTitle(this.instance)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void setDefaultSize(long width, long height)
@@ -1347,13 +1351,13 @@ public class _GtkWindow___window_linux : _GtkContainer___window_linux
         var result = new global::Doroti.Ui.Size(size[0L].toDouble(), size[1L].toDouble());
         _gFree(size);
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool isActive()
     {
         return _GtkWindow___window_linux._gtkWindowIsActive(this.instance);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static abstract Pointer<NativeType> _gtkWindowNew(long type);
@@ -1430,7 +1434,7 @@ public class _FlEngine___window_linux : _GObject___window_linux
         new _FlEngine___window_linux(
             (
                 WidgetsBinding.instance.platformDispatcher.engineId
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );
 }
@@ -1455,7 +1459,7 @@ public class _FlView___window_linux : _GtkWidget___window_linux
     public virtual long getId()
     {
         return _FlView___window_linux._flViewGetId(this.instance);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static abstract Pointer<NativeType> _flViewNewForEngine(Pointer<NativeType> engine);

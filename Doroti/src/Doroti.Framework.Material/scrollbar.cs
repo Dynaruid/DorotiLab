@@ -106,7 +106,7 @@ public class Scrollbar : StatelessWidget
             scrollbarOrientation: scrollbarOrientation,
             child: child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -167,7 +167,9 @@ internal class _MaterialScrollbarState__scrollbar : RawScrollbarState<_MaterialS
                 return widget.trackVisibility
                     ?? _scrollbarTheme.trackVisibility?.resolve(states)
                     ?? false;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
     internal virtual HashSet<WidgetState> _states =>
@@ -234,7 +236,9 @@ internal class _MaterialScrollbarState__scrollbar : RawScrollbarState<_MaterialS
                         _scrollbarTheme.thumbColor?.resolve(states) ?? hoverColor,
                         _hoverAnimationController.value
                     )!;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
         }
@@ -258,13 +262,15 @@ internal class _MaterialScrollbarState__scrollbar : RawScrollbarState<_MaterialS
                                     Brightness.dark => onSurfaceLocal.withOpacity(0.05),
                                     _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
                                         throw new InvalidOperationException(
-                                            "Non-exhaustive Dart switch value."
+                                            "Switch expression did not handle the supplied value."
                                         ),
                                 }
                             );
                     }
                     return new Color(0L);
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
         }
@@ -288,13 +294,15 @@ internal class _MaterialScrollbarState__scrollbar : RawScrollbarState<_MaterialS
                                     Brightness.dark => onSurfaceLocal.withOpacity(0.25),
                                     _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
                                         throw new InvalidOperationException(
-                                            "Non-exhaustive Dart switch value."
+                                            "Switch expression did not handle the supplied value."
                                         ),
                                 }
                             );
                     }
                     return new Color(0L);
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
         }
@@ -315,7 +323,9 @@ internal class _MaterialScrollbarState__scrollbar : RawScrollbarState<_MaterialS
                     return widget.thickness
                         ?? _scrollbarTheme.thickness?.resolve(states)
                         ?? ScrollbarLibrary._kScrollbarThickness;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
         }

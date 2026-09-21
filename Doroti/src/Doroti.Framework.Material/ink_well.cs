@@ -80,15 +80,11 @@ public abstract class InteractiveInkFeature : InkFeature
             canvas.translate(
                 (
                     originOffset
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ).dx,
                 (
                     originOffset
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ).dy
             );
         }
@@ -172,7 +168,7 @@ internal class _ParentInkResponseProvider__ink_well : InheritedWidget
         return context
             .dependOnInheritedWidgetOfExactType<_ParentInkResponseProvider__ink_well>()
             ?.state;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -338,7 +334,7 @@ public class InkResponse : StatelessWidget
             hoverDuration: hoverDuration,
             child: child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool debugCheckContext(BuildContext context)
@@ -348,7 +344,7 @@ public class InkResponse : StatelessWidget
             Widgets.DebugLibrary.debugCheckHasDirectionality(context)
         );
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -786,9 +782,11 @@ public class _InkResponseState__ink_well
                 return widget.hoverDuration ?? Duration.Create(milliseconds: 50L);
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void updateHighlight(
@@ -849,7 +847,7 @@ public class _InkResponseState__ink_well
                                 ?? Theme.of(context).hoverColor,
                             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
                                 throw new InvalidOperationException(
-                                    "Non-exhaustive Dart switch value."
+                                    "Switch expression did not handle the supplied value."
                                 ),
                         }
                     );
@@ -964,7 +962,7 @@ public class _InkResponseState__ink_well
             textDirection: Directionality.of(context)
         );
         return splash;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void handleFocusHighlightModeChange(FocusHighlightMode mode)
@@ -986,7 +984,9 @@ public class _InkResponseState__ink_well
             null => enabled && _hasFocus,
             NavigationMode.directional => _hasFocus,
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
 
     public virtual void updateFocusHighlights()
@@ -996,7 +996,9 @@ public class _InkResponseState__ink_well
             FocusHighlightMode.touch => false,
             FocusHighlightMode.traditional => _shouldShowFocus,
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
         updateHighlight(_HighlightType__ink_well.focus, value: showFocus);
     }
@@ -1167,7 +1169,7 @@ public class _InkResponseState__ink_well
     public virtual bool isWidgetEnabled(_InkResponseStateWidget__ink_well widget)
     {
         return _primaryButtonEnabled(widget) || _secondaryButtonEnabled(widget);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _primaryButtonEnabled(_InkResponseStateWidget__ink_well widget)
@@ -1178,7 +1180,7 @@ public class _InkResponseState__ink_well
             || (widget.onLongPressUp is not null)
             || (widget.onTapUp is not null)
             || (widget.onTapDown is not null);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _secondaryButtonEnabled(_InkResponseStateWidget__ink_well widget)
@@ -1186,7 +1188,7 @@ public class _InkResponseState__ink_well
         return (widget.onSecondaryTap is not null)
             || (widget.onSecondaryTapUp is not null)
             || (widget.onSecondaryTapDown is not null);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool enabled => isWidgetEnabled(widget);
@@ -1220,7 +1222,9 @@ public class _InkResponseState__ink_well
             null => enabled && widget.canRequestFocus,
             NavigationMode.directional => true,
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
 
     public override Widget build(BuildContext context)
@@ -1287,9 +1291,13 @@ public class _InkResponseState__ink_well
                     widget.overlayColor?.resolve(hoveredLocal) ?? widget.hoverColor
                 ) ?? theme.hoverColor,
                 _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                    throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                    throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    ),
             };
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         foreach (_HighlightType__ink_well typeLocal in _highlights.Keys)
         {
@@ -1360,7 +1368,7 @@ public class _InkResponseState__ink_well
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _ensureKeepAlive()

@@ -14,7 +14,7 @@ public static partial class Raw_keyboard_macosLibrary
             return rune;
         }
         return char.ConvertFromUtf32(checked((int)rune)).toLowerCase().codeUnitAt(0L);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -132,9 +132,11 @@ public class RawKeyEventDataMacOs : RawKeyEventData
                 != 0L,
             var __case6433 when Equals(__case6433, KeyboardSide.right) => (modifiers & rightMask)
                 != 0L,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool isModifierPressed(ModifierKey key, KeyboardSide side = KeyboardSide.any)
@@ -199,7 +201,7 @@ public class RawKeyEventDataMacOs : RawKeyEventData
         }
         DartRuntimePrimitives.Assert(() => !result || (getModifierSide(key) is not null));
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override KeyboardSide? getModifierSide(ModifierKey key)
@@ -230,7 +232,9 @@ public class RawKeyEventDataMacOs : RawKeyEventData
                 }
             }
             return null;
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         switch (key)
         {
@@ -259,13 +263,13 @@ public class RawKeyEventDataMacOs : RawKeyEventData
                 return KeyboardSide.all;
             }
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool shouldDispatchEvent()
     {
         return !Equals(logicalKey, LogicalKeyboardKey.fn);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -328,6 +332,6 @@ public class RawKeyEventDataMacOs : RawKeyEventData
         }
         long codeUnit = label.codeUnitAt(0L);
         return (codeUnit >= 63232L) && (codeUnit <= 63743L);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

@@ -69,7 +69,7 @@ internal class _ColorFilterRenderObject__color_filter : RenderProxyBox
         {
             layer!.debugCreator = debugCreator;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
     }
 }

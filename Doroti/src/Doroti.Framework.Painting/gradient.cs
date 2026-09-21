@@ -38,7 +38,7 @@ public static partial class GradientLibrary
             colors[(int)(index + 1L)],
             (t - stops[(int)index]) / (stops[(int)(index + 1L)] - stops[(int)index])
         )!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -79,7 +79,7 @@ public static partial class GradientLibrary
             )
             .ToList();
         return new _ColorsAndStops__gradient(interpolatedColors, interpolatedStops);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -115,7 +115,7 @@ public class GradientRotation : GradientTransform
                 }
             )
         )();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool Equals(object? other)
@@ -142,7 +142,7 @@ public class GradientRotation : GradientTransform
     public override string ToString()
     {
         return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "GradientRotation")}(radians: {Foundation.DebugLibrary.debugFormatDouble(radians)})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -177,7 +177,7 @@ public abstract class Gradient
                 (index) => index * separation
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public abstract Shader createShader(Rect rect, TextDirection? textDirection = null);
@@ -193,7 +193,7 @@ public abstract class Gradient
             stops: stops,
             transform: transform
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Gradient? lerpFrom(Gradient? a, double t)
@@ -203,7 +203,7 @@ public abstract class Gradient
             return scale(t);
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Gradient? lerpTo(Gradient? b, double t)
@@ -213,7 +213,7 @@ public abstract class Gradient
             return scale(1.0 - t);
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static Gradient? lerp(Gradient? a, Gradient? b, double t)
@@ -237,13 +237,13 @@ public abstract class Gradient
         }
         DartRuntimePrimitives.Assert(() => (a is not null) && (b is not null));
         return (t < 0.5) ? a!.scale(1.0 - (t * 2.0)) : b!.scale((t - 0.5) * 2.0);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Float64List? _resolveTransform(Rect bounds, TextDirection? textDirection)
     {
         return transform?.transform(bounds, textDirection: textDirection)?.storage;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -280,7 +280,7 @@ public class LinearGradient : Gradient
             tileMode,
             _resolveTransform(rect, textDirection)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override LinearGradient scale(double factor)
@@ -293,7 +293,7 @@ public class LinearGradient : Gradient
             tileMode: tileMode,
             transform: transform
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override LinearGradient fromColor(Color color)
@@ -308,7 +308,7 @@ public class LinearGradient : Gradient
             tileMode: tileMode,
             transform: transform
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Gradient? lerpFrom(Gradient? a, double t)
@@ -319,7 +319,7 @@ public class LinearGradient : Gradient
             return lerp((LinearGradient?)a__as18648, this, t);
         }
         return base.lerpFrom(a, t);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Gradient? lerpTo(Gradient? b, double t)
@@ -330,7 +330,7 @@ public class LinearGradient : Gradient
             return lerp(this, (LinearGradient?)b__as18826, t);
         }
         return base.lerpTo(b, t);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static LinearGradient? lerp(LinearGradient? a, LinearGradient? b, double t)
@@ -362,7 +362,7 @@ public class LinearGradient : Gradient
             tileMode: (t < 0.5) ? a.tileMode : b.tileMode,
             transform: (t < 0.5) ? a.transform : b.transform
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool Equals(object? other)
@@ -410,7 +410,7 @@ public class LinearGradient : Gradient
             $"tileMode: {tileMode}",
         };
         return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "LinearGradient")}({string.Join(", ", description)})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override LinearGradient withOpacity(double opacity)
@@ -423,7 +423,7 @@ public class LinearGradient : Gradient
             tileMode: tileMode,
             transform: transform
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -467,7 +467,7 @@ public class RadialGradient : Gradient
             focal?.resolve(textDirection).withinRect(rect),
             focalRadius * rect.shortestSide
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override RadialGradient scale(double factor)
@@ -482,7 +482,7 @@ public class RadialGradient : Gradient
             focalRadius: focalRadius,
             transform: transform
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override RadialGradient fromColor(Color color)
@@ -499,7 +499,7 @@ public class RadialGradient : Gradient
             focalRadius: focalRadius,
             transform: transform
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Gradient? lerpFrom(Gradient? a, double t)
@@ -510,7 +510,7 @@ public class RadialGradient : Gradient
             return lerp((RadialGradient?)a__as30225, this, t);
         }
         return base.lerpFrom(a, t);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Gradient? lerpTo(Gradient? b, double t)
@@ -521,7 +521,7 @@ public class RadialGradient : Gradient
             return lerp(this, (RadialGradient?)b__as30403, t);
         }
         return base.lerpTo(b, t);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static RadialGradient? lerp(RadialGradient? a, RadialGradient? b, double t)
@@ -551,9 +551,7 @@ public class RadialGradient : Gradient
                 0.0,
                 (
                     Dart_uiLibrary.lerpDouble(a.radius, b.radius, t)
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             ),
             colors: interpolated.colors,
@@ -564,14 +562,12 @@ public class RadialGradient : Gradient
                 0.0,
                 (
                     Dart_uiLibrary.lerpDouble(a.focalRadius, b.focalRadius, t)
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             ),
             transform: (t < 0.5) ? a.transform : b.transform
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool Equals(object? other)
@@ -624,7 +620,7 @@ public class RadialGradient : Gradient
             $"focalRadius: {Foundation.DebugLibrary.debugFormatDouble(focalRadius)}",
         };
         return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "RadialGradient")}({string.Join(", ", description)})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override RadialGradient withOpacity(double opacity)
@@ -639,7 +635,7 @@ public class RadialGradient : Gradient
             focalRadius: focalRadius,
             transform: transform
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -680,7 +676,7 @@ public class SweepGradient : Gradient
             (endAngle),
             _resolveTransform(rect, textDirection)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override SweepGradient scale(double factor)
@@ -694,7 +690,7 @@ public class SweepGradient : Gradient
             tileMode: tileMode,
             transform: transform
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override SweepGradient fromColor(Color color)
@@ -710,7 +706,7 @@ public class SweepGradient : Gradient
             tileMode: tileMode,
             transform: transform
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Gradient? lerpFrom(Gradient? a, double t)
@@ -721,7 +717,7 @@ public class SweepGradient : Gradient
             return lerp((SweepGradient?)a__as41442, this, t);
         }
         return base.lerpFrom(a, t);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Gradient? lerpTo(Gradient? b, double t)
@@ -732,7 +728,7 @@ public class SweepGradient : Gradient
             return lerp(this, (SweepGradient?)b__as41618, t);
         }
         return base.lerpTo(b, t);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static SweepGradient? lerp(SweepGradient? a, SweepGradient? b, double t)
@@ -762,18 +758,14 @@ public class SweepGradient : Gradient
                 0.0,
                 (
                     Dart_uiLibrary.lerpDouble(a.startAngle, b.startAngle, t)
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             ),
             endAngle: Math.Max(
                 0.0,
                 (
                     Dart_uiLibrary.lerpDouble((a.endAngle), (b.endAngle), t)
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             ),
             colors: interpolated.colors,
@@ -781,7 +773,7 @@ public class SweepGradient : Gradient
             tileMode: (t < 0.5) ? a.tileMode : b.tileMode,
             transform: (t < 0.5) ? a.transform : b.transform
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool Equals(object? other)
@@ -832,7 +824,7 @@ public class SweepGradient : Gradient
             $"tileMode: {tileMode}",
         };
         return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "SweepGradient")}({string.Join(", ", description)})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override SweepGradient withOpacity(double opacity)
@@ -846,6 +838,6 @@ public class SweepGradient : Gradient
             tileMode: tileMode,
             transform: transform
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

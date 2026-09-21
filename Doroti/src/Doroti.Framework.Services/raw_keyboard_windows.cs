@@ -100,9 +100,11 @@ public class RawKeyEventDataWindows : RawKeyEventData
                 != 0L,
             var __case4872 when Equals(__case4872, KeyboardSide.right) => (modifiers & rightMask)
                 != 0L,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool isModifierPressed(ModifierKey key, KeyboardSide side = KeyboardSide.any)
@@ -174,7 +176,7 @@ public class RawKeyEventDataWindows : RawKeyEventData
         }
         DartRuntimePrimitives.Assert(() => !result || (getModifierSide(key) is not null));
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override KeyboardSide? getModifierSide(ModifierKey key)
@@ -205,7 +207,9 @@ public class RawKeyEventDataWindows : RawKeyEventData
                 }
             }
             return null;
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         switch (key)
         {
@@ -234,13 +238,13 @@ public class RawKeyEventDataWindows : RawKeyEventData
                 return KeyboardSide.all;
             }
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool shouldDispatchEvent()
     {
         return keyCode != Raw_keyboard_windowsLibrary._vkProcessKey;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)

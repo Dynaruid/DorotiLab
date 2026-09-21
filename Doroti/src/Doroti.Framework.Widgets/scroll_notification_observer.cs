@@ -58,7 +58,7 @@ public class ScrollNotificationObserver : StatefulWidget
         return context
             .dependOnInheritedWidgetOfExactType<_ScrollNotificationObserverScope__scroll_notification_observer>()
             ?._scrollNotificationObserverState;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static ScrollNotificationObserverState of(BuildContext context)
@@ -82,10 +82,10 @@ public class ScrollNotificationObserver : StatefulWidget
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return observerState!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override IState createState() =>
@@ -111,10 +111,10 @@ public class ScrollNotificationObserverState : State<ScrollNotificationObserver>
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void addListener(Action<ScrollNotification> listener)
@@ -186,14 +186,18 @@ public class ScrollNotificationObserverState : State<ScrollNotificationObserver>
             {
                 _notifyListeners(notification.asScrollUpdate());
                 return false;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             child: new NotificationListener<ScrollNotification>(
                 onNotification: (notification) =>
                 {
                     _notifyListeners(notification);
                     return false;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 },
                 child: new _ScrollNotificationObserverScope__scroll_notification_observer(
                     scrollNotificationObserverState: this,
@@ -201,7 +205,7 @@ public class ScrollNotificationObserverState : State<ScrollNotificationObserver>
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void dispose()

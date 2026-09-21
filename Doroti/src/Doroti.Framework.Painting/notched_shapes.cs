@@ -28,7 +28,7 @@ public class CircularNotchedRectangle : NotchedShape
                     (
                         guest
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
@@ -49,7 +49,7 @@ public class CircularNotchedRectangle : NotchedShape
         double r =
             (
                 guest
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ).width / 2.0;
         var notchRadius = Radius.circular(r);
         var invertMultiplier = inverted ? -1.0 : 1.0;
@@ -60,7 +60,7 @@ public class CircularNotchedRectangle : NotchedShape
             (inverted ? host.bottom : host.top)
             - (
                 guest
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
                 .center
                 .dy;
@@ -82,7 +82,7 @@ public class CircularNotchedRectangle : NotchedShape
         {
             p[(int)i] += (
                 guest
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ).center;
         }
         var path = (
@@ -163,7 +163,7 @@ public class CircularNotchedRectangle : NotchedShape
                 }
             )
         )();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -185,12 +185,12 @@ public class AutomaticNotchedShape : NotchedShape
         {
             Rect guestRect__value6659 = (
                 guest
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             Path guestPath = this.guest!.getOuterPath(((guestRect__value6659)));
             return Dart_uiLibrary.Path.combine(PathOperation.difference, hostPath, guestPath);
         }
         return hostPath;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

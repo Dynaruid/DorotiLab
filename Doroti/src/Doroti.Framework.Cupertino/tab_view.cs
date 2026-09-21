@@ -129,7 +129,7 @@ internal class _CupertinoTabViewState__tab_view : State<CupertinoTabView>
             },
             child: childLocal
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual dynamic? _onGenerateRoute(RouteSettings settings)
@@ -155,7 +155,7 @@ internal class _CupertinoTabViewState__tab_view : State<CupertinoTabView>
             );
         }
         return widget.onGenerateRoute?.Invoke(settings);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual dynamic _onUnknownRoute(RouteSettings settings)
@@ -201,6 +201,6 @@ internal class _CupertinoTabViewState__tab_view : State<CupertinoTabView>
             return true;
         });
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

@@ -61,7 +61,7 @@ internal class _TitleState__title : State<Title>
     public override Widget build(BuildContext context)
     {
         return widget.child;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)

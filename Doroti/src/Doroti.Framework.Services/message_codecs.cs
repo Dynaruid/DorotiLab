@@ -29,7 +29,7 @@ public class StringCodec : MessageCodec<string>
             return null;
         }
         return Dart_convertLibrary.utf8.decode(new Uint8List(message));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual ByteData? encodeMessage(string? message)
@@ -39,7 +39,7 @@ public class StringCodec : MessageCodec<string>
             return null;
         }
         return new ByteData(Dart_convertLibrary.utf8.encode(message));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -54,7 +54,7 @@ public class JSONMessageCodec : MessageCodec<object?>
             return null;
         }
         return new StringCodec().encodeMessage(Dart_convertLibrary.json.encode(message));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual object? decodeMessage(ByteData? message)
@@ -64,7 +64,7 @@ public class JSONMessageCodec : MessageCodec<object?>
             return message;
         }
         return Dart_convertLibrary.json.decode(new StringCodec().decodeMessage(message)!);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -81,7 +81,7 @@ public class JSONMethodCodec : MethodCodec
                 ["args"] = methodCall.arguments,
             }
         )!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual MethodCall decodeMethodCall(ByteData? methodCall)
@@ -145,13 +145,13 @@ public class JSONMethodCodec : MethodCodec
             );
         }
         throw new FormatException($"Invalid envelope: {(List<object>)decoded}");
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual ByteData encodeSuccessEnvelope(object? result)
     {
         return new JSONMessageCodec().encodeMessage(new List<object?> { result })!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual ByteData encodeErrorEnvelope(
@@ -161,7 +161,7 @@ public class JSONMethodCodec : MethodCodec
     )
     {
         return new JSONMessageCodec().encodeMessage(new List<object?> { code, message, details })!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -196,7 +196,7 @@ public class StandardMessageCodec : MessageCodec<object?>
         );
         writeValue(buffer, message);
         return buffer.done();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual object? decodeMessage(ByteData? message)
@@ -212,7 +212,7 @@ public class StandardMessageCodec : MessageCodec<object?>
             throw new FormatException("Message corrupted");
         }
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void writeValue(WriteBuffer buffer, object? value)
@@ -385,7 +385,7 @@ public class StandardMessageCodec : MessageCodec<object?>
         }
         long type = buffer.getUint8();
         return readValueOfType(type, buffer);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual object? readValueOfType(long type, ReadBuffer buffer)
@@ -474,7 +474,7 @@ public class StandardMessageCodec : MessageCodec<object?>
                 throw new FormatException("Message corrupted");
             }
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void writeSize(WriteBuffer buffer, long value)
@@ -508,7 +508,7 @@ public class StandardMessageCodec : MessageCodec<object?>
             var __case20999 when Equals(__case20999, 255L) => buffer.getUint32(),
             _ => value,
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -529,7 +529,7 @@ public class StandardMethodCodec : MethodCodec
         messageCodec.writeValue(buffer, methodCall.method);
         messageCodec.writeValue(buffer, methodCall.arguments);
         return buffer.done();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual MethodCall decodeMethodCall(ByteData? methodCall)
@@ -545,7 +545,7 @@ public class StandardMethodCodec : MethodCodec
         {
             throw new FormatException("Invalid method call");
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual ByteData encodeSuccessEnvelope(object? result)
@@ -556,7 +556,7 @@ public class StandardMethodCodec : MethodCodec
         buffer.putUint8(0L);
         messageCodec.writeValue(buffer, result);
         return buffer.done();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual ByteData encodeErrorEnvelope(
@@ -573,7 +573,7 @@ public class StandardMethodCodec : MethodCodec
         messageCodec.writeValue(buffer, message);
         messageCodec.writeValue(buffer, details);
         return buffer.done();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual object? decodeEnvelope(ByteData envelope)
@@ -610,6 +610,6 @@ public class StandardMethodCodec : MethodCodec
         {
             throw new FormatException("Invalid envelope");
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

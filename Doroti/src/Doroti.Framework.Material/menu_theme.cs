@@ -26,7 +26,7 @@ public class MenuThemeData : Diagnosticable
             style: MenuStyle.lerp(a?.style, b?.style, t),
             submenuIcon: (t < 0.5) ? a?.submenuIcon : b?.submenuIcon
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override int GetHashCode() =>
@@ -82,7 +82,7 @@ public class MenuThemeData : Diagnosticable
             return true;
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -91,7 +91,7 @@ public class MenuThemeData : Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -109,13 +109,13 @@ public class MenuTheme : InheritedTheme
     {
         MenuTheme? menuThemeLocal = context.dependOnInheritedWidgetOfExactType<MenuTheme>();
         return menuThemeLocal?.data ?? Theme.of(context).menuTheme;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget wrap(BuildContext context, Widget child)
     {
         return new MenuTheme(data: data, child: child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget) =>

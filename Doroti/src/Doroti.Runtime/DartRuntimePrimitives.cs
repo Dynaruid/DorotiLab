@@ -10,7 +10,7 @@ public sealed class NoSuchMethodError(object? message = null)
     : Exception(message?.ToString() ?? "No such method.");
 
 public sealed class TypeError(object? message = null)
-    : Exception(message?.ToString() ?? "Dart type error.");
+    : Exception(message?.ToString() ?? "Type error.");
 
 /// <summary>Describes a Future that completed without an explicit await.</summary>
 public sealed record DartFutureDiagnostic(string Operation, Exception Exception);
@@ -62,7 +62,7 @@ public static class DartRuntimePrimitives
     private sealed class DartNullRuntimeType;
 
     public static Exception AsException(object? value) =>
-        value as Exception ?? new Exception(value?.ToString() ?? "Dart threw null.");
+        value as Exception ?? new Exception(value?.ToString() ?? "A null value was thrown.");
 
     public static IEnumerable<T> ConvertEnumerable<T>(System.Collections.IEnumerable values)
     {
@@ -144,7 +144,7 @@ public static class DartRuntimePrimitives
 
     [return: NotNull]
     public static T RequireReference<T>([NotNull] T value) =>
-        value is null ? throw new NullReferenceException("Dart null assertion failed.") : value;
+        value is null ? throw new NullReferenceException("A required value was null.") : value;
 
     /// <summary>Evaluates a Dart null-aware member access without applying <c>?.</c> to an unconstrained result type.</summary>
     public static TResult? NullAware<TTarget, TResult>(
@@ -267,7 +267,7 @@ public static class DartRuntimePrimitives
                 (object)System.Numerics.Vector2.Lerp(beginVector, endVector, checked((float)t));
         }
         throw new TypeError(
-            $"Tween<{typeof(T).Name}> requires a typed IDartTweenValue<T> implementation."
+            $"Tween<{typeof(T).Name}> requires a typed interpolation implementation."
         );
     }
 
@@ -297,7 +297,7 @@ public static class DartRuntimePrimitives
 
     /// <summary>Implements Dart's postfix null assertion for reference types.</summary>
     public static T RequireNotNull<T>(T? value)
-        where T : class => value ?? throw new NullReferenceException("Dart null assertion failed.");
+        where T : class => value ?? throw new NullReferenceException("A required value was null.");
 
     [Conditional("DEBUG")]
     public static void Assert(Func<bool> condition)
@@ -305,7 +305,7 @@ public static class DartRuntimePrimitives
         ArgumentNullException.ThrowIfNull(condition);
         if (!condition())
         {
-            throw new AssertionError("A transpiled Dart assert failed.");
+            throw new AssertionError("A generated assertion failed.");
         }
     }
 
@@ -316,7 +316,7 @@ public static class DartRuntimePrimitives
         ArgumentNullException.ThrowIfNull(message);
         if (!condition())
         {
-            throw new AssertionError(message()?.ToString() ?? "A transpiled Dart assert failed.");
+            throw new AssertionError(message()?.ToString() ?? "A generated assertion failed.");
         }
     }
 

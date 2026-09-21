@@ -64,7 +64,7 @@ public class InputDatePickerFormField : StatefulWidget
                         (
                             initialDate
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     )
@@ -82,9 +82,7 @@ public class InputDatePickerFormField : StatefulWidget
                 (initialDate is null)
                 || !(
                     this.initialDate
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ).isBefore(this.firstDate),
             () =>
                 (object?)
@@ -95,9 +93,7 @@ public class InputDatePickerFormField : StatefulWidget
                 (initialDate is null)
                 || !(
                     this.initialDate
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ).isAfter(this.lastDate),
             () =>
                 (object?)
@@ -111,7 +107,7 @@ public class InputDatePickerFormField : StatefulWidget
                     (
                         this.initialDate
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 ),
@@ -181,9 +177,7 @@ internal class _InputDatePickerFormFieldState__input_date_picker_form_field
             _inputText = widget.calendarDelegate.formatCompactDate(
                 (
                     _selectedDate
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 localizations
             );
@@ -208,7 +202,7 @@ internal class _InputDatePickerFormFieldState__input_date_picker_form_field
     {
         MaterialLocalizations localizations = MaterialLocalizations.of(context);
         return widget.calendarDelegate.parseCompactDate(text, localizations);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _isValidAcceptableDate(DateTime? date)
@@ -216,11 +210,11 @@ internal class _InputDatePickerFormFieldState__input_date_picker_form_field
         return (date is not null)
             && !(
                 date
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ).isBefore(widget.firstDate)
             && !(
                 date
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ).isAfter(widget.lastDate)
             && (
                 (widget.selectableDayPredicate is null)
@@ -228,12 +222,12 @@ internal class _InputDatePickerFormFieldState__input_date_picker_form_field
                     (
                         date
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual string? _validateDate(string? text)
@@ -255,7 +249,7 @@ internal class _InputDatePickerFormFieldState__input_date_picker_form_field
                     (
                         date
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
@@ -266,7 +260,7 @@ internal class _InputDatePickerFormFieldState__input_date_picker_form_field
             }
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _updateDate(string? text, Action<DateTime>? callback)
@@ -279,9 +273,7 @@ internal class _InputDatePickerFormFieldState__input_date_picker_form_field
             callback?.Invoke(
                 (
                     _selectedDate
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             );
         }

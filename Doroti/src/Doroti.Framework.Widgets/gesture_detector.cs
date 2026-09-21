@@ -34,7 +34,7 @@ public abstract class GestureRecognizerFactory<T> : GestureRecognizerFactoryBase
                     $"GestureRecognizerFactory of type {typeof(T)} was used where type {type} was specified."
         );
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -328,7 +328,7 @@ public class GestureDetector : StatelessWidget
                         }
                         return true;
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 )
@@ -702,7 +702,7 @@ public class GestureDetector : StatelessWidget
             excludeFromSemantics: excludeFromSemantics,
             child: child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -798,7 +798,7 @@ public class RawGestureDetectorState : State<RawGestureDetector>
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         _syncAll(gestures);
         if (!widget.excludeFromSemantics)
@@ -829,7 +829,7 @@ public class RawGestureDetectorState : State<RawGestureDetector>
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         semanticsGestureHandler!.validActions = actions;
     }
@@ -934,7 +934,7 @@ public class RawGestureDetectorState : State<RawGestureDetector>
             );
         }
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -1017,7 +1017,7 @@ internal class _GestureSemantics__gesture_detector : SingleChildRenderObjectWidg
         )();
         assignSemantics(renderObject);
         return renderObject;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -1057,14 +1057,14 @@ internal class _DefaultSemanticsGestureDelegate__gesture_detector : SemanticsGes
         }
         Size sizeLocal = DartRuntimePrimitives.ConvertValue<Size>(((RenderBox)renderObject).size);
         return Rect.fromLTWH(0, 0, sizeLocal.width, sizeLocal.height);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static Offset _transformOffsetToGlobal(RenderObject @object, Offset local)
     {
         Matrix4 transform = @object.getTransformTo(null);
         return MatrixUtils.transformPoint(transform, local);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void assignSemantics(RenderSemanticsGestureHandler renderObject)
@@ -1130,7 +1130,7 @@ internal class _DefaultSemanticsGestureDelegate__gesture_detector : SemanticsGes
             );
             tap.onTap?.Invoke();
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Action? _getLongPressHandler(
@@ -1166,7 +1166,7 @@ internal class _DefaultSemanticsGestureDelegate__gesture_detector : SemanticsGes
             );
             longPress.onLongPressUp?.Invoke();
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Action<DragUpdateDetails>? _getHorizontalDragUpdateHandler(
@@ -1276,7 +1276,7 @@ internal class _DefaultSemanticsGestureDelegate__gesture_detector : SemanticsGes
             horizontalHandler?.Invoke(details);
             panHandler?.Invoke(details);
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Action<DragUpdateDetails>? _getVerticalDragUpdateHandler(
@@ -1386,6 +1386,6 @@ internal class _DefaultSemanticsGestureDelegate__gesture_detector : SemanticsGes
             verticalHandler?.Invoke(details);
             panHandler?.Invoke(details);
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

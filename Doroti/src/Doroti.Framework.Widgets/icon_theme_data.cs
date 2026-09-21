@@ -46,7 +46,7 @@ public class IconThemeData : Diagnosticable
                         <= (
                             fill
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     ) && (fill <= 1.0)
@@ -58,7 +58,7 @@ public class IconThemeData : Diagnosticable
                     < (
                         weight
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
         );
@@ -68,7 +68,7 @@ public class IconThemeData : Diagnosticable
                     < (
                         opticalSize
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
         );
@@ -122,7 +122,7 @@ public class IconThemeData : Diagnosticable
             shadows: shadows ?? this.shadows,
             applyTextScaling: applyTextScaling ?? this.applyTextScaling
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual IconThemeData merge(IconThemeData? other)
@@ -142,7 +142,7 @@ public class IconThemeData : Diagnosticable
             shadows: other.shadows,
             applyTextScaling: other.applyTextScaling
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual IconThemeData resolve(BuildContext context) => this;
@@ -178,7 +178,7 @@ public class IconThemeData : Diagnosticable
             shadows: Dart_uiLibrary.Shadow.lerpList(a?.shadows, b?.shadows, t),
             applyTextScaling: (t < 0.5) ? a?.applyTextScaling : b?.applyTextScaling
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool Equals(object? other)
@@ -248,10 +248,10 @@ public class IconThemeData : Diagnosticable
                 .toDiagnosticsNode()
                 .toStringDeep(minLevel: minLevel);
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -260,6 +260,6 @@ public class IconThemeData : Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

@@ -17,7 +17,7 @@ public class SpellCheckSuggestionsToolbarLayoutDelegate : SingleChildLayoutDeleg
     public override BoxConstraints getConstraintsForChild(BoxConstraints constraints)
     {
         return constraints.loosen();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Offset getPositionForChild(Size size, Size childSize)
@@ -28,13 +28,13 @@ public class SpellCheckSuggestionsToolbarLayoutDelegate : SingleChildLayoutDeleg
                 ? (size.height - childSize.height)
                 : anchor.dy
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool shouldRelayout(SingleChildLayoutDelegate oldDelegate)
     {
         var __oldDelegate = (SpellCheckSuggestionsToolbarLayoutDelegate)oldDelegate;
         return !Equals(anchor, __oldDelegate.anchor);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

@@ -322,7 +322,7 @@ public class _OverlayEntryWidgetState__overlay : State<_OverlayEntryWidget__over
                 child: new Builder(builder: widget.entry.builder)
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _markNeedsBuild()
@@ -364,7 +364,7 @@ public class Overlay : StatefulWidget
             alwaysSizeToContent: alwaysSizeToContent,
             child: child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static OverlayState of(
@@ -395,10 +395,10 @@ public class Overlay : StatefulWidget
                 throw DartRuntimePrimitives.AsException(new FlutterError(information));
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return result!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static OverlayState? maybeOf(BuildContext context, bool rootOverlay = false)
@@ -406,7 +406,7 @@ public class Overlay : StatefulWidget
         return _RenderTheaterMarker__overlay
             .maybeOf(context, targetRootOverlay: rootOverlay, createDependency: false)
             ?.overlayEntryWidgetState.widget.overlayState;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override IState createState() =>
@@ -437,7 +437,7 @@ public class OverlayState : State<Overlay>, TickerProviderStateMixin<Overlay>
             return _entries.IndexOf(above) + 1L;
         }
         return checked(_entries.Count);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _debugCanInsertEntry(OverlayEntry entry)
@@ -507,7 +507,7 @@ public class OverlayState : State<Overlay>, TickerProviderStateMixin<Overlay>
                 }
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void insert(
@@ -586,7 +586,7 @@ public class OverlayState : State<Overlay>, TickerProviderStateMixin<Overlay>
                     $"The provided entry used for `below` must be present in the Overlay{((newEntries is not null) ? " and in the `newEntriesList`" : "")}."
         );
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void rearrange(
@@ -671,10 +671,10 @@ public class OverlayState : State<Overlay>, TickerProviderStateMixin<Overlay>
                 }
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _didChangeEntryOpacity()
@@ -725,7 +725,7 @@ public class OverlayState : State<Overlay>, TickerProviderStateMixin<Overlay>
             alwaysSizeToContent: widget.alwaysSizeToContent,
             children: Enumerable.Reverse(childrenLocal).ToList()
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -772,7 +772,7 @@ public class OverlayState : State<Overlay>, TickerProviderStateMixin<Overlay>
         )();
         _tickers!.Add(result);
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _removeTicker(_WidgetTicker__ticker_provider ticker)
@@ -848,7 +848,7 @@ public class OverlayState : State<Overlay>, TickerProviderStateMixin<Overlay>
                 }
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         _tickerModeNotifier?.removeListener(_updateTickers);
         _tickerModeNotifier = null;
@@ -896,7 +896,7 @@ internal class _WrappingOverlayState__overlay : State<_WrappingOverlay__overlay>
                     {
                         return widget.child;
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 );
@@ -937,7 +937,7 @@ internal class _WrappingOverlayState__overlay : State<_WrappingOverlay__overlay>
             alwaysSizeToContent: widget.alwaysSizeToContent,
             initialEntries: new List<OverlayEntry> { _entry }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -972,7 +972,7 @@ public class _Theater__overlay : MultiChildRenderObjectWidget
             clipBehavior: clipBehavior,
             alwaysSizeToContent: alwaysSizeToContent
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -1056,7 +1056,7 @@ public class _TheaterElement__overlay : MultiChildRenderObjectElement
                 Equals(parentDataLocal.overlayEntry, entryAtNewSlot)
             );
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
     }
 
@@ -1101,11 +1101,13 @@ internal interface _RenderTheaterMixin__overlay
             StackParentData __object40716 => alignment
                 .alongOffset(theaterSize - child.getDryLayout(childConstraints))
                 .dy,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         return (
                 baselineOffset
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ) + y;
     }
     public void layoutChild(RenderBox child, BoxConstraints nonPositionedChildConstraints);
@@ -1338,7 +1340,7 @@ public class _RenderTheater__overlay
             _firstOnstageChild,
             (child) => child.getMinIntrinsicWidth(height)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicWidth(double height)
@@ -1347,7 +1349,7 @@ public class _RenderTheater__overlay
             _firstOnstageChild,
             (child) => child.getMaxIntrinsicWidth(height)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicHeight(double width)
@@ -1356,7 +1358,7 @@ public class _RenderTheater__overlay
             _firstOnstageChild,
             (child) => child.getMinIntrinsicHeight(width)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicHeight(double width)
@@ -1365,7 +1367,7 @@ public class _RenderTheater__overlay
             _firstOnstageChild,
             (child) => child.getMaxIntrinsicHeight(width)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
@@ -1392,7 +1394,7 @@ public class _RenderTheater__overlay
             );
         }
         return baselineOffset.offset;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Size computeDryLayout(BoxConstraints constraints)
@@ -1402,7 +1404,7 @@ public class _RenderTheater__overlay
             return constraints.biggest;
         }
         return _findSizeDeterminingChild().getDryLayout(constraints);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual IEnumerable<RenderBox> _childrenInPaintOrder()
@@ -1533,7 +1535,7 @@ public class _RenderTheater__overlay
                 }
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paint(PaintingContext context, Offset offset)
@@ -1612,9 +1614,11 @@ public class _RenderTheater__overlay
                 return Offset.zero & size;
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -1684,7 +1688,7 @@ public class _RenderTheater__overlay
             count += 1L;
         }
         return new List<DiagnosticsNode>();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool _debugUltimatePreviousSiblingOf(RenderBox child, RenderBox? equals = null)
@@ -1697,7 +1701,7 @@ public class _RenderTheater__overlay
             childParentData = ((StackParentData?)child.parentData!)!;
         }
         return Equals(child, equals);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool _debugUltimateNextSiblingOf(RenderBox child, RenderBox? equals = null)
@@ -1710,7 +1714,7 @@ public class _RenderTheater__overlay
             childParentData = ((StackParentData?)child.parentData!)!;
         }
         return Equals(child, equals);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual long childCount => _childCount;
@@ -1753,10 +1757,10 @@ public class _RenderTheater__overlay
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _insertIntoChildList(RenderBox child, RenderBox? after = null)
@@ -1936,7 +1940,7 @@ public class _RenderTheater__overlay
         DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         var childParentData = ((StackParentData?)child.parentData!)!;
         return childParentData.previousSibling;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual RenderBox? childAfter(RenderBox child)
@@ -1944,7 +1948,7 @@ public class _RenderTheater__overlay
         DartRuntimePrimitives.Assert(() => Equals(child.parent, this));
         var childParentData = ((StackParentData?)child.parentData!)!;
         return childParentData.nextSibling;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? computeDistanceToActualBaseline(TextBaseline baseline)
@@ -1962,7 +1966,7 @@ public class _RenderTheater__overlay
             );
         }
         return baselineOffset.offset;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void layoutChild(RenderBox child, BoxConstraints nonPositionedChildConstraints)
@@ -1997,7 +2001,9 @@ public class _RenderTheater__overlay
             bool childHitTest(BoxHitTestResult result, Offset position)
             {
                 return localChild.hitTest(result, position: position);
-                throw new InvalidOperationException("Dart control flow completed without a value.");
+                throw new InvalidOperationException(
+                    "Control flow completed without returning a value."
+                );
             }
             isHit = result.addWithPaintOffset(
                 offset: childParentData.offset,
@@ -2006,7 +2012,7 @@ public class _RenderTheater__overlay
             );
         }
         return isHit;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -2032,9 +2038,7 @@ public class OverlayPortalController
             || (
                 (
                     _zOrderIndex
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) < now
             )
         );
@@ -2043,14 +2047,12 @@ public class OverlayPortalController
             || (
                 (
                     _attachTarget!._zOrderIndex
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) < now
             )
         );
         return now;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void show()
@@ -2114,7 +2116,7 @@ public class OverlayPortalController
         var label = (debugLabel is null) ? "" : $"({debugLabel})";
         var isDetached = (_attachTarget is not null) ? "" : " DETACHED";
         return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "OverlayPortalController")}{label}{isDetached}";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -2196,7 +2198,7 @@ internal class _OverlayPortalState__overlay : State<OverlayPortal>
     {
         return Equals(locationCache._childModel, marker.overlayEntryWidgetState)
             && Equals(locationCache._theater, marker.theater);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual _OverlayEntryLocation__overlay _getLocation(
@@ -2227,7 +2229,7 @@ internal class _OverlayPortalState__overlay : State<OverlayPortal>
         );
         DartRuntimePrimitives.Assert(() => newLocation._zOrderIndex == zOrderIndex);
         return _locationCache = newLocation;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void initState()
@@ -2258,13 +2260,13 @@ internal class _OverlayPortalState__overlay : State<OverlayPortal>
                     (
                         controllerZOrderIndex
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                     > (
                         zOrderIndex
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
@@ -2361,9 +2363,7 @@ internal class _OverlayPortalState__overlay : State<OverlayPortal>
             (
                 (
                     zOrderIndex
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             ),
             widget.overlayLocation
@@ -2387,7 +2387,7 @@ internal class _OverlayPortalState__overlay : State<OverlayPortal>
             ),
             child: new Semantics(traversalParentIdentifier: this, child: widget.child)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -2503,7 +2503,7 @@ public class _OverlayEntryLocation__overlay : DartLinkedListEntry<_OverlayEntryL
         throw new InvalidOperationException(
             $"{this} is already disposed. Stack trace: {_debugMarkLocationInvalidStackTrace}"
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _debugMarkLocationInvalid()
@@ -2513,7 +2513,7 @@ public class _OverlayEntryLocation__overlay : DartLinkedListEntry<_OverlayEntryL
         {
             _debugMarkLocationInvalidStackTrace = new System.Diagnostics.StackTrace(true);
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
     }
 
@@ -2543,7 +2543,7 @@ internal class _RenderTheaterMarker__overlay : InheritedWidget
         var __oldWidget = (_RenderTheaterMarker__overlay)oldWidget;
         return (!Equals(__oldWidget.theater, theater))
             || (!Equals(__oldWidget.overlayEntryWidgetState, overlayEntryWidgetState));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static _RenderTheaterMarker__overlay of(
@@ -2576,7 +2576,7 @@ internal class _RenderTheaterMarker__overlay : InheritedWidget
                 }
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static _RenderTheaterMarker__overlay? maybeOf(
@@ -2614,7 +2614,7 @@ internal class _RenderTheaterMarker__overlay : InheritedWidget
             );
         }
         return LookupBoundary.getInheritedWidgetOfExactType<_RenderTheaterMarker__overlay>(context);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static InheritedElement? _rootRenderTheaterMarkerOf(
@@ -2638,11 +2638,13 @@ internal class _RenderTheaterMarker__overlay : InheritedWidget
                         element
                     );
                 return false;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
         return (ancestor is null) ? theaterMarkerElement : _rootRenderTheaterMarkerOf(ancestor);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -2825,7 +2827,7 @@ internal class _DeferredLayout__overlay : SingleChildRenderObjectWidget
     public virtual _RenderLayoutSurrogateProxyBox__overlay getLayoutParent(BuildContext context)
     {
         return context.findAncestorRenderObjectOfType<_RenderLayoutSurrogateProxyBox__overlay>()!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override RenderObject createRenderObject(BuildContext context)
@@ -2834,7 +2836,7 @@ internal class _DeferredLayout__overlay : SingleChildRenderObjectWidget
         var renderObject = new _RenderDeferredLayoutBox__overlay(parent, childIdentifier);
         parent._deferredLayoutChild = renderObject;
         return renderObject;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -2898,7 +2900,7 @@ public class _RenderDeferredLayoutBox__overlay : RenderProxyBox, _RenderTheaterM
             : Enumerable
                 .Range(0, checked((int)1L))
                 .Select(__index => ((Func<long, RenderBox>)((i) => childLocal))(checked(__index)));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual IEnumerable<RenderBox> _childrenInHitTestOrder() => _childrenInPaintOrder();
@@ -2951,7 +2953,7 @@ public class _RenderDeferredLayoutBox__overlay : RenderProxyBox, _RenderTheaterM
             theater._resolvedAlignment,
             baseline
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override RenderObject? debugLayoutParent =>
@@ -3002,7 +3004,7 @@ public class _RenderDeferredLayoutBox__overlay : RenderProxyBox, _RenderTheaterM
         {
             _debugMutationsLocked = true;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         DartRuntimePrimitives.Assert(() => parent is not null);
         RenderBox? childLocal = child;
@@ -3017,7 +3019,7 @@ public class _RenderDeferredLayoutBox__overlay : RenderProxyBox, _RenderTheaterM
         {
             _debugMutationsLocked = false;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         _needsLayout = false;
     }
@@ -3063,7 +3065,7 @@ public class _RenderDeferredLayoutBox__overlay : RenderProxyBox, _RenderTheaterM
             );
         }
         return baselineOffset.offset;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void layoutChild(RenderBox child, BoxConstraints nonPositionedChildConstraints)
@@ -3098,7 +3100,9 @@ public class _RenderDeferredLayoutBox__overlay : RenderProxyBox, _RenderTheaterM
             bool childHitTest(BoxHitTestResult result, Offset position)
             {
                 return localChild.hitTest(result, position: position);
-                throw new InvalidOperationException("Dart control flow completed without a value.");
+                throw new InvalidOperationException(
+                    "Control flow completed without returning a value."
+                );
             }
             isHit = result.addWithPaintOffset(
                 offset: childParentData.offset,
@@ -3107,7 +3111,7 @@ public class _RenderDeferredLayoutBox__overlay : RenderProxyBox, _RenderTheaterM
             );
         }
         return isHit;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paint(PaintingContext context, Offset offset)
@@ -3149,7 +3153,7 @@ public class _RenderLayoutSurrogateProxyBox__overlay : RenderProxyBox
         {
             _debugIsFirstAttach = false;
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
     }
 
@@ -3237,7 +3241,7 @@ internal class _RenderLayoutBuilder__overlay
             : Enumerable
                 .Range(0, checked((int)1L))
                 .Select(__index => ((Func<long, RenderBox>)((i) => childLocal))(checked(__index)));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual IEnumerable<RenderBox> _childrenInHitTestOrder() => _childrenInPaintOrder();
@@ -3304,7 +3308,7 @@ internal class _RenderLayoutBuilder__overlay
                 DartRuntimePrimitives.Assert(() => node.depth > theaterLocal.depth);
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         DartRuntimePrimitives.Assert(() => layoutSurrogate.hasSize);
         DartRuntimePrimitives.Assert(() => layoutSurrogate.child?.hasSize ?? true);
@@ -3320,7 +3324,7 @@ internal class _RenderLayoutBuilder__overlay
         Size overlayPortalSize = parentLocal._layoutSurrogate.size;
         Matrix4 paintTransform = layoutSurrogate.getTransformTo(theaterLocal);
         return OverlayChildLayoutInfo.Create_((overlayPortalSize, paintTransform, size));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void layoutCallback()
@@ -3349,7 +3353,7 @@ internal class _RenderLayoutBuilder__overlay
             debugCannotComputeDryLayout(reason: _speculativeLayoutErrorMessage)
         );
         return 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicWidth(double height)
@@ -3358,7 +3362,7 @@ internal class _RenderLayoutBuilder__overlay
             debugCannotComputeDryLayout(reason: _speculativeLayoutErrorMessage)
         );
         return 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicHeight(double width)
@@ -3367,7 +3371,7 @@ internal class _RenderLayoutBuilder__overlay
             debugCannotComputeDryLayout(reason: _speculativeLayoutErrorMessage)
         );
         return 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicHeight(double width)
@@ -3376,7 +3380,7 @@ internal class _RenderLayoutBuilder__overlay
             debugCannotComputeDryLayout(reason: _speculativeLayoutErrorMessage)
         );
         return 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Size computeDryLayout(BoxConstraints constraints)
@@ -3385,7 +3389,7 @@ internal class _RenderLayoutBuilder__overlay
             debugCannotComputeDryLayout(reason: _speculativeLayoutErrorMessage)
         );
         return Size.zero;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
@@ -3397,7 +3401,7 @@ internal class _RenderLayoutBuilder__overlay
             )
         );
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _frameCallback(Duration __unused0)
@@ -3405,7 +3409,7 @@ internal class _RenderLayoutBuilder__overlay
         DartRuntimePrimitives.Assert(() =>
             !(
                 debugDisposed
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );
         _callbackId = null;
@@ -3445,7 +3449,7 @@ internal class _RenderLayoutBuilder__overlay
             );
         }
         return baselineOffset.offset;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void layoutChild(RenderBox child, BoxConstraints nonPositionedChildConstraints)
@@ -3480,7 +3484,9 @@ internal class _RenderLayoutBuilder__overlay
             bool childHitTest(BoxHitTestResult result, Offset position)
             {
                 return localChild.hitTest(result, position: position);
-                throw new InvalidOperationException("Dart control flow completed without a value.");
+                throw new InvalidOperationException(
+                    "Control flow completed without returning a value."
+                );
             }
             isHit = result.addWithPaintOffset(
                 offset: childParentData.offset,
@@ -3489,7 +3495,7 @@ internal class _RenderLayoutBuilder__overlay
             );
         }
         return isHit;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void paint(PaintingContext context, Offset offset)

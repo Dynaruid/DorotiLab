@@ -94,7 +94,7 @@ public class TextTheme : Diagnosticable
             labelMedium: labelMedium ?? this.labelMedium,
             labelSmall: labelSmall ?? this.labelSmall
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual TextTheme merge(TextTheme? other)
@@ -120,7 +120,7 @@ public class TextTheme : Diagnosticable
             labelMedium: labelMedium?.merge(other.labelMedium) ?? other.labelMedium,
             labelSmall: labelSmall?.merge(other.labelSmall) ?? other.labelSmall
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual TextTheme apply(
@@ -399,7 +399,7 @@ public class TextTheme : Diagnosticable
                 package: package
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static TextTheme lerp(TextTheme? a, TextTheme? b, double t)
@@ -425,7 +425,7 @@ public class TextTheme : Diagnosticable
             labelMedium: TextStyle.lerp(a?.labelMedium, b?.labelMedium, t),
             labelSmall: TextStyle.lerp(a?.labelSmall, b?.labelSmall, t)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static TextTheme of(BuildContext context) => Theme.of(context).textTheme;
@@ -614,7 +614,7 @@ public class TextTheme : Diagnosticable
             return true;
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -623,6 +623,6 @@ public class TextTheme : Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

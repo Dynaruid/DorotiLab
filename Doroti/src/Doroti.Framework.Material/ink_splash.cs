@@ -44,7 +44,7 @@ public static partial class Ink_splashLibrary
             return () => Offset.zero & referenceBox.size;
         }
         return null;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -63,7 +63,7 @@ public static partial class Ink_splashLibrary
             return _getSplashRadiusForPositionInSize(sizeLocal, position);
         }
         return Material.defaultSplashRadius;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -76,7 +76,7 @@ public static partial class Ink_splashLibrary
         double d3 = (position - bounds.bottomLeft(Offset.zero)).distance;
         double d4 = (position - bounds.bottomRight(Offset.zero)).distance;
         return Math.Max(Math.Max(d1, d2), Math.Max(d3, d4)).ceilToDouble();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -111,7 +111,7 @@ internal class _InkSplashFactory__ink_splash : InteractiveInkFeatureFactory
             onRemoved: onRemoved,
             textDirection: textDirection
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -160,9 +160,7 @@ public class InkSplash : InteractiveInkFeature
                 rectCallback,
                 (
                     position
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             );
         _clipCallback = Ink_splashLibrary._getClipCallback(
@@ -274,7 +272,7 @@ public class InkSplash : InteractiveInkFeature
             paint: paintLocal,
             center: (
                 centerLocal
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             textDirection: _textDirection,
             radius: _radius.value,

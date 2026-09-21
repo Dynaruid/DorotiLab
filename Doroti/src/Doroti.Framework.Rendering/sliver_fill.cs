@@ -65,7 +65,7 @@ public class RenderSliverFillViewport : RenderSliverFixedExtentBoxAdaptor
         {
             double childStart = (
                 ((SliverMultiBoxAdaptorParentData?)(object?)child.parentData!)!.layoutOffset
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             if (childStart >= visibleEnd)
             {
@@ -140,7 +140,9 @@ public class RenderSliverFillRemaining : RenderSliverSingleBoxAdapter
             {
                 Axis.horizontal => child!.getMaxIntrinsicWidth(constraintsLocal.crossAxisExtent),
                 Axis.vertical => child!.getMaxIntrinsicHeight(constraintsLocal.crossAxisExtent),
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             };
             extent = Math.Max(extent, childExtent);
             child!.layout(constraintsLocal.asBoxConstraints(minExtent: extent, maxExtent: extent));
@@ -183,7 +185,9 @@ public class RenderSliverFillRemainingAndOverscroll : RenderSliverSingleBoxAdapt
             {
                 Axis.horizontal => child!.getMaxIntrinsicWidth(constraintsLocal.crossAxisExtent),
                 Axis.vertical => child!.getMaxIntrinsicHeight(constraintsLocal.crossAxisExtent),
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             };
             extent = Math.Max(extent, childExtent);
             maxExtentLocal = Math.Max(extent, maxExtentLocal);

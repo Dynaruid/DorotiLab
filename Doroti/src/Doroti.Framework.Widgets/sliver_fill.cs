@@ -40,7 +40,7 @@ public class SliverFillViewport : StatelessWidget
                 @delegate: @delegate
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -69,7 +69,7 @@ internal class _SliverFillViewportRenderObjectWidget__sliver_fill : SliverMultiB
             viewportFraction: viewportFraction,
             allowImplicitScrolling: allowImplicitScrolling
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -154,7 +154,9 @@ public class _RenderSliverFractionalPadding__sliver_fill : RenderSliverEdgeInset
         {
             Axis.horizontal => EdgeInsets.CreateSymmetric(horizontal: paddingValue),
             Axis.vertical => EdgeInsets.CreateSymmetric(vertical: paddingValue),
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
         return;
     }
@@ -196,7 +198,7 @@ public class SliverFillRemaining : StatelessWidget
             return new _SliverFillRemainingWithoutScrollable__sliver_fill(child: child);
         }
         return new _SliverFillRemainingAndOverscroll__sliver_fill(child: child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)

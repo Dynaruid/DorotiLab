@@ -124,7 +124,7 @@ public class ScrollController : ChangeNotifier
             oldPosition: oldPosition,
             debugLabel: debugLabel
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string ToString()
@@ -132,7 +132,7 @@ public class ScrollController : ChangeNotifier
         var description = new List<string>();
         debugFillDescription(description);
         return $"{DiagnosticsLibrary.describeIdentity(this)}({string.Join(", ", description)})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void debugFillDescription(List<string> description)

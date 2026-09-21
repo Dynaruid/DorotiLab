@@ -119,7 +119,7 @@ public class SpringSimulation : Simulation
         {
             return _endPosition + _solution.x(time);
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double dx(double time)
@@ -132,14 +132,14 @@ public class SpringSimulation : Simulation
         {
             return _solution.dx(time);
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool isDone(double time)
     {
         return UtilsLibrary.nearZero(_solution.x(time), tolerance.distance)
             && UtilsLibrary.nearZero(_solution.dx(time), tolerance.velocity);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override string ToString() =>
@@ -221,14 +221,14 @@ internal class _CriticalSolution__spring_simulation : _SpringSolution__spring_si
     public virtual double x(double time)
     {
         return (_c1 + (_c2 * time)) * Dart_mathLibrary.pow(Dart_mathLibrary.e, _r * time);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double dx(double time)
     {
         var power = (double)Dart_mathLibrary.pow(Dart_mathLibrary.e, _r * time);
         return (_r * (_c1 + (_c2 * time)) * power) + (_c2 * power);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual SpringType type => SpringType.criticallyDamped;
@@ -267,14 +267,14 @@ internal class _OverdampedSolution__spring_simulation : _SpringSolution__spring_
     {
         return (_c1 * Dart_mathLibrary.pow(Dart_mathLibrary.e, _r1 * time))
             + (_c2 * Dart_mathLibrary.pow(Dart_mathLibrary.e, _r2 * time));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double dx(double time)
     {
         return (_c1 * _r1 * Dart_mathLibrary.pow(Dart_mathLibrary.e, _r1 * time))
             + (_c2 * _r2 * Dart_mathLibrary.pow(Dart_mathLibrary.e, _r2 * time));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual SpringType type => SpringType.overDamped;
@@ -315,7 +315,7 @@ internal class _UnderdampedSolution__spring_simulation : _SpringSolution__spring
     {
         return (double)Dart_mathLibrary.pow(Dart_mathLibrary.e, _r * time)
             * ((_c1 * Dart_mathLibrary.cos(_w * time)) + (_c2 * Dart_mathLibrary.sin(_w * time)));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double dx(double time)
@@ -325,7 +325,7 @@ internal class _UnderdampedSolution__spring_simulation : _SpringSolution__spring
         double sine = Dart_mathLibrary.sin(_w * time);
         return (power * ((_c2 * _w * cosine) - (_c1 * _w * sine)))
             + (_r * power * ((_c2 * sine) + (_c1 * cosine)));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual SpringType type => SpringType.underDamped;

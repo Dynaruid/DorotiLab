@@ -246,7 +246,7 @@ public class StreamBuilder<T> : StreamBuilderBase<T, AsyncSnapshot<T>>
     public override AsyncSnapshot<T> afterData(AsyncSnapshot<T> current, T data)
     {
         return AsyncSnapshot<T>.CreateWithData(ConnectionState.active, data);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override AsyncSnapshot<T> afterError(
@@ -256,7 +256,7 @@ public class StreamBuilder<T> : StreamBuilderBase<T, AsyncSnapshot<T>>
     )
     {
         return AsyncSnapshot<T>.CreateWithError(ConnectionState.active, error, stackTrace);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override AsyncSnapshot<T> afterDone(AsyncSnapshot<T> current) =>
@@ -373,7 +373,7 @@ internal class _FutureBuilderState__async<T> : State<FutureBuilder<T>>
                         }
                         return true;
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     });
                 }

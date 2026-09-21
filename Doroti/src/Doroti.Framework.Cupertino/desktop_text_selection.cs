@@ -53,7 +53,7 @@ public class CupertinoDesktopTextSelectionControls : TextSelectionControls
     public override Size getHandleSize(double textLineHeight)
     {
         return Size.zero;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget buildToolbar(
@@ -107,7 +107,7 @@ public class CupertinoDesktopTextSelectionControls : TextSelectionControls
             lastSecondaryTapDownPosition: lastSecondaryTapDownPosition,
             textLineHeight: textLineHeight
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget buildHandle(
@@ -118,13 +118,13 @@ public class CupertinoDesktopTextSelectionControls : TextSelectionControls
     )
     {
         return SizedBox.CreateShrink();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Offset getHandleAnchor(TextSelectionHandleType type, double textLineHeight)
     {
         return Offset.zero;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void handleSelectAll(TextSelectionDelegate @delegate)
@@ -286,6 +286,6 @@ public class _CupertinoDesktopTextSelectionControlsToolbarState__desktop_text_se
             anchor: widget.lastSecondaryTapDownPosition ?? midpointAnchor,
             children: items
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

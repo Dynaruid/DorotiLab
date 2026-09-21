@@ -41,7 +41,7 @@ public class DefaultTextStyle : InheritedTheme
                     (
                         maxLines
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) > 0L
                 )
@@ -98,16 +98,18 @@ public class DefaultTextStyle : InheritedTheme
                     textHeightBehavior: textHeightBehavior ?? parent.textHeightBehavior,
                     child: child
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static DefaultTextStyle of(BuildContext context)
     {
         return context.dependOnInheritedWidgetOfExactType<DefaultTextStyle>() ?? CreateFallback();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget)
@@ -120,7 +122,7 @@ public class DefaultTextStyle : InheritedTheme
             || (maxLines != __oldWidget.maxLines)
             || (!Equals(textWidthBasis, __oldWidget.textWidthBasis))
             || (!Equals(textHeightBehavior, __oldWidget.textHeightBehavior));
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget wrap(BuildContext context, Widget child)
@@ -135,7 +137,7 @@ public class DefaultTextStyle : InheritedTheme
             textHeightBehavior: textHeightBehavior,
             child: child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -184,7 +186,7 @@ internal class _NullWidget__text : StatelessWidget
                     + "when no enclosing default text style is present in a BuildContext."
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -207,7 +209,7 @@ public class DefaultTextHeightBehavior : InheritedTheme
         return context
             .dependOnInheritedWidgetOfExactType<DefaultTextHeightBehavior>()
             ?.textHeightBehavior;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static TextHeightBehavior of(BuildContext context)
@@ -231,23 +233,23 @@ public class DefaultTextHeightBehavior : InheritedTheme
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return behavior!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget)
     {
         var __oldWidget = (DefaultTextHeightBehavior)oldWidget;
         return !Equals(textHeightBehavior, __oldWidget.textHeightBehavior);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget wrap(BuildContext context, Widget child)
     {
         return new DefaultTextHeightBehavior(textHeightBehavior: textHeightBehavior, child: child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -493,7 +495,7 @@ public class Text : StatelessWidget
             );
         }
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -637,7 +639,7 @@ internal class _SelectableTextContainerState__text : State<_SelectableTextContai
                 text: widget.text
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -707,7 +709,7 @@ internal class _RichText__text : StatelessWidget
             selectionColor: selectionColor,
             text: text
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -733,7 +735,7 @@ internal class _SelectableTextContainerDelegate__text : StaticSelectionContainer
         SelectionResult result = _handleSelectParagraph(@event);
         base.didReceiveSelectionBoundaryEvents();
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual SelectionResult _handleSelectParagraph(SelectParagraphSelectionEvent @event)
@@ -813,7 +815,7 @@ internal class _SelectableTextContainerDelegate__text : StaticSelectionContainer
                     (
                         lastSelectionResult
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ),
                     SelectionResult.next
@@ -835,7 +837,7 @@ internal class _SelectableTextContainerDelegate__text : StaticSelectionContainer
                     (
                         lastSelectionResult
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ),
                     SelectionResult.next
@@ -866,7 +868,7 @@ internal class _SelectableTextContainerDelegate__text : StaticSelectionContainer
                         long lastNextIndex__38240__value40009 = (
                             lastNextIndex
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         );
                         startIndex = (lastNextIndex__38240__value40009) + 1L;
@@ -897,7 +899,7 @@ internal class _SelectableTextContainerDelegate__text : StaticSelectionContainer
                     (
                         lastSelectionResult
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ),
                     SelectionResult.previous
@@ -931,7 +933,7 @@ internal class _SelectableTextContainerDelegate__text : StaticSelectionContainer
         }
         DartRuntimePrimitives.Assert(() => lastSelectionResult is null);
         return SelectionResult.end;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     // Dart library-private member: distinct from the same name in the base library.
@@ -955,7 +957,7 @@ internal class _SelectableTextContainerDelegate__text : StaticSelectionContainer
                 && (currentSelectionStartIndex >= 0L)
             );
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         SelectionResult? finalResult = default!;
         var isCurrentEdgeWithinViewport = isEnd
@@ -1047,7 +1049,7 @@ internal class _SelectableTextContainerDelegate__text : StaticSelectionContainer
                         && (
                             forward
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                         && (newIndex >= currentSelectionStartIndex)
@@ -1057,7 +1059,7 @@ internal class _SelectableTextContainerDelegate__text : StaticSelectionContainer
                         && !(
                             forward
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                         && (newIndex <= currentSelectionStartIndex)
@@ -1067,9 +1069,7 @@ internal class _SelectableTextContainerDelegate__text : StaticSelectionContainer
             {
                 bool forward__43403__value45352 = (
                     forward
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 currentSelectionStartIndex = currentSelectionEndIndex;
             }
@@ -1086,7 +1086,7 @@ internal class _SelectableTextContainerDelegate__text : StaticSelectionContainer
                         && !(
                             forward
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                         && (newIndex <= currentSelectionEndIndex)
@@ -1096,7 +1096,7 @@ internal class _SelectableTextContainerDelegate__text : StaticSelectionContainer
                         && (
                             forward
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                         && (newIndex >= currentSelectionEndIndex)
@@ -1106,9 +1106,7 @@ internal class _SelectableTextContainerDelegate__text : StaticSelectionContainer
             {
                 bool forward__43403__value45778 = (
                     forward
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 currentSelectionEndIndex = currentSelectionStartIndex;
             }
@@ -1117,9 +1115,9 @@ internal class _SelectableTextContainerDelegate__text : StaticSelectionContainer
         _flushInactiveSelections();
         return (
             finalResult
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Comparison<Selectable> compareOrder =>
@@ -1135,7 +1133,7 @@ internal class _SelectableTextContainerDelegate__text : StaticSelectionContainer
             return result;
         }
         return _compareHorizontally(rectA, rectB);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static new long _compareVertically(Rect a, Rect b)
@@ -1164,7 +1162,7 @@ internal class _SelectableTextContainerDelegate__text : StaticSelectionContainer
             return (a.top > b.top) ? 1L : -1L;
         }
         return (a.bottom > b.bottom) ? 1L : -1L;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static new long _compareHorizontally(Rect a, Rect b)
@@ -1188,7 +1186,7 @@ internal class _SelectableTextContainerDelegate__text : StaticSelectionContainer
             return (a.left > b.left) ? 1L : -1L;
         }
         return (a.right > b.right) ? 1L : -1L;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     // Dart library-private member: distinct from the same name in the base library.
@@ -1272,14 +1270,14 @@ internal class _SelectableTextContainerDelegate__text : StaticSelectionContainer
             startOffset: forwardSelection ? startOffsetLocal : endOffsetLocal,
             endOffset: forwardSelection ? endOffsetLocal : startOffsetLocal
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override SelectedContentRange? getSelection()
     {
         var selections = new List<(long contentLength, SelectedContentRange? range)>();
         return _calculateLocalRange(selections);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     // Dart library-private member: distinct from the same name in the base library.
@@ -1336,7 +1334,7 @@ internal class _SelectableTextContainerDelegate__text : StaticSelectionContainer
         return (currentSelectionStartIndex == -1L)
             ? base.handleSelectionEdgeUpdate(@event)
             : _adjustSelection(@event, isEnd: false);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1363,7 +1361,7 @@ internal class _OverridingTextStyleTextSpanUtils__text
             ),
             textSpan
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static TextSpan _applyTextStyleOverrides(
@@ -1389,7 +1387,7 @@ internal class _OverridingTextStyleTextSpanUtils__text
                         }
                         return child;
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 )
@@ -1404,6 +1402,6 @@ internal class _OverridingTextStyleTextSpanUtils__text
             locale: textSpan.locale,
             spellOut: textSpan.spellOut
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

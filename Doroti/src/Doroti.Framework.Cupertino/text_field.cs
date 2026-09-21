@@ -224,9 +224,13 @@ public class CupertinoTextField : StatefulWidget
                         return null;
                     }
                     default:
-                        throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                        throw new InvalidOperationException(
+                            "Switch expression did not handle the supplied value."
+                        );
                 }
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
 
@@ -403,7 +407,7 @@ public class CupertinoTextField : StatefulWidget
                     (
                         maxLines
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) > 0L
                 )
@@ -414,7 +418,7 @@ public class CupertinoTextField : StatefulWidget
                     (
                         minLines
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) > 0L
                 )
@@ -426,7 +430,7 @@ public class CupertinoTextField : StatefulWidget
                     >= (
                         minLines
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
         );
@@ -438,7 +442,7 @@ public class CupertinoTextField : StatefulWidget
                     (
                         maxLength
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) > 0L
                 )
@@ -703,7 +707,7 @@ public class CupertinoTextField : StatefulWidget
         return CupertinoAdaptiveTextSelectionToolbar.CreateEditableText(
             editableTextState: editableTextState
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static Widget defaultSpellCheckSuggestionsToolbarBuilder(
@@ -714,7 +718,7 @@ public class CupertinoTextField : StatefulWidget
         return CupertinoSpellCheckSuggestionsToolbar.CreateEditableText(
             editableTextState: editableTextState
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override IState createState() =>
@@ -940,7 +944,7 @@ public class CupertinoTextField : StatefulWidget
             spellCheckSuggestionsToolbarBuilder: configuration.spellCheckSuggestionsToolbarBuilder
                 ?? defaultSpellCheckSuggestionsToolbarBuilder
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1115,7 +1119,7 @@ internal class _CupertinoTextFieldState__text_field
             return true;
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _handleSelectionChanged(
@@ -1181,9 +1185,11 @@ internal class _CupertinoTextFieldState__text_field
             OverlayVisibilityMode.always => true,
             OverlayVisibilityMode.editing => hasText,
             OverlayVisibilityMode.notEditing => !hasText,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual bool _hasDecoration
@@ -1241,7 +1247,7 @@ internal class _CupertinoTextFieldState__text_field
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _addTextDependentAttachments(
@@ -1360,11 +1366,13 @@ internal class _CupertinoTextFieldState__text_field
                             )
                         )()
                     );
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual string autofillId => _editableText.autofillId;
@@ -1505,7 +1513,9 @@ internal class _CupertinoTextFieldState__text_field
                 return Equals(side, BorderSide.none)
                     ? side
                     : side.copyWith(color: CupertinoDynamicColor.resolve(side.color, context));
-                throw new InvalidOperationException("Dart control flow completed without a value.");
+                throw new InvalidOperationException(
+                    "Control flow completed without returning a value."
+                );
             }
             resolvedBorder =
                 (!Equals(DartRuntimePrimitives.RuntimeType(border__56361__as56449), typeof(Border)))
@@ -1683,7 +1693,7 @@ internal class _CupertinoTextFieldState__text_field
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual RestorationBucket? bucket => _bucket;
@@ -1893,7 +1903,7 @@ internal class _CupertinoTextFieldState__text_field
         _bucket!.rename(restorationId!);
         parent.adoptChild(_bucket!);
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool _setNewBucketIfNecessary(RestorationBucket? newBucket, bool restorePending)
@@ -1915,7 +1925,7 @@ internal class _CupertinoTextFieldState__text_field
             didToggleBucket(oldBucket);
         }
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _updateProperty(IRestorableProperty property)
@@ -2024,9 +2034,11 @@ internal class _BaselineAlignedStack__text_field
         {
             _BaselineAlignedStackSlot__text_field.placeholder => placeholder,
             _BaselineAlignedStackSlot__text_field.editableText => editableText,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override RenderObject createRenderObject(BuildContext context)
@@ -2036,7 +2048,7 @@ internal class _BaselineAlignedStack__text_field
             editableTextBaseline: editableTextBaseline,
             placeholderBaseline: placeholderBaseline
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -2156,7 +2168,7 @@ public class _RenderBaselineAlignedStack__text_field
             _placeholderChild?.getMinIntrinsicHeight(width) ?? 0.0,
             _editableTextChild.getMinIntrinsicHeight(width)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicHeight(double width)
@@ -2165,7 +2177,7 @@ public class _RenderBaselineAlignedStack__text_field
             _placeholderChild?.getMaxIntrinsicHeight(width) ?? 0.0,
             _editableTextChild.getMaxIntrinsicHeight(width)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicWidth(double height)
@@ -2174,7 +2186,7 @@ public class _RenderBaselineAlignedStack__text_field
             _placeholderChild?.getMinIntrinsicWidth(height) ?? 0.0,
             _editableTextChild.getMinIntrinsicWidth(height)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicWidth(double height)
@@ -2183,7 +2195,7 @@ public class _RenderBaselineAlignedStack__text_field
             _placeholderChild?.getMaxIntrinsicWidth(height) ?? 0.0,
             _editableTextChild.getMaxIntrinsicWidth(height)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void performLayout()
@@ -2204,7 +2216,7 @@ public class _RenderBaselineAlignedStack__text_field
         );
         double editableTextBaselineValue = (
             editableText.getDistanceToBaseline(editableTextBaseline)
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         );
         double? placeholderBaselineValue = placeholder?.getDistanceToBaseline(placeholderBaseline);
         DartRuntimePrimitives.Assert(() =>
@@ -2218,7 +2230,7 @@ public class _RenderBaselineAlignedStack__text_field
                         - (
                             placeholderBaselineValue
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                 )
@@ -2252,7 +2264,7 @@ public class _RenderBaselineAlignedStack__text_field
             layoutChild: ChildLayoutHelper.dryLayoutChild,
             getBaseline: ChildLayoutHelper.getDryBaseline
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Size _computeSize(
@@ -2267,7 +2279,7 @@ public class _RenderBaselineAlignedStack__text_field
         Size editableTextSize = layoutChild(editableText, constraints);
         double editableTextBaselineValue = (
             getBaseline(editableText, constraints, editableTextBaseline)
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         );
         double editableTextDescent = editableTextSize.height - editableTextBaselineValue;
         Size? placeholderSize = default!;
@@ -2282,9 +2294,7 @@ public class _RenderBaselineAlignedStack__text_field
                 placeholderSize.height
                 - (
                     placeholderBaselineValue
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
             double maxExtentBaseline =
                 Math.Max(
@@ -2292,7 +2302,7 @@ public class _RenderBaselineAlignedStack__text_field
                     (
                         placeholderBaselineValue
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 ) + Math.Max(editableTextDescent, placeholderDescent);
@@ -2303,7 +2313,7 @@ public class _RenderBaselineAlignedStack__text_field
         var size = new Size(widthLocal, heightLocal);
         DartRuntimePrimitives.Assert(() => size.isFinite);
         return constraints.constrain(size);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool hitTestChildren(BoxHitTestResult result, Offset position)
@@ -2321,10 +2331,12 @@ public class _RenderBaselineAlignedStack__text_field
                     Equals(transformed, position - editableTextParentData.offset)
                 );
                 return editableText.hitTest(result, position: transformed);
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual RenderBox? childForSlot(_BaselineAlignedStackSlot__text_field slot) =>
@@ -2335,7 +2347,7 @@ public class _RenderBaselineAlignedStack__text_field
     public virtual string debugNameForSlot(_BaselineAlignedStackSlot__text_field slot)
     {
         return slot.ToString();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void attach(PipelineOwner owner)
@@ -2392,14 +2404,14 @@ public class _RenderBaselineAlignedStack__text_field
                             child
                         )
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
             );
         }
         return value;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _addDiagnostics(RenderBox child, List<DiagnosticsNode> value, string name)

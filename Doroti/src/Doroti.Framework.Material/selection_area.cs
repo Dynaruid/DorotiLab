@@ -47,7 +47,7 @@ public class SelectionArea : StatefulWidget
         return AdaptiveTextSelectionToolbar.CreateSelectableRegion(
             selectableRegionState: selectableRegionState
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override IState createState() =>
@@ -86,7 +86,9 @@ public class SelectionAreaState : State<SelectionArea>
                     TargetPlatform.macOS =>
                         Desktop_text_selectionLibrary.desktopTextSelectionHandleControls,
                     _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                        throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                        throw new InvalidOperationException(
+                            "Switch expression did not handle the supplied value."
+                        ),
                 }
             );
         return new SelectableRegion(
@@ -99,6 +101,6 @@ public class SelectionAreaState : State<SelectionArea>
             onSelectionChanged: widget.onSelectionChanged,
             child: widget.child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

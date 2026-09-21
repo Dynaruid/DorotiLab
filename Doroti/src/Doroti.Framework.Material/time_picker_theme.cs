@@ -113,7 +113,7 @@ public class TimePickerThemeData : Diagnosticable
                         }
                         return Colors.transparent;
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     }
                 );
@@ -191,7 +191,7 @@ public class TimePickerThemeData : Diagnosticable
             timeSelectorSeparatorTextStyle: timeSelectorSeparatorTextStyle
                 ?? this.timeSelectorSeparatorTextStyle
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static TimePickerThemeData lerp(TimePickerThemeData? a, TimePickerThemeData? b, double t)
@@ -281,7 +281,7 @@ public class TimePickerThemeData : Diagnosticable
                 TextStyle.lerp
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override int GetHashCode() =>
@@ -477,7 +477,7 @@ public class TimePickerThemeData : Diagnosticable
             return true;
         });
         return fullString ?? toStringShort();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual DiagnosticsNode toDiagnosticsNode(
@@ -486,7 +486,7 @@ public class TimePickerThemeData : Diagnosticable
     )
     {
         return new DiagnosticableNode<Diagnosticable>(name: name, value: this, style: style);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -509,13 +509,13 @@ public class TimePickerTheme : InheritedTheme
         TimePickerTheme? timePickerThemeLocal =
             context.dependOnInheritedWidgetOfExactType<TimePickerTheme>();
         return timePickerThemeLocal?.data ?? Theme.of(context).timePickerTheme;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget wrap(BuildContext context, Widget child)
     {
         return new TimePickerTheme(data: data, child: child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool updateShouldNotify(InheritedWidget oldWidget) =>

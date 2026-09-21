@@ -266,7 +266,7 @@ public class MediaQueryData
                 view.environmentConfiguration ?? view.platformDispatcher.configurationSnapshot,
                 view.platformDispatcher
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static BorderRadius? _displayCornerRadiiFromView(DorotiView view)
@@ -292,7 +292,7 @@ public class MediaQueryData
                 displayCornerRadiiLocal.bottomLeft / (devicePixelRatioLocal)
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual double textScaleFactor => textScaler.textScaleFactor;
@@ -349,7 +349,7 @@ public class MediaQueryData
         {
             double textScaleFactor__value39066 = (
                 textScaleFactor
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             textScaler ??= TextScaler.CreateLinear(((textScaleFactor__value39066)));
         }
@@ -382,7 +382,7 @@ public class MediaQueryData
             paragraphSpacingOverride: paragraphSpacingOverride,
             displayCornerRadii: displayCornerRadii
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual MediaQueryData applyTextStyleOverrides(
@@ -395,7 +395,7 @@ public class MediaQueryData
         return new MediaQueryData(
             size: (
                 size
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             devicePixelRatio: (devicePixelRatio),
             textScaler: textScaler,
@@ -423,7 +423,7 @@ public class MediaQueryData
             paragraphSpacingOverride: paragraphSpacingOverride,
             displayCornerRadii: displayCornerRadii
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual MediaQueryData applyDisplayCornerRadii(BorderRadius? displayCornerRadii)
@@ -431,7 +431,7 @@ public class MediaQueryData
         return new MediaQueryData(
             size: (
                 size
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ),
             devicePixelRatio: (devicePixelRatio),
             textScaler: textScaler,
@@ -459,7 +459,7 @@ public class MediaQueryData
             paragraphSpacingOverride: paragraphSpacingOverride,
             displayCornerRadii: displayCornerRadii
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual MediaQueryData removePadding(
@@ -487,7 +487,7 @@ public class MediaQueryData
                 bottom: removeBottom ? Math.Max(0.0, viewPadding.bottom - padding.bottom) : null
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual MediaQueryData removeViewInsets(
@@ -515,7 +515,7 @@ public class MediaQueryData
                 bottom: removeBottom ? 0.0 : null
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual MediaQueryData removeViewPadding(
@@ -543,7 +543,7 @@ public class MediaQueryData
                 bottom: removeBottom ? 0.0 : null
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual MediaQueryData removeDisplayFeatures(Rect subScreen)
@@ -585,7 +585,7 @@ public class MediaQueryData
                 .where((displayFeature) => subScreen.overlaps(displayFeature.bounds))
                 .ToList()
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override bool Equals(object? other)
@@ -692,7 +692,7 @@ public class MediaQueryData
             $"displayCornerRadii: {displayCornerRadii}",
         };
         return $"{objectRuntimeTypeFunctions.objectRuntimeType(this, "MediaQueryData")}({string.Join(", ", properties)})";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -793,10 +793,12 @@ public class MediaQuery : InheritedModel<_MediaQueryAspect__media_query>
                         ),
                     child: child
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static Widget fromWindow(Key? key = null, Widget child = default!)
@@ -807,7 +809,7 @@ public class MediaQuery : InheritedModel<_MediaQueryAspect__media_query>
             ignoreParentData: true,
             child: child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static Widget fromView(
@@ -817,7 +819,7 @@ public class MediaQuery : InheritedModel<_MediaQueryAspect__media_query>
     )
     {
         return new _MediaQueryFromView__media_query(key: key, view: view, child: child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static Widget withNoTextScaling(Key? key = null, Widget child = default!)
@@ -831,10 +833,12 @@ public class MediaQuery : InheritedModel<_MediaQueryAspect__media_query>
                     data: of(context).copyWith(textScaler: TextScaler.noScaling),
                     child: child
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static Widget withClampedTextScaling(
@@ -862,16 +866,18 @@ public class MediaQuery : InheritedModel<_MediaQueryAspect__media_query>
                     ),
                     child: child
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static MediaQueryData of(BuildContext context)
     {
         return _of(context);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static MediaQueryData _of(
@@ -881,13 +887,13 @@ public class MediaQuery : InheritedModel<_MediaQueryAspect__media_query>
     {
         DartRuntimePrimitives.Assert(() => DebugLibrary.debugCheckHasMediaQuery(context));
         return InheritedModel<object>.inheritFrom<MediaQuery>(context, aspect: aspect)!.data;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static MediaQueryData? maybeOf(BuildContext context)
     {
         return _maybeOf(context);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal static MediaQueryData? _maybeOf(
@@ -896,7 +902,7 @@ public class MediaQuery : InheritedModel<_MediaQueryAspect__media_query>
     )
     {
         return InheritedModel<object>.inheritFrom<MediaQuery>(context, aspect: aspect)?.data;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static Size sizeOf(BuildContext context) =>
@@ -1197,7 +1203,9 @@ public class MediaQuery : InheritedModel<_MediaQueryAspect__media_query>
                     data.displayCornerRadii,
                     previous.displayCornerRadii
                 ),
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             };
             if (notified)
             {
@@ -1362,7 +1370,7 @@ internal class _MediaQueryFromViewState__media_query
             );
         }
         return new MediaQuery(data: effectiveData, child: widget.child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 

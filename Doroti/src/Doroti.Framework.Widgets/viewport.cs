@@ -66,9 +66,7 @@ public class Viewport : MultiChildRenderObjectWidget
             {
                 double cacheExtent__value6836 = (
                     cacheExtent
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 switch (cacheExtentStyle)
                 {
@@ -78,7 +76,7 @@ public class Viewport : MultiChildRenderObjectWidget
                             (
                                 cacheExtent
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             )
                         );
@@ -89,13 +87,15 @@ public class Viewport : MultiChildRenderObjectWidget
                             (
                                 cacheExtent
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             )
                         );
                     }
                     default:
-                        throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                        throw new InvalidOperationException(
+                            "Switch expression did not handle the supplied value."
+                        );
                 }
             }
             return null;
@@ -140,9 +140,11 @@ public class Viewport : MultiChildRenderObjectWidget
                 return AxisDirection.down;
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override RenderObject createRenderObject(BuildContext context)
@@ -157,7 +159,7 @@ public class Viewport : MultiChildRenderObjectWidget
             paintOrder: paintOrder,
             clipBehavior: clipBehavior
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -339,7 +341,9 @@ internal class _ViewportElement__viewport
                 {
                     var renderSliver = ((RenderSliver?)e.renderObject!)!;
                     return renderSliver.geometry!.visible;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
             .forEach((__arg0) => visitor(__arg0));
@@ -357,7 +361,7 @@ internal class _ViewportElement__viewport
             ((ViewportNotificationMixin)notification)._depth += 1L;
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -409,9 +413,7 @@ public class ShrinkWrappingViewport : MultiChildRenderObjectWidget
             {
                 double cacheExtent__value17671 = (
                     cacheExtent
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 switch (cacheExtentStyle)
                 {
@@ -421,7 +423,7 @@ public class ShrinkWrappingViewport : MultiChildRenderObjectWidget
                             (
                                 cacheExtent
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             )
                         );
@@ -432,13 +434,15 @@ public class ShrinkWrappingViewport : MultiChildRenderObjectWidget
                             (
                                 cacheExtent
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             )
                         );
                     }
                     default:
-                        throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                        throw new InvalidOperationException(
+                            "Switch expression did not handle the supplied value."
+                        );
                 }
             }
             return null;
@@ -456,7 +460,7 @@ public class ShrinkWrappingViewport : MultiChildRenderObjectWidget
             clipBehavior: clipBehavior,
             scrollCacheExtent: _effectiveScrollCacheExtent
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)

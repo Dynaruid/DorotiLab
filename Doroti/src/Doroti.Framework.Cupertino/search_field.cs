@@ -343,7 +343,7 @@ internal class _CupertinoSearchTextFieldState__search_field
                 return 1.0 - progress;
             }
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual EdgeInsetsGeometry _animatedInsets(
@@ -358,7 +358,7 @@ internal class _CupertinoSearchTextFieldState__search_field
             _fadeExtent
         );
         return animatedInsets ?? insets;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -442,7 +442,7 @@ internal class _CupertinoSearchTextFieldState__search_field
             enableIMEPersonalizedLearning: widget.enableIMEPersonalizedLearning,
             textInputAction: TextInputAction.search
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual RestorationBucket? bucket => _bucket;
@@ -631,7 +631,7 @@ internal class _CupertinoSearchTextFieldState__search_field
         _bucket!.rename(restorationId!);
         parent.adoptChild(_bucket!);
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool _setNewBucketIfNecessary(RestorationBucket? newBucket, bool restorePending)
@@ -653,7 +653,7 @@ internal class _CupertinoSearchTextFieldState__search_field
             didToggleBucket(oldBucket);
         }
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _updateProperty(IRestorableProperty property)

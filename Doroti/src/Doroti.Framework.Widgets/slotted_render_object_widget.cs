@@ -127,7 +127,9 @@ public class SlottedRenderObjectElement<SlotType, ChildType> : RenderObjectEleme
                     _debugPreviousSlots,
                     slottedMultiChildRenderObjectWidgetMixin.slots.ToList()
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             () => (object?)$"{DartRuntimePrimitives.RuntimeType(widget)}.slots must not change."
         );
@@ -187,7 +189,7 @@ public class SlottedRenderObjectElement<SlotType, ChildType> : RenderObjectEleme
                         }
                         return true;
                         throw new InvalidOperationException(
-                            "Dart closure completed without a value."
+                            "Callback completed without returning a value."
                         );
                     });
                     _keyedChildren[DartRuntimePrimitives.RequireReference(newWidgetKey)] = newChild;
@@ -230,7 +232,7 @@ public class SlottedRenderObjectElement<SlotType, ChildType> : RenderObjectEleme
             );
         }
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void insertRenderObjectChild(RenderObject child, object? slot)

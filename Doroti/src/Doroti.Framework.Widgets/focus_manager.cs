@@ -41,7 +41,7 @@ public static partial class Focus_managerLibrary
             }
         }
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -79,7 +79,7 @@ public static partial class Focus_managerLibrary
         return hasSkipRemainingHandlers
             ? KeyEventResult.skipRemainingHandlers
             : KeyEventResult.ignored;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -338,7 +338,9 @@ public class FocusNode : ChangeNotifier, DiagnosticableTree
             {
                 _debugLabel = __value;
                 return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             });
         }
     }
@@ -543,7 +545,7 @@ public class FocusNode : ChangeNotifier, DiagnosticableTree
         }
         _hasKeyboardToken = false;
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _markNextFocus(FocusNode newFocus)
@@ -580,7 +582,7 @@ public class FocusNode : ChangeNotifier, DiagnosticableTree
                         {
                             return Equals(descendant.enclosingScope, nodeScope);
                             throw new InvalidOperationException(
-                                "Dart closure completed without a value."
+                                "Callback completed without returning a value."
                             );
                         }
                     )
@@ -686,7 +688,7 @@ public class FocusNode : ChangeNotifier, DiagnosticableTree
         this.onKeyEvent = onKeyEvent ?? this.onKeyEvent;
         _attachment = new FocusAttachment(this);
         return _attachment!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void dispose()
@@ -849,11 +851,13 @@ public class FocusNode : ChangeNotifier, DiagnosticableTree
                 (child) =>
                 {
                     return ((Diagnosticable)child).toDiagnosticsNode(name: $"Child {count++}");
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
             .ToList();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual string toStringShort()
@@ -865,7 +869,7 @@ public class FocusNode : ChangeNotifier, DiagnosticableTree
             + $"{((hasFocus && !hasPrimaryFocus) ? "[IN FOCUS PATH]" : "")}"
             + $"{(hasPrimaryFocus ? "[PRIMARY FOCUS]" : "")}";
         return $"{DiagnosticsLibrary.describeIdentity(this)}{((extraData.Length != 0) ? $"({extraData})" : "")}";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1032,7 +1036,9 @@ public class FocusScopeNode : FocusNode
                 (child) =>
                 {
                     return ((Diagnosticable)child).toStringShort();
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
             .ToList()
@@ -1117,7 +1123,7 @@ public class FocusManager : ChangeNotifier, DiagnosticableTree
                         TargetPlatform.windows => true,
                         TargetPlatform.macOS => true,
                         _ => throw new InvalidOperationException(
-                            "Non-exhaustive Dart switch value."
+                            "Switch expression did not handle the supplied value."
                         ),
                     }
                 )
@@ -1361,7 +1367,9 @@ public class FocusManager : ChangeNotifier, DiagnosticableTree
                     Focus_managerLibrary.debugDumpFocusTree();
                 }
                 return true;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             });
         }
     }
@@ -1384,7 +1392,7 @@ public class FocusManager : ChangeNotifier, DiagnosticableTree
         {
             ((Diagnosticable)rootScope).toDiagnosticsNode(name: "rootScope"),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void debugFillProperties(DiagnosticPropertiesBuilder properties)
@@ -1540,7 +1548,9 @@ internal class _HighlightModeManager__focus_manager
                             ),
                         };
                     return true;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 });
                 FlutterError.reportError(
                     new FlutterErrorDetails(
@@ -1593,7 +1603,7 @@ internal class _HighlightModeManager__focus_manager
         }
         return ((((RawKeyEventDataAndroid)dataLocal).flags & _kAndroidSoftKeyboardFlag) != 0L)
             || (((RawKeyEventDataAndroid)dataLocal).deviceId == _kAndroidVirtualKeyboardDeviceId);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool handleKeyMessage(KeyMessage message)
@@ -1764,7 +1774,7 @@ internal class _HighlightModeManager__focus_manager
             );
         }
         return handledLocal;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void handleSemanticsAction(SemanticsActionEvent semanticsActionEvent)
@@ -1795,7 +1805,7 @@ internal class _HighlightModeManager__focus_manager
                     (
                         _lastInteractionRequiresTraditionalHighlights
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
@@ -1850,7 +1860,9 @@ internal class _HighlightModeManager__focus_manager
                     return FocusHighlightMode.traditional;
                 }
                 default:
-                    throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                    throw new InvalidOperationException(
+                        "Switch expression did not handle the supplied value."
+                    );
             }
         }
     }
@@ -1870,10 +1882,10 @@ public static partial class Focus_managerLibrary
         {
             result = ((DiagnosticableTree)FocusManager.instance).toStringDeep();
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return result ?? "";
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1885,7 +1897,7 @@ public static partial class Focus_managerLibrary
         {
             PrintLibrary.debugPrint(debugDescribeFocusTree());
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
     }
 }

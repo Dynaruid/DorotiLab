@@ -150,16 +150,16 @@ public class ReorderableList : StatefulWidget
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return result!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static ReorderableListState? maybeOf(BuildContext context)
     {
         return context.findAncestorStateOfType<ReorderableListState>();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override IState createState() =>
@@ -188,7 +188,7 @@ public class ReorderableListState : State<ReorderableList>
                     (
                         widget.cacheExtent
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 );
@@ -252,7 +252,7 @@ public class ReorderableListState : State<ReorderableList>
                 ),
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -358,16 +358,16 @@ public class SliverReorderableList : StatefulWidget
                 );
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         return result!;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static SliverReorderableListState? maybeOf(BuildContext context)
     {
         return context.findAncestorStateOfType<SliverReorderableListState>();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -465,7 +465,7 @@ public class SliverReorderableListState
                 }
             }
             return true;
-            throw new InvalidOperationException("Dart closure completed without a value.");
+            throw new InvalidOperationException("Callback completed without returning a value.");
         });
         _tickerModeNotifier?.removeListener(_updateTickers);
         _tickerModeNotifier = null;
@@ -560,14 +560,14 @@ public class SliverReorderableListState
         _ReorderableItemState__reorderable_list itemLocal = _items.GetValueOrDefault(
             (
                 _dragIndex
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         )!;
         itemLocal.dragging = true;
         widget.onReorderStart?.Invoke(
             (
                 _dragIndex
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );
         itemLocal.rebuild();
@@ -597,15 +597,11 @@ public class SliverReorderableListState
             childItem.updateForGap(
                 (
                     _insertIndex
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 (
                     _insertIndex
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ),
                 _dragInfo!.itemExtent,
                 false,
@@ -613,7 +609,7 @@ public class SliverReorderableListState
             );
         }
         return (Drag?)_dragInfo;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _dragUpdate(
@@ -647,7 +643,7 @@ public class SliverReorderableListState
                     (
                         _insertIndex
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) - item.index
                 ) == 1L
@@ -657,7 +653,7 @@ public class SliverReorderableListState
                     (
                         _insertIndex
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ) - 1L
                 );
@@ -670,7 +666,7 @@ public class SliverReorderableListState
                         (
                             _insertIndex
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     );
@@ -683,7 +679,7 @@ public class SliverReorderableListState
                             (
                                 _insertIndex
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             ) >= checked(_items.Count)
                         )
@@ -702,7 +698,7 @@ public class SliverReorderableListState
                                     (
                                         _insertIndex
                                         ?? throw new global::System.NullReferenceException(
-                                            "Dart null assertion failed."
+                                            "A required value was null."
                                         )
                                     )
                                 )
@@ -711,7 +707,7 @@ public class SliverReorderableListState
                                         (
                                             _insertIndex
                                             ?? throw new global::System.NullReferenceException(
-                                                "Dart null assertion failed."
+                                                "A required value was null."
                                             )
                                         )
                                     ),
@@ -725,7 +721,7 @@ public class SliverReorderableListState
                             (
                                 _insertIndex
                                 ?? throw new global::System.NullReferenceException(
-                                    "Dart null assertion failed."
+                                    "A required value was null."
                                 )
                             ) == 0L
                         )
@@ -743,7 +739,7 @@ public class SliverReorderableListState
                                 (
                                     _insertIndex
                                     ?? throw new global::System.NullReferenceException(
-                                        "Dart null assertion failed."
+                                        "A required value was null."
                                     )
                                 ) - 1L;
                             _finalDropPosition =
@@ -760,7 +756,7 @@ public class SliverReorderableListState
         widget.onReorderEnd?.Invoke(
             (
                 _insertIndex
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         );
     }
@@ -769,11 +765,11 @@ public class SliverReorderableListState
     {
         long oldIndex = (
             _dragIndex
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         );
         long newIndex = (
             _insertIndex
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         );
         _handleReorderItem(oldIndex, newIndex);
         setState(() =>
@@ -792,7 +788,7 @@ public class SliverReorderableListState
                     (
                         _dragIndex
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
@@ -802,7 +798,7 @@ public class SliverReorderableListState
                     (
                         _dragIndex
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )!;
@@ -869,7 +865,7 @@ public class SliverReorderableListState
         double proxyItemEnd = proxyItemStart + gapExtent;
         long newIndex = (
             _insertIndex
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         );
         foreach (_ReorderableItemState__reorderable_list item in _items.Values)
         {
@@ -881,7 +877,7 @@ public class SliverReorderableListState
                         == (
                             _dragIndex
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     )
@@ -936,7 +932,7 @@ public class SliverReorderableListState
                     == (
                         _dragIndex
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
@@ -946,7 +942,7 @@ public class SliverReorderableListState
                         newIndex = (
                             _dragIndex
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         );
                     }
@@ -994,7 +990,7 @@ public class SliverReorderableListState
                         == (
                             _dragIndex
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         )
                     ) || !itemLocal.mounted
@@ -1006,7 +1002,7 @@ public class SliverReorderableListState
                     (
                         _dragIndex
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     ),
                     newIndex,
@@ -1035,7 +1031,7 @@ public class SliverReorderableListState
     internal virtual Offset _itemOffsetAt(long index)
     {
         return _items.GetValueOrDefault(index)!.targetGeometry().topLeft;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual double _itemExtentAt(long index)
@@ -1044,7 +1040,7 @@ public class SliverReorderableListState
             _items.GetValueOrDefault(index)!.targetGeometry().size,
             _scrollDirection
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _itemBuilder(BuildContext context, long index)
@@ -1055,7 +1051,9 @@ public class SliverReorderableListState
             {
                 Axis.horizontal => new SizedBox(width: _dragInfo!.itemExtent),
                 Axis.vertical => new SizedBox(height: _dragInfo!.itemExtent),
-                _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                _ => throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
             };
         }
         Widget childLocal = widget.itemBuilder(context, index);
@@ -1074,7 +1072,7 @@ public class SliverReorderableListState
             capturedThemes: InheritedTheme.capture(from: context, to: overlay.context),
             child: _wrapWithSemantics(childLocal, index)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Widget _wrapWithSemantics(Widget child, long index)
@@ -1129,7 +1127,7 @@ public class SliverReorderableListState
             customSemanticsActions: semanticsActions,
             child: child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Widget build(BuildContext context)
@@ -1146,9 +1144,7 @@ public class SliverReorderableListState
                 @delegate: childrenDelegate,
                 itemExtent: (
                     widget.itemExtent
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             );
         }
@@ -1173,7 +1169,7 @@ public class SliverReorderableListState
             }
         }
         return new SliverList(@delegate: childrenDelegate);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
@@ -1204,7 +1200,7 @@ public class SliverReorderableListState
         )();
         _tickers!.Add(result);
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _removeTicker(_WidgetTicker__ticker_provider ticker)
@@ -1348,7 +1344,7 @@ public class _ReorderableItemState__reorderable_list : State<_ReorderableItem__r
         }
         _listState._registerItem(this);
         return Transform.CreateTranslate(offset: offset, child: widget.child);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void deactivate()
@@ -1366,9 +1362,7 @@ public class _ReorderableItemState__reorderable_list : State<_ReorderableItem__r
                 double animValue = Curves.easeInOut.transform(_offsetAnimation!.value);
                 return (
                     Dart_uiLibrary.Offset.lerp(_startOffset, _targetOffset, animValue)
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
             }
             return _targetOffset;
@@ -1445,7 +1439,7 @@ public class _ReorderableItemState__reorderable_list : State<_ReorderableItem__r
                     Offset currentPosition = (
                         Dart_uiLibrary.Offset.lerp(_startOffset, previousTarget, currentAnimValue)
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     );
                     _startOffset = currentPosition;
@@ -1482,7 +1476,7 @@ public class _ReorderableItemState__reorderable_list : State<_ReorderableItem__r
         var itemRenderBox = ((RenderBox?)context.findRenderObject()!)!;
         Offset itemPosition = itemRenderBox.localToGlobal(Offset.zero) + _targetOffset;
         return itemPosition & itemRenderBox.size;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void rebuild()
@@ -1526,13 +1520,13 @@ public class ReorderableDragStartListener : StatelessWidget
                 : null,
             child: child
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual MultiDragGestureRecognizer createRecognizer()
     {
         return new ImmediateMultiDragGestureRecognizer(debugOwner: this);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _startDragging(BuildContext context, Gestures.PointerDownEvent @event)
@@ -1569,7 +1563,7 @@ public class ReorderableDelayedDragStartListener : ReorderableDragStartListener
     public override MultiDragGestureRecognizer createRecognizer()
     {
         return new DelayedMultiDragGestureRecognizer(debugOwner: this);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1699,7 +1693,7 @@ internal class _DragInfo__reorderable_list : Drag
             .shift(dragOffset)
             .topLeft;
         return adjOffset;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _dropCompleted()
@@ -1725,7 +1719,7 @@ internal class _DragInfo__reorderable_list : Drag
                 child: child
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1736,7 +1730,7 @@ public static partial class Reorderable_listLibrary
         OverlayState overlay = Overlay.of(context, debugRequiredFor: context.widget);
         var overlayBox = ((RenderBox?)overlay.context.findRenderObject()!)!;
         return overlayBox.localToGlobal(Offset.zero);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1795,7 +1789,7 @@ internal class _DragItemProxy__reorderable_list : StatelessWidget
                         Offset dropPosition__58071__value58130 = (
                             dropPosition
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         );
                         effectivePosition = (
@@ -1805,7 +1799,7 @@ internal class _DragItemProxy__reorderable_list : StatelessWidget
                                 Curves.easeOut.transform(animation.value)
                             )
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         );
                     }
@@ -1827,12 +1821,14 @@ internal class _DragItemProxy__reorderable_list : StatelessWidget
                             )
                         )
                     );
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 },
                 child: proxyChild
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1844,9 +1840,11 @@ public static partial class Reorderable_listLibrary
         {
             Axis.horizontal => size.width,
             Axis.vertical => size.height,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1858,9 +1856,11 @@ public static partial class Reorderable_listLibrary
         {
             Axis.horizontal => new Size(extent, 0),
             Axis.vertical => new Size(0, extent),
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1872,9 +1872,11 @@ public static partial class Reorderable_listLibrary
         {
             Axis.horizontal => offset.dx,
             Axis.vertical => offset.dy,
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1886,9 +1888,11 @@ public static partial class Reorderable_listLibrary
         {
             Axis.horizontal => new Offset(extent, 0.0),
             Axis.vertical => new Offset(0.0, extent),
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1900,9 +1904,11 @@ public static partial class Reorderable_listLibrary
         {
             Axis.horizontal => new Offset(offset.dx, 0.0),
             Axis.vertical => new Offset(0.0, offset.dy),
-            _ => throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+            _ => throw new InvalidOperationException(
+                "Switch expression did not handle the supplied value."
+            ),
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 

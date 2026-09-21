@@ -69,9 +69,7 @@ public class PointerRouter
             {
                 long count__2895__value2991 = (
                     count
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 );
                 return (count__2895__value2991);
             }

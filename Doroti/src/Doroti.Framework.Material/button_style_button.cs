@@ -102,7 +102,7 @@ public abstract class ButtonStyleButton : StatefulWidget
                     [WidgetStateMembers.any] = enabled,
                 }.cast<WidgetStatesConstraint, Color?>()
             );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public static EdgeInsetsGeometry scaledPadding(
@@ -119,7 +119,7 @@ public abstract class ButtonStyleButton : StatefulWidget
             < 3L => EdgeInsetsGeometry.lerp(geometry2x, geometry3x, fontSizeMultiplier - 2L)!,
             _ => geometry3x,
         };
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -238,7 +238,9 @@ internal class _ButtonStyleState__button_style_button
             P? themeValue = getProperty(themeStyle);
             P? defaultValue = getProperty(defaultStyle);
             return (widgetValue ?? themeValue) ?? defaultValue;
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         P? resolve<P>(Func<ButtonStyle?, WidgetStateProperty<P>?> getProperty)
         {
@@ -248,10 +250,14 @@ internal class _ButtonStyleState__button_style_button
                     return getProperty(style) is { } property
                         ? property.resolve(statesController.value)
                         : default;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             );
-            throw new InvalidOperationException("Dart control flow completed without a value.");
+            throw new InvalidOperationException(
+                "Control flow completed without returning a value."
+            );
         }
         Color? effectiveIconColor()
         {
@@ -316,27 +322,19 @@ internal class _ButtonStyleState__button_style_button
             new BoxConstraints(
                 minWidth: (
                     resolvedMinimumSize
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ).width,
                 minHeight: (
                     resolvedMinimumSize
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ).height,
                 maxWidth: (
                     resolvedMaximumSize
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ).width,
                 maxHeight: (
                     resolvedMaximumSize
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ).height
             )
         );
@@ -344,19 +342,17 @@ internal class _ButtonStyleState__button_style_button
         {
             Size resolvedFixedSize__16402__value18999 = (
                 resolvedFixedSize
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             Size sizeLocal = effectiveConstraintsLocal.constrain(
                 (
                     (
                         resolvedFixedSize__16402__value18999
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 )
             );
             if (double.IsFinite(sizeLocal.width))
@@ -383,9 +379,7 @@ internal class _ButtonStyleState__button_style_button
             (
                 (
                     resolvedAnimationDuration
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) > Duration.zero
             )
             && (elevation is not null)
@@ -403,7 +397,7 @@ internal class _ButtonStyleState__button_style_button
                     (
                         resolvedAnimationDuration
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 )
@@ -418,7 +412,7 @@ internal class _ButtonStyleState__button_style_button
                                 duration: (
                                     resolvedAnimationDuration
                                     ?? throw new global::System.NullReferenceException(
-                                        "Dart null assertion failed."
+                                        "A required value was null."
                                     )
                                 ),
                                 vsync: this
@@ -464,7 +458,7 @@ internal class _ButtonStyleState__button_style_button
                     (
                         resolvedAnimationDuration
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     )
                 ),
@@ -502,7 +496,7 @@ internal class _ButtonStyleState__button_style_button
         switch (
             (
                 resolvedTapTargetSize
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         )
         {
@@ -534,7 +528,7 @@ internal class _ButtonStyleState__button_style_button
                         elevation: (
                             resolvedElevation
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ),
                         textStyle: resolvedTextStyle?.copyWith(color: resolvedForegroundColor),
@@ -548,7 +542,7 @@ internal class _ButtonStyleState__button_style_button
                         animationDuration: (
                             resolvedAnimationDuration
                             ?? throw new global::System.NullReferenceException(
-                                "Dart null assertion failed."
+                                "A required value was null."
                             )
                         ),
                         clipBehavior: effectiveClipBehavior,
@@ -558,7 +552,7 @@ internal class _ButtonStyleState__button_style_button
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Scheduler.Ticker createTicker(Action<Duration> onTick)
@@ -589,7 +583,7 @@ internal class _ButtonStyleState__button_style_button
         )();
         _tickers!.Add(result);
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _removeTicker(_WidgetTicker__ticker_provider ticker)
@@ -679,7 +673,7 @@ internal class _InputPadding__button_style_button : SingleChildRenderObjectWidge
     public override RenderObject createRenderObject(BuildContext context)
     {
         return new _RenderInputPadding__button_style_button(minSize);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void updateRenderObject(BuildContext context, RenderObject renderObject)
@@ -721,7 +715,7 @@ public class _RenderInputPadding__button_style_button : RenderShiftedBox
             return Math.Max(child!.getMinIntrinsicWidth(height), minSize.width);
         }
         return 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMinIntrinsicHeight(double width)
@@ -731,7 +725,7 @@ public class _RenderInputPadding__button_style_button : RenderShiftedBox
             return Math.Max(child!.getMinIntrinsicHeight(width), minSize.height);
         }
         return 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicWidth(double height)
@@ -741,7 +735,7 @@ public class _RenderInputPadding__button_style_button : RenderShiftedBox
             return Math.Max(child!.getMaxIntrinsicWidth(height), minSize.width);
         }
         return 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double computeMaxIntrinsicHeight(double width)
@@ -751,7 +745,7 @@ public class _RenderInputPadding__button_style_button : RenderShiftedBox
             return Math.Max(child!.getMaxIntrinsicHeight(width), minSize.height);
         }
         return 0.0;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual Size _computeSize(
@@ -767,7 +761,7 @@ public class _RenderInputPadding__button_style_button : RenderShiftedBox
             return constraints.constrain(new Size(widthLocal, heightLocal));
         }
         return Size.zero;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override Size computeDryLayout(BoxConstraints constraints)
@@ -776,7 +770,7 @@ public class _RenderInputPadding__button_style_button : RenderShiftedBox
             constraints: constraints,
             layoutChild: ChildLayoutHelper.dryLayoutChild
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override double? computeDryBaseline(BoxConstraints constraints, TextBaseline baseline)
@@ -794,9 +788,9 @@ public class _RenderInputPadding__button_style_button : RenderShiftedBox
         Size childSize = childLocal.getDryLayout(constraints);
         return (
                 result
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             ) + Alignment.center.alongOffset(getDryLayout(constraints) - childSize).dy;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void performLayout()
@@ -823,9 +817,11 @@ public class _RenderInputPadding__button_style_button : RenderShiftedBox
             {
                 DartRuntimePrimitives.Assert(() => Equals(position, centerLocal));
                 return child!.hitTest(result, position: centerLocal);
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }

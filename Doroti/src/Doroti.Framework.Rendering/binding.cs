@@ -64,7 +64,7 @@ public static partial class BindingLibrary
             return "No render tree root was added to the binding.";
         }
         return string.Join("\n\n", new List<string>());
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -85,7 +85,7 @@ public static partial class BindingLibrary
             return "No render tree root was added to the binding.";
         }
         return string.Join("\n\n", new List<string>());
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -130,7 +130,7 @@ public static partial class BindingLibrary
             }
         }
         return string.Join("\n\n", trees);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -255,7 +255,7 @@ public class RenderingFlutterBinding
             new RenderingFlutterBinding();
         }
         return RendererBinding.instance;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     protected override void initInstances()
@@ -346,7 +346,7 @@ public class RenderingFlutterBinding
         DartRuntimePrimitives.Assert(() => _outstandingHandles > 0L);
         _semanticsEnabled.value = true;
         return new SemanticsHandle(_didDisposeSemanticsHandle);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual void _didDisposeSemanticsHandle()
@@ -405,7 +405,7 @@ public class RenderingFlutterBinding
     public virtual SemanticsUpdateBuilder createSemanticsUpdateBuilder()
     {
         return new SemanticsUpdateBuilder();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool disableAnimations
@@ -420,7 +420,7 @@ public class RenderingFlutterBinding
                     value = (
                         Semantics.DebugLibrary.debugSemanticsDisableAnimations
                         ?? throw new global::System.NullReferenceException(
-                            "Dart null assertion failed."
+                            "A required value was null."
                         )
                     );
                 }
@@ -448,7 +448,7 @@ public class RenderingFlutterBinding
             targetHeight: cacheHeight,
             allowUpscaling: allowUpscaling
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual Future<Codec> instantiateImageCodecWithSize(
@@ -457,7 +457,7 @@ public class RenderingFlutterBinding
     )
     {
         return Dart_uiLibrary.instantiateImageCodecWithSize(buffer, getTargetSize: getTargetSize);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void evict(string asset)
@@ -684,7 +684,7 @@ public class RenderingFlutterBinding
     public virtual PipelineOwner createRootPipelineOwner()
     {
         return new _DefaultRootPipelineOwner__binding();
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual PipelineOwner rootPipelineOwner => _rootPipelineOwner;
@@ -711,7 +711,7 @@ public class RenderingFlutterBinding
     public virtual ViewConfiguration createViewConfigurationFor(RenderView renderView)
     {
         return ViewConfiguration.CreateFromView(renderView.flutterView);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual SceneBuilder createSceneBuilder() => new SceneBuilder();
@@ -882,7 +882,7 @@ public class RenderingFlutterBinding
         }
         scheduleWarmUpFrame();
         await endOfFrame;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void hitTestInView(HitTestResult result, Offset position, long viewId)
@@ -904,7 +904,7 @@ public class RenderingFlutterBinding
             renderView.visitChildren(visitor);
         }
         return endOfFrame;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public void handleMetricsChanged(DorotiView _) => handleMetricsChanged();

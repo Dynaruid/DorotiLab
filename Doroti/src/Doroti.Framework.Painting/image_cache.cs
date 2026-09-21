@@ -182,7 +182,7 @@ public class ImageCache
             }
             _currentSizeBytes -= (
                 imageLocal.sizeBytes
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             imageLocal.dispose();
             return true;
@@ -195,7 +195,7 @@ public class ImageCache
             );
         }
         return false;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     internal virtual void _touch(
@@ -209,9 +209,7 @@ public class ImageCache
             && (
                 (
                     image.sizeBytes
-                    ?? throw new global::System.NullReferenceException(
-                        "Dart null assertion failed."
-                    )
+                    ?? throw new global::System.NullReferenceException("A required value was null.")
                 ) <= maximumSizeBytes
             )
             && (maximumSize > 0L)
@@ -219,7 +217,7 @@ public class ImageCache
         {
             _currentSizeBytes += (
                 image.sizeBytes
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             _cache[key] = image;
             _checkCacheSize(timelineTask);
@@ -413,7 +411,7 @@ public class ImageCache
         }
         result.addListener(streamListener);
         return result;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual ImageCacheStatus statusForKey(object key)
@@ -423,13 +421,13 @@ public class ImageCache
             keepAlive: _cache.ContainsKey(key),
             live: _liveImages.ContainsKey(key)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual bool containsKey(object key)
     {
         return _pendingImages.ContainsKey(key) || _cache.ContainsKey(key);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public virtual long liveImageCount => checked(_liveImages.Count);
@@ -460,7 +458,7 @@ public class ImageCache
             _CachedImage__image_cache image = _cache.GetValueOrDefault(key)!;
             _currentSizeBytes -= (
                 image.sizeBytes
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             );
             image.dispose();
             _cache.remove(key);
@@ -561,7 +559,7 @@ internal class _CachedImage__image_cache : _CachedImageBase__image_cache
             completer,
             sizeBytes: (
                 sizeBytes
-                ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+                ?? throw new global::System.NullReferenceException("A required value was null.")
             )
         ) { }
 }

@@ -143,7 +143,7 @@ public class Dialog : StatelessWidget
                                 ?? (
                                     defaults.elevation
                                     ?? throw new global::System.NullReferenceException(
-                                        "Dart null assertion failed."
+                                        "A required value was null."
                                     )
                                 ),
                             shadowColor: (shadowColor ?? dialogTheme.shadowColor)
@@ -156,7 +156,7 @@ public class Dialog : StatelessWidget
                                 ?? (
                                     defaults.clipBehavior
                                     ?? throw new global::System.NullReferenceException(
-                                        "Dart null assertion failed."
+                                        "A required value was null."
                                     )
                                 ),
                             child: child
@@ -361,7 +361,9 @@ public class AlertDialog : StatelessWidget
             TargetPlatform.windows => semanticLabel
                 ?? MaterialLocalizations.of(context).alertDialogLabel,
             _ when DartRuntimePrimitives.NonExhaustiveSwitchGuard =>
-                throw new InvalidOperationException("Non-exhaustive Dart switch value."),
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                ),
         };
         var fontSizeToScale = 14.0;
         double effectiveTextScale =
@@ -765,10 +767,12 @@ internal class _AdaptiveAlertDialog__dialog : AlertDialog
                 );
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
         return base.build(context);
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -800,7 +804,7 @@ public class SimpleDialogOption : StatelessWidget
                 child: child
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1026,7 +1030,7 @@ public static partial class DialogLibrary
     )
     {
         return child;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1067,7 +1071,7 @@ internal class _FullWindowDialogWrapper__dialog : StatelessWidget
                 )
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1097,11 +1101,13 @@ internal class _DialogPopScope__dialog : StatelessWidget
                 builder: (context) =>
                 {
                     return new _NavigatorShim__dialog(onPop: onPop, child: child);
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1127,11 +1133,13 @@ internal class _NavigatorShim__dialog : StatelessWidget
                 {
                     onPop?.Invoke(result);
                     return false;
-                    throw new InvalidOperationException("Dart closure completed without a value.");
+                    throw new InvalidOperationException(
+                        "Callback completed without returning a value."
+                    );
                 }
             )
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1151,12 +1159,14 @@ internal class _DialogContentPage__dialog : Page<object?>
             pageBuilder: (context, animation, secondaryAnimation) =>
             {
                 return child;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             transitionDuration: Duration.zero,
             reverseTransitionDuration: Duration.zero
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1213,7 +1223,9 @@ public static partial class DialogLibrary
                     animationStyle: animationStyle,
                     fullscreenDialog: fullscreenDialog
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             builder: (routeContext) =>
             {
@@ -1229,7 +1241,7 @@ public static partial class DialogLibrary
                                 child: builder(innerContext)
                             );
                             throw new InvalidOperationException(
-                                "Dart closure completed without a value."
+                                "Callback completed without returning a value."
                             );
                         }
                     )
@@ -1241,10 +1253,12 @@ public static partial class DialogLibrary
                         child: new MediaQuery(data: mediaQuery, child: dialogContent)
                     )
                 );
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             }
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1303,9 +1317,11 @@ public static partial class DialogLibrary
                 );
             }
             default:
-                throw new InvalidOperationException("Non-exhaustive Dart switch value.");
+                throw new InvalidOperationException(
+                    "Switch expression did not handle the supplied value."
+                );
         }
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1334,7 +1350,7 @@ public static partial class DialogLibrary
             );
         }
         return true;
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 
@@ -1383,7 +1399,9 @@ public class DialogRoute<T> : RawDialogRoute<T>
                     )
                 );
                 return dialog;
-                throw new InvalidOperationException("Dart closure completed without a value.");
+                throw new InvalidOperationException(
+                    "Callback completed without returning a value."
+                );
             },
             barrierLabel: barrierLabel
                 ?? MaterialLocalizations.of(context).modalBarrierDismissLabel,
@@ -1419,7 +1437,7 @@ public class DialogRoute<T> : RawDialogRoute<T>
             opacity: _curvedAnimation!,
             child: base.buildTransitions(context, animation, secondaryAnimation, child)
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 
     public override void dispose()
@@ -1436,9 +1454,9 @@ public static partial class DialogLibrary
         double clampedTextScaleFactor = Dart_uiLibrary.clampDouble(textScaleFactor, 1.0, 2.0);
         return (
             Dart_uiLibrary.lerpDouble(1.0, 1.0 / 3.0, clampedTextScaleFactor - 1.0)
-            ?? throw new global::System.NullReferenceException("Dart null assertion failed.")
+            ?? throw new global::System.NullReferenceException("A required value was null.")
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
 

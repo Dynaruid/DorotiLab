@@ -39,6 +39,6 @@ public class RawWebImageIo : StatelessWidget
         throw new NotSupportedException(
             "It is impossible to instantiate a RawWebImage when not running on the web"
         );
-        throw new InvalidOperationException("Dart control flow completed without a value.");
+        throw new InvalidOperationException("Control flow completed without returning a value.");
     }
 }
